@@ -1,7 +1,8 @@
+import NavBar from '@/components/nav-bar';
 import { ReactQueryClientProvider } from '@/components/ReactQueryClientProvider';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
-import { Geist } from 'next/font/google';
+
 import './globals.css';
 
 const defaultUrl = process.env.VERCEL_URL
@@ -14,12 +15,6 @@ export const metadata: Metadata = {
   description: 'The fastest way to build apps with Next.js and Supabase',
 };
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  display: 'swap',
-  subsets: ['latin'],
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,13 +23,14 @@ export default function RootLayout({
   return (
     <ReactQueryClientProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.className} antialiased`}>
+        <body className={`antialiased`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
+            <NavBar />
             {children}
           </ThemeProvider>
         </body>
