@@ -2,6 +2,7 @@ import NavBar from '@/components/nav-bar';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
+import { Suspense } from 'react';
 import './globals.css';
 
 const defaultUrl = process.env.VERCEL_URL
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   description: 'The fastest way to build apps with Next.js and Supabase',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -29,7 +30,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <NavBar />
+            <Suspense fallback={<div>Loading navigation...</div>}>
+              <NavBar />
+            </Suspense>
             {children}
           </ThemeProvider>
         </body>
