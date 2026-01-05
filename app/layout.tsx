@@ -1,7 +1,6 @@
 import NavBar from '@/components/nav-bar';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
 import type { Metadata } from 'next';
-import { ThemeProvider } from 'next-themes';
 import { Suspense } from 'react';
 import './globals.css';
 
@@ -24,17 +23,10 @@ export default async function RootLayout({
     <ReactQueryClientProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={`antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Suspense fallback={<div>Loading navigation...</div>}>
-              <NavBar />
-            </Suspense>
-            {children}
-          </ThemeProvider>
+          <Suspense fallback={<div>Loading navigation...</div>}>
+            <NavBar />
+          </Suspense>
+          {children}
         </body>
       </html>
     </ReactQueryClientProvider>

@@ -292,13 +292,13 @@ export default function NavBarClient({ user }: { user: NavUser | null }) {
           ) : (
             <div className="hidden lg:flex items-center gap-3">
               <Link
-                href="#"
+                href="/auth/login"
                 className="text-sm font-medium text-slate-700 transition hover:text-indigo-700"
               >
                 Login
               </Link>
               <Link
-                href="#"
+                href="/auth/sign-up"
                 className="rounded-full bg-indigo-700 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-px hover:bg-indigo-800 hover:shadow-md"
               >
                 Detektiv*in werden
