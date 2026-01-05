@@ -1,9 +1,18 @@
-import { FC } from 'react';
+import NavBarClient, { NavUser } from "./nav-bar-client";
+import { createClient } from "@/lib/supabase/server";
 
-interface NavBarProps {}
+export default async function NavBar() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
 
-const NavBar: FC<NavBarProps> = ({}) => {
-  return <h1 className="font-effra font-bold">Heading with Effra Bold</h1>;
-};
+  const claims = (data?.claims as Record<string, string | undefined>) || null;
 
-export default NavBar;
+  const user: NavUser | null = claims
+    ? {
+        name: claims.full_name || claims.name || claims.email || null,
+        email: claims.email || null,
+      }
+    : null;
+
+  return <NavBarClient user={user} />;
+}
