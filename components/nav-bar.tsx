@@ -210,18 +210,13 @@ export default function NavBar() {
 
   const { user, isAuthenticated } = useAuth();
 
-  React.useEffect(() => {
-    console.log('NavBar - Auth state changed:', { isAuthenticated, user });
-  }, [isAuthenticated, user]);
-
   const navigation = isAuthenticated
     ? authenticatedNavigation
     : guestNavigation;
 
   const handleLogout = async () => {
     const supabase = createClient();
-    const { error } = await supabase.auth.signOut();
-    console.log('User logged out', error);
+    await supabase.auth.signOut();
     router.push('/auth/login');
   };
 

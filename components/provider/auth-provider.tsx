@@ -59,7 +59,6 @@ export function AuthProvider({
   );
 
   useEffect(() => {
-    // Initialize with SSR data
     setProfile(initialProfile ?? null);
     setClaims(initialClaims ?? null);
     setUser(initialUser ?? null);
@@ -68,33 +67,40 @@ export function AuthProvider({
     setIsLoading(false);
 
     const updateClaimsAndUser = async () => {
-      const { data } = await getClaims(client);
-      const { data: user } = await getUser(client);
-      setClaims(data?.claims || null);
+      const [claimsResult, userResult] = await Promise.allSettled([
+        getClaims(client),
+        getUser(client),
+      ]);
 
-      if (user) {
-        setUser(user.user);
-      } else {
-        setUser(null);
-      }
+      const claims =
+        claimsResult.status === 'fulfilled'
+          ? claimsResult.value.data?.claims || null
+          : null;
+      setClaims(claims);
 
-      if (data?.claims.sub) {
-        const profile = await getProfile(client, data?.claims.sub);
-        setProfile(profile.data);
-        setIsAuthenticated(true);
+      const user =
+        userResult.status === 'fulfilled'
+          ? userResult.value.data?.user || null
+          : null;
+      setUser(user);
 
-        console.log('AuthProvider - User is authenticated:', {
-          profile: profile.data,
-          claims: data?.claims,
-        });
+      if (claims?.sub) {
+        try {
+          const profile = await getProfile(client, claims.sub);
+          setProfile(profile.data);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('AuthProvider - Failed to load profile:', error);
+          setProfile(null);
+          setIsAuthenticated(!!claims.sub);
+        }
       } else {
         setProfile(null);
         setIsAuthenticated(false);
-        console.log('AuthProvider - No valid user session found.');
+        console.warn('AuthProvider - No valid user session found.');
       }
     };
 
-    // Listen for auth changes on the client
     const {
       data: { subscription },
     } = client.auth.onAuthStateChange((event, session) => {
