@@ -105,7 +105,7 @@ function DesktopNavigation({ items }: { items: NavLink[] }) {
               asChild
               variant="ghost"
               className={cn(
-                'text-sm font-medium',
+                'text-body-md font-medium',
                 item.highlight && 'text-primary'
               )}
             >
@@ -121,7 +121,7 @@ function DesktopNavigation({ items }: { items: NavLink[] }) {
               <Button
                 variant="ghost"
                 className={cn(
-                  'flex items-center gap-1 text-sm font-medium',
+                  'flex items-center gap-1 text-body-md font-medium',
                   item.highlight && 'text-primary'
                 )}
               >
@@ -132,7 +132,11 @@ function DesktopNavigation({ items }: { items: NavLink[] }) {
 
             <DropdownMenuContent align="start" className="min-w-[220px]">
               {item.children!.map((child, index) => (
-                <DropdownMenuItem key={child.label} asChild>
+                <DropdownMenuItem
+                  key={child.label}
+                  asChild
+                  className="text-body-md"
+                >
                   <Link href={child.href}>{child.label}</Link>
                 </DropdownMenuItem>
               ))}
@@ -161,7 +165,7 @@ function UserMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="gap-3">
-          <span className="hidden md:block text-sm font-medium">
+          <span className="hidden md:block text-body-md font-medium">
             Hi {name}!
           </span>
         </Button>
@@ -169,19 +173,19 @@ function UserMenu({
 
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel>
-          <div className="text-sm font-medium">{name}</div>
+          <div className="text-body-md font-medium">{name}</div>
           {user.email && (
-            <div className="text-xs text-muted-foreground">{user.email}</div>
+            <div className="text-meta text-muted-foreground">{user.email}</div>
           )}
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem className="text-body-md" asChild>
           <Link href="#">Profil</Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem className="text-body-md" asChild>
           <Link href="#">Rangliste</Link>
         </DropdownMenuItem>
 
@@ -189,7 +193,8 @@ function UserMenu({
 
         <DropdownMenuItem
           onClick={onLogout}
-          className="text-destructive focus:text-destructive"
+          className="text-destructive focus:text-destructive text-body-md font-bold"
+          variant="destructive"
         >
           Abmelden
         </DropdownMenuItem>
@@ -237,7 +242,7 @@ export default function NavBar() {
   };
 
   return (
-    <header className="fixed w-full top-0 z-50 border-b border-border bg-background/90 backdrop-blur h-20">
+    <header className="fixed w-lvw top-0 z-50 border-b border-border bg-background/90 backdrop-blur h-20">
       <div className="mx-auto h-full flex max-w-7xl items-center justify-between px-4 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
@@ -265,10 +270,15 @@ export default function NavBar() {
             </div>
           ) : (
             <div className="hidden lg:flex items-center gap-2">
-              <Button variant="ghost" asChild>
+              <Button
+                variant="ghost"
+                className="text-body-md"
+                size={'lg'}
+                asChild
+              >
                 <Link href="/auth/login">Login</Link>
               </Button>
-              <Button asChild>
+              <Button asChild size={'lg'}>
                 <Link href="/auth/sign-up">Detektiv*in werden</Link>
               </Button>
             </div>
@@ -288,8 +298,8 @@ export default function NavBar() {
               </SheetTrigger>
 
               <SheetContent side="right">
-                <SheetHeader>
-                  <SheetTitle>Menü</SheetTitle>
+                <SheetHeader className="border-b border-border h-20 flex justify-center">
+                  <SheetTitle className="text-heading-md">Menü</SheetTitle>
                 </SheetHeader>
 
                 <div className="grid flex-1 auto-rows-min gap-3 px-4">
@@ -299,7 +309,7 @@ export default function NavBar() {
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
                         className={cn(
-                          'block text-base font-medium',
+                          'block text-body-md font-medium',
                           item.highlight && 'text-primary'
                         )}
                       >
@@ -313,7 +323,7 @@ export default function NavBar() {
                               key={child.label}
                               href={child.href}
                               onClick={() => setMobileOpen(false)}
-                              className="block text-sm text-muted-foreground hover:text-foreground"
+                              className="block text-body-md text-muted-foreground hover:text-foreground"
                             >
                               {child.label}
                             </Link>
