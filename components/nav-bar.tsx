@@ -31,14 +31,10 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Tables } from '@/lib/types/database.types';
+import { User } from '@supabase/supabase-js';
 import { useAuth } from './provider/auth-provider';
 
 /* ------------------------------------------------------------------ */
-
-export type NavUser = {
-  name?: string | null;
-  email?: string | null;
-};
 
 type NavLink = {
   label: string;
@@ -46,10 +42,6 @@ type NavLink = {
   children?: NavLink[];
   highlight?: boolean;
 };
-
-type Profile = Tables<'profiles'>;
-
-/* ------------------------------------------------------------------ */
 
 const guestNavigation: NavLink[] = [
   {
@@ -94,12 +86,8 @@ const authenticatedNavigation: NavLink[] = [
 
 /* ------------------------------------------------------------------ */
 
-function getDisplayName(user: NavUser | null) {
-  return user?.name || user?.email || 'Account';
-}
-
-function getInitial(name: string) {
-  return (name?.[0] || 'A').toUpperCase();
+function getDisplayName(profile: Tables<'profiles'> | null, user: User | null) {
+  return profile?.username || user?.email || 'Account';
 }
 
 /* ------------------------------------------------------------------ */
@@ -158,8 +146,16 @@ function DesktopNavigation({ items }: { items: NavLink[] }) {
 
 /* ------------------------------------------------------------------ */
 
-function UserMenu({ user, onLogout }: { user: NavUser; onLogout: () => void }) {
-  const name = getDisplayName(user);
+function UserMenu({
+  user,
+  profile,
+  onLogout,
+}: {
+  user: User;
+  profile: Tables<'profiles'> | null;
+  onLogout: () => void;
+}) {
+  const name = getDisplayName(profile, user);
 
   return (
     <DropdownMenu>
@@ -208,7 +204,7 @@ export default function NavBar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
 
   const navigation = isAuthenticated
     ? authenticatedNavigation
@@ -245,7 +241,7 @@ export default function NavBar() {
           {/* Desktop auth */}
           {isAuthenticated && user ? (
             <div className="hidden lg:block">
-              <UserMenu user={user} onLogout={handleLogout} />
+              <UserMenu user={user} profile={profile} onLogout={handleLogout} />
             </div>
           ) : (
             <div className="hidden lg:flex items-center gap-2">
