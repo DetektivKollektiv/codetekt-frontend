@@ -221,8 +221,8 @@ export default function NavBar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+    <header className="fixed w-full top-0 z-50 border-b border-border bg-background/90 backdrop-blur h-20">
+      <div className="mx-auto h-full flex max-w-7xl items-center justify-between px-4 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
@@ -262,8 +262,8 @@ export default function NavBar() {
           <div className="lg:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="lg">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-12 w-12" />
                 </Button>
               </SheetTrigger>
 

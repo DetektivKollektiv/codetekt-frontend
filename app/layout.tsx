@@ -25,7 +25,9 @@ export default async function RootLayout({
       <Suspense fallback={<div>Codetekt Lädt</div>}>
         <html lang="en" suppressHydrationWarning>
           <body className={`antialiased`}>
-            <AuthProviderServer>{children}</AuthProviderServer>
+            <AuthProviderServer>
+              <main className="page-mt">{children}</main>
+            </AuthProviderServer>
           </body>
         </html>
       </Suspense>

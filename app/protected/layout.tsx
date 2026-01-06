@@ -3,7 +3,5 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <main className="min-h-screen flex flex-col items-center">{children}</main>
-  );
+  return <main className="page-min-h page-max-w">{children}</main>;
 }
