@@ -1,3 +1,4 @@
+import Footer from '@/components/footer';
 import AuthProviderServer from '@/components/provider/auth-provider-server';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
 import type { Metadata } from 'next';
@@ -27,6 +28,7 @@ export default async function RootLayout({
           <body className={`antialiased`}>
             <AuthProviderServer>
               <main className="page-mt">{children}</main>
+              <Footer />
             </AuthProviderServer>
           </body>
         </html>

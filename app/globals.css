@@ -26,8 +26,8 @@
     --muted-foreground: 257 12% 47%; /* #726A86 (Darkblue-Tint) */
 
     /* Hover/Selection */
-    --accent: 253 90% 96%; /* #EFEBFE */
-    --accent-foreground: 257 77% 12%; /* #140735 */
+    --accent: 257 77% 12%; /* #140735 */
+    --accent-foreground: 0 0% 100%; /* #FFFFFF */
 
     --destructive: 4 100% 70%; /* #FF7268 */
     --destructive-foreground: 0 0% 100%; /* #FFFFFF */
@@ -249,9 +249,9 @@
     @apply mt-20;
   }
   .page-min-h {
-    min-height: calc(100vh - 5rem);
+    min-height: calc(100vh - 25rem);
   }
   .page-max-w {
-    @apply max-w-7xl mx-auto;
+    @apply max-w-7xl mx-auto p-4 lg:p-6;
   }
 }
