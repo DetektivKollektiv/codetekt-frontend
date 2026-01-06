@@ -1,6 +1,7 @@
 'use client';
 import { getClaims } from '@/lib/queries/getClaims';
 import { getProfile } from '@/lib/queries/getProfile';
+import { getUser } from '@/lib/queries/getUser';
 import { createClient } from '@/lib/supabase/client';
 import { Tables } from '@/lib/types/database.types';
 import { JwtPayload, User } from '@supabase/supabase-js';
@@ -66,10 +67,37 @@ export function AuthProvider({
 
     setIsLoading(false);
 
+    const updateClaimsAndUser = async () => {
+      const { data } = await getClaims(client);
+      const { data: user } = await getUser(client);
+      setClaims(data?.claims || null);
+
+      if (user) {
+        setUser(user.user);
+      } else {
+        setUser(null);
+      }
+
+      if (data?.claims.sub) {
+        const profile = await getProfile(client, data?.claims.sub);
+        setProfile(profile.data);
+        setIsAuthenticated(true);
+
+        console.log('AuthProvider - User is authenticated:', {
+          profile: profile.data,
+          claims: data?.claims,
+        });
+      } else {
+        setProfile(null);
+        setIsAuthenticated(false);
+        console.log('AuthProvider - No valid user session found.');
+      }
+    };
+
     // Listen for auth changes on the client
     const {
       data: { subscription },
-    } = client.auth.onAuthStateChange(async (event, session) => {
+    } = client.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
         setProfile(null);
         setClaims(null);
@@ -78,17 +106,7 @@ export function AuthProvider({
         return;
       }
 
-      const { data } = await getClaims(client);
-      setClaims(data?.claims || null);
-
-      if (data?.claims.sub) {
-        const profile = await getProfile(client, data?.claims.sub);
-        setProfile(profile.data);
-        setIsAuthenticated(true);
-      } else {
-        setProfile(null);
-        setIsAuthenticated(false);
-      }
+      updateClaimsAndUser();
     });
 
     return () => subscription.unsubscribe();

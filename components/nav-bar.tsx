@@ -208,10 +208,11 @@ export default function NavBar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const { profile, user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
-  console.log('NavBar profile:', profile);
-  console.log('NavBar user:', user);
+  React.useEffect(() => {
+    console.log('NavBar - Auth state changed:', { isAuthenticated, user });
+  }, [isAuthenticated, user]);
 
   const navigation = isAuthenticated
     ? authenticatedNavigation
@@ -219,8 +220,8 @@ export default function NavBar() {
 
   const handleLogout = async () => {
     const supabase = createClient();
-    await supabase.auth.signOut();
-    console.log('User logged out');
+    const { error } = await supabase.auth.signOut();
+    console.log('User logged out', error);
     router.push('/auth/login');
   };
 
