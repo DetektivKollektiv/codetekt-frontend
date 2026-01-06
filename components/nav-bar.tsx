@@ -242,7 +242,7 @@ export default function NavBar() {
   };
 
   return (
-    <header className="fixed w-lvw top-0 z-50 border-b border-border bg-background/90 backdrop-blur h-20">
+    <header className="fixed w-lvw top-0 z-50 bg-background/90 backdrop-blur h-20">
       <div className="mx-auto h-full flex max-w-7xl items-center justify-between px-4 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
@@ -298,10 +298,10 @@ export default function NavBar() {
               </SheetTrigger>
 
               <SheetContent side="right">
-                <SheetHeader className="border-b border-border h-20 flex justify-center">
+                <SheetHeader className="h-20 flex justify-center">
                   <SheetTitle className="text-heading-md">Menü</SheetTitle>
                 </SheetHeader>
-
+                <div className="w-full bg-gradient-brand h-px -mt-4"></div>
                 <div className="grid flex-1 auto-rows-min gap-3 px-4">
                   {navigation.map((item) => (
                     <div key={item.label} className="space-y-2">
@@ -358,6 +358,7 @@ export default function NavBar() {
           </div>
         </div>
       </div>
+      <div className="w-full bg-gradient-brand h-px"></div>
     </header>
   );
 }
