@@ -30,6 +30,9 @@ import {
 } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
+import { profileQuery } from '@/lib/queries/getProfile';
+import { Tables } from '@/lib/types/database.types';
+import { useQuery } from '@tanstack/react-query';
 
 /* ------------------------------------------------------------------ */
 
@@ -44,6 +47,8 @@ type NavLink = {
   children?: NavLink[];
   highlight?: boolean;
 };
+
+type Profile = Tables<'profiles'>;
 
 /* ------------------------------------------------------------------ */
 
@@ -203,6 +208,15 @@ function UserMenu({ user, onLogout }: { user: NavUser; onLogout: () => void }) {
 export default function NavBarClient({ user }: { user: NavUser | null }) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const client = createClient();
+
+  const { data: profile, isLoading } = useQuery(profileQuery(client));
+
+  // log with effect profile
+  React.useEffect(() => {
+    console.log('Loaded profile:', profile);
+  }, [profile]);
 
   const isAuthenticated = Boolean(user);
   const navigation = isAuthenticated

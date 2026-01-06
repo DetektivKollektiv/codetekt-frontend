@@ -1,5 +1,6 @@
 import NavBar from '@/components/nav-bar';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
+import SubscribeToAuth from '@/components/SubscribeToAuth';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
@@ -22,14 +23,16 @@ export default async function RootLayout({
 }>) {
   return (
     <ReactQueryClientProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`antialiased`}>
-          <Suspense fallback={<div>Loading navigation...</div>}>
-            <NavBar />
-          </Suspense>
-          {children}
-        </body>
-      </html>
+      <SubscribeToAuth>
+        <html lang="en" suppressHydrationWarning>
+          <body className={`antialiased`}>
+            <Suspense fallback={<div>Loading navigation...</div>}>
+              <NavBar />
+            </Suspense>
+            {children}
+          </body>
+        </html>
+      </SubscribeToAuth>
     </ReactQueryClientProvider>
   );
 }

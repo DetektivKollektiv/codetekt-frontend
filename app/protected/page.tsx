@@ -9,6 +9,8 @@ async function UserDetails() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
 
+  console.log('ProtectedPage - getClaims result:', { data, error });
+
   if (error || !data?.claims) {
     redirect('/auth/login');
   }
