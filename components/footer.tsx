@@ -11,8 +11,8 @@ interface FooterProps {}
 
 const Footer: FC<FooterProps> = ({}) => {
   return (
-    <footer className="w-full bg-accent">
-      <div className="page-max-w text-accent-foreground py-12">
+    <footer className="w-full bg-secondary">
+      <div className="page-max-w text-secondary-foreground py-12">
         {/* Desktop Version */}
         <div className="hidden lg:grid grid-cols-4 h-56">
           <div>
@@ -117,7 +117,7 @@ const Footer: FC<FooterProps> = ({}) => {
 
         {/* Mobile Version */}
         <Accordion type="single" collapsible className="lg:hidden w-full">
-          <AccordionItem className="border-accent-border" value="item-1">
+          <AccordionItem className="border-secondary-border" value="item-1">
             <AccordionTrigger className="font-bold font-mono text-2xl">
               Aktion
             </AccordionTrigger>
@@ -142,7 +142,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem className="border-accent-border" value="item-2">
+          <AccordionItem className="border-secondary-border" value="item-2">
             <AccordionTrigger className="font-bold font-mono text-2xl">
               codetekt
             </AccordionTrigger>
@@ -172,7 +172,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem className="border-accent-border" value="item-3">
+          <AccordionItem className="border-secondary-border" value="item-3">
             <AccordionTrigger className="font-bold font-mono text-2xl">
               Kontakt
             </AccordionTrigger>
@@ -210,7 +210,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem className="border-accent-border" value="item-4">
+          <AccordionItem className="border-secondary-border" value="item-4">
             <AccordionTrigger className="font-bold font-mono text-2xl">
               Rechtliches
             </AccordionTrigger>

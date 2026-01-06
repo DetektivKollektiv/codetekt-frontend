@@ -18,17 +18,17 @@
     --primary-foreground: 0 0% 100%; /* #FFFFFF */
 
     /* ruhige Flächen (Lavender-Tint) */
-    --secondary: 253 90% 96%; /* #EFEBFE */
-    --secondary-foreground: 257 77% 12%; /* #140735 */
+    --secondary: 257 77% 12%; /* #140735 */
+    --secondary-foreground: 253 90% 96%; /* #EFEBFE */
+    --secondary-border: 258 24% 60%; /* #9082B2 */
 
     /* Meta */
     --muted: 253 100% 98%; /* #F7F5FF (sehr helles Lila) */
     --muted-foreground: 257 12% 47%; /* #726A86 (Darkblue-Tint) */
 
     /* Hover/Selection */
-    --accent: 257 77% 12%; /* #140735 */
-    --accent-foreground: 0 0% 100%; /* #FFFFFF */
-    --accent-border: 258 24% 60%; /* #9082B2 */
+    --accent: 253 90% 96%; /* #EFEBFE */
+    --accent-foreground: 257 77% 12%; /* #140735 */
 
     --destructive: 4 100% 70%; /* #FF7268 */
     --destructive-foreground: 0 0% 100%; /* #FFFFFF */
