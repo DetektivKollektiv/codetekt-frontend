@@ -14,6 +14,47 @@ export default {
         sans: ['"effra"', 'sans-serif'],
         mono: ['"pt-mono"', 'monospace'],
       },
+      fontSize: {
+        /* Display */
+        'display-lg': [
+          'clamp(3rem, 6vw, 4.5rem)',
+          { lineHeight: '1.05', fontWeight: '700' },
+        ],
+
+        /* Headings */
+        'heading-xl': [
+          '2rem', // 32px
+          { lineHeight: '1.2', fontWeight: '600' },
+        ],
+        'heading-lg': [
+          '1.5rem', // 24px
+          { lineHeight: '1.25', fontWeight: '600' },
+        ],
+        'heading-md': [
+          '1.25rem', // 20px
+          { lineHeight: '1.3', fontWeight: '600' },
+        ],
+        'heading-sm': [
+          '1.125rem', // 18px
+          { lineHeight: '1.35', fontWeight: '600' },
+        ],
+
+        /* Body */
+        'body-md': [
+          '1rem', // 16px
+          { lineHeight: '1.6', fontWeight: '400' },
+        ],
+        'body-sm': [
+          '0.875rem', // 14px
+          { lineHeight: '1.5', fontWeight: '400' },
+        ],
+
+        /* Meta */
+        meta: [
+          '0.75rem', // 12px
+          { lineHeight: '1.4', fontWeight: '500' },
+        ],
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
