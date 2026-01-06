@@ -28,6 +28,7 @@
     /* Hover/Selection */
     --accent: 257 77% 12%; /* #140735 */
     --accent-foreground: 0 0% 100%; /* #FFFFFF */
+    --accent-border: 258 24% 60%; /* #9082B2 */
 
     --destructive: 4 100% 70%; /* #FF7268 */
     --destructive-foreground: 0 0% 100%; /* #FFFFFF */
@@ -249,7 +250,7 @@
     @apply mt-20;
   }
   .page-min-h {
-    min-height: calc(100vh - 25rem);
+    min-height: calc(100vh - 5rem);
   }
   .page-max-w {
     @apply max-w-7xl mx-auto p-4 lg:p-6;
