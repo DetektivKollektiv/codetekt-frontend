@@ -1,6 +1,5 @@
-import NavBar from '@/components/nav-bar';
+import AuthProviderServer from '@/components/provider/auth-provider-server';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
-import SubscribeToAuth from '@/components/SubscribeToAuth';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
@@ -23,16 +22,13 @@ export default async function RootLayout({
 }>) {
   return (
     <ReactQueryClientProvider>
-      <SubscribeToAuth>
+      <Suspense fallback={<div>Loading navigation...</div>}>
         <html lang="en" suppressHydrationWarning>
           <body className={`antialiased`}>
-            <Suspense fallback={<div>Loading navigation...</div>}>
-              <NavBar />
-            </Suspense>
-            {children}
+            <AuthProviderServer>{children}</AuthProviderServer>
           </body>
         </html>
-      </SubscribeToAuth>
+      </Suspense>
     </ReactQueryClientProvider>
   );
 }
