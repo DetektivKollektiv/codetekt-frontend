@@ -11,7 +11,7 @@ interface FooterProps {}
 
 const Footer: FC<FooterProps> = ({}) => {
   return (
-    <footer className="w-full bg-secondary">
+    <footer className="w-full bg-secondary border-t border-border">
       <div className="page-max-w text-secondary-foreground py-12">
         {/* Desktop Version */}
         <div className="hidden lg:grid grid-cols-4 h-56">

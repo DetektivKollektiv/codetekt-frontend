@@ -28,7 +28,7 @@ export default async function RootLayout({
           <body className={`antialiased`}>
             <AuthProviderServer>
               <main className="page-mt page-min-h flex flex-col">
-                <div className="flex-1">{children}</div>
+                <div className="flex-1 flex flex-col">{children}</div>
                 <Footer />
               </main>
             </AuthProviderServer>

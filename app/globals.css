@@ -4,42 +4,130 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .bg-gradient-brand-overlay {
+    background-image: var(--gradient-darkblue-overlay-50),
+      var(--gradient-purple-coral-50);
+  }
+
+  .bg-gradient-brand {
+    background-image: var(--gradient-purple-coral);
+  }
+
+  .bg-gradient-darkblue {
+    background-image: var(--gradient-darkblue-vertical);
+  }
+}
+
 @layer base {
   :root {
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 257 77% 12%; /* #140735 */
+    /* ======================================================
+     Neutral / Gray scale (cool, blueish)
+     ====================================================== */
 
-    --card: 0 0% 100%; /* #FFFFFF */
-    --card-foreground: 257 77% 12%; /* #140735 */
-    --popover: 0 0% 100%; /* #FFFFFF */
-    --popover-foreground: 257 77% 12%; /* #140735 */
+    --neutral-0: 0 0% 100%; /* #FFFFFF */
+    --neutral-50: 240 20% 98%; /* #F7F8FB */
+    --neutral-100: 240 20% 96%; /* #EFF0F6 */
+    --neutral-200: 240 16% 92%; /* #E2E4EE */
+    --neutral-300: 240 14% 86%; /* #D0D3E2 */
+    --neutral-400: 240 10% 70%; /* #AEB2C4 */
+    --neutral-500: 240 8% 55%; /* #7F8499 */
+    --neutral-600: 240 10% 40%; /* #5A5F73 */
+    --neutral-700: 240 14% 26%; /* #2F3347 */
+    --neutral-800: 257 77% 12%; /* #140735 (brand darkblue) */
 
-    --primary: 252 95% 60%; /* #5F38FA */
-    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    /* ======================================================
+     Brand colors (HSL)
+     ====================================================== */
 
-    /* ruhige Flächen (Lavender-Tint) */
-    --secondary: 257 77% 12%; /* #140735 */
-    --secondary-foreground: 253 90% 96%; /* #EFEBFE */
-    --secondary-border: 258 24% 60%; /* #9082B2 */
+    --brand-darkblue: 257 77% 12%; /* #140735 */
 
-    /* Meta */
-    --muted: 253 100% 98%; /* #F7F5FF (sehr helles Lila) */
-    --muted-foreground: 257 12% 47%; /* #726A86 (Darkblue-Tint) */
+    --brand-purple: 252 95% 60%; /* #5F38FA */
+    --brand-purple-light: 252 95% 64%; /* #6E4BFA */
+    --brand-purple-dark: 252 64% 43%; /* #4428B2 */
 
-    /* Hover/Selection */
-    --accent: 253 90% 96%; /* #EFEBFE */
-    --accent-foreground: 257 77% 12%; /* #140735 */
+    --brand-yellow: 48 100% 49%; /* #FAC800 */
+    --brand-yellow-light: 48 95% 59%; /* #FAD232 */
+    --brand-yellow-dark: 43 73% 52%; /* #DE9B28 */
 
-    --destructive: 4 100% 70%; /* #FF7268 */
-    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --brand-coral: 4 100% 70%; /* #FF7268 */
+    --brand-coral-light: 4 100% 76%; /* #FF8880 */
+    --brand-coral-dark: 4 52% 56%; /* #CC5B53 */
 
-    /* Markige Borders */
-    --border: 253 90% 96%; /* #EFEBFE */
-    --input: 253 90% 96%; /* #EFEBFE */
-    --ring: 252 95% 60%; /* #5F38FA */
+    --brand-gray: 0 0% 80%; /* #CCCCCC */
 
+    /* ======================================================
+     shadcn Semantic Intents
+     ====================================================== */
+
+    /* Base */
+    --background: var(--neutral-0); /* #FFFFFF */
+    --foreground: var(--neutral-800); /* #140735 */
+
+    /* Surfaces */
+    --card: var(--neutral-0); /* #FFFFFF */
+    --card-foreground: var(--neutral-800); /* #140735 */
+
+    --popover: var(--neutral-0); /* #FFFFFF */
+    --popover-foreground: var(--neutral-800); /* #140735 */
+
+    /* Primary action */
+    --primary: var(--brand-purple); /* #5F38FA */
+    --primary-foreground: var(--neutral-0); /* #FFFFFF */
+
+    /* Secondary */
+    --secondary: var(--neutral-800); /* #140735 */
+    --secondary-foreground: var(--neutral-100); /* #EFF0F6 */
+
+    /* Muted / Meta */
+    --muted: var(--neutral-100); /* #EFF0F6 */
+    --muted-foreground: var(--neutral-500); /* #7F8499 */
+
+    /* Accent (hover / selection) */
+    --accent: var(--neutral-200); /* #E2E4EE */
+    --accent-foreground: var(--neutral-800); /* #140735 */
+
+    /* Destructive */
+    --destructive: var(--brand-coral); /* #FF7268 */
+    --destructive-foreground: var(--neutral-0); /* #FFFFFF */
+
+    /* Structure / Focus */
+    --border: var(--neutral-300); /* #D0D3E2 */
+    --input: var(--neutral-300); /* #D0D3E2 */
+    --ring: var(--brand-purple); /* #5F38FA */
+
+    /* Radius */
     --radius: 0.5rem;
+
+    /* Purple → Coral (Brand gradient) */
+    --gradient-purple-coral: linear-gradient(
+      90deg,
+      hsl(var(--brand-purple)),
+      hsl(var(--brand-coral))
+    );
+
+    /* Purple → Coral (50% transparent, für Overlays) */
+    --gradient-purple-coral-50: linear-gradient(
+      90deg,
+      hsl(var(--brand-purple) / 0.5),
+      hsl(var(--brand-coral) / 0.5)
+    );
+
+    /* Darkblue overlay (50% opacity, gleichmäßiger Film) */
+    --gradient-darkblue-overlay-50: linear-gradient(
+      0deg,
+      hsl(var(--brand-darkblue) / 0.5),
+      hsl(var(--brand-darkblue) / 0.5)
+    );
+
+    /* Darkblue → Darkblue-light (Hero / Section BG) */
+    --gradient-darkblue-vertical: linear-gradient(
+      180deg,
+      hsl(var(--brand-darkblue)),
+      hsl(var(--brand-purple))
+    );
   }
+
   /* .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
