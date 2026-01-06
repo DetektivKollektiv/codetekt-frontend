@@ -3,7 +3,7 @@
 import { ChevronDown, Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { createClient } from '@/lib/supabase/client';
@@ -203,8 +203,27 @@ function UserMenu({
 export default function NavBar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const pathname = usePathname();
 
   const { user, profile, isAuthenticated } = useAuth();
+
+  React.useEffect(() => {
+    console.log(`Route changed to: ${pathname}`);
+    setMobileOpen(false);
+  }, [pathname]);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const navigation = isAuthenticated
     ? authenticatedNavigation
@@ -213,6 +232,7 @@ export default function NavBar() {
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
+    setMobileOpen(false);
     router.push('/auth/login');
   };
 
@@ -258,7 +278,11 @@ export default function NavBar() {
           <div className="lg:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon-lg">
+                <Button
+                  variant="ghost"
+                  size="icon-lg"
+                  onClick={() => setMobileOpen(true)}
+                >
                   <Menu className="size-6" />
                 </Button>
               </SheetTrigger>
