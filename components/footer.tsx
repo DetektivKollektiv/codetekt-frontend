@@ -16,7 +16,7 @@ const Footer: FC<FooterProps> = ({}) => {
         {/* Desktop Version */}
         <div className="hidden lg:grid grid-cols-4 h-56">
           <div>
-            <h3 className="font-bold font-mono text-3xl mb-3">Aktion</h3>
+            <h3 className="font-bold text-2xl mb-3">Aktion</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="#" className="hover:underline">
@@ -36,7 +36,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold font-mono text-3xl mb-3">codetekt</h3>
+            <h3 className="font-bold text-2xl mb-3">codetekt</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="#" className="hover:underline">
@@ -61,7 +61,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold font-mono text-3xl mb-3">Kontakt</h3>
+            <h3 className="font-bold text-2xl mb-3">Kontakt</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -94,7 +94,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold font-mono text-3xl mb-3">Rechtliches</h3>
+            <h3 className="font-bold text-2xl mb-3">Rechtliches</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="#" className="hover:underline">

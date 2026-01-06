@@ -78,6 +78,7 @@
     /* Secondary */
     --secondary: var(--neutral-800); /* #140735 */
     --secondary-foreground: var(--neutral-100); /* #EFF0F6 */
+    --secondary-border: var(--neutral-300); /* #D0D3E2 */
 
     /* Muted / Meta */
     --muted: var(--neutral-100); /* #EFF0F6 */
