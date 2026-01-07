@@ -126,6 +126,49 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        // Brand colors
+        brand: {
+          darkblue: 'hsl(var(--brand-darkblue))',
+          purple: {
+            DEFAULT: 'hsl(var(--brand-purple))',
+            light: 'hsl(var(--brand-purple-light))',
+            dark: 'hsl(var(--brand-purple-dark))',
+          },
+          yellow: {
+            DEFAULT: 'hsl(var(--brand-yellow))',
+            light: 'hsl(var(--brand-yellow-light))',
+            dark: 'hsl(var(--brand-yellow-dark))',
+          },
+          orange: {
+            DEFAULT: 'hsl(var(--brand-orange))',
+            light: 'hsl(var(--brand-orange-light))',
+            dark: 'hsl(var(--brand-orange-dark))',
+          },
+          green: {
+            DEFAULT: 'hsl(var(--brand-green))',
+            light: 'hsl(var(--brand-green-light))',
+            dark: 'hsl(var(--brand-green-dark))',
+          },
+          coral: {
+            DEFAULT: 'hsl(var(--brand-coral))',
+            light: 'hsl(var(--brand-coral-light))',
+            dark: 'hsl(var(--brand-coral-dark))',
+          },
+          gray: 'hsl(var(--brand-gray))',
+        },
+        // Neutral/Gray scale
+        neutral: {
+          0: 'hsl(var(--neutral-0))',
+          50: 'hsl(var(--neutral-50))',
+          100: 'hsl(var(--neutral-100))',
+          200: 'hsl(var(--neutral-200))',
+          300: 'hsl(var(--neutral-300))',
+          400: 'hsl(var(--neutral-400))',
+          500: 'hsl(var(--neutral-500))',
+          600: 'hsl(var(--neutral-600))',
+          700: 'hsl(var(--neutral-700))',
+          800: 'hsl(var(--neutral-800))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
