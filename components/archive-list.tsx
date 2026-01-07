@@ -6,6 +6,7 @@ import {
   getSavedSortPreference,
   SortField,
 } from '@/components/archive-list-sort-select';
+import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import {
   AggregatedReviews,
@@ -13,8 +14,10 @@ import {
 } from '@/lib/queries/getAggregatedReviews';
 import { createClient } from '@/lib/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+import Fuse from 'fuse.js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
+import { Separator } from './ui/separator';
 
 type ArchiveListProps = {
   initialData?: AggregatedReviews;
@@ -35,8 +38,10 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const currentSort = (searchParams.get('sort') as SortField) || 'newest_first';
+  const searchQuery = searchParams.get('search') || '';
 
   const [hasCheckedLocalStorage, setHasCheckedLocalStorage] = useState(false);
+  const [searchInput, setSearchInput] = useState(searchQuery);
 
   const {
     data: aggregatedReviews,
@@ -54,9 +59,15 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
     const savedSort = getSavedSortPreference();
     if (savedSort && savedSort !== currentSort && !searchParams.has('sort')) {
-      updateURL(currentPage, savedSort);
+      updateURL(currentPage, savedSort, searchQuery);
     }
-  }, [hasCheckedLocalStorage, currentSort, currentPage, searchParams]);
+  }, [
+    hasCheckedLocalStorage,
+    currentSort,
+    currentPage,
+    searchParams,
+    searchQuery,
+  ]);
 
   const sortByNewestFirst = (items: AggregatedReviews) => {
     return [...items].sort(
@@ -74,15 +85,37 @@ export const ArchiveList: FC<ArchiveListProps> = ({
     );
   };
 
-  const sortedItems = useMemo(() => {
-    if (!aggregatedReviews) return [];
+  // Configure Fuse.js for searching
+  const fuse = useMemo(() => {
+    if (!aggregatedReviews) return null;
 
+    return new Fuse(aggregatedReviews, {
+      keys: [
+        { name: 'cases.open_graph_data.og_title', weight: 3 },
+        { name: 'data.metadata.content_type', weight: 2 },
+        { name: 'data.metadata.keyword_type', weight: 2 },
+        { name: 'cases.open_graph_data.og_description', weight: 1 },
+      ],
+      threshold: 0.4,
+      ignoreLocation: true,
+    });
+  }, [aggregatedReviews]);
+
+  const searchedItems = useMemo(() => {
+    if (!aggregatedReviews) return [];
+    if (!searchQuery || !fuse) return aggregatedReviews;
+
+    const results = fuse.search(searchQuery);
+    return results.map((result) => result.item);
+  }, [aggregatedReviews, searchQuery, fuse]);
+
+  const sortedItems = useMemo(() => {
     if (currentSort === 'newest_first') {
-      return sortByNewestFirst(aggregatedReviews);
+      return sortByNewestFirst(searchedItems);
     } else {
-      return sortByLastUpdated(aggregatedReviews);
+      return sortByLastUpdated(searchedItems);
     }
-  }, [aggregatedReviews, currentSort]);
+  }, [searchedItems, currentSort]);
 
   const totalPages = Math.ceil(sortedItems.length / pageSize);
   const validPage = Math.max(1, Math.min(currentPage, totalPages || 1));
@@ -93,10 +126,11 @@ export const ArchiveList: FC<ArchiveListProps> = ({
     return sortedItems.slice(startIndex, endIndex);
   }, [sortedItems, validPage, pageSize]);
 
-  const updateURL = (page: number, sort: SortField) => {
+  const updateURL = (page: number, sort: SortField, search: string) => {
     const params = new URLSearchParams();
     if (page !== 1) params.set('page', String(page));
     if (sort !== 'newest_first') params.set('sort', sort);
+    if (search) params.set('search', search);
 
     const queryString = params.toString();
     const newURL = queryString ? `/archive?${queryString}` : '/archive';
@@ -105,12 +139,17 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   };
 
   const handlePageChange = (newPage: number) => {
-    updateURL(newPage, currentSort);
+    updateURL(newPage, currentSort, searchQuery);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSortChange = (newSort: SortField) => {
-    updateURL(1, newSort);
+    updateURL(1, newSort, searchQuery);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    updateURL(1, currentSort, value);
   };
 
   if (isLoading) {
@@ -151,18 +190,27 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   return (
     <div className={`page-max-w w-full ${className || ''}`}>
-      <div className="flex flex-row justify-between items-end  gap-4 mb-4">
-        <div className="text-sm text-muted-foreground">
-          {sortedItems.length} {sortedItems.length === 1 ? 'Fall' : 'Fälle'}{' '}
-          gefunden
-        </div>
-
-        <ArchiveListSortSelect
-          value={currentSort}
-          onValueChange={handleSortChange}
+      <div className="flex flex-col md:flex-row md:justify-start md:items-end gap-2 w-full mb-4">
+        <Input
+          type="text"
+          placeholder="Fälle durchsuchen..."
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="w-full md:max-w-80 order-last md:order-none"
         />
+        <div className="flex-1 flex justify-between items-end w-full">
+          <div className="text-sm text-muted-foreground whitespace-nowrap">
+            {sortedItems.length} {sortedItems.length === 1 ? 'Fall' : 'Fälle'}{' '}
+            gefunden
+          </div>
+          <ArchiveListSortSelect
+            value={currentSort}
+            onValueChange={handleSortChange}
+            className=" justify-self-end ml-auto"
+          />
+        </div>
       </div>
-
+      <Separator className="mb-4" />
       <div className="gap-4 flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-col">
         {paginatedItems.map((caseItem) => (
           <ArchiveItemCard key={caseItem.case_id} caseItem={caseItem} />
