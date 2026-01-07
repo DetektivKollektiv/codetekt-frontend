@@ -18,7 +18,7 @@ export default function Home() {
               </h1>
               <p className="text-body-md max-w-xl xl:max-w-3xl mx-auto lg:mx-0">
                 Bei codetekt kannst du digitale Informationen auf
-                Vertrauenswürdigkeit prüfen lassen.
+                Vertrauenswürdigkeit prüfen lassen.{' '}
                 <br className="hidden xl:block" />
                 Reiche Fälle ein oder werde selbst Detektiv*in und verbessere
                 deine Recherche-Fähigkeiten.

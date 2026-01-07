@@ -63,6 +63,14 @@
     --brand-yellow-light: 48 95% 59%; /* #FAD232 */
     --brand-yellow-dark: 43 73% 52%; /* #DE9B28 */
 
+    --brand-orange: 24 100% 50%; /* #FF8C00 */
+    --brand-orange-light: 24 100% 57%; /* #FFA733 */
+    --brand-orange-dark: 24 74% 43%; /* #CC7300 */
+
+    --brand-green: 162 72% 41%; /* #00C897 */
+    --brand-green-light: 162 72% 48%; /* #33D0 */
+    --brand-green-dark: 162 52% 34%; /* #009E6A */
+
     --brand-coral: 4 100% 70%; /* #FF7268 */
     --brand-coral-light: 4 100% 76%; /* #FF8880 */
     --brand-coral-dark: 4 52% 56%; /* #CC5B53 */
