@@ -113,10 +113,6 @@ export const Pagination: FC<PaginationProps> = ({
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
-
-      <span className="text-sm text-muted-foreground ml-2">
-        Seite {currentPage} von {totalPages}
-      </span>
     </nav>
   );
 };

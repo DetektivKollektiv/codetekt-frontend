@@ -32,8 +32,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   const searchParams = useSearchParams();
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  const currentSort =
-    (searchParams.get('sort') as SortField) || 'newest_first';
+  const currentSort = (searchParams.get('sort') as SortField) || 'newest_first';
 
   const [hasCheckedLocalStorage, setHasCheckedLocalStorage] = useState(false);
 
@@ -150,7 +149,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   return (
     <div className="page-max-w w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-end  gap-4 mb-4">
         <div className="text-sm text-muted-foreground">
           {sortedItems.length} {sortedItems.length === 1 ? 'Fall' : 'Fälle'}{' '}
           gefunden
@@ -161,17 +160,6 @@ export const ArchiveList: FC<ArchiveListProps> = ({
           onValueChange={handleSortChange}
         />
       </div>
-
-      {showPagination && (
-        <div className="mb-6 flex justify-center">
-          <Pagination
-            currentPage={validPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            showPageNumbers={showPageNumbers}
-          />
-        </div>
-      )}
 
       <div className="gap-4 flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-col">
         {paginatedItems.map((caseItem) => (
