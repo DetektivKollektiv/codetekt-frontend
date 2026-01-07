@@ -107,6 +107,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
               </Button>
             </div>
           </div>
+
           {/* Right: Evaluation */}
           <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-48 lg:h-auto">
             <div>

@@ -49,7 +49,7 @@ export function BadgeList({
   }, [contentType, keywordType]);
 
   return (
-    <>
+    <div className="overflow-hidden relative">
       {/* Hidden measurement container with ALL badges */}
       <div
         ref={measureRef}
@@ -85,6 +85,6 @@ export function BadgeList({
           </Badge>
         ))}
       </div>
-    </>
+    </div>
   );
 }
