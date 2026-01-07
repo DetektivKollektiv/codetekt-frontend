@@ -130,7 +130,7 @@ export default async function Home() {
       </div>
 
       <ArchiveList
-        className="mt-4 lg:mb-24 mb-12"
+        className="mt-8 lg:mb-24 mb-12"
         initialData={data ?? []}
         pageSize={5}
         showPageNumbers
