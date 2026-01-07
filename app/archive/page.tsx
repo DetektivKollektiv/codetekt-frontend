@@ -1,9 +1,9 @@
+import { ArchiveList } from '@/components/archive-list';
 import { aggregatedReviewsQuery } from '@/lib/queries/getAggregatedReviews';
 import { createClient } from '@/lib/supabase/server';
 import { getQueryClient } from '@/lib/utils/get-query-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Suspense } from 'react';
-import { ArchiveList } from './archive-list';
 
 async function ArchiveContent() {
   const queryClient = getQueryClient();
