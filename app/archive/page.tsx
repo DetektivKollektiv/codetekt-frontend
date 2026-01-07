@@ -10,5 +10,5 @@ export default async function ArchivePage() {
     throw error;
   }
 
-  return <ArchiveList initialData={data ?? []} />;
+  return <ArchiveList initialData={data ?? []} pageSize={10} showPageNumbers />;
 }
