@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { getTrustLevel } from '@/lib/utils/trust-level';
 import { getWarningTags } from '@/lib/utils/warning-tags';
 import { Share2 } from 'lucide-react';
@@ -10,6 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
 import { Badge } from './ui/badge';
+import { BadgeList } from './ui/badge-list';
 import { Button } from './ui/button';
 
 interface ReviewData {
@@ -56,23 +56,23 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow h-72 w-full">
-      <CardContent className="p-6 h-full">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full">
+      <CardContent className="p-4 lg:p-6 h-full">
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Left: Image */}
-          <div className="aspect-video h-full flex-shrink-0">
+          <div className="aspect-video lg:aspect-[4/3] h-full flex-shrink-0">
             {ogData?.og_image && !imageError ? (
               <Image
                 src={ogData.og_image}
                 alt={ogData.og_title || 'Case thumbnail'}
                 width={424}
                 height={238}
-                className="w-full h-full object-cover rounded-lg aspect-video"
+                className="w-full h-full object-cover rounded-lg aspect-video lg:aspect-[4/3]"
                 unoptimized={true}
                 onError={() => setImageError(true)}
               />
             ) : (
-              <div className="h-full w-auto aspect-video flex-shrink-0 bg-gradient-brand rounded-lg flex items-center justify-center">
+              <div className="h-full w-auto aspect-video lg:aspect-[4/3] flex-shrink-0 bg-gradient-brand rounded-lg flex items-center justify-center">
                 <span className="text-white text-sm font-semibold">
                   Kein Bild verfügbar
                 </span>
@@ -83,22 +83,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
           {/* Middle: Content */}
           <div className="flex-1 space-y-4 flex flex-col">
             {/* Badges */}
-            <div className="flex flex-wrap gap-2">
-              {contentType[0] && (
-                <Badge variant="default">
-                  <div className="text-body-sm">
-                    {capitalizeFirstLetter(contentType[0])}
-                  </div>
-                </Badge>
-              )}
-              {keywordType.slice(0, 4).map((keyword, idx) => (
-                <Badge key={idx} variant="outline">
-                  <div className="text-body-sm">
-                    {capitalizeFirstLetter(keyword)}
-                  </div>
-                </Badge>
-              ))}
-            </div>
+            <BadgeList contentType={contentType} keywordType={keywordType} />
 
             {/* Title & Description */}
             <div>
