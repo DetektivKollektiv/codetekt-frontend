@@ -68,7 +68,7 @@ const guestNavigation: NavLink[] = [
 ];
 
 const authenticatedNavigation: NavLink[] = [
-  { label: 'Fall bearbeiten', href: '#open-cases', highlight: true },
+  { label: 'Fall bearbeiten', href: '#open-cases' },
   { label: 'Fall einreichen', href: '#' },
   { label: 'Gelöste Fälle', href: '/archive' },
   {
@@ -299,17 +299,30 @@ export default function NavBar() {
 
               <SheetContent side="right">
                 <SheetHeader className="h-20 flex justify-center">
-                  <SheetTitle className="text-heading-md">Menü</SheetTitle>
+                  <SheetTitle className="text-heading-md">
+                    {isAuthenticated && user
+                      ? `Hi ${getDisplayName(profile, user)}!`
+                      : 'Menü'}
+                  </SheetTitle>
                 </SheetHeader>
                 <div className="w-full bg-gradient-brand h-px -mt-4"></div>
                 <div className="grid flex-1 auto-rows-min gap-3 px-4">
+                  {isAuthenticated && (
+                    <Link
+                      href="#"
+                      onClick={() => setMobileOpen(false)}
+                      className="block text-heading-sm font-medium"
+                    >
+                      Profil
+                    </Link>
+                  )}
                   {navigation.map((item) => (
                     <div key={item.label} className="space-y-2">
                       <Link
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
                         className={cn(
-                          'block text-body-md font-medium',
+                          'block text-heading-sm font-medium',
                           item.highlight && 'text-primary'
                         )}
                       >

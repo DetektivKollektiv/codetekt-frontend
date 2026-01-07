@@ -16,11 +16,22 @@ export default {
       },
       fontSize: {
         /* Display */
-        'display-lg': [
-          'clamp(3rem, 6vw, 4.5rem)',
-          { lineHeight: '1.05', fontWeight: '700' },
+        'display-hero': [
+          '4.5rem', // 72px
+          {
+            lineHeight: '1',
+            fontWeight: '900',
+            letterSpacing: '-0.09rem',
+          },
         ],
-
+        'display-eyebrow': [
+          '0.75rem', // 12px
+          {
+            lineHeight: '1.05',
+            fontWeight: '500',
+            letterSpacing: '0.13125rem',
+          },
+        ],
         /* Headings */
         'heading-xl': [
           '2rem', // 32px

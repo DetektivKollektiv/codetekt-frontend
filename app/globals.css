@@ -17,6 +17,10 @@
   .bg-gradient-darkblue {
     background-image: var(--gradient-darkblue-vertical);
   }
+
+  .bg-gradient-neutral-coral {
+    background-image: var(--gradient-neutral-coral);
+  }
 }
 
 @layer base {
@@ -126,6 +130,13 @@
       180deg,
       hsl(var(--brand-darkblue)),
       hsl(var(--brand-purple))
+    );
+
+    /* Purple → Coral (Brand gradient) */
+    --gradient-neutral-coral: linear-gradient(
+      0deg,
+      hsl(var(--neutral-0) / 0.2),
+      hsl(var(--brand-coral) / 0.2)
     );
   }
 
