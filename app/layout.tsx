@@ -24,7 +24,7 @@ export default async function RootLayout({
   return (
     <ReactQueryClientProvider>
       <Suspense fallback={<div>Codetekt Lädt</div>}>
-        <html lang="en" suppressHydrationWarning>
+        <html lang="de" suppressHydrationWarning>
           <body className={`antialiased`}>
             <AuthProviderServer>
               <main className="page-mt page-min-h flex flex-col">

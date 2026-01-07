@@ -243,7 +243,7 @@ export default function NavBar() {
 
   return (
     <header className="fixed w-lvw top-0 z-50 bg-background/90 backdrop-blur h-20">
-      <div className="mx-auto h-full flex max-w-7xl items-center justify-between px-4 py-4">
+      <div className="mx-auto h-full flex page-max-w items-center justify-between py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image

@@ -16,12 +16,30 @@ export default {
       },
       fontSize: {
         /* Display */
-        'display-hero': [
+        'display-lg': [
           '4.5rem', // 72px
           {
             lineHeight: '1',
             fontWeight: '900',
             letterSpacing: '-0.09rem',
+          },
+        ],
+
+        'display-md': [
+          '3rem', // 48px
+          {
+            lineHeight: '1.05',
+            fontWeight: '900',
+            letterSpacing: '-0.06rem',
+          },
+        ],
+
+        'display-sm': [
+          '2.25rem', // 36px
+          {
+            lineHeight: '1.1',
+            fontWeight: '900',
+            letterSpacing: '-0.03rem',
           },
         ],
         'display-eyebrow': [
