@@ -27,3 +27,7 @@ export const aggregatedReviewsQuery = (client: TypedSupabaseClient) => ({
     return data;
   },
 });
+
+export type AggregatedReviews = Awaited<
+  ReturnType<ReturnType<typeof aggregatedReviewsQuery>['queryFn']>
+>;

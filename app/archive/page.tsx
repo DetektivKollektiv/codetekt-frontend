@@ -1,28 +1,14 @@
 import { ArchiveList } from '@/components/archive-list';
-import { aggregatedReviewsQuery } from '@/lib/queries/getAggregatedReviews';
+import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { createClient } from '@/lib/supabase/server';
-import { getQueryClient } from '@/lib/utils/get-query-client';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { Suspense } from 'react';
 
-async function ArchiveContent() {
-  const queryClient = getQueryClient();
+export default async function ArchivePage() {
   const supabase = await createClient();
+  const { data, error } = await getAggregatedReviews(supabase);
 
-  // Prefetch the data on the server
-  await queryClient.prefetchQuery(aggregatedReviewsQuery(supabase));
+  if (error) {
+    throw error;
+  }
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ArchiveList />
-    </HydrationBoundary>
-  );
-}
-
-export default function ArchivePage() {
-  return (
-    <Suspense fallback={<div>Loading archive...</div>}>
-      <ArchiveContent />
-    </Suspense>
-  );
+  return <ArchiveList initialData={data ?? []} />;
 }

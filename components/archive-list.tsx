@@ -1,12 +1,19 @@
 'use client';
 
 import { ArchiveItemCard } from '@/components/archive-item-card';
-import { aggregatedReviewsQuery } from '@/lib/queries/getAggregatedReviews';
+import {
+  AggregatedReviews,
+  aggregatedReviewsQuery,
+} from '@/lib/queries/getAggregatedReviews';
 import { createClient } from '@/lib/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { FC } from 'react';
 
-export const ArchiveList: FC = () => {
+type ArchiveListProps = {
+  initialData?: AggregatedReviews;
+};
+
+export const ArchiveList: FC<ArchiveListProps> = ({ initialData }) => {
   const client = createClient();
 
   const {
@@ -14,7 +21,10 @@ export const ArchiveList: FC = () => {
     isLoading,
     isError,
     error,
-  } = useQuery(aggregatedReviewsQuery(client));
+  } = useQuery({
+    ...aggregatedReviewsQuery(client),
+    initialData,
+  });
 
   if (isLoading) {
     return (
