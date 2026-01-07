@@ -56,11 +56,11 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full">
-      <CardContent className="p-4 lg:p-6 h-full">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
+      <CardContent className="p-4 lg:p-6 w-full">
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Left: Image */}
-          <div className="aspect-video lg:aspect-[4/3] h-full flex-shrink-0">
+          <div className="aspect-video lg:aspect-[4/3] flex-shrink-0">
             {ogData?.og_image && !imageError ? (
               <Image
                 src={ogData.og_image}
@@ -72,7 +72,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
                 onError={() => setImageError(true)}
               />
             ) : (
-              <div className="h-full w-auto aspect-video lg:aspect-[4/3] flex-shrink-0 bg-gradient-brand rounded-lg flex items-center justify-center">
+              <div className=" aspect-video lg:aspect-[4/3] flex-shrink-0 bg-gradient-brand rounded-lg flex items-center justify-center">
                 <span className="text-white text-sm font-semibold">
                   Kein Bild verfügbar
                 </span>
@@ -108,7 +108,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
             </div>
           </div>
           {/* Right: Evaluation */}
-          <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-full">
+          <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-48 lg:h-auto">
             <div>
               <h4 className="text-sm font-semibold mb-2">Bewertung</h4>
               <Badge

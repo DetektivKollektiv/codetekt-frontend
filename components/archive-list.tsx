@@ -52,7 +52,7 @@ export const ArchiveList: FC = () => {
 
   return (
     <div className="page-max-w w-full">
-      <div className="space-y-6">
+      <div className="gap-4 flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-col">
         {aggregatedReviews.map((caseItem) => (
           <ArchiveItemCard key={caseItem.case_id} caseItem={caseItem} />
         ))}
