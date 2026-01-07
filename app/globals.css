@@ -370,6 +370,6 @@
     min-height: calc(100vh - 5rem);
   }
   .page-max-w {
-    @apply max-w-7xl mx-auto p-4 lg:p-6;
+    @apply max-w-7xl mx-auto px-4 lg:px-6;
   }
 }

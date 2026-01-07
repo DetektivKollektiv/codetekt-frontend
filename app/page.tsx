@@ -1,8 +1,18 @@
+import { ArchiveList } from '@/components/archive-list';
 import { Button } from '@/components/ui/button';
+import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data, error } = await getAggregatedReviews(supabase);
+
+  if (error) {
+    throw error;
+  }
+
   return (
     <main className="h-full flex-1">
       <div className="pb-12 bg-gradient-neutral-coral">
@@ -47,70 +57,84 @@ export default function Home() {
             className="ml-auto hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-2/5 xl:w-2/5 2xl:w-1/3"
           />
         </div>
-        <div className="w-full rounded-lg bg-background p-5 page-max-w">
-          <h3 className="text-display-eyebrow uppercase">
-            Unsere Partner*innen, Unterstützer*innen und Netzwerke
-          </h3>
-          <div className="flex mt-6 overflow-x-scroll justify-around space-x-6 no-scrollbar">
-            <Image
-              src="/images/logo_dpl.png"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
-            <Image
-              src="/images/logo_mabb.png"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
-            <Image
-              src="/images/logo_campact.png"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
-            <Image
-              src="/images/logo_berlin.png"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
-            <Image
-              src="/images/logo_anstossdemokratie.png"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
-            <Image
-              src="/images/logo_mitwirken.svg"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
-            <Image
-              src="/images/logo_dda.png"
-              alt="DPL Logos"
-              width={0}
-              height={0}
-              sizes="10vw"
-              className="saturate-0 h-12 w-auto"
-            />
+        <div className="page-max-w">
+          <div className="w-full rounded-lg bg-background p-5 page-max-w">
+            <h3 className="text-display-eyebrow uppercase">
+              Unsere Partner*innen, Unterstützer*innen und Netzwerke
+            </h3>
+            <div className="flex mt-6 overflow-x-scroll justify-around space-x-6 no-scrollbar ">
+              <Image
+                src="/images/logo_dpl.png"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+              <Image
+                src="/images/logo_mabb.png"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+              <Image
+                src="/images/logo_campact.png"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+              <Image
+                src="/images/logo_berlin.png"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+              <Image
+                src="/images/logo_anstossdemokratie.png"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+              <Image
+                src="/images/logo_mitwirken.svg"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+              <Image
+                src="/images/logo_dda.png"
+                alt="DPL Logos"
+                width={0}
+                height={0}
+                sizes="10vw"
+                className="saturate-0 h-12 w-auto"
+              />
+            </div>
           </div>
         </div>
       </div>
+      <div className="page-max-w mt-12 lg:mt-24">
+        <h1 className="text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
+          Gelöste Fälle
+        </h1>
+      </div>
+
+      <ArchiveList
+        className="mt-4 lg:mb-24 mb-12"
+        initialData={data ?? []}
+        pageSize={5}
+        showPageNumbers
+      />
     </main>
   );
 }

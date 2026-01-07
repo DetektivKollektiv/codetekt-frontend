@@ -20,12 +20,14 @@ type ArchiveListProps = {
   initialData?: AggregatedReviews;
   pageSize?: number;
   showPageNumbers?: boolean;
+  className?: React.ComponentProps<'div'>['className'];
 };
 
 export const ArchiveList: FC<ArchiveListProps> = ({
   initialData,
   pageSize = 10,
   showPageNumbers = true,
+  className,
 }) => {
   const client = createClient();
   const router = useRouter();
@@ -113,7 +115,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   if (isLoading) {
     return (
-      <div className="page-max-w w-full">
+      <div className={`page-max-w w-full ${className || ''}`}>
         <div className="text-center py-12">
           <p className="text-muted-foreground">Lade Archiv...</p>
         </div>
@@ -123,7 +125,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   if (isError) {
     return (
-      <div className="page-max-w w-full">
+      <div className={`page-max-w w-full ${className || ''}`}>
         <div className="text-center py-12">
           <p className="text-destructive">
             Fehler beim Laden: {error?.message}
@@ -135,7 +137,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   if (!aggregatedReviews || aggregatedReviews.length === 0) {
     return (
-      <div className="page-max-w w-full">
+      <div className={`page-max-w w-full ${className || ''}`}>
         <div className="text-center py-12">
           <p className="text-muted-foreground">
             Keine Fälle im Archiv gefunden.
@@ -148,8 +150,8 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   const showPagination = totalPages > 1;
 
   return (
-    <div className="page-max-w w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-end  gap-4 mb-4">
+    <div className={`page-max-w w-full ${className || ''}`}>
+      <div className="flex flex-row justify-between items-end  gap-4 mb-4">
         <div className="text-sm text-muted-foreground">
           {sortedItems.length} {sortedItems.length === 1 ? 'Fall' : 'Fälle'}{' '}
           gefunden
