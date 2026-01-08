@@ -1,4 +1,4 @@
-import { Tables } from '../types/database.types';
+import { Tables } from '../types/database.types-generated';
 import { TypedSupabaseClient } from '../types/TypedSupabaseClient';
 
 export async function getProfile(client: TypedSupabaseClient, userId: string) {

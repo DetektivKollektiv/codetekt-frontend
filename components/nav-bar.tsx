@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
-import { Tables } from '@/lib/types/database.types';
+import { Tables } from '@/lib/types/database.types-generated';
 import { User } from '@supabase/supabase-js';
 import { useAuth } from './provider/auth-provider';
 
@@ -211,7 +211,6 @@ export default function NavBar() {
   const pathname = usePathname();
 
   const { user, profile, isAuthenticated } = useAuth();
-  console.log('NavBar - isAuthenticated:', isAuthenticated, user, profile);
 
   React.useEffect(() => {
     console.log(`Route changed to: ${pathname}`);

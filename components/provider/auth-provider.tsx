@@ -3,7 +3,7 @@ import { getClaims } from '@/lib/queries/getClaims';
 import { getProfile } from '@/lib/queries/getProfile';
 import { getUser } from '@/lib/queries/getUser';
 import { createClient } from '@/lib/supabase/client';
-import { Tables } from '@/lib/types/database.types';
+import { Tables } from '@/lib/types/database.types-generated';
 import { JwtPayload, User } from '@supabase/supabase-js';
 import {
   createContext,
