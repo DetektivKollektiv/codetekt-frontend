@@ -93,7 +93,7 @@ export function CreateCaseForm({
     if (!validation.success) {
       // Map Zod errors to form fields
       const fieldErrors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.issues.forEach((err) => {
         const path = err.path.join('.');
         fieldErrors[path] = err.message;
       });
