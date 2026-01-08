@@ -15,7 +15,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import Fuse from 'fuse.js';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Separator } from './ui/separator';
 
@@ -24,6 +24,7 @@ type ArchiveListProps = {
   pageSize?: number;
   showPageNumbers?: boolean;
   className?: React.ComponentProps<'div'>['className'];
+  syncWithURL?: boolean;
 };
 
 export const ArchiveList: FC<ArchiveListProps> = ({
@@ -31,14 +32,26 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   pageSize = 10,
   showPageNumbers = true,
   className,
+  syncWithURL = true,
 }) => {
   const client = createClient();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  const currentSort = (searchParams.get('sort') as SortField) || 'newest_first';
-  const searchQuery = searchParams.get('search') || '';
+  // Internal state for when URL sync is disabled
+  const [internalPage, setInternalPage] = useState(1);
+  const [internalSort, setInternalSort] = useState<SortField>('newest_first');
+  const [internalSearch, setInternalSearch] = useState('');
+
+  // Get values from URL or internal state based on syncWithURL
+  const currentPage = syncWithURL
+    ? parseInt(searchParams.get('page') || '1', 10)
+    : internalPage;
+  const currentSort = syncWithURL
+    ? ((searchParams.get('sort') as SortField) || 'newest_first')
+    : internalSort;
+  const searchQuery = syncWithURL ? searchParams.get('search') || '' : internalSearch;
 
   const [hasCheckedLocalStorage, setHasCheckedLocalStorage] = useState(false);
   const [searchInput, setSearchInput] = useState(searchQuery);
@@ -54,7 +67,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   });
 
   useEffect(() => {
-    if (hasCheckedLocalStorage) return;
+    if (!syncWithURL || hasCheckedLocalStorage) return;
     setHasCheckedLocalStorage(true);
 
     const savedSort = getSavedSortPreference();
@@ -62,12 +75,18 @@ export const ArchiveList: FC<ArchiveListProps> = ({
       updateURL(currentPage, savedSort, searchQuery);
     }
   }, [
+    syncWithURL,
     hasCheckedLocalStorage,
     currentSort,
     currentPage,
     searchParams,
     searchQuery,
   ]);
+
+  // Sync searchInput with searchQuery when URL changes
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
 
   const sortByNewestFirst = (items: AggregatedReviews) => {
     return [...items].sort(
@@ -127,20 +146,31 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   }, [sortedItems, validPage, pageSize]);
 
   const updateURL = (page: number, sort: SortField, search: string) => {
+    if (!syncWithURL) {
+      // Update internal state when URL sync is disabled
+      setInternalPage(page);
+      setInternalSort(sort);
+      setInternalSearch(search);
+      return;
+    }
+
+    // Update URL when sync is enabled
     const params = new URLSearchParams();
     if (page !== 1) params.set('page', String(page));
     if (sort !== 'newest_first') params.set('sort', sort);
     if (search) params.set('search', search);
 
     const queryString = params.toString();
-    const newURL = queryString ? `/archive?${queryString}` : '/archive';
+    const newURL = queryString ? `${pathname}?${queryString}` : pathname;
 
     router.push(newURL, { scroll: false });
   };
 
   const handlePageChange = (newPage: number) => {
     updateURL(newPage, currentSort, searchQuery);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (syncWithURL) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleSortChange = (newSort: SortField) => {

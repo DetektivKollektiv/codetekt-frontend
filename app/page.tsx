@@ -133,6 +133,7 @@ export default async function Home() {
         className="mt-8 lg:mb-24 mb-12"
         initialData={data ?? []}
         pageSize={5}
+        syncWithURL={false}
         showPageNumbers
       />
     </main>
