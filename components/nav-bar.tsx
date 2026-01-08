@@ -49,7 +49,7 @@ const guestNavigation: NavLink[] = [
     href: '#',
     children: [
       { label: 'Gelöste Fälle', href: '/archive' },
-      { label: 'Fall einreichen', href: '#' },
+      { label: 'Fall einreichen', href: '/submit' },
       { label: 'Login', href: '/auth/login' },
       { label: 'Detektiv*in werden', href: '/auth/sign-up' },
     ],
@@ -69,7 +69,7 @@ const guestNavigation: NavLink[] = [
 
 const authenticatedNavigation: NavLink[] = [
   { label: 'Fall bearbeiten', href: '#open-cases' },
-  { label: 'Fall einreichen', href: '#' },
+  { label: 'Fall einreichen', href: '/submit' },
   { label: 'Gelöste Fälle', href: '/archive' },
   {
     label: 'Über Codetekt',

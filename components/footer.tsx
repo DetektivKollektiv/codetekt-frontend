@@ -129,7 +129,7 @@ const Footer: FC<FooterProps> = ({}) => {
                   <Link href="#">Fall bearbeiten</Link>
                 </li>
                 <li>
-                  <Link href="#">Fall einreichen</Link>
+                  <Link href="/submit">Fall einreichen</Link>
                 </li>
                 <li>
                   <Link href="#">Gelöste Fälle ansehen</Link>

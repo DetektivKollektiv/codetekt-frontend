@@ -1,6 +1,6 @@
-import { TypedSupabaseClient } from '../types/TypedSupabaseClient';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-export function getAggregatedReviews(client: TypedSupabaseClient) {
+export function getAggregatedReviews(client: SupabaseClient) {
   return client.from('review_aggregations').select(`
       case_id,
       result_score,
@@ -19,7 +19,7 @@ export function getAggregatedReviews(client: TypedSupabaseClient) {
     `);
 }
 
-export const aggregatedReviewsQuery = (client: TypedSupabaseClient) => ({
+export const aggregatedReviewsQuery = (client: SupabaseClient) => ({
   queryKey: ['aggregated-cases'],
   queryFn: async () => {
     const { data, error } = await getAggregatedReviews(client);
