@@ -7,7 +7,7 @@ export function getAggregatedReviews(client: SupabaseClient) {
       data,
       reviewer_ids,
       calculated_at,
-      cases (
+      cases!inner (
         id,
         submitted_by,
         content,

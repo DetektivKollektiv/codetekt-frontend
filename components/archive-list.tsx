@@ -89,11 +89,11 @@ export const ArchiveList: FC<ArchiveListProps> = ({
   }, [searchQuery]);
 
   const sortByNewestFirst = (items: AggregatedReviews) => {
-    return [...items].sort(
-      (a, b) =>
-        new Date(b.cases.submitted_at).getTime() -
-        new Date(a.cases.submitted_at).getTime()
-    );
+    return [...items].sort((a, b) => {
+      const bDate = Array.isArray(b.cases) ? (b.cases as any)[0]?.submitted_at : (b.cases as any)?.submitted_at;
+      const aDate = Array.isArray(a.cases) ? (a.cases as any)[0]?.submitted_at : (a.cases as any)?.submitted_at;
+      return new Date(bDate || 0).getTime() - new Date(aDate || 0).getTime();
+    });
   };
 
   const sortByLastUpdated = (items: AggregatedReviews) => {
