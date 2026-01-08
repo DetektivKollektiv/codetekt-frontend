@@ -2,7 +2,6 @@ import { getClaims } from '@/lib/queries/getClaims';
 import { getProfile } from '@/lib/queries/getProfile';
 import { getUser } from '@/lib/queries/getUser';
 import { createClient } from '@/lib/supabase/server';
-import { Suspense } from 'react';
 import NavBar from '../nav-bar';
 import { AuthProvider } from './auth-provider';
 
@@ -27,9 +26,7 @@ export default async function AuthProviderServer({
       initialProfile={profile?.data}
       initialUser={user?.user}
     >
-      <Suspense fallback={<div>Loading navigation...</div>}>
-        <NavBar />
-      </Suspense>
+      <NavBar />
       {children}
     </AuthProvider>
   );

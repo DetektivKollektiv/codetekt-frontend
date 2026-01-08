@@ -211,6 +211,7 @@ export default function NavBar() {
   const pathname = usePathname();
 
   const { user, profile, isAuthenticated } = useAuth();
+  console.log('NavBar - isAuthenticated:', isAuthenticated, user, profile);
 
   React.useEffect(() => {
     console.log(`Route changed to: ${pathname}`);

@@ -104,6 +104,11 @@ export function AuthProvider({
     const {
       data: { subscription },
     } = client.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' && initialUser && initialProfile) {
+        // we trust the initial data from the server, no need to update
+        return;
+      }
+
       if (event === 'SIGNED_OUT') {
         setProfile(null);
         setClaims(null);
