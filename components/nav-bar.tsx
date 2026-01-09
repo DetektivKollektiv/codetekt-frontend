@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button';
 import { Tables } from '@/lib/types/database.types-generated';
 import { User } from '@supabase/supabase-js';
 import { useAuth } from './provider/auth-provider';
+import { Toaster } from './ui/sonner';
 
 /* ------------------------------------------------------------------ */
 
@@ -372,6 +373,7 @@ export default function NavBar() {
         </div>
       </div>
       <div className="w-full bg-gradient-brand h-px"></div>
+      <Toaster position="top-center" offset="6rem" />
     </header>
   );
 }

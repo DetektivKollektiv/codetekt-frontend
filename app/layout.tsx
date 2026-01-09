@@ -1,7 +1,7 @@
 import Footer from '@/components/footer';
 import AuthProviderServer from '@/components/provider/auth-provider-server';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
-import { Toaster } from '@/components/ui/sonner';
+
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
@@ -32,7 +32,6 @@ export default async function RootLayout({
                 <div className="flex-1 flex flex-col">{children}</div>
                 <Footer />
               </main>
-              <Toaster />
             </AuthProviderServer>
           </body>
         </html>
