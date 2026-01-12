@@ -1,7 +1,10 @@
 import { CreateCaseForm } from '@/components/create-case-form';
+import { getAuth } from '@/lib/supabase/getAuth';
 import Image from 'next/image';
 
-export default function SubmitPage() {
+export default async function SubmitPage() {
+  const { user, isAuthenticated } = await getAuth();
+
   return (
     <div className="w-full h-full flex-1 relative">
       <div className="bg-gradient-neutral-coral h-full py-12 lg:py-24">
@@ -33,7 +36,9 @@ export default function SubmitPage() {
         {/* Fall einreichen Form */}
         <div className="page-max-w mt-12">
           <div className="lg:max-w-xl xl:max-w-2xl">
-            <CreateCaseForm />
+            {user && (
+              <CreateCaseForm user={user} isAuthenticated={isAuthenticated} />
+            )}
           </div>
         </div>
       </div>

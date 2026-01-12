@@ -1,6 +1,6 @@
-import { SupabaseClient } from '@supabase/supabase-js';
 import { CaseInsertData } from '@/lib/schemas/case-schemas';
 import { Database } from '@/lib/types/database.types';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export async function createCase(
   client: SupabaseClient<Database>,

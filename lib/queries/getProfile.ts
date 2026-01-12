@@ -19,3 +19,7 @@ export const profileQuery = (
     return data as Tables<'profiles'> | null;
   },
 });
+
+export type Profile = Awaited<
+  ReturnType<ReturnType<typeof profileQuery>['queryFn']>
+>;

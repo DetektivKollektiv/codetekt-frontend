@@ -1,6 +1,10 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
+import { BadgeList } from '@/components/ui/badge-list';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { cn } from '@/lib/utils';
 import { getTrustLevel } from '@/lib/utils/trust-level';
 import { getWarningTags } from '@/lib/utils/warning-tags';
@@ -8,25 +12,9 @@ import { Share2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
-import { Badge } from './ui/badge';
-import { BadgeList } from './ui/badge-list';
-import { Button } from './ui/button';
 
 interface ArchiveItemCardProps {
-  caseItem: {
-    case_id: string;
-    result_score: number;
-    data: any; // Json type from Supabase
-    cases: {
-      id: string;
-      content: string;
-      open_graph_data: {
-        og_image: string | null;
-        og_title: string | null;
-        og_description: string | null;
-      } | null;
-    };
-  };
+  caseItem: AggregatedReviews[number];
 }
 
 export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
@@ -35,6 +23,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
 
   // Type assertion for data field (Json type from Supabase)
   const reviewData = caseItem.data;
+  if (!reviewData) return null;
   const warningTags = getWarningTags(reviewData.fields || {});
   const ogData = caseItem.cases.open_graph_data;
 

@@ -1,11 +1,5 @@
 'use client';
 
-import { ArchiveItemCard } from '@/components/archive-item-card';
-import {
-  ArchiveListSortSelect,
-  getSavedSortPreference,
-  SortField,
-} from '@/components/archive-list-sort-select';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import {
@@ -17,7 +11,13 @@ import { useQuery } from '@tanstack/react-query';
 import Fuse from 'fuse.js';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Separator } from './ui/separator';
+import { Separator } from '../ui/separator';
+import { ArchiveItemCard } from './card';
+import {
+  ArchiveListSortSelect,
+  getSavedSortPreference,
+  SortField,
+} from './sort-select';
 
 type ArchiveListProps = {
   initialData?: AggregatedReviews;
@@ -49,9 +49,11 @@ export const ArchiveList: FC<ArchiveListProps> = ({
     ? parseInt(searchParams.get('page') || '1', 10)
     : internalPage;
   const currentSort = syncWithURL
-    ? ((searchParams.get('sort') as SortField) || 'newest_first')
+    ? (searchParams.get('sort') as SortField) || 'newest_first'
     : internalSort;
-  const searchQuery = syncWithURL ? searchParams.get('search') || '' : internalSearch;
+  const searchQuery = syncWithURL
+    ? searchParams.get('search') || ''
+    : internalSearch;
 
   const [hasCheckedLocalStorage, setHasCheckedLocalStorage] = useState(false);
   const [searchInput, setSearchInput] = useState(searchQuery);
@@ -90,8 +92,12 @@ export const ArchiveList: FC<ArchiveListProps> = ({
 
   const sortByNewestFirst = (items: AggregatedReviews) => {
     return [...items].sort((a, b) => {
-      const bDate = Array.isArray(b.cases) ? (b.cases as any)[0]?.submitted_at : (b.cases as any)?.submitted_at;
-      const aDate = Array.isArray(a.cases) ? (a.cases as any)[0]?.submitted_at : (a.cases as any)?.submitted_at;
+      const bDate = Array.isArray(b.cases)
+        ? (b.cases as any)[0]?.submitted_at
+        : (b.cases as any)?.submitted_at;
+      const aDate = Array.isArray(a.cases)
+        ? (a.cases as any)[0]?.submitted_at
+        : (a.cases as any)?.submitted_at;
       return new Date(bDate || 0).getTime() - new Date(aDate || 0).getTime();
     });
   };

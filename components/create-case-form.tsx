@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuth } from '@/components/provider/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -15,6 +14,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { CURRENT_TEMPLATE_VERSION } from '@/lib/constants';
 import { createCaseMutation } from '@/lib/queries/createCase';
+
 import {
   createCaseFormSchema,
   type ContentType,
@@ -22,18 +22,24 @@ import {
 } from '@/lib/schemas/case-schemas';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
+import { User } from '@supabase/supabase-js';
 import { useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+interface CreateCaseFormProps {
+  user: User;
+  isAuthenticated: boolean;
+}
+
 export function CreateCaseForm({
   className,
-  ...props
-}: React.ComponentPropsWithoutRef<'div'>) {
+  user,
+  isAuthenticated,
+}: React.ComponentPropsWithoutRef<'div'> & CreateCaseFormProps) {
   // Auth context
-  const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const supabase = createClient();
 
@@ -117,7 +123,7 @@ export function CreateCaseForm({
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)}>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-6">
           {/* Content Type Select */}

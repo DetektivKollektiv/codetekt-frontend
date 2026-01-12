@@ -1,6 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import { Database } from '../types/database.types';
 
-export function getAggregatedReviews(client: SupabaseClient) {
+export function getAggregatedReviews(client: SupabaseClient<Database>) {
   return client.from('review_aggregations').select(`
       case_id,
       result_score,
