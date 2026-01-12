@@ -214,7 +214,6 @@ export default function NavBar() {
   const { user, profile, isAuthenticated } = useAuth();
 
   React.useEffect(() => {
-    console.log(`Route changed to: ${pathname}`);
     setMobileOpen(false);
   }, [pathname]);
 

@@ -5,7 +5,6 @@ export const contentTypeSchema = z.enum(['url', 'text']);
 
 // URL validation schema with German error messages
 export const urlContentSchema = z
-  .string()
   .url('Bitte gib eine gültige URL ein')
   .min(1, 'URL ist erforderlich')
   .max(2048, 'URL ist zu lang');
@@ -39,19 +38,23 @@ export const createCaseFormSchema = z
     if (data.content_type === 'url') {
       const result = urlContentSchema.safeParse(data.content);
       if (!result.success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['content'],
-          message: result.error.errors[0].message,
+        result.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['content'],
+            message: issue.message,
+          });
         });
       }
     } else if (data.content_type === 'text') {
       const result = textContentSchema.safeParse(data.content);
       if (!result.success) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['content'],
-          message: result.error.errors[0].message,
+        result.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['content'],
+            message: issue.message,
+          });
         });
       }
     }

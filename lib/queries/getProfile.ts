@@ -1,11 +1,17 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Tables } from '../types/database.types-generated';
+import { Database, Tables } from '../types/database.types';
 
-export async function getProfile(client: SupabaseClient, userId: string) {
+export async function getProfile(
+  client: SupabaseClient<Database>,
+  userId: string
+) {
   return client.from('profiles').select('*').eq('id', userId).maybeSingle();
 }
 
-export const profileQuery = (client: SupabaseClient, userId: string) => ({
+export const profileQuery = (
+  client: SupabaseClient<Database>,
+  userId: string
+) => ({
   queryKey: ['profile', userId],
   queryFn: async () => {
     const { data, error } = await getProfile(client, userId);

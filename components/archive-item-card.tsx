@@ -12,14 +12,6 @@ import { Badge } from './ui/badge';
 import { BadgeList } from './ui/badge-list';
 import { Button } from './ui/button';
 
-interface ReviewData {
-  fields: Record<string, any>;
-  metadata: {
-    content_type: string[];
-    keyword_type: string[];
-  };
-}
-
 interface ArchiveItemCardProps {
   caseItem: {
     case_id: string;
@@ -42,7 +34,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
   const trustLevel = getTrustLevel(caseItem.result_score);
 
   // Type assertion for data field (Json type from Supabase)
-  const reviewData = caseItem.data as ReviewData;
+  const reviewData = caseItem.data;
   const warningTags = getWarningTags(reviewData.fields || {});
   const ogData = caseItem.cases.open_graph_data;
 
