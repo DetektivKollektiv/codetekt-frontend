@@ -21,7 +21,7 @@ export const getAuth = async () => {
 
   return {
     claims: data?.claims,
-    profile: profile?.data,
+    profile: profile?.data ?? null,
     user: user?.user,
     isAuthenticated,
   };

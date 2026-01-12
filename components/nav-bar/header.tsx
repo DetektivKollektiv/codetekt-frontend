@@ -1,24 +1,13 @@
 'use client';
 
-import { ChevronDown, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { createClient } from '@/lib/supabase/client';
-import { cn } from '@/lib/utils';
-
-// shadcn
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { cn, getDisplayName } from '@/lib/utils';
 
 import {
   Sheet,
@@ -30,188 +19,29 @@ import {
 } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
+import { NavLink } from '@/lib/types';
 import { Tables } from '@/lib/types/database.types-generated';
 import { User } from '@supabase/supabase-js';
-import { useAuth } from './provider/auth-provider';
-import { Toaster } from './ui/sonner';
+import { Toaster } from '../ui/sonner';
+import DesktopNavigation from './desktop-navigation';
+import UserMenu from './user-menu';
 
-/* ------------------------------------------------------------------ */
-
-type NavLink = {
-  label: string;
-  href: string;
-  children?: NavLink[];
-  highlight?: boolean;
-};
-
-const guestNavigation: NavLink[] = [
-  {
-    label: 'Plattform & Community',
-    href: '#',
-    children: [
-      { label: 'Gelöste Fälle', href: '/archive' },
-      { label: 'Fall einreichen', href: '/submit' },
-      { label: 'Login', href: '/auth/login' },
-      { label: 'Detektiv*in werden', href: '/auth/sign-up' },
-    ],
-  },
-  { label: 'Workshops', href: '#' },
-  {
-    label: 'Über Codetekt',
-    href: '#',
-    children: [
-      { label: 'Der Verein', href: '#' },
-      { label: 'Trust-Checking', href: '#' },
-      { label: 'FAQ', href: '#' },
-      { label: 'Spenden', href: '#' },
-    ],
-  },
-];
-
-const authenticatedNavigation: NavLink[] = [
-  { label: 'Fall bearbeiten', href: '#open-cases' },
-  { label: 'Fall einreichen', href: '/submit' },
-  { label: 'Gelöste Fälle', href: '/archive' },
-  {
-    label: 'Über Codetekt',
-    href: '#',
-    children: [
-      { label: 'Der Verein', href: '#' },
-      { label: 'Workshops', href: '#' },
-      { label: 'Trust-Checking', href: '#' },
-      { label: 'FAQ', href: '#' },
-      { label: 'Spenden', href: '#' },
-    ],
-  },
-];
-
-/* ------------------------------------------------------------------ */
-
-function getDisplayName(profile: Tables<'profiles'> | null, user: User | null) {
-  return profile?.username || user?.email || 'Account';
-}
-
-/* ------------------------------------------------------------------ */
-function DesktopNavigation({ items }: { items: NavLink[] }) {
-  return (
-    <nav className="hidden lg:flex items-center gap-1">
-      {items.map((item) => {
-        const hasChildren = Boolean(item.children?.length);
-
-        // Simple link (kein Dropdown)
-        if (!hasChildren) {
-          return (
-            <Button
-              key={item.label}
-              asChild
-              variant="ghost"
-              className={cn(
-                'text-body-md font-medium',
-                item.highlight && 'text-primary'
-              )}
-            >
-              <Link href={item.href}>{item.label}</Link>
-            </Button>
-          );
-        }
-
-        // Dropdown
-        return (
-          <DropdownMenu key={item.label}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  'flex items-center gap-1 text-body-md font-medium',
-                  item.highlight && 'text-primary'
-                )}
-              >
-                {item.label}
-                <ChevronDown className="h-4 w-4 opacity-70" />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="start" className="min-w-[220px]">
-              {item.children!.map((child, index) => (
-                <DropdownMenuItem
-                  key={child.label}
-                  asChild
-                  className="text-body-md"
-                >
-                  <Link href={child.href}>{child.label}</Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      })}
-    </nav>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-
-function UserMenu({
+export default function Header({
   user,
   profile,
-  onLogout,
+  isAuthenticated,
+  authenticatedNavigation,
+  guestNavigation,
 }: {
-  user: User;
+  user: User | null;
   profile: Tables<'profiles'> | null;
-  onLogout: () => void;
+  isAuthenticated: boolean | null;
+  authenticatedNavigation: NavLink[];
+  guestNavigation: NavLink[];
 }) {
-  const name = getDisplayName(profile, user);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="gap-3">
-          <span className="hidden md:block text-body-md font-medium">
-            Hi {name}!
-          </span>
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel>
-          <div className="text-body-md font-medium">{name}</div>
-          {user.email && (
-            <div className="text-meta text-muted-foreground">{user.email}</div>
-          )}
-        </DropdownMenuLabel>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem className="text-body-md" asChild>
-          <Link href="#">Profil</Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="text-body-md" asChild>
-          <Link href="#">Rangliste</Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem
-          onClick={onLogout}
-          className="text-destructive focus:text-destructive text-body-md font-bold"
-          variant="destructive"
-        >
-          Abmelden
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-
-export default function NavBar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const pathname = usePathname();
-
-  const { user, profile, isAuthenticated } = useAuth();
 
   React.useEffect(() => {
     setMobileOpen(false);

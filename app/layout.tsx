@@ -1,7 +1,7 @@
 import Footer from '@/components/footer';
-import AuthProviderServer from '@/components/provider/auth-provider-server';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
 
+import NavBar from '@/components/nav-bar';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
@@ -27,12 +27,11 @@ export default async function RootLayout({
       <Suspense fallback={<div>Codetekt Lädt</div>}>
         <html lang="de" suppressHydrationWarning>
           <body className={`antialiased`}>
-            <AuthProviderServer>
-              <main className="page-mt page-min-h flex flex-col">
-                <div className="flex-1 flex flex-col">{children}</div>
-                <Footer />
-              </main>
-            </AuthProviderServer>
+            <NavBar />
+            <main className="page-mt page-min-h flex flex-col">
+              <div className="flex-1 flex flex-col">{children}</div>
+              <Footer />
+            </main>
           </body>
         </html>
       </Suspense>
