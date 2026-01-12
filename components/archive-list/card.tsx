@@ -1,17 +1,16 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
 import { BadgeList } from '@/components/ui/badge-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
-import { cn } from '@/lib/utils';
 import { getTrustLevel } from '@/lib/utils/trust-level';
 import { getWarningTags } from '@/lib/utils/warning-tags';
 import { Share2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
+import Evaluation from './evaluation';
 
 interface ArchiveItemCardProps {
   caseItem: AggregatedReviews[number];
@@ -90,35 +89,7 @@ export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
           </div>
 
           {/* Right: Evaluation */}
-          <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-48 lg:h-auto">
-            <div>
-              <h4 className="text-sm font-semibold mb-2">Bewertung</h4>
-              <Badge
-                className={cn(
-                  trustLevel.colorClass,
-                  'w-full justify-center pointer-events-none'
-                )}
-              >
-                {trustLevel.label}
-              </Badge>
-            </div>
-
-            {warningTags.length > 0 && (
-              <div>
-                <h4 className="text-sm font-semibold mb-2">
-                  Tags zur Bewertung
-                </h4>
-                <div className="break-words min-w-0 hyphens-auto text-destructive text-body-sm">
-                  {warningTags.slice(0, 4).map((tag, idx) => (
-                    <span className="" key={tag}>
-                      {tag}
-                      {idx < warningTags.slice(0, 4).length - 1 ? ', ' : ''}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          <Evaluation trustLevel={trustLevel} warningTags={warningTags} />
         </div>
       </CardContent>
     </Card>

@@ -85,12 +85,10 @@ export default function Header({
             className="h-8 w-auto"
           />
         </Link>
-
         {/* Desktop Nav */}
         <div className="hidden lg:block">
           <DesktopNavigation items={navigation} />
         </div>
-
         {/* Right side */}
         <div className="flex items-center gap-2">
           {/* Desktop auth */}
