@@ -1,0 +1,102 @@
+import { AggregatedReviewCard } from '@/components/archive-list/aggregated-review-card';
+import { CaseCard } from '@/components/archive-list/case-card';
+import { ArchiveListProps } from '@/components/archive-list/types';
+import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { UserCases } from '../queries/getUserCases';
+
+// Extract sort functions for reusability
+const sortAggregatedReviewsByNewestFirst = (items: AggregatedReviews) => {
+  return [...items].sort((a, b) => {
+    const bDate = Array.isArray(b.cases)
+      ? (b.cases as any)[0]?.submitted_at
+      : (b.cases as any)?.submitted_at;
+    const aDate = Array.isArray(a.cases)
+      ? (a.cases as any)[0]?.submitted_at
+      : (a.cases as any)?.submitted_at;
+    return new Date(bDate || 0).getTime() - new Date(aDate || 0).getTime();
+  });
+};
+
+const sortAggregatedReviewsByLastUpdated = (items: AggregatedReviews) => {
+  return [...items].sort(
+    (a, b) =>
+      new Date(b.calculated_at).getTime() - new Date(a.calculated_at).getTime()
+  );
+};
+
+const sortUserCasesByNewestFirst = (items: UserCases) => {
+  return [...items].sort(
+    (a, b) =>
+      new Date(b.submitted_at!).getTime() - new Date(a.submitted_at!).getTime()
+  );
+};
+
+// Configuration for AggregatedReviews
+export const aggregatedReviewsListConfig: Omit<
+  ArchiveListProps<AggregatedReviews[number]>,
+  'items'
+> = {
+  renderItem: (item) => <AggregatedReviewCard caseItem={item} />,
+  getItemKey: (item) => item.case_id,
+  fuseOptions: {
+    keys: [
+      { name: 'cases.open_graph_data.og_title', weight: 3 },
+      { name: 'data.metadata.content_type', weight: 2 },
+      { name: 'data.metadata.keyword_type', weight: 2 },
+      { name: 'data.data', weight: 2 },
+      { name: 'cases.open_graph_data.og_description', weight: 1 },
+    ],
+    threshold: 0.4,
+    ignoreLocation: true,
+  },
+  sortOptions: [
+    {
+      key: 'newest_first',
+      label: 'Neuste zuerst',
+      sortFn: sortAggregatedReviewsByNewestFirst,
+    },
+    {
+      key: 'last_updated',
+      label: 'Zuletzt geupdated',
+      sortFn: sortAggregatedReviewsByLastUpdated,
+    },
+  ],
+  searchPlaceholder: 'Fälle durchsuchen...',
+  itemCountLabel: (count) =>
+    `${count} ${count === 1 ? 'Fall' : 'Fälle'} gefunden`,
+  emptyMessage: 'Keine Fälle im Archiv gefunden.',
+  loadingMessage: 'Lade Archiv...',
+  sortPreferenceKey: 'archive-sort-preference',
+};
+
+export const casesListConfig: Omit<
+  ArchiveListProps<NonNullable<UserCases[number]>>,
+  'items'
+> = {
+  renderItem: (item) => <CaseCard caseItem={item} />,
+  getItemKey: (item) => item.id!,
+  fuseOptions: {
+    keys: [
+      { name: 'cases.open_graph_data.og_title', weight: 3 },
+      { name: 'data.metadata.content_type', weight: 2 },
+      { name: 'data.metadata.keyword_type', weight: 2 },
+      { name: 'data.data', weight: 2 },
+      { name: 'cases.open_graph_data.og_description', weight: 1 },
+    ],
+    threshold: 0.4,
+    ignoreLocation: true,
+  },
+  sortOptions: [
+    {
+      key: 'newest_first',
+      label: 'Neuste zuerst',
+      sortFn: sortUserCasesByNewestFirst,
+    },
+  ],
+  searchPlaceholder: 'Fälle durchsuchen...',
+  itemCountLabel: (count) =>
+    `${count} ${count === 1 ? 'Fall' : 'Fälle'} gefunden`,
+  emptyMessage: 'Keine Fälle im Archiv gefunden.',
+  loadingMessage: 'Lade Archiv...',
+  sortPreferenceKey: 'case-list-preference',
+};

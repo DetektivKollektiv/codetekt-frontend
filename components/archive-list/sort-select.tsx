@@ -9,44 +9,40 @@ import {
 } from '@/components/ui/select';
 import { FC, useEffect } from 'react';
 
-export type SortField = 'newest_first' | 'last_updated';
-
-const SORT_OPTIONS: Record<SortField, string> = {
-  newest_first: 'Neuste zuerst',
-  last_updated: 'Zuletzt geupdated',
+export type GenericSortOption = {
+  key: string;
+  label: string;
 };
 
-const SORT_PREFERENCE_KEY = 'archive-sort-preference';
-
 export interface ArchiveListSortSelectProps {
-  value: SortField;
-  onValueChange: (value: SortField) => void;
+  sortOptions: GenericSortOption[];
+  value: string;
+  onValueChange: (value: string) => void;
+  storageKey: string;
   className?: string;
 }
 
 export const ArchiveListSortSelect: FC<ArchiveListSortSelectProps> = ({
+  sortOptions,
   value,
   onValueChange,
+  storageKey,
   className,
 }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem(SORT_PREFERENCE_KEY, value);
+      localStorage.setItem(storageKey, value);
     }
-  }, [value]);
-
-  const handleValueChange = (newValue: string) => {
-    onValueChange(newValue as SortField);
-  };
+  }, [value, storageKey]);
 
   return (
     <div className={className}>
-      <Select value={value} onValueChange={handleValueChange}>
+      <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger className="w-[200px]" aria-label="Sortierung auswählen">
           <SelectValue placeholder="Sortierung wählen" />
         </SelectTrigger>
         <SelectContent>
-          {Object.entries(SORT_OPTIONS).map(([key, label]) => (
+          {sortOptions.map(({ key, label }) => (
             <SelectItem key={key} value={key}>
               {label}
             </SelectItem>
@@ -57,8 +53,11 @@ export const ArchiveListSortSelect: FC<ArchiveListSortSelectProps> = ({
   );
 };
 
-export function getSavedSortPreference(): SortField | null {
+export function getSavedSortPreference(
+  storageKey: string,
+  validKeys: string[]
+): string | null {
   if (typeof window === 'undefined') return null;
-  const saved = localStorage.getItem(SORT_PREFERENCE_KEY);
-  return saved && saved in SORT_OPTIONS ? (saved as SortField) : null;
+  const saved = localStorage.getItem(storageKey);
+  return saved && validKeys.includes(saved) ? saved : null;
 }

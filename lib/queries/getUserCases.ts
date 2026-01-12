@@ -7,7 +7,8 @@ export function getUserCases(client: SupabaseClient<Database>, userId: string) {
     .select(
       `
     *,
-    open_graph_data (*)
+    open_graph_data (*),
+    review_answers_in_progress (*)
     `
     )
     .eq('submitted_by', userId);

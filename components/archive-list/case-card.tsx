@@ -20,7 +20,6 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
   const ogData = caseItem.open_graph_data;
 
   const handleShare = () => {
-    // Placeholder for share functionality
     console.log('Share case:', caseItem.id);
   };
 
@@ -72,9 +71,15 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
 
             {/* Action Buttons */}
             <div className="flex gap-3 flex-1 items-end">
-              <Link href={`/archive/${caseItem.id}`}>
-                <Button variant={'default'}>Fall bewerten</Button>
-              </Link>
+              {caseItem.review_answers_in_progress.length > 0 ? (
+                <Link href={`/archive/${caseItem.id}`}>
+                  <Button variant={'default'}>Bewertung bearbeiten</Button>
+                </Link>
+              ) : (
+                <Link href={`/archive/${caseItem.id}`}>
+                  <Button variant={'default'}>Fall bewerten</Button>
+                </Link>
+              )}
             </div>
           </div>
 

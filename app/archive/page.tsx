@@ -1,4 +1,5 @@
 import { ArchiveList } from '@/components/archive-list';
+import { aggregatedReviewsListConfig } from '@/lib/config/archive-list-configs';
 import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { createClient } from '@/lib/supabase/server';
 
@@ -18,8 +19,9 @@ export default async function ArchivePage() {
         </h1>
       </div>
       <ArchiveList
+        {...aggregatedReviewsListConfig}
+        items={data ?? []}
         className="mt-12 mb-12 lg:mb-24"
-        initialData={data ?? []}
         pageSize={10}
         showPageNumbers
       />

@@ -1,0 +1,64 @@
+'use client';
+import { ArchiveList } from '@/components/archive-list';
+import {
+  aggregatedReviewsListConfig,
+  casesListConfig,
+} from '@/lib/config/archive-list-configs';
+import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { Profile } from '@/lib/queries/getProfile';
+import { UserCases } from '@/lib/queries/getUserCases';
+import { FC } from 'react';
+interface UserPageProps {
+  profile: NonNullable<Profile>;
+  userCases: UserCases;
+  aggregatedReviewsData: AggregatedReviews;
+}
+
+const UserPage: FC<UserPageProps> = ({
+  profile,
+  userCases,
+  aggregatedReviewsData,
+}) => {
+  return (
+    <>
+      <div className="page-max-w w-full mt-12 ">
+        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
+          Hi {profile.username}!
+        </h1>
+        <p className="text-body-md max-w-xl xl:max-w-3xl mx-auto lg:mx-0 mt-4">
+          Herzlich willkommen auf deinem Dashboard. Du kannst dir deine gelösten
+          und ungelösten Fälle ansehen und neue Fälle bearbeiten. Unten findest
+          du Vorschläge für Fälle, die deine Hilfe benötigen.
+        </p>
+      </div>
+      <div className="page-max-w w-full mt-12 ">
+        <h2 className="text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
+          Deine eingereichten Fälle
+        </h2>
+      </div>
+      <ArchiveList
+        {...aggregatedReviewsListConfig}
+        items={aggregatedReviewsData ?? []}
+        className="mt-8 mb-12 lg:mb-24"
+        pageSize={3}
+        showPageNumbers
+      />
+      {userCases && userCases.length > 0 && (
+        <div className=" mt-12 lg:mt-24">
+          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
+            Deine eingereichten Fälle
+          </h1>
+          <ArchiveList
+            {...casesListConfig}
+            items={userCases ?? []}
+            className="mt-8 mb-12 lg:mb-24"
+            pageSize={3}
+            showPageNumbers
+          />
+        </div>
+      )}
+    </>
+  );
+};
+
+export default UserPage;
