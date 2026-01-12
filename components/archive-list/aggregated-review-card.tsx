@@ -12,11 +12,13 @@ import Link from 'next/link';
 import { FC, useState } from 'react';
 import Evaluation from './evaluation';
 
-interface ArchiveItemCardProps {
+interface AggregatedReviewCardProps {
   caseItem: AggregatedReviews[number];
 }
 
-export const ArchiveItemCard: FC<ArchiveItemCardProps> = ({ caseItem }) => {
+export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
+  caseItem,
+}) => {
   const [imageError, setImageError] = useState(false);
   const trustLevel = getTrustLevel(caseItem.result_score);
 

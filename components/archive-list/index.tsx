@@ -12,7 +12,7 @@ import Fuse from 'fuse.js';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Separator } from '../ui/separator';
-import { ArchiveItemCard } from './card';
+import { AggregatedReviewCard } from './aggregated-review-card';
 import {
   ArchiveListSortSelect,
   getSavedSortPreference,
@@ -249,7 +249,7 @@ export const ArchiveList: FC<ArchiveListProps> = ({
       <Separator className="mb-4" />
       <div className="gap-4 flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-col">
         {paginatedItems.map((caseItem) => (
-          <ArchiveItemCard key={caseItem.case_id} caseItem={caseItem} />
+          <AggregatedReviewCard key={caseItem.case_id} caseItem={caseItem} />
         ))}
       </div>
 

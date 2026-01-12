@@ -1,6 +1,8 @@
 import { ArchiveList } from '@/components/archive-list';
+import { CaseCard } from '@/components/archive-list/case-card';
 import { Button } from '@/components/ui/button';
 import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
@@ -11,6 +13,23 @@ export default async function Home() {
   const { data, error } = await getAggregatedReviews(supabase);
 
   const { user, profile, isAuthenticated } = await getAuth();
+
+  let userCases: null | UserCases = null;
+
+  if (isAuthenticated && user) {
+    const { data: userCasesData, error: userCasesError } = await getUserCases(
+      supabase,
+      user.id
+    );
+
+    userCases = userCasesData;
+
+    if (userCasesError) {
+      console.error('Error fetching user cases:', userCasesError);
+    }
+
+    userCases = userCasesData;
+  }
 
   if (error) {
     throw error;
@@ -24,13 +43,33 @@ export default async function Home() {
             <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
               Hi {profile.username}!
             </h1>
+            <p className="text-body-md max-w-xl xl:max-w-3xl mx-auto lg:mx-0 mt-4">
+              Herzlich willkommen auf deinem Dashboard. Du kannst dir deine
+              gelösten und ungelösten Fälle ansehen und neue Fälle bearbeiten.
+              Unten findest du Vorschläge für Fälle, die deine Hilfe benötigen.
+            </p>
+          </div>
+          <div className="page-max-w w-full mt-12 ">
+            <h2 className="text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
+              Deine eingereichten Fälle
+            </h2>
           </div>
           <ArchiveList
-            className="mt-12 mb-12 lg:mb-24"
+            className="mt-8 mb-12 lg:mb-24"
             initialData={data ?? []}
-            pageSize={10}
+            pageSize={3}
             showPageNumbers
           />
+          {userCases && userCases.length > 0 && (
+            <div className="page-max-w mt-12 lg:mt-24">
+              <h1 className="text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
+                Deine eingereichten Fälle
+              </h1>
+              {userCases.map((userCase) => (
+                <CaseCard key={userCase.id} caseItem={userCase} />
+              ))}
+            </div>
+          )}
         </>
       ) : (
         <>
