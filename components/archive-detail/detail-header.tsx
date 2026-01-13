@@ -49,17 +49,17 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Left: Text content */}
             <div className="space-y-4">
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">
+              <p className="text-body-sm text-muted-foreground uppercase tracking-wide">
                 Infos zum Fall
               </p>
 
               <div>
-                <h2 className="text-2xl font-semibold leading-tight">
+                <h2 className="text-heading-xl leading-tight">
                   {title}
                 </h2>
               </div>
 
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-body-md text-muted-foreground leading-relaxed">
                 {description}
               </p>
             </div>
@@ -79,7 +79,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                 </div>
               ) : (
                 <div className="aspect-video rounded-lg bg-muted flex items-center justify-center">
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-body-sm text-muted-foreground">
                     Kein Bild verfügbar
                   </p>
                 </div>
@@ -87,7 +87,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
 
               {/* Tags zum Inhalt */}
               <div className="space-y-2">
-                <p className="text-sm font-medium">Tags zum Inhalt</p>
+                <p className="text-body-sm font-medium">Tags zum Inhalt</p>
                 <div className="flex flex-wrap gap-2">
                   {contentType.map((type) => (
                     <Badge key={type} variant="secondary">
@@ -105,12 +105,12 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               {/* Hinterlegter Link if content is URL */}
               {caseData.content_type === 'url' && (
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Hinterlegter Link:</p>
+                  <p className="text-body-sm font-medium">Hinterlegter Link:</p>
                   <a
                     href={caseData.content}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline break-all flex items-start gap-2"
+                    className="text-body-sm text-primary hover:underline break-all flex items-start gap-2"
                   >
                     <LinkIcon className="w-4 h-4 mt-0.5 flex-shrink-0" />
                     <span>{caseData.content}</span>
@@ -120,11 +120,11 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
 
               {/* Datum */}
               <div className="space-y-2">
-                <p className="text-sm font-medium">Datum</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-body-sm font-medium">Datum</p>
+                <p className="text-body-sm text-muted-foreground">
                   Einreichung: {getLocalDate(caseData.submitted_at)}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-body-sm text-muted-foreground">
                   Zuletzt bearbeitet:{' '}
                   {getLocalDate(aggregatedReview.calculated_at)}
                 </p>
