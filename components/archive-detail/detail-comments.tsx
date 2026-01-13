@@ -49,7 +49,7 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
   }, [emblaApi, onSelect]);
   if (!comments || comments.length === 0) {
     return (
-      <section className="space-y-6">
+      <section className="space-y-6 page-max-w">
         <div>
           <h2 className="text-2xl font-bold">Kommentare</h2>
           <p className="text-muted-foreground mt-1">
