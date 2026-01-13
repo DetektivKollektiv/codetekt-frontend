@@ -6,7 +6,7 @@ export function getUserReviews(
   userId: string
 ) {
   return client
-    .from('review_answers_in_progress')
+    .from('review_answers_in_progress_without_open_disputes')
     .select(
       `
     *,

@@ -70,7 +70,7 @@ export default async function Home() {
       {isAuthenticated && user && profile ? (
         <UserPage
           profile={profile}
-          userReviewsAndCases={userReviewsAndCases || []}
+          userReviewsAndCases={userReviewsAndCases ?? []}
         />
       ) : (
         <>

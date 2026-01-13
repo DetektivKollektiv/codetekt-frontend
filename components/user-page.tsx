@@ -5,6 +5,7 @@ import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { Profile } from '@/lib/queries/getProfile';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { FC } from 'react';
+import UserSettings from './user-settings';
 interface UserPageProps {
   profile: NonNullable<Profile>;
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
@@ -22,6 +23,10 @@ const UserPage: FC<UserPageProps> = ({ profile, userReviewsAndCases }) => {
           und ungelösten Fälle ansehen und neue Fälle bearbeiten. Unten findest
           du Vorschläge für Fälle, die deine Hilfe benötigen.
         </p>
+      </div>
+
+      <div className="page-max-w w-full mt-12">
+        <UserSettings />
       </div>
 
       {userReviewsAndCases && (
