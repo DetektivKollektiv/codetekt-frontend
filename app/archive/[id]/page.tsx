@@ -1,6 +1,8 @@
 import { getAggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getCaseComments } from '@/lib/queries/getCaseComments';
 import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
+import { ArchiveDetail } from '@/components/archive-detail/archive-detail';
 
 export default async function Page({
   params,
@@ -24,16 +26,16 @@ export default async function Page({
     throw caseCommentsError;
   }
 
+  if (!aggregatedReview) {
+    notFound();
+  }
+
   return (
-    <>
-      <div className="page-max-w w-full mt-12 lg:mt-24">
-        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
-          Fall {aggregatedReview?.cases.case_number}
-        </h1>
-      </div>
-      <div className="page-max-w w-full mt-8 lg:mt-12 mb-24 lg:mb-32">
-        {aggregatedReview?.case_id}
-      </div>
-    </>
+    <div className="page-max-w w-full mt-12 lg:mt-24 mb-24 lg:mb-32">
+      <ArchiveDetail
+        aggregatedReview={aggregatedReview}
+        caseComments={caseComments || []}
+      />
+    </div>
   );
 }

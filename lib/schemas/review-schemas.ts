@@ -5,7 +5,7 @@ import {
   multyLineTextAnswerSchema,
   textAreaAnswerSchema,
   trafficLightAnswerSchema,
-} from './answer-schemas.ts';
+} from './answer-schemas';
 
 // Submitted review answer schema with all required fields and validation
 export const submittedReviewAnswerSchema = z

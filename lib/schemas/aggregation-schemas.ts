@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   chipAnswerSchema,
   multyLineTextAnswerSchema,
-} from './answer-schemas.ts';
+} from './answer-schemas';
 
 // Schema for aggregated field values
 export const aggregationFieldValueSchema = z.object({

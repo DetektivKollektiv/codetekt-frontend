@@ -10,9 +10,13 @@ export function getCaseComments(
     .select(
       `
       *,
+      profiles (
+        username
+      )
     `
     )
-    .eq('case_id', caseId);
+    .eq('case_id', caseId)
+    .order('created_at', { ascending: false });
 }
 
 export const caseCommentsQuery = (client: SupabaseClient, caseId: string) => ({
