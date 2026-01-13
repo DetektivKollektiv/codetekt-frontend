@@ -2,35 +2,82 @@
 
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
+import { archiveListConfigs } from '@/lib/config/archive-list-configs';
+import type { IFuseOptions } from 'fuse.js';
 import Fuse from 'fuse.js';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { ArchiveListSortSelect, getSavedSortPreference } from './sort-select';
-import { ArchiveListProps } from './types';
+import { ArchiveListProps, SortOption } from './types';
 
-export const ArchiveList = <TItem,>({
-  items,
-  renderItem,
-  getItemKey,
-  fuseOptions,
-  sortOptions,
-  defaultSortKey,
-  sortPreferenceKey = 'archive-sort-preference',
-  pageSize = 10,
-  showPageNumbers = true,
-  syncWithURL = true,
-  className,
-  isLoading = false,
-  isError = false,
-  error = null,
-  emptyMessage = 'Keine Einträge gefunden.',
-  searchPlaceholder = 'Durchsuchen...',
-  itemCountLabel = (count) =>
-    `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`,
-  loadingMessage = 'Laden...',
-}: ArchiveListProps<TItem>) => {
+export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
+  // Extract config from key if provided
+  const configFromKey =
+    'configKey' in props && props.configKey
+      ? archiveListConfigs[props.configKey as keyof typeof archiveListConfigs]
+      : null;
+
+  // Destructure with fallbacks to config
+  const items = props.items;
+  const renderItem = (
+    'renderItem' in props ? props.renderItem : configFromKey?.renderItem
+  ) as (item: TItem) => React.ReactNode;
+  const getItemKey = (
+    'getItemKey' in props ? props.getItemKey : configFromKey?.getItemKey
+  ) as (item: TItem) => string;
+  const fuseOptions = (
+    'fuseOptions' in props ? props.fuseOptions : configFromKey?.fuseOptions
+  ) as IFuseOptions<TItem>;
+  const sortOptions = (
+    'sortOptions' in props ? props.sortOptions : configFromKey?.sortOptions
+  ) as SortOption<TItem>[];
+
+  const {
+    defaultSortKey,
+    pageSize = 10,
+    showPageNumbers = true,
+    syncWithURL = true,
+    className,
+    isLoading = false,
+    isError = false,
+    error = null,
+  } = props;
+
+  const sortPreferenceKey =
+    'configKey' in props
+      ? configFromKey?.sortPreferenceKey ?? 'archive-sort-preference'
+      : ('sortPreferenceKey' in props ? props.sortPreferenceKey : undefined) ??
+        'archive-sort-preference';
+
+  const emptyMessage =
+    'configKey' in props
+      ? configFromKey?.emptyMessage ?? 'Keine Einträge gefunden.'
+      : ('emptyMessage' in props ? props.emptyMessage : undefined) ??
+        'Keine Einträge gefunden.';
+
+  const searchPlaceholder =
+    'configKey' in props
+      ? configFromKey?.searchPlaceholder ?? 'Durchsuchen...'
+      : ('searchPlaceholder' in props ? props.searchPlaceholder : undefined) ??
+        'Durchsuchen...';
+
+  const itemCountLabel =
+    'configKey' in props
+      ? configFromKey?.itemCountLabel ??
+        ((count: number) =>
+          `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`)
+      : ('itemCountLabel' in props ? props.itemCountLabel : undefined) ??
+        ((count: number) =>
+          `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`);
+
+  const loadingMessage =
+    'configKey' in props
+      ? configFromKey?.loadingMessage ?? 'Laden...'
+      : ('loadingMessage' in props ? props.loadingMessage : undefined) ??
+        'Laden...';
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -57,62 +104,6 @@ export const ArchiveList = <TItem,>({
   const [hasCheckedLocalStorage, setHasCheckedLocalStorage] = useState(false);
   const [searchInput, setSearchInput] = useState(searchQuery);
 
-  useEffect(() => {
-    if (!syncWithURL || hasCheckedLocalStorage) return;
-    setHasCheckedLocalStorage(true);
-
-    const sortKeys = sortOptions.map((opt) => opt.key);
-    const savedSort = getSavedSortPreference(sortPreferenceKey, sortKeys);
-    if (savedSort && savedSort !== currentSort && !searchParams.has('sort')) {
-      updateURL(currentPage, savedSort, searchQuery);
-    }
-  }, [
-    syncWithURL,
-    hasCheckedLocalStorage,
-    currentSort,
-    currentPage,
-    searchParams,
-    searchQuery,
-    sortOptions,
-    sortPreferenceKey,
-  ]);
-
-  // Sync searchInput with searchQuery when URL changes
-  useEffect(() => {
-    setSearchInput(searchQuery);
-  }, [searchQuery]);
-
-  // Configure Fuse.js for searching
-  const fuse = useMemo(() => {
-    if (!items) return null;
-    return new Fuse(items, fuseOptions);
-  }, [items, fuseOptions]);
-
-  const searchedItems = useMemo(() => {
-    if (!items) return [];
-    if (!searchQuery || !fuse) return items;
-
-    const results = fuse.search(searchQuery);
-    return results.map((result) => result.item);
-  }, [items, searchQuery, fuse]);
-
-  const sortedItems = useMemo(() => {
-    const currentSortOption = sortOptions.find(
-      (opt) => opt.key === currentSort
-    );
-    if (!currentSortOption) return searchedItems;
-    return currentSortOption.sortFn(searchedItems);
-  }, [searchedItems, currentSort, sortOptions]);
-
-  const totalPages = Math.ceil(sortedItems.length / pageSize);
-  const validPage = Math.max(1, Math.min(currentPage, totalPages || 1));
-
-  const paginatedItems = useMemo(() => {
-    const startIndex = (validPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return sortedItems.slice(startIndex, endIndex);
-  }, [sortedItems, validPage, pageSize]);
-
   const updateURL = (page: number, sort: string, search: string) => {
     if (!syncWithURL) {
       // Update internal state when URL sync is disabled
@@ -133,6 +124,63 @@ export const ArchiveList = <TItem,>({
 
     router.push(newURL, { scroll: false });
   };
+
+  useEffect(() => {
+    if (!syncWithURL || hasCheckedLocalStorage) return;
+    setHasCheckedLocalStorage(true);
+
+    const sortKeys = sortOptions.map((opt) => opt.key);
+    const savedSort = getSavedSortPreference(sortPreferenceKey, sortKeys);
+    if (savedSort && savedSort !== currentSort && !searchParams.has('sort')) {
+      updateURL(currentPage, savedSort, searchQuery);
+    }
+  }, [
+    syncWithURL,
+    hasCheckedLocalStorage,
+    currentSort,
+    currentPage,
+    searchParams,
+    searchQuery,
+    sortOptions,
+    sortPreferenceKey,
+    updateURL,
+  ]);
+
+  // Sync searchInput with searchQuery when URL changes
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
+
+  // Configure Fuse.js for searching
+  const fuse = useMemo(() => {
+    if (!items) return null;
+    return new Fuse(items, fuseOptions);
+  }, [items, fuseOptions]);
+
+  const searchedItems = useMemo<TItem[]>(() => {
+    if (!items) return [];
+    if (!searchQuery || !fuse) return items;
+
+    const results = fuse.search(searchQuery);
+    return results.map((result) => result.item);
+  }, [items, searchQuery, fuse]);
+
+  const sortedItems = useMemo<TItem[]>(() => {
+    const currentSortOption = sortOptions.find(
+      (opt) => opt.key === currentSort
+    );
+    if (!currentSortOption) return searchedItems;
+    return currentSortOption.sortFn(searchedItems);
+  }, [searchedItems, currentSort, sortOptions]);
+
+  const totalPages = Math.ceil(sortedItems.length / pageSize);
+  const validPage = Math.max(1, Math.min(currentPage, totalPages || 1));
+
+  const paginatedItems = useMemo<TItem[]>(() => {
+    const startIndex = (validPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return sortedItems.slice(startIndex, endIndex);
+  }, [sortedItems, validPage, pageSize]);
 
   const handlePageChange = (newPage: number) => {
     updateURL(newPage, currentSort, searchQuery);

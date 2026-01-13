@@ -1,6 +1,5 @@
 'use client';
 import { ArchiveList } from '@/components/archive-list';
-import { reviewsAndCasesListConfig } from '@/lib/config/archive-list-configs';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { Profile } from '@/lib/queries/getProfile';
 import { UserCases } from '@/lib/queries/getUserCases';
@@ -35,7 +34,7 @@ const UserPage: FC<UserPageProps> = ({ profile, userReviewsAndCases }) => {
             Deine eingereichten Fälle
           </h1>
           <ArchiveList
-            {...reviewsAndCasesListConfig}
+            configKey="reviewsAndCases"
             items={userReviewsAndCases ?? []}
             className="mt-8 mb-12 lg:mb-24"
             pageSize={3}

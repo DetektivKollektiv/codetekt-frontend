@@ -62,7 +62,7 @@ export function CreateCaseForm({
   // Mutation
   const { mutate, isPending } = useMutation({
     ...createCaseMutation(supabase),
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('Fall erfolgreich eingereicht!');
       router.push('/archive');
     },

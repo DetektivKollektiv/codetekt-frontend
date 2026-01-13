@@ -1,7 +1,6 @@
 import { ArchiveList } from '@/components/archive-list';
 import { Button } from '@/components/ui/button';
 import UserPage from '@/components/user-page';
-import { aggregatedReviewsListConfig } from '@/lib/config/archive-list-configs';
 import {
   AggregatedReviews,
   getAggregatedReviews,
@@ -189,7 +188,7 @@ export default async function Home() {
           </div>
 
           <ArchiveList
-            {...aggregatedReviewsListConfig}
+            configKey="aggregatedReviews"
             items={aggregatedReviewsData ?? []}
             className="mt-8 lg:mb-24 mb-12"
             pageSize={5}

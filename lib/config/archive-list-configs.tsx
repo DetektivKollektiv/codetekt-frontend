@@ -1,6 +1,5 @@
 import { AggregatedReviewCard } from '@/components/archive-list/aggregated-review-card';
 import { CaseCard } from '@/components/archive-list/case-card';
-import { ArchiveListProps } from '@/components/archive-list/types';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { UserCases } from '../queries/getUserCases';
 
@@ -39,12 +38,11 @@ const sortReviewsAndUserCasesByNewestFirst = (
 };
 
 // Configuration for AggregatedReviews
-export const aggregatedReviewsListConfig: Omit<
-  ArchiveListProps<AggregatedReviews[number]>,
-  'items'
-> = {
-  renderItem: (item) => <AggregatedReviewCard caseItem={item} />,
-  getItemKey: (item) => item.case_id,
+export const aggregatedReviewsListConfig = {
+  renderItem: (item: AggregatedReviews[number]) => (
+    <AggregatedReviewCard caseItem={item} />
+  ),
+  getItemKey: (item: AggregatedReviews[number]) => item.case_id,
   fuseOptions: {
     keys: [
       { name: 'cases.open_graph_data.og_title', weight: 3 },
@@ -69,24 +67,22 @@ export const aggregatedReviewsListConfig: Omit<
     },
   ],
   searchPlaceholder: 'Fälle durchsuchen...',
-  itemCountLabel: (count) =>
+  itemCountLabel: (count: number) =>
     `${count} ${count === 1 ? 'Fall' : 'Fälle'} gefunden`,
   emptyMessage: 'Keine Fälle im Archiv gefunden.',
   loadingMessage: 'Lade Archiv...',
   sortPreferenceKey: 'archive-sort-preference',
 };
 
-export const reviewsAndCasesListConfig: Omit<
-  ArchiveListProps<UserCases[number] | AggregatedReviews[number]>,
-  'items'
-> = {
-  renderItem: (item) =>
+export const reviewsAndCasesListConfig = {
+  renderItem: (item: UserCases[number] | AggregatedReviews[number]) =>
     isUserCase(item) ? (
       <CaseCard caseItem={item} />
     ) : (
       <AggregatedReviewCard caseItem={item as AggregatedReviews[number]} />
     ),
-  getItemKey: (item) => (isUserCase(item) ? item.id! : item.case_id),
+  getItemKey: (item: UserCases[number] | AggregatedReviews[number]) =>
+    isUserCase(item) ? item.id! : item.case_id,
   fuseOptions: {
     keys: [
       { name: 'cases.open_graph_data.og_title', weight: 3 },
@@ -106,7 +102,7 @@ export const reviewsAndCasesListConfig: Omit<
     },
   ],
   searchPlaceholder: 'Fälle durchsuchen...',
-  itemCountLabel: (count) =>
+  itemCountLabel: (count: number) =>
     `${count} ${count === 1 ? 'Fall' : 'Fälle'} gefunden`,
   emptyMessage: 'Keine Fälle im Archiv gefunden.',
   loadingMessage: 'Lade Archiv...',
@@ -118,3 +114,12 @@ export const isUserCase = (
 ): item is UserCases[number] => {
   return (item as UserCases[number]).id !== undefined;
 };
+
+// Config registry for lookup by key
+export const archiveListConfigs = {
+  aggregatedReviews: aggregatedReviewsListConfig,
+  reviewsAndCases: reviewsAndCasesListConfig,
+} as const;
+
+// Type for config keys
+export type ArchiveListConfigKey = keyof typeof archiveListConfigs;

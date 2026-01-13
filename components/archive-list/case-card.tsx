@@ -21,10 +21,6 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
   // Type assertion for data field (Json type from Supabase)
   const ogData = caseItem.open_graph_data;
 
-  const handleShare = () => {
-    console.log('Share case:', caseItem.id);
-  };
-
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
       <CardContent className="p-4 lg:p-6 w-full">
