@@ -1,7 +1,12 @@
 'use client';
 
-import { DetailCommentCard } from './detail-comment-card';
+import { Button } from '@/components/ui/button';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
+import type { EmblaCarouselType } from 'embla-carousel';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { DetailCommentCard } from './detail-comment-card';
 
 interface DetailCommentsProps {
   comments: CaseComments;
@@ -9,6 +14,39 @@ interface DetailCommentsProps {
 }
 
 export function DetailComments({ comments, userId }: DetailCommentsProps) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'start',
+    slidesToScroll: 1,
+    dragFree: false,
+  });
+  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+
+  const onPrevButtonClick = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const onNextButtonClick = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
+    setPrevBtnDisabled(!emblaApi.canScrollPrev());
+    setNextBtnDisabled(!emblaApi.canScrollNext());
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    onSelect(emblaApi);
+    emblaApi.on('reInit', onSelect).on('select', onSelect);
+
+    return () => {
+      emblaApi.off('reInit', onSelect).off('select', onSelect);
+    };
+  }, [emblaApi, onSelect]);
   if (!comments || comments.length === 0) {
     return (
       <section className="space-y-6">
@@ -23,9 +61,9 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 relative">
       {/* Header */}
-      <div>
+      <div className="page-max-w">
         <h2 className="text-2xl font-bold">Kommentare</h2>
         <p className="text-muted-foreground mt-1">
           {comments.length} Kommentar{comments.length !== 1 ? 'e' : ''} zu
@@ -33,16 +71,53 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
         </p>
       </div>
 
-      {/* Comments grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {comments.map((comment) => (
-          <DetailCommentCard
-            key={comment.id}
-            comment={comment}
-            userId={userId}
-          />
-        ))}
+      {/* Comments carousel */}
+      <div className="overflow-hidden py-0.5 relative">
+        <div className="relative overflow-visible page-max-w">
+          <div className="embla" ref={emblaRef}>
+            <div className="embla__container flex gap-4 items-stretch">
+              {comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0 h-auto flex"
+                >
+                  <DetailCommentCard comment={comment} userId={userId} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
+      {/* Navigation buttons */}
+      {comments.length > 1 && (
+        <>
+          <Button
+            variant="outline"
+            id="prev-button-xxx"
+            size="icon"
+            className={`absolute left-0 top-1/2 -translate-y-1/2 translate-x-0 z-20 rounded-full shadow-lg ${
+              prevBtnDisabled ? 'hidden' : ''
+            }`}
+            onClick={onPrevButtonClick}
+            disabled={prevBtnDisabled}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 z-20 rounded-full shadow-lg ${
+              nextBtnDisabled ? 'hidden' : ''
+            }`}
+            onClick={onNextButtonClick}
+            disabled={nextBtnDisabled}
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </>
+      )}
     </section>
   );
 }

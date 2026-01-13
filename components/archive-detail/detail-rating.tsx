@@ -29,7 +29,7 @@ export function DetailRating({
   const reviewerCount = aggregatedReview.reviewer_ids.length;
 
   return (
-    <Card className="border-none bg-brand-darkblue text-white">
+    <Card className="border-none bg-brand-darkblue text-white page-max-w">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
         <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
         <HelpButton theme="dark" href="/help" />

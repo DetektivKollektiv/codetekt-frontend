@@ -18,7 +18,7 @@ interface DetailEvaluationProps {
 
 export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
   return (
-    <section className="space-y-6 ">
+    <section className="space-y-6 page-max-w">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>

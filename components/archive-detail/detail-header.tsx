@@ -29,7 +29,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
   const keywordType = reviewData?.metadata?.keyword_type || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-max-w">
       {/* Back button */}
       <Link href="/archive">
         <Button variant="ghost" size="sm">

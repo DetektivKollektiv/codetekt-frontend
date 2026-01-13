@@ -182,7 +182,7 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
         </DialogContent>
       </Dialog>
 
-      <Card>
+      <Card className="h-auto">
         <CardContent className="p-6 h-full relative overflow-hidden">
           {moderation && (
             <div className="absolute inset-0 w-full h-full rounded-lg p-2 z-20">
