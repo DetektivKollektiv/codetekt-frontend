@@ -1,14 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { HelpButton } from '@/components/ui/help-button';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import {
   getRatingInfo,
   ratingInfo,
   type RatingKey,
 } from '@/lib/utils/rating-helpers';
-import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 
 interface DetailRatingProps {
@@ -42,16 +41,7 @@ export function DetailRating({
     <Card className="border-none bg-brand-darkblue text-white">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
         <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
-        <Link href="/help">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-white hover:bg-white/10"
-          >
-            <HelpCircle className="w-4 h-4 mr-2" />
-            Hilfe
-          </Button>
-        </Link>
+        <HelpButton theme="dark" href="/help" />
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Rating buttons */}

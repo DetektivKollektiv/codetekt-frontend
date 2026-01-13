@@ -6,10 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
+import { HelpButton } from '@/components/ui/help-button';
 import { categories, fieldDefinitions } from '@/lib/config/field-definitions';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
-import { HelpCircle } from 'lucide-react';
 import { DetailEvaluationCard } from './detail-evaluation-card';
 import { DetailEvaluationCarousel } from './detail-evaluation-carousel';
 
@@ -29,10 +28,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
             bewertet
           </p>
         </div>
-        <Button variant="ghost" size="sm">
-          <HelpCircle className="w-4 h-4 mr-2" />
-          Hilfe
-        </Button>
+        <HelpButton theme="light" />
       </div>
 
       {/* Accordion with categories */}

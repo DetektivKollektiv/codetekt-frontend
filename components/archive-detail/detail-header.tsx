@@ -32,7 +32,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
     <div className="space-y-6">
       {/* Back button */}
       <Link href="/archive">
-        <Button variant="outline" size="sm">
+        <Button variant="ghost" size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Zurück zur Übersicht
         </Button>
@@ -54,9 +54,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               </p>
 
               <div>
-                <h2 className="text-heading-xl leading-tight">
-                  {title}
-                </h2>
+                <h2 className="text-heading-xl leading-tight">{title}</h2>
               </div>
 
               <p className="text-body-md text-muted-foreground leading-relaxed">
