@@ -9,18 +9,9 @@ export function getAggregatedReview(
     .from('review_aggregations')
     .select(
       `
-      case_id,
-      result_score,
-      data,
-      reviewer_ids,
-      calculated_at,
+      *,
       cases!inner (
-        id,
-        submitted_by,
-        content,
-        content_type,
-        template_version,
-        submitted_at,
+        *,
         open_graph_data (*)
       )
     `

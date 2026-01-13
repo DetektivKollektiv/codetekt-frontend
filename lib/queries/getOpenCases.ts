@@ -6,12 +6,7 @@ export function getOpenCases(client: SupabaseClient<Database>) {
     .from('cases_without_open_disputes')
     .select(
       `
-      id,
-      submitted_by,
-      content,
-      content_type,
-      template_version,
-      submitted_at,
+      *,
       open_graph_data (*),
       review_aggregations (case_id)
     `
