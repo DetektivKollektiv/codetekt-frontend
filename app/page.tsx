@@ -58,10 +58,7 @@ export default async function Home() {
   return (
     <main className="h-full flex-1">
       {isAuthenticated && user && profile ? (
-        <UserPage
-          profile={profile}
-          userReviewsAndCases={userReviewsAndCases || []}
-        />
+        <UserPage profile={profile} userReviewsAndCases={[]} />
       ) : (
         <>
           <div className="pb-12 bg-gradient-neutral-coral">

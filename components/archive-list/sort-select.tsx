@@ -20,6 +20,7 @@ export interface ArchiveListSortSelectProps {
   onValueChange: (value: string) => void;
   storageKey: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export const ArchiveListSortSelect: FC<ArchiveListSortSelectProps> = ({
@@ -28,6 +29,7 @@ export const ArchiveListSortSelect: FC<ArchiveListSortSelectProps> = ({
   onValueChange,
   storageKey,
   className,
+  disabled = false,
 }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,7 +39,7 @@ export const ArchiveListSortSelect: FC<ArchiveListSortSelectProps> = ({
 
   return (
     <div className={className}>
-      <Select value={value} onValueChange={onValueChange}>
+      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger className="w-[200px]" aria-label="Sortierung auswählen">
           <SelectValue placeholder="Sortierung wählen" />
         </SelectTrigger>

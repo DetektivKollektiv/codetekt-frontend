@@ -1,9 +1,8 @@
-import { ArchiveList } from '@/components/archive-list';
-import { aggregatedReviewsListConfig } from '@/lib/config/archive-list-configs';
+import ArchivePage from '@/components/archive-page';
 import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { createClient } from '@/lib/supabase/server';
 
-export default async function ArchivePage() {
+export default async function Page() {
   const supabase = await createClient();
   const { data, error } = await getAggregatedReviews(supabase);
 
@@ -11,20 +10,5 @@ export default async function ArchivePage() {
     throw error;
   }
 
-  return (
-    <>
-      <div className="page-max-w w-full mt-12 ">
-        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
-          Gelöste Fälle
-        </h1>
-      </div>
-      <ArchiveList
-        {...aggregatedReviewsListConfig}
-        items={data ?? []}
-        className="mt-12 mb-12 lg:mb-24"
-        pageSize={10}
-        showPageNumbers
-      />
-    </>
-  );
+  return <ArchivePage aggregatedReviews={data || []} />;
 }

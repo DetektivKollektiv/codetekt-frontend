@@ -5,11 +5,9 @@ import { Pagination } from '@/components/ui/pagination';
 import Fuse from 'fuse.js';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { Card, CardContent } from '../ui/card';
 import { Separator } from '../ui/separator';
-import {
-  ArchiveListSortSelect,
-  getSavedSortPreference,
-} from './sort-select';
+import { ArchiveListSortSelect, getSavedSortPreference } from './sort-select';
 import { ArchiveListProps } from './types';
 
 export const ArchiveList = <TItem,>({
@@ -29,7 +27,8 @@ export const ArchiveList = <TItem,>({
   error = null,
   emptyMessage = 'Keine Einträge gefunden.',
   searchPlaceholder = 'Durchsuchen...',
-  itemCountLabel = (count) => `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`,
+  itemCountLabel = (count) =>
+    `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`,
   loadingMessage = 'Laden...',
 }: ArchiveListProps<TItem>) => {
   const router = useRouter();
@@ -62,7 +61,7 @@ export const ArchiveList = <TItem,>({
     if (!syncWithURL || hasCheckedLocalStorage) return;
     setHasCheckedLocalStorage(true);
 
-    const sortKeys = sortOptions.map(opt => opt.key);
+    const sortKeys = sortOptions.map((opt) => opt.key);
     const savedSort = getSavedSortPreference(sortPreferenceKey, sortKeys);
     if (savedSort && savedSort !== currentSort && !searchParams.has('sort')) {
       updateURL(currentPage, savedSort, searchQuery);
@@ -98,7 +97,9 @@ export const ArchiveList = <TItem,>({
   }, [items, searchQuery, fuse]);
 
   const sortedItems = useMemo(() => {
-    const currentSortOption = sortOptions.find(opt => opt.key === currentSort);
+    const currentSortOption = sortOptions.find(
+      (opt) => opt.key === currentSort
+    );
     if (!currentSortOption) return searchedItems;
     return currentSortOption.sortFn(searchedItems);
   }, [searchedItems, currentSort, sortOptions]);
@@ -149,38 +150,6 @@ export const ArchiveList = <TItem,>({
     updateURL(1, currentSort, value);
   };
 
-  if (isLoading) {
-    return (
-      <div className={`page-max-w w-full ${className || ''}`}>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">{loadingMessage}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className={`page-max-w w-full ${className || ''}`}>
-        <div className="text-center py-12">
-          <p className="text-destructive">
-            Fehler beim Laden: {error?.message}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!items || items.length === 0) {
-    return (
-      <div className={`page-max-w w-full ${className || ''}`}>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">{emptyMessage}</p>
-        </div>
-      </div>
-    );
-  }
-
   const showPagination = totalPages > 1;
 
   return (
@@ -192,6 +161,7 @@ export const ArchiveList = <TItem,>({
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full md:max-w-80 order-last md:order-none"
+          disabled={sortedItems.length === 0}
         />
         <div className="flex-1 flex justify-between items-end w-full">
           <div className="text-sm text-muted-foreground whitespace-nowrap">
@@ -203,16 +173,41 @@ export const ArchiveList = <TItem,>({
             onValueChange={handleSortChange}
             storageKey={sortPreferenceKey}
             className="justify-self-end ml-auto"
+            disabled={sortedItems.length === 0}
           />
         </div>
       </div>
       <Separator className="mb-4" />
-      <div className="gap-4 flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-col">
-        {paginatedItems.map((item) => (
-          <div key={getItemKey(item)}>
-            {renderItem(item)}
-          </div>
-        ))}
+      <div
+        className={`gap-4 flex flex-col  lg:flex lg:flex-col ${
+          items && items.length > 0 ? 'md:grid md:grid-cols-2' : ''
+        } `}
+      >
+        {isLoading ? (
+          <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted">
+            <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
+              <p className="text-muted-foreground">{loadingMessage}</p>
+            </CardContent>
+          </Card>
+        ) : isError ? (
+          <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted">
+            <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
+              <p className="text-destructive">
+                Fehler beim Laden: {error?.message}
+              </p>
+            </CardContent>
+          </Card>
+        ) : !items || items.length === 0 ? (
+          <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted ">
+            <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
+              <p className="text-muted-foreground">{emptyMessage}</p>
+            </CardContent>
+          </Card>
+        ) : (
+          paginatedItems.map((item) => (
+            <div key={getItemKey(item)}>{renderItem(item)}</div>
+          ))
+        )}
       </div>
 
       {showPagination && (

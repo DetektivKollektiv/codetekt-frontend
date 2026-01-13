@@ -24,7 +24,7 @@ const UserPage: FC<UserPageProps> = ({ profile, userReviewsAndCases }) => {
         </p>
       </div>
 
-      {userReviewsAndCases && userReviewsAndCases.length > 0 && (
+      {userReviewsAndCases && (
         <div className=" mt-12 lg:mt-24">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
             Deine eingereichten Fälle
