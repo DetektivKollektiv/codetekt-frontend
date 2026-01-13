@@ -12,14 +12,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
+import {
+  FunctionsFetchError,
+  FunctionsHttpError,
+  FunctionsRelayError,
+} from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import {
-  FunctionsHttpError,
-  FunctionsRelayError,
-  FunctionsFetchError,
-} from '@supabase/supabase-js';
 
 export function SignUpForm({
   className,
@@ -89,7 +89,7 @@ export function SignUpForm({
       });
     }
 
-    router.push('/protected');
+    router.push('/');
     setIsLoading(false);
   };
 
