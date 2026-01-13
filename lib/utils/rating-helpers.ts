@@ -24,41 +24,41 @@ export const ratingInfo: Record<RatingKey, RatingLabelInfo> = {
     key: 'untrusted',
     label: 'Nicht vertrauenswürdig',
     shortLabel: 'Nicht vertrauenswürdig',
-    colorClass: 'text-red-600',
-    bgColorClass: 'bg-red-50',
-    borderColorClass: 'border-red-200',
-    gradientFrom: '#dc2626',
-    gradientTo: '#ef4444',
+    colorClass: 'text-brand-coral-dark',
+    bgColorClass: 'bg-brand-coral-light',
+    borderColorClass: 'border-brand-coral',
+    gradientFrom: 'hsl(var(--brand-coral-dark))',
+    gradientTo: 'hsl(var(--brand-coral))',
   },
   'mostly-untrusted': {
     key: 'mostly-untrusted',
     label: 'Eher nicht vertrauenswürdig',
     shortLabel: 'Eher nicht vertrauenswürdig',
-    colorClass: 'text-orange-600',
-    bgColorClass: 'bg-orange-50',
-    borderColorClass: 'border-orange-200',
-    gradientFrom: '#ea580c',
-    gradientTo: '#f97316',
+    colorClass: 'text-brand-orange-dark',
+    bgColorClass: 'bg-brand-orange-light',
+    borderColorClass: 'border-brand-orange',
+    gradientFrom: 'hsl(var(--brand-orange-dark))',
+    gradientTo: 'hsl(var(--brand-orange))',
   },
   'mostly-trusted': {
     key: 'mostly-trusted',
     label: 'Eher vertrauenswürdig',
     shortLabel: 'Eher vertrauenswürdig',
-    colorClass: 'text-yellow-600',
-    bgColorClass: 'bg-yellow-50',
-    borderColorClass: 'border-yellow-200',
-    gradientFrom: '#ca8a04',
-    gradientTo: '#facc15',
+    colorClass: 'text-brand-yellow-dark',
+    bgColorClass: 'bg-brand-yellow-light',
+    borderColorClass: 'border-brand-yellow',
+    gradientFrom: 'hsl(var(--brand-yellow-dark))',
+    gradientTo: 'hsl(var(--brand-yellow))',
   },
   trusted: {
     key: 'trusted',
     label: 'Vertrauenswürdig',
     shortLabel: 'Vertrauenswürdig',
-    colorClass: 'text-green-600',
-    bgColorClass: 'bg-green-50',
-    borderColorClass: 'border-green-200',
-    gradientFrom: '#16a34a',
-    gradientTo: '#22c55e',
+    colorClass: 'text-brand-green-dark',
+    bgColorClass: 'bg-brand-green-light',
+    borderColorClass: 'border-brand-green',
+    gradientFrom: 'hsl(var(--brand-green-dark))',
+    gradientTo: 'hsl(var(--brand-green))',
   },
 };
 
@@ -85,10 +85,10 @@ export function getRatingInfo(score: number): RatingLabelInfo {
  */
 export function getRatingLevelColor(level: RatingLevel): string {
   const colors = {
-    0: '#ef4444', // red
-    1: '#f97316', // orange
-    2: '#facc15', // yellow
-    3: '#22c55e', // green
+    0: 'hsl(var(--brand-coral))',
+    1: 'hsl(var(--brand-orange))',
+    2: 'hsl(var(--brand-yellow))',
+    3: 'hsl(var(--brand-green))',
   };
   return colors[level];
 }

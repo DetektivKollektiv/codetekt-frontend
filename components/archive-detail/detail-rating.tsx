@@ -1,9 +1,13 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
-import { getRatingInfo, ratingInfo, type RatingKey } from '@/lib/utils/rating-helpers';
+import {
+  getRatingInfo,
+  ratingInfo,
+  type RatingKey,
+} from '@/lib/utils/rating-helpers';
 import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -13,7 +17,12 @@ interface DetailRatingProps {
 }
 
 // Define rating order and reviewer avatars
-const ratingOrder: RatingKey[] = ['untrusted', 'mostly-untrusted', 'mostly-trusted', 'trusted'];
+const ratingOrder: RatingKey[] = [
+  'untrusted',
+  'mostly-untrusted',
+  'mostly-trusted',
+  'trusted',
+];
 const reviewerColors = [
   'hsl(var(--brand-coral))',
   'hsl(var(--brand-coral-dark))',
@@ -30,13 +39,7 @@ export function DetailRating({
   const reviewerCount = aggregatedReview.reviewer_ids.length;
 
   return (
-    <Card
-      className="border-none"
-      style={{
-        backgroundColor: 'hsl(var(--brand-darkblue))',
-        color: 'white',
-      }}
-    >
+    <Card className="border-none bg-brand-darkblue text-white">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
         <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
         <Link href="/help">
@@ -61,13 +64,14 @@ export function DetailRating({
               <button
                 key={key}
                 disabled
-                className="px-6 py-4 rounded-lg text-body-md transition-all"
-                style={{
-                  backgroundColor: isActive ? rating.gradientFrom : 'rgba(255, 255, 255, 0.2)',
-                  color: 'white',
-                  cursor: 'default',
-                  opacity: isActive ? 1 : 0.7,
-                }}
+                className={`px-6 py-4 rounded-lg text-body-md text-white cursor-default transition-all ${
+                  isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
+                }`}
+                style={
+                  isActive
+                    ? { backgroundColor: rating.gradientFrom }
+                    : undefined
+                }
               >
                 {rating.label}
               </button>
@@ -79,7 +83,11 @@ export function DetailRating({
         {!isAuthenticated ? (
           <div className="space-y-4">
             <p className="text-white/90">
-              Dieser Fall wurde von <span className="font-semibold">{reviewerCount} Detektiv*innen</span> bearbeitet. Mach mit und{' '}
+              Dieser Fall wurde von{' '}
+              <span className="font-semibold">
+                {reviewerCount} Detektiv*innen
+              </span>{' '}
+              bearbeitet. Mach mit und{' '}
               <Link href="/register" className="underline hover:text-white">
                 registriere
               </Link>{' '}
@@ -87,7 +95,7 @@ export function DetailRating({
             </p>
 
             {/* Reviewer avatars */}
-            <div className="flex gap-2">
+            <div className="flex -gap-2">
               {reviewerColors.slice(0, reviewerCount).map((color, index) => (
                 <div
                   key={index}
@@ -102,15 +110,19 @@ export function DetailRating({
         ) : (
           <div className="space-y-4">
             <p className="text-white/90">
-              Dieser Fall wurde von <span className="font-semibold">{reviewerCount} Detektiv*innen</span> bearbeitet.
+              Dieser Fall wurde von{' '}
+              <span className="font-semibold">
+                {reviewerCount} Detektiv*innen
+              </span>{' '}
+              bearbeitet.
             </p>
 
             {/* Reviewer avatars */}
-            <div className="flex gap-2">
+            <div className="flex -space-x-2">
               {reviewerColors.slice(0, reviewerCount).map((color, index) => (
                 <div
                   key={index}
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white text-heading-sm"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-body-sm"
                   style={{ backgroundColor: color }}
                 >
                   {String.fromCharCode(65 + index)}
