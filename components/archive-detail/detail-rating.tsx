@@ -29,90 +29,91 @@ export function DetailRating({
   const reviewerCount = aggregatedReview.reviewer_ids.length;
 
   return (
-    <Card className="border-none bg-brand-darkblue text-white page-max-w">
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
-        <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
-        <HelpButton theme="dark" href="/help" />
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Rating buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {ratingLevels.map((level) => {
-            const rating = getRatingStyle(level);
-            const isActive = rating.label === currentRating.label;
-
-            return (
-              <button
-                key={level}
-                disabled
-                className={`px-6 py-4 rounded-lg text-body-md font-bold text-white cursor-default transition-all ${
-                  isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
-                }`}
-                style={
-                  isActive
-                    ? { backgroundColor: rating.background, color: rating.text }
-                    : undefined
-                }
-              >
-                {rating.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Reviewer info and CTA */}
-        {!isAuthenticated ? (
-          <div className="space-y-4">
-            <p className="text-white/90">
-              Dieser Fall wurde von{' '}
-              <span className="font-semibold">
-                {reviewerCount} Detektiv*innen
-              </span>{' '}
-              bearbeitet. Mach mit und{' '}
-              <Link href="/register" className="underline hover:text-white">
-                registriere
-              </Link>{' '}
-              dich jetzt!
-            </p>
-
-            {/* Reviewer avatars */}
-            <div className="flex -gap-2">
-              {reviewerColors.slice(0, reviewerCount).map((color, index) => (
-                <div
-                  key={index}
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white text-heading-sm"
-                  style={{ backgroundColor: color }}
+    <div className="page-max-w">
+      <Card className="border-none bg-brand-darkblue text-white ">
+        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+          <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
+          <HelpButton theme="dark" href="/help" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Rating buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {ratingLevels.map((level) => {
+              const rating = getRatingStyle(level);
+              const isActive = rating.label === currentRating.label;
+              return (
+                <button
+                  key={level}
+                  disabled
+                  className={`px-6 py-4 rounded-lg text-body-md font-bold text-white cursor-default transition-all ${
+                    isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: rating.background,
+                          color: rating.text,
+                        }
+                      : undefined
+                  }
                 >
-                  {String.fromCharCode(65 + index)}
-                </div>
-              ))}
-            </div>
+                  {rating.label}
+                </button>
+              );
+            })}
           </div>
-        ) : (
-          <div className="space-y-4">
-            <p className="text-white/90">
-              Dieser Fall wurde von{' '}
-              <span className="font-semibold">
-                {reviewerCount} Detektiv*innen
-              </span>{' '}
-              bearbeitet.
-            </p>
-
-            {/* Reviewer avatars */}
-            <div className="flex -space-x-2">
-              {reviewerColors.slice(0, reviewerCount).map((color, index) => (
-                <div
-                  key={index}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-body-sm"
-                  style={{ backgroundColor: color }}
-                >
-                  {String.fromCharCode(65 + index)}
-                </div>
-              ))}
+          {/* Reviewer info and CTA */}
+          {!isAuthenticated ? (
+            <div className="space-y-4">
+              <p className="text-white/90">
+                Dieser Fall wurde von{' '}
+                <span className="font-semibold">
+                  {reviewerCount} Detektiv*innen
+                </span>{' '}
+                bearbeitet. Mach mit und{' '}
+                <Link href="/register" className="underline hover:text-white">
+                  registriere
+                </Link>{' '}
+                dich jetzt!
+              </p>
+              {/* Reviewer avatars */}
+              <div className="flex -gap-2">
+                {reviewerColors.slice(0, reviewerCount).map((color, index) => (
+                  <div
+                    key={index}
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-heading-sm"
+                    style={{ backgroundColor: color }}
+                  >
+                    {String.fromCharCode(65 + index)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-white/90">
+                Dieser Fall wurde von{' '}
+                <span className="font-semibold">
+                  {reviewerCount} Detektiv*innen
+                </span>{' '}
+                bearbeitet.
+              </p>
+              {/* Reviewer avatars */}
+              <div className="flex -space-x-2">
+                {reviewerColors.slice(0, reviewerCount).map((color, index) => (
+                  <div
+                    key={index}
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-body-sm"
+                    style={{ backgroundColor: color }}
+                  >
+                    {String.fromCharCode(65 + index)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
