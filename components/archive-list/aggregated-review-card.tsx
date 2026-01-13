@@ -72,8 +72,12 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
             {/* Title & Description */}
             <CardText
               date={getLocalDate(caseItem.calculated_at!)}
-              title={ogData?.og_title ?? null}
-              description={ogData?.og_description ?? null}
+              title={
+                'Fall ' +
+                caseItem.cases.case_number +
+                (ogData?.og_title ? ': ' + ogData?.og_title : '')
+              }
+              description={ogData?.og_description ?? caseItem.cases.content}
             />
 
             {/* Action Buttons */}

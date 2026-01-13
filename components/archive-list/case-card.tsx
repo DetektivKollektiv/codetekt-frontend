@@ -60,8 +60,12 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             {/* Title & Description */}
             <CardText
               date={getLocalDate(caseItem.submitted_at!)}
-              title={ogData?.og_title ?? null}
-              description={ogData?.og_description ?? null}
+              title={
+                'Fall ' +
+                caseItem.case_number +
+                (ogData?.og_title ? ': ' + ogData?.og_title : '')
+              }
+              description={ogData?.og_description ?? caseItem.content}
             />
 
             {/* Action Buttons */}
