@@ -30,6 +30,14 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
   const fuseOptions = (
     'fuseOptions' in props ? props.fuseOptions : configFromKey?.fuseOptions
   ) as IFuseOptions<TItem>;
+
+  console.log(
+    'Sort Options:',
+    props,
+    props.sortOptions,
+    configFromKey?.sortOptions
+  );
+
   const sortOptions = (
     'sortOptions' in props ? props.sortOptions : configFromKey?.sortOptions
   ) as SortOption<TItem>[];

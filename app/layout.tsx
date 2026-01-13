@@ -25,7 +25,11 @@ export default async function RootLayout({
   return (
     <ReactQueryClientProvider>
       <Suspense fallback={<div>Codetekt Lädt</div>}>
-        <html lang="de" suppressHydrationWarning>
+        <html
+          lang="de"
+          className="scroll-pt-32 scroll-smooth"
+          suppressHydrationWarning
+        >
           <body className={`antialiased`}>
             <NavBar />
             <main className="page-mt page-min-h flex flex-col">

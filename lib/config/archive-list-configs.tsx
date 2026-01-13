@@ -1,6 +1,7 @@
 import { AggregatedReviewCard } from '@/components/archive-list/aggregated-review-card';
 import { CaseCard } from '@/components/archive-list/case-card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { OpenCases } from '../queries/getOpenCases';
 import { UserCases } from '../queries/getUserCases';
 
 // Extract sort functions for reusability
@@ -34,6 +35,14 @@ const sortReviewsAndUserCasesByNewestFirst = (
       ? new Date(b.submitted_at!).getTime()
       : new Date(b.calculated_at).getTime();
     return dateB - dateA;
+  });
+};
+
+const sortOpenCasesByNewestFirst = (items: OpenCases) => {
+  return [...items].sort((a, b) => {
+    return (
+      new Date(b.submitted_at!).getTime() - new Date(a.submitted_at!).getTime()
+    );
   });
 };
 
@@ -106,6 +115,35 @@ export const reviewsAndCasesListConfig = {
     `${count} ${count === 1 ? 'Fall' : 'Fälle'} gefunden`,
   emptyMessage: 'Keine Fälle im Archiv gefunden.',
   loadingMessage: 'Lade Archiv...',
+  sortPreferenceKey: 'review-case-list-preference',
+};
+
+export const casesConfig = {
+  renderItem: (item: UserCases[number]) => <CaseCard caseItem={item} />,
+  getItemKey: (item: UserCases[number]) => item.id!,
+  fuseOptions: {
+    keys: [
+      { name: 'cases.open_graph_data.og_title', weight: 3 },
+      { name: 'data.metadata.content_type', weight: 2 },
+      { name: 'data.metadata.keyword_type', weight: 2 },
+      { name: 'data.data', weight: 2 },
+      { name: 'cases.open_graph_data.og_description', weight: 1 },
+    ],
+    threshold: 0.4,
+    ignoreLocation: true,
+  },
+  sortOptions: [
+    {
+      key: 'newest_first',
+      label: 'Neuste zuerst',
+      sortFn: sortOpenCasesByNewestFirst,
+    },
+  ],
+  searchPlaceholder: 'Fälle durchsuchen...',
+  itemCountLabel: (count: number) =>
+    `${count} ${count === 1 ? 'Fall' : 'Fälle'} gefunden`,
+  emptyMessage: 'Keine Fälle im Archiv gefunden.',
+  loadingMessage: 'Lade Archiv...',
   sortPreferenceKey: 'case-list-preference',
 };
 
@@ -119,6 +157,8 @@ export const isUserCase = (
 export const archiveListConfigs = {
   aggregatedReviews: aggregatedReviewsListConfig,
   reviewsAndCases: reviewsAndCasesListConfig,
+  cases: casesConfig,
+  openCases: casesConfig,
 } as const;
 
 // Type for config keys

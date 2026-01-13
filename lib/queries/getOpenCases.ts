@@ -12,10 +12,11 @@ export function getOpenCases(client: SupabaseClient<Database>) {
       content_type,
       template_version,
       submitted_at,
-      open_graph_data (*)
+      open_graph_data (*),
+      review_aggregations (case_id)
     `
     )
-    .not('id', 'in', client.from('review_answers_submitted').select('case_id'));
+    .is('review_aggregations.case_id', null);
 }
 
 export const openCasesQuery = (client: SupabaseClient) => ({

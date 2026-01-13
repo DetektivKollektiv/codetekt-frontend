@@ -1,6 +1,7 @@
 'use client';
 import { ArchiveList } from '@/components/archive-list';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { OpenCases } from '@/lib/queries/getOpenCases';
 import { Profile } from '@/lib/queries/getProfile';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { User } from '@supabase/supabase-js';
@@ -9,6 +10,7 @@ import UserSettings from './user-settings';
 interface UserPageProps {
   profile: NonNullable<Profile>;
   user: User;
+  openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
@@ -18,6 +20,7 @@ const UserPage: FC<UserPageProps> = ({
   user,
   ownUserReviewsAndCases,
   userReviewsAndCases,
+  openCases,
 }) => {
   return (
     <>
@@ -37,7 +40,7 @@ const UserPage: FC<UserPageProps> = ({
       </div>
 
       {ownUserReviewsAndCases && (
-        <div className=" mt-12 lg:mt-24">
+        <div className="mt-24 lg:mt-32">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
             Deine eingereichten Fälle
           </h1>
@@ -45,7 +48,7 @@ const UserPage: FC<UserPageProps> = ({
             configKey="reviewsAndCases"
             items={ownUserReviewsAndCases ?? []}
             className="mt-8 mb-12 lg:mb-24"
-            pageSize={3}
+            pageSize={4}
             showPageNumbers
             syncWithURL={false}
           />
@@ -61,7 +64,23 @@ const UserPage: FC<UserPageProps> = ({
             configKey="reviewsAndCases"
             items={userReviewsAndCases ?? []}
             className="mt-8 mb-12 lg:mb-24"
-            pageSize={3}
+            pageSize={4}
+            showPageNumbers
+            syncWithURL={false}
+          />
+        </div>
+      )}
+
+      {openCases && (
+        <div className="mt-24 lg:mt-32" id="open-cases">
+          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
+            Fälle die deine Hilfe benötigen
+          </h1>
+          <ArchiveList
+            configKey="openCases"
+            items={openCases ?? []}
+            className="mt-8 mb-12 lg:mb-24"
+            pageSize={4}
             showPageNumbers
             syncWithURL={false}
           />

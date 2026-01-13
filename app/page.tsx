@@ -5,6 +5,7 @@ import {
   AggregatedReviews,
   getAggregatedReviews,
 } from '@/lib/queries/getAggregatedReviews';
+import { getOpenCases } from '@/lib/queries/getOpenCases';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
 import { getUserReviews } from '@/lib/queries/getUserReviews';
 import { getAuth } from '@/lib/supabase/getAuth';
@@ -17,6 +18,12 @@ export default async function Home() {
   const { data: aggregatedReviewsData, error } = await getAggregatedReviews(
     supabase
   );
+
+  const { data: openCases, error: openCasesError } = await getOpenCases(
+    supabase
+  );
+
+  console.log('Open Cases on Home Page:', openCases);
 
   const { user, profile, isAuthenticated } = await getAuth();
 
@@ -96,6 +103,10 @@ export default async function Home() {
     throw error;
   }
 
+  if (openCasesError) {
+    throw openCasesError;
+  }
+
   return (
     <main className="h-full flex-1">
       {isAuthenticated && user && profile ? (
@@ -104,6 +115,7 @@ export default async function Home() {
           user={user}
           userReviewsAndCases={ownUserReviewsAndCases ?? []}
           ownUserReviewsAndCases={userReviewsAndCases ?? []}
+          openCases={openCases ?? []}
         />
       ) : (
         <>
@@ -225,7 +237,7 @@ export default async function Home() {
             configKey="aggregatedReviews"
             items={aggregatedReviewsData ?? []}
             className="mt-8 lg:mb-24 mb-12"
-            pageSize={5}
+            pageSize={4}
             syncWithURL={false}
             showPageNumbers
           />

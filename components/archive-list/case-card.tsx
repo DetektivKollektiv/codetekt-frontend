@@ -3,6 +3,7 @@
 import { BadgeList } from '@/components/ui/badge-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { OpenCases } from '@/lib/queries/getOpenCases';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { getLocalDate } from '@/lib/utils';
 import Image from 'next/image';
@@ -12,7 +13,7 @@ import CardText from './card-text';
 import NoEvaluation from './no-evaluation';
 
 interface CaseCardProps {
-  caseItem: UserCases[number];
+  caseItem: UserCases[number] | OpenCases[number];
 }
 
 export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
@@ -65,7 +66,9 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
 
             {/* Action Buttons */}
             <div className="flex gap-3 flex-1 items-end">
-              {caseItem.review_answers_in_progress.length > 0 ? (
+              {'review_answers_in_progress' in caseItem &&
+              caseItem.review_answers_in_progress &&
+              caseItem.review_answers_in_progress.length > 0 ? (
                 <Link href={`/archive/${caseItem.id}`}>
                   <Button variant={'default'}>Bewertung bearbeiten</Button>
                 </Link>
