@@ -21,7 +21,7 @@ const UserPage: FC<UserPageProps> = ({
 }) => {
   return (
     <>
-      <div className="page-max-w w-full mt-12 ">
+      <div className="page-max-w w-full mt-12 lg:mt-24">
         <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
           Hi {profile.username}!
         </h1>
