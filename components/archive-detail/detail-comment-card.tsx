@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { createCommentReportMutation } from '@/lib/queries/createCommentReport';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
 import { commentLikesQuery } from '@/lib/queries/getCommentLikes';
+import { commentModerationQuery } from '@/lib/queries/getCommentModeration';
 import { commentReportsQuery } from '@/lib/queries/getCommentReports';
 import { toggleCommentLikeMutation } from '@/lib/queries/toggleCommentLike';
 import { createClient } from '@/lib/supabase/client';
@@ -45,6 +46,11 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
 
   // Fetch reports for this comment
   const { data: reports } = useQuery(commentReportsQuery(supabase, comment.id));
+
+  // Fetch moderation for this comment
+  const { data: moderation } = useQuery(
+    commentModerationQuery(supabase, comment.id)
+  );
 
   // Check if current user has liked this comment
   useEffect(() => {
@@ -101,7 +107,7 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
   });
 
   const handleLikeClick = () => {
-    if (!userId) return; // User must be authenticated
+    if (!userId || moderation) return; // User must be authenticated and comment not moderated
 
     likeMutation.mutate({
       commentId: comment.id,
@@ -178,13 +184,18 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
 
       <Card>
         <CardContent className="p-6 h-full relative overflow-hidden">
-          <div className="absolute inset-0  w-full h-full rounded-lg p-2 z-20">
-            <div className="w-full h-full bg-background/90 flex justify-center items-center">
-              <p className="text-body-md font-bold">
-                Dieser Kommentar wurde gemeldet.
-              </p>
+          {moderation && (
+            <div className="absolute inset-0 w-full h-full rounded-lg p-2 z-20">
+              <div className="w-full h-full bg-background/90 flex flex-col justify-center items-center gap-2 px-4">
+                <p className="text-body-md font-bold">
+                  Dieser Kommentar wurde moderiert.
+                </p>
+                <p className="text-sm text-muted-foreground text-center">
+                  {moderation.reason}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
           <div className="space-y-4 flex flex-col h-full">
             {/* Author info */}
             <div className="flex  gap-3 justify-between">
@@ -210,7 +221,7 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsDialogOpen(true)}
-                disabled={!userId || isReported}
+                disabled={!userId || isReported || !!moderation}
                 className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
               >
                 <Flag
@@ -233,7 +244,7 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
                 variant="ghost"
                 size="sm"
                 onClick={handleLikeClick}
-                disabled={!userId || likeMutation.isPending}
+                disabled={!userId || likeMutation.isPending || !!moderation}
                 className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
               >
                 <span className="text-sm font-medium">{likeCount}</span>
