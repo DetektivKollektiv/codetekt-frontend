@@ -1,15 +1,15 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import type { FieldDefinition } from '@/lib/config/field-definitions';
+import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
 import {
   getDistributionData,
+  getRatingLevelColor,
   getRatingLevelLabel,
-  formatAverageScore,
 } from '@/lib/utils/rating-helpers';
-import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
-import type { FieldDefinition } from '@/lib/config/field-definitions';
 
 interface DetailEvaluationCardProps {
   field: FieldDefinition;
@@ -22,14 +22,6 @@ export function DetailEvaluationCard({
 }: DetailEvaluationCardProps) {
   const distributionData = getDistributionData(fieldData);
   const average = fieldData.average;
-
-  // Determine badge color based on average score
-  const getBadgeVariant = () => {
-    if (average >= 2.5) return 'default';
-    if (average >= 1.5) return 'secondary';
-    if (average >= 0.5) return 'outline';
-    return 'destructive';
-  };
 
   return (
     <Card className="h-full">
@@ -51,14 +43,15 @@ export function DetailEvaluationCard({
           </p>
           <div className="flex items-center gap-2">
             <Badge
-              variant={getBadgeVariant()}
-              className="text-sm font-semibold px-3 py-1"
+              className="text-sm font-semibold px-3 py-1 w-full text-center"
+              style={{
+                backgroundColor: getRatingLevelColor(
+                  Math.round(average) as 0 | 1 | 2 | 3
+                ),
+              }}
             >
               {getRatingLevelLabel(Math.round(average) as 0 | 1 | 2 | 3)}
             </Badge>
-            <span className="text-sm text-muted-foreground">
-              Ø {formatAverageScore(average)}
-            </span>
           </div>
         </div>
 

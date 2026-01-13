@@ -64,7 +64,7 @@ export function DetailRating({
               <button
                 key={key}
                 disabled
-                className={`px-6 py-4 rounded-lg text-body-md text-white cursor-default transition-all ${
+                className={`px-6 py-4 rounded-lg text-body-md font-bold text-white cursor-default transition-all ${
                   isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
                 }`}
                 style={
