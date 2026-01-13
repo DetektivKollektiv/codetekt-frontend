@@ -7,8 +7,7 @@ import type { FieldDefinition } from '@/lib/config/field-definitions';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
 import {
   getDistributionData,
-  getRatingLevelColor,
-  getRatingLevelLabel,
+  getRatingStyle,
 } from '@/lib/utils/rating-helpers';
 
 interface DetailEvaluationCardProps {
@@ -22,7 +21,8 @@ export function DetailEvaluationCard({
 }: DetailEvaluationCardProps) {
   const distributionData = getDistributionData(fieldData);
   const average = fieldData.average;
-
+  const ratingStyle = getRatingStyle(average);
+  console.log('fieldData:', fieldData);
   return (
     <Card className="h-full">
       <CardContent className="p-6 space-y-4">
@@ -45,12 +45,11 @@ export function DetailEvaluationCard({
             <Badge
               className="text-sm font-semibold px-3 py-1 w-full text-center"
               style={{
-                backgroundColor: getRatingLevelColor(
-                  Math.round(average) as 0 | 1 | 2 | 3
-                ),
+                backgroundColor: ratingStyle.background,
+                color: ratingStyle.text,
               }}
             >
-              {getRatingLevelLabel(Math.round(average) as 0 | 1 | 2 | 3)}
+              {ratingStyle.label}
             </Badge>
           </div>
         </div>
@@ -74,7 +73,8 @@ export function DetailEvaluationCard({
                     className="h-full transition-all duration-300"
                     style={{
                       width: `${entry.percentage}%`,
-                      backgroundColor: entry.color,
+                      backgroundColor: entry.backgroundColor,
+                      color: entry.textColor,
                     }}
                   />
                 </div>

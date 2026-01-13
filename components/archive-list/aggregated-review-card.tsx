@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
-import { getTrustLevel } from '@/lib/utils/trust-level';
+import { getRatingStyle } from '@/lib/utils/rating-helpers';
 import { getWarningTags } from '@/lib/utils/warning-tags';
 import { Share2 } from 'lucide-react';
 import Image from 'next/image';
@@ -22,7 +22,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   caseItem,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const trustLevel = getTrustLevel(caseItem.result_score);
+  const ratingStyle = getRatingStyle(caseItem.result_score);
 
   // Type assertion for data field (Json type from Supabase)
   const reviewData = caseItem.data;
@@ -93,7 +93,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           </div>
 
           {/* Right: Evaluation */}
-          <Evaluation trustLevel={trustLevel} warningTags={warningTags} />
+          <Evaluation ratingStyle={ratingStyle} warningTags={warningTags} />
         </div>
       </CardContent>
     </Card>

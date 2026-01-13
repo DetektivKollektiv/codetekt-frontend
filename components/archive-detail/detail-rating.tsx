@@ -3,11 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { HelpButton } from '@/components/ui/help-button';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
-import {
-  getRatingInfo,
-  ratingInfo,
-  type RatingKey,
-} from '@/lib/utils/rating-helpers';
+import { getRatingStyle } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
 
 interface DetailRatingProps {
@@ -15,13 +11,8 @@ interface DetailRatingProps {
   isAuthenticated: boolean;
 }
 
-// Define rating order and reviewer avatars
-const ratingOrder: RatingKey[] = [
-  'untrusted',
-  'mostly-untrusted',
-  'mostly-trusted',
-  'trusted',
-];
+// Define rating levels and reviewer avatars
+const ratingLevels = [0, 1, 2, 3] as const;
 const reviewerColors = [
   'hsl(var(--brand-coral))',
   'hsl(var(--brand-coral-dark))',
@@ -34,7 +25,7 @@ export function DetailRating({
   isAuthenticated,
 }: DetailRatingProps) {
   const score = Number(aggregatedReview.result_score);
-  const currentRating = getRatingInfo(score);
+  const currentRating = getRatingStyle(score);
   const reviewerCount = aggregatedReview.reviewer_ids.length;
 
   return (
@@ -46,20 +37,20 @@ export function DetailRating({
       <CardContent className="space-y-6">
         {/* Rating buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {ratingOrder.map((key) => {
-            const rating = ratingInfo[key];
-            const isActive = currentRating.key === key;
+          {ratingLevels.map((level) => {
+            const rating = getRatingStyle(level);
+            const isActive = rating.label === currentRating.label;
 
             return (
               <button
-                key={key}
+                key={level}
                 disabled
                 className={`px-6 py-4 rounded-lg text-body-md font-bold text-white cursor-default transition-all ${
                   isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
                 }`}
                 style={
                   isActive
-                    ? { backgroundColor: rating.gradientFrom }
+                    ? { backgroundColor: rating.background, color: rating.text }
                     : undefined
                 }
               >

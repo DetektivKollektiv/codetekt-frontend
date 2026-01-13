@@ -1,25 +1,25 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { TrustLevel } from '@/lib/utils/trust-level';
+import { RatingStyle } from '@/lib/utils/rating-helpers';
 import { FC } from 'react';
 
 interface EvaluationProps {
-  trustLevel: TrustLevel;
+  ratingStyle: RatingStyle;
   warningTags: string[];
 }
 
-const Evaluation: FC<EvaluationProps> = ({ trustLevel, warningTags }) => {
+const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
   return (
     <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-48 lg:h-auto relative">
       <div>
         <h4 className="text-sm font-semibold mb-2">Bewertung</h4>
         <Badge
           className={cn(
-            trustLevel.colorClass,
+            ratingStyle.colorClass,
             'w-full justify-center pointer-events-none'
           )}
         >
-          {trustLevel.label}
+          {ratingStyle.label}
         </Badge>
       </div>
 

@@ -2,95 +2,71 @@ import type { ReviewAggregationData } from '../schemas/aggregation-schemas';
 
 export type RatingLevel = 0 | 1 | 2 | 3;
 
-export type RatingKey =
-  | 'untrusted'
-  | 'mostly-untrusted'
-  | 'mostly-trusted'
-  | 'trusted';
-
-export interface RatingLabelInfo {
-  key: RatingKey;
+export interface RatingStyle {
   label: string;
-  shortLabel: string;
   colorClass: string;
-  bgColorClass: string;
-  borderColorClass: string;
-  gradientFrom: string;
-  gradientTo: string;
-}
-
-export const ratingInfo: Record<RatingKey, RatingLabelInfo> = {
-  untrusted: {
-    key: 'untrusted',
-    label: 'Nicht vertrauenswürdig',
-    shortLabel: 'Nicht vertrauenswürdig',
-    colorClass: 'text-brand-coral-dark',
-    bgColorClass: 'bg-brand-coral-light',
-    borderColorClass: 'border-brand-coral',
-    gradientFrom: 'hsl(var(--brand-coral-dark))',
-    gradientTo: 'hsl(var(--brand-coral))',
-  },
-  'mostly-untrusted': {
-    key: 'mostly-untrusted',
-    label: 'Eher nicht vertrauenswürdig',
-    shortLabel: 'Eher nicht vertrauenswürdig',
-    colorClass: 'text-brand-orange-dark',
-    bgColorClass: 'bg-brand-orange-light',
-    borderColorClass: 'border-brand-orange',
-    gradientFrom: 'hsl(var(--brand-orange-dark))',
-    gradientTo: 'hsl(var(--brand-orange))',
-  },
-  'mostly-trusted': {
-    key: 'mostly-trusted',
-    label: 'Eher vertrauenswürdig',
-    shortLabel: 'Eher vertrauenswürdig',
-    colorClass: 'text-brand-yellow-dark',
-    bgColorClass: 'bg-brand-yellow-light',
-    borderColorClass: 'border-brand-yellow',
-    gradientFrom: 'hsl(var(--brand-yellow-dark))',
-    gradientTo: 'hsl(var(--brand-yellow))',
-  },
-  trusted: {
-    key: 'trusted',
-    label: 'Vertrauenswürdig',
-    shortLabel: 'Vertrauenswürdig',
-    colorClass: 'text-brand-green-dark',
-    bgColorClass: 'bg-brand-green-light',
-    borderColorClass: 'border-brand-green',
-    gradientFrom: 'hsl(var(--brand-green-dark))',
-    gradientTo: 'hsl(var(--brand-green))',
-  },
-};
-
-/**
- * Convert a numeric score to a rating key
- */
-export function getRatingKey(score: number): RatingKey {
-  if (score >= 2.5) return 'trusted';
-  if (score >= 1.5) return 'mostly-trusted';
-  if (score >= 0.5) return 'mostly-untrusted';
-  return 'untrusted';
+  background: string;
+  text: string;
 }
 
 /**
- * Get rating info for a given score
+ * Determines the rating style based on the score
+ * @param score - The score from 0-3
+ * @returns RatingStyle object with label, Tailwind color classes, and inline style colors
  */
-export function getRatingInfo(score: number): RatingLabelInfo {
-  const key = getRatingKey(score);
-  return ratingInfo[key];
+export function getRatingStyle(score: number): RatingStyle {
+  if (score < 1) {
+    return {
+      label: 'Nicht vertrauenswürdig',
+      colorClass: 'bg-destructive text-destructive-foreground',
+      background: 'hsl(var(--brand-coral))',
+      text: 'hsl(var(--neutral-0))',
+    };
+  } else if (score < 2) {
+    return {
+      label: 'Eher nicht vertrauenswürdig',
+      colorClass: 'bg-brand-orange text-neutral-0',
+      background: 'hsl(var(--brand-orange))',
+      text: 'hsl(var(--neutral-0))',
+    };
+  } else if (score < 3) {
+    return {
+      label: 'Eher vertrauenswürdig',
+      colorClass: 'bg-brand-yellow text-neutral-800',
+      background: 'hsl(var(--brand-yellow))',
+      text: 'hsl(var(--neutral-800))',
+    };
+  } else {
+    return {
+      label: 'Vertrauenswürdig',
+      colorClass: 'bg-brand-green text-neutral-0',
+      background: 'hsl(var(--brand-green))',
+      text: 'hsl(var(--neutral-0))',
+    };
+  }
 }
+
 
 /**
  * Get color for a specific rating level (0-3)
  */
-export function getRatingLevelColor(level: RatingLevel): string {
-  const colors = {
+export function getRatingLevelColor(level: RatingLevel): {
+  background: string;
+  text: string;
+} {
+  const backgroundColors = {
     0: 'hsl(var(--brand-coral))',
     1: 'hsl(var(--brand-orange))',
     2: 'hsl(var(--brand-yellow))',
     3: 'hsl(var(--brand-green))',
   };
-  return colors[level];
+  const textColors = {
+    0: 'hsl(var(--neutral-0))',
+    1: 'hsl(var(--neutral-0))',
+    2: 'hsl(var(--neutral-800))',
+    3: 'hsl(var(--neutral-0))',
+  };
+  return { background: backgroundColors[level], text: textColors[level] };
 }
 
 /**
@@ -110,7 +86,8 @@ export interface DistributionEntry {
   level: RatingLevel;
   label: string;
   percentage: number;
-  color: string;
+  textColor: string;
+  backgroundColor: string;
 }
 
 /**
@@ -124,25 +101,29 @@ export function getDistributionData(field: {
       level: 3,
       label: getRatingLevelLabel(3),
       percentage: field.percentages[3],
-      color: getRatingLevelColor(3),
+      textColor: getRatingLevelColor(3).text,
+      backgroundColor: getRatingLevelColor(3).background,
     },
     {
       level: 2,
       label: getRatingLevelLabel(2),
       percentage: field.percentages[2],
-      color: getRatingLevelColor(2),
+      textColor: getRatingLevelColor(2).text,
+      backgroundColor: getRatingLevelColor(2).background,
     },
     {
       level: 1,
       label: getRatingLevelLabel(1),
       percentage: field.percentages[1],
-      color: getRatingLevelColor(1),
+      textColor: getRatingLevelColor(1).text,
+      backgroundColor: getRatingLevelColor(1).background,
     },
     {
       level: 0,
       label: getRatingLevelLabel(0),
       percentage: field.percentages[0],
-      color: getRatingLevelColor(0),
+      textColor: getRatingLevelColor(0).text,
+      backgroundColor: getRatingLevelColor(0).background,
     },
   ];
 }
@@ -165,9 +146,3 @@ export function getWarningTags(
   return Array.from(new Set(warnings));
 }
 
-/**
- * Format average score for display (e.g., 2.5 -> "2.5")
- */
-export function formatAverageScore(score: number): string {
-  return score.toFixed(1);
-}
