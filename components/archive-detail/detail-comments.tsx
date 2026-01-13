@@ -79,7 +79,7 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
               {comments.map((comment) => (
                 <div
                   key={comment.id}
-                  className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0 h-auto flex"
+                  className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0 h-auto flex w-full"
                 >
                   <DetailCommentCard comment={comment} userId={userId} />
                 </div>
@@ -90,12 +90,12 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
       </div>
       {/* Navigation buttons */}
       {comments.length > 1 && (
-        <>
+        <div className="page-max-w relative flex justify-between">
           <Button
             variant="outline"
             id="prev-button-xxx"
             size="icon"
-            className={`absolute left-0 top-1/2 -translate-y-1/2 translate-x-0 z-20 rounded-full shadow-lg ${
+            className={` z-20 rounded-full shadow-lg ${
               prevBtnDisabled ? 'hidden' : ''
             }`}
             onClick={onPrevButtonClick}
@@ -104,10 +104,11 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
+          <div className="flex-1"></div>
           <Button
             variant="outline"
             size="icon"
-            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 z-20 rounded-full shadow-lg ${
+            className={` z-20 rounded-full shadow-lg ${
               nextBtnDisabled ? 'hidden' : ''
             }`}
             onClick={onNextButtonClick}
@@ -116,7 +117,7 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
-        </>
+        </div>
       )}
     </section>
   );
