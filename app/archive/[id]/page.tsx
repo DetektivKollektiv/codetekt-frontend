@@ -21,7 +21,7 @@ export default async function Page({
     <>
       <div className="page-max-w w-full mt-12 lg:mt-24">
         <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
-          Gelöste Fälle
+          Fall {aggregatedReview?.cases.case_number}
         </h1>
       </div>
       <div className="page-max-w w-full mt-8 lg:mt-12 mb-24 lg:mb-32">
