@@ -5,9 +5,10 @@ import type { CaseComments } from '@/lib/queries/getCaseComments';
 
 interface DetailCommentsProps {
   comments: CaseComments;
+  userId?: string;
 }
 
-export function DetailComments({ comments }: DetailCommentsProps) {
+export function DetailComments({ comments, userId }: DetailCommentsProps) {
   if (!comments || comments.length === 0) {
     return (
       <section className="space-y-6">
@@ -35,7 +36,11 @@ export function DetailComments({ comments }: DetailCommentsProps) {
       {/* Comments grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {comments.map((comment) => (
-          <DetailCommentCard key={comment.id} comment={comment} />
+          <DetailCommentCard
+            key={comment.id}
+            comment={comment}
+            userId={userId}
+          />
         ))}
       </div>
     </section>

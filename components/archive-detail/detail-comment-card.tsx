@@ -5,21 +5,54 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
 import { commentLikesQuery } from '@/lib/queries/getCommentLikes';
+import { toggleCommentLikeMutation } from '@/lib/queries/toggleCommentLike';
 import { createClient } from '@/lib/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { ThumbsUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface DetailCommentCardProps {
   comment: CaseComments[number];
+  userId?: string;
 }
 
-export function DetailCommentCard({ comment }: DetailCommentCardProps) {
+export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
   const supabase = createClient();
+  const queryClient = useQueryClient();
+  const [isLiked, setIsLiked] = useState(false);
 
   // Fetch likes for this comment
   const { data: likes } = useQuery(commentLikesQuery(supabase, comment.id));
+
+  // Check if current user has liked this comment
+  useEffect(() => {
+    if (likes && userId) {
+      const userLike = likes.find((like) => like.user_id === userId);
+      setIsLiked(!!userLike);
+    }
+  }, [likes, userId]);
+
+  // Mutation for toggling like
+  const likeMutation = useMutation({
+    ...toggleCommentLikeMutation(supabase, userId || ''),
+    onSuccess: () => {
+      // Invalidate and refetch likes
+      queryClient.invalidateQueries({
+        queryKey: ['comment-likes', comment.id],
+      });
+    },
+  });
+
+  const handleLikeClick = () => {
+    if (!userId) return; // User must be authenticated
+
+    likeMutation.mutate({
+      commentId: comment.id,
+      isLiked,
+    });
+  };
 
   // Get initials for avatar fallback
   const getInitials = (username: string | null) => {
@@ -70,9 +103,14 @@ export function DetailCommentCard({ comment }: DetailCommentCardProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground"
+              onClick={handleLikeClick}
+              disabled={!userId || likeMutation.isPending}
+              className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
             >
-              <ThumbsUp className="h-4 w-4" />
+              <ThumbsUp
+                className="h-4 w-4"
+                fill={isLiked ? 'currentColor' : 'none'}
+              />
               <span className="text-sm font-medium">{likeCount}</span>
             </Button>
           </div>

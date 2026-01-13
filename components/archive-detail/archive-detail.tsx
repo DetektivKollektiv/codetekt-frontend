@@ -11,12 +11,14 @@ interface ArchiveDetailProps {
   aggregatedReview: NonNullable<AggregatedReview>;
   caseComments: CaseComments;
   isAuthenticated: boolean;
+  userId?: string;
 }
 
 export function ArchiveDetail({
   aggregatedReview,
   caseComments,
   isAuthenticated,
+  userId,
 }: ArchiveDetailProps) {
   return (
     <div className="space-y-12">
@@ -35,7 +37,7 @@ export function ArchiveDetail({
       )}
 
       {/* Comments Section */}
-      <DetailComments comments={caseComments} />
+      <DetailComments comments={caseComments} userId={userId} />
     </div>
   );
 }
