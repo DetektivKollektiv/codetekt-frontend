@@ -33,8 +33,6 @@ export default async function Home() {
     const { data: userReviewsData, error: userReviewsError } =
       await getUserReviews(supabase, user.id);
 
-    console.log('User Reviews Data:', userReviewsData, userReviewsError);
-
     const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
       userCasesData?.some((userCase) => review.case_id === userCase.id)
     );
@@ -69,6 +67,7 @@ export default async function Home() {
       {isAuthenticated && user && profile ? (
         <UserPage
           profile={profile}
+          user={user}
           userReviewsAndCases={userReviewsAndCases ?? []}
         />
       ) : (

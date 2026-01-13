@@ -3,21 +3,27 @@ import { ArchiveList } from '@/components/archive-list';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { Profile } from '@/lib/queries/getProfile';
 import { UserCases } from '@/lib/queries/getUserCases';
+import { User } from '@supabase/supabase-js';
 import { FC } from 'react';
 import UserSettings from './user-settings';
 interface UserPageProps {
   profile: NonNullable<Profile>;
+  user: User;
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
-const UserPage: FC<UserPageProps> = ({ profile, userReviewsAndCases }) => {
+const UserPage: FC<UserPageProps> = ({
+  profile,
+  user,
+  userReviewsAndCases,
+}) => {
   return (
     <>
       <div className="page-max-w w-full mt-12 ">
         <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
           Hi {profile.username}!
         </h1>
-        <p className="text-body-md max-w-xl xl:max-w-3xl mx-auto lg:mx-0 mt-4">
+        <p className="text-body-md max-w-xl xl:max-w-3xl mt-4">
           Herzlich willkommen auf deinem Dashboard. Du kannst dir deine gelösten
           und ungelösten Fälle ansehen und neue Fälle bearbeiten. Unten findest
           du Vorschläge für Fälle, die deine Hilfe benötigen.
@@ -25,7 +31,7 @@ const UserPage: FC<UserPageProps> = ({ profile, userReviewsAndCases }) => {
       </div>
 
       <div className="page-max-w w-full mt-12">
-        <UserSettings />
+        <UserSettings profile={profile} user={user} />
       </div>
 
       {userReviewsAndCases && (
