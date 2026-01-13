@@ -177,7 +177,14 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
       </Dialog>
 
       <Card>
-        <CardContent className="p-6 h-full">
+        <CardContent className="p-6 h-full relative overflow-hidden">
+          <div className="absolute inset-0  w-full h-full rounded-lg p-2 z-20">
+            <div className="w-full h-full bg-background/90 flex justify-center items-center">
+              <p className="text-body-md font-bold">
+                Dieser Kommentar wurde gemeldet.
+              </p>
+            </div>
+          </div>
           <div className="space-y-4 flex flex-col h-full">
             {/* Author info */}
             <div className="flex  gap-3 justify-between">
