@@ -202,6 +202,7 @@ export type Database = {
       };
       cases: {
         Row: {
+          case_number: number;
           content: string;
           content_type: string;
           id: string;
@@ -210,6 +211,7 @@ export type Database = {
           template_version: number;
         };
         Insert: {
+          case_number?: number;
           content: string;
           content_type: string;
           id?: string;
@@ -218,6 +220,7 @@ export type Database = {
           template_version: number;
         };
         Update: {
+          case_number?: number;
           content?: string;
           content_type?: string;
           id?: string;
@@ -611,6 +614,7 @@ export type Database = {
     Views: {
       cases_without_open_disputes: {
         Row: {
+          case_number: number | null;
           content: string | null;
           content_type: string | null;
           id: string | null;
@@ -619,6 +623,7 @@ export type Database = {
           template_version: number | null;
         };
         Insert: {
+          case_number?: number | null;
           content?: string | null;
           content_type?: string | null;
           id?: string | null;
@@ -627,6 +632,7 @@ export type Database = {
           template_version?: number | null;
         };
         Update: {
+          case_number?: number | null;
           content?: string | null;
           content_type?: string | null;
           id?: string | null;
