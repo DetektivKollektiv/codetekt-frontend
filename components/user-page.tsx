@@ -1,24 +1,16 @@
 'use client';
 import { ArchiveList } from '@/components/archive-list';
-import {
-  aggregatedReviewsListConfig,
-  casesListConfig,
-} from '@/lib/config/archive-list-configs';
+import { reviewsAndCasesListConfig } from '@/lib/config/archive-list-configs';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { Profile } from '@/lib/queries/getProfile';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { FC } from 'react';
 interface UserPageProps {
   profile: NonNullable<Profile>;
-  userCases: UserCases;
-  aggregatedReviewsData: AggregatedReviews;
+  userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
-const UserPage: FC<UserPageProps> = ({
-  profile,
-  userCases,
-  aggregatedReviewsData,
-}) => {
+const UserPage: FC<UserPageProps> = ({ profile, userReviewsAndCases }) => {
   return (
     <>
       <div className="page-max-w w-full mt-12 ">
@@ -31,29 +23,19 @@ const UserPage: FC<UserPageProps> = ({
           du Vorschläge für Fälle, die deine Hilfe benötigen.
         </p>
       </div>
-      <div className="page-max-w w-full mt-12 ">
-        <h2 className="text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
-          Deine eingereichten Fälle
-        </h2>
-      </div>
-      <ArchiveList
-        {...aggregatedReviewsListConfig}
-        items={aggregatedReviewsData ?? []}
-        className="mt-8 mb-12 lg:mb-24"
-        pageSize={3}
-        showPageNumbers
-      />
-      {userCases && userCases.length > 0 && (
+
+      {userReviewsAndCases && userReviewsAndCases.length > 0 && (
         <div className=" mt-12 lg:mt-24">
-          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md uppercase ">
+          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
             Deine eingereichten Fälle
           </h1>
           <ArchiveList
-            {...casesListConfig}
-            items={userCases ?? []}
+            {...reviewsAndCasesListConfig}
+            items={userReviewsAndCases ?? []}
             className="mt-8 mb-12 lg:mb-24"
             pageSize={3}
             showPageNumbers
+            syncWithURL={false}
           />
         </div>
       )}

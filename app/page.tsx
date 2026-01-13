@@ -2,7 +2,10 @@ import { ArchiveList } from '@/components/archive-list';
 import { Button } from '@/components/ui/button';
 import UserPage from '@/components/user-page';
 import { aggregatedReviewsListConfig } from '@/lib/config/archive-list-configs';
-import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import {
+  AggregatedReviews,
+  getAggregatedReviews,
+} from '@/lib/queries/getAggregatedReviews';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
@@ -11,11 +14,15 @@ import Link from 'next/link';
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data, error } = await getAggregatedReviews(supabase);
+  const { data: aggregatedReviewsData, error } = await getAggregatedReviews(
+    supabase
+  );
 
   const { user, profile, isAuthenticated } = await getAuth();
 
-  let userCases: null | UserCases = null;
+  let userReviewsAndCases:
+    | null
+    | (UserCases[number] | AggregatedReviews[number])[] = null;
 
   if (isAuthenticated && user) {
     const { data: userCasesData, error: userCasesError } = await getUserCases(
@@ -23,13 +30,25 @@ export default async function Home() {
       user.id
     );
 
-    userCases = userCasesData;
+    const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
+      userCasesData?.some((userCase) => review.case_id === userCase.id)
+    );
+
+    const filteredUserCases = userCasesData?.filter(
+      (userCase) =>
+        !userAggregatedReviewsData?.some(
+          (review) => review.case_id === userCase.id
+        )
+    );
+
+    userReviewsAndCases = [
+      ...(filteredUserCases ?? []),
+      ...(userAggregatedReviewsData ?? []),
+    ];
 
     if (userCasesError) {
       console.error('Error fetching user cases:', userCasesError);
     }
-
-    userCases = userCasesData;
   }
 
   if (error) {
@@ -40,9 +59,8 @@ export default async function Home() {
     <main className="h-full flex-1">
       {isAuthenticated && user && profile ? (
         <UserPage
-          userCases={userCases || []}
           profile={profile}
-          aggregatedReviewsData={data}
+          userReviewsAndCases={userReviewsAndCases || []}
         />
       ) : (
         <>
@@ -162,7 +180,7 @@ export default async function Home() {
 
           <ArchiveList
             {...aggregatedReviewsListConfig}
-            items={data ?? []}
+            items={aggregatedReviewsData ?? []}
             className="mt-8 lg:mb-24 mb-12"
             pageSize={5}
             syncWithURL={false}

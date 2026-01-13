@@ -18,3 +18,12 @@ export function getDisplayName(
 ) {
   return profile?.username || user?.email || 'Account';
 }
+
+export const getLocalDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};

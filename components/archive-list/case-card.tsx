@@ -4,9 +4,11 @@ import { BadgeList } from '@/components/ui/badge-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserCases } from '@/lib/queries/getUserCases';
+import { getLocalDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
+import CardText from './card-text';
 import NoEvaluation from './no-evaluation';
 
 interface CaseCardProps {
@@ -59,15 +61,11 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             </div>
 
             {/* Title & Description */}
-            <div>
-              <h3 className="text-lg font-semibold line-clamp-2">
-                {ogData?.og_title || 'Titel nicht verfügbar'}
-              </h3>
-              <p className="text-sm text-muted-foreground line-clamp-3 mt-2">
-                {ogData?.og_description ||
-                  'Keine Beschreibung verfügbar. Klicken Sie auf "Fall ansehen" für weitere Details.'}
-              </p>
-            </div>
+            <CardText
+              date={getLocalDate(caseItem.submitted_at!)}
+              title={ogData?.og_title ?? null}
+              description={ogData?.og_description ?? null}
+            />
 
             {/* Action Buttons */}
             <div className="flex gap-3 flex-1 items-end">

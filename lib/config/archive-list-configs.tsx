@@ -24,11 +24,18 @@ const sortAggregatedReviewsByLastUpdated = (items: AggregatedReviews) => {
   );
 };
 
-const sortUserCasesByNewestFirst = (items: UserCases) => {
-  return [...items].sort(
-    (a, b) =>
-      new Date(b.submitted_at!).getTime() - new Date(a.submitted_at!).getTime()
-  );
+const sortReviewsAndUserCasesByNewestFirst = (
+  items: (UserCases[number] | AggregatedReviews[number])[]
+) => {
+  return [...items].sort((a, b) => {
+    const dateA = isUserCase(a)
+      ? new Date(a.submitted_at!).getTime()
+      : new Date(a.calculated_at).getTime();
+    const dateB = isUserCase(b)
+      ? new Date(b.submitted_at!).getTime()
+      : new Date(b.calculated_at).getTime();
+    return dateB - dateA;
+  });
 };
 
 // Configuration for AggregatedReviews
@@ -69,12 +76,17 @@ export const aggregatedReviewsListConfig: Omit<
   sortPreferenceKey: 'archive-sort-preference',
 };
 
-export const casesListConfig: Omit<
-  ArchiveListProps<NonNullable<UserCases[number]>>,
+export const reviewsAndCasesListConfig: Omit<
+  ArchiveListProps<UserCases[number] | AggregatedReviews[number]>,
   'items'
 > = {
-  renderItem: (item) => <CaseCard caseItem={item} />,
-  getItemKey: (item) => item.id!,
+  renderItem: (item) =>
+    isUserCase(item) ? (
+      <CaseCard caseItem={item} />
+    ) : (
+      <AggregatedReviewCard caseItem={item as AggregatedReviews[number]} />
+    ),
+  getItemKey: (item) => (isUserCase(item) ? item.id! : item.case_id),
   fuseOptions: {
     keys: [
       { name: 'cases.open_graph_data.og_title', weight: 3 },
@@ -90,7 +102,7 @@ export const casesListConfig: Omit<
     {
       key: 'newest_first',
       label: 'Neuste zuerst',
-      sortFn: sortUserCasesByNewestFirst,
+      sortFn: sortReviewsAndUserCasesByNewestFirst,
     },
   ],
   searchPlaceholder: 'Fälle durchsuchen...',
@@ -99,4 +111,10 @@ export const casesListConfig: Omit<
   emptyMessage: 'Keine Fälle im Archiv gefunden.',
   loadingMessage: 'Lade Archiv...',
   sortPreferenceKey: 'case-list-preference',
+};
+
+export const isUserCase = (
+  item: UserCases[number] | AggregatedReviews[number]
+): item is UserCases[number] => {
+  return (item as UserCases[number]).id !== undefined;
 };
