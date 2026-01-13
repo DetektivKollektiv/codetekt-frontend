@@ -1,4 +1,5 @@
 import { getAggregatedReview } from '@/lib/queries/getAggregatedReview';
+import { getCaseComments } from '@/lib/queries/getCaseComments';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function Page({
@@ -12,9 +13,15 @@ export default async function Page({
     supabase,
     id
   );
+  const { data: caseComments, error: caseCommentsError } =
+    await getCaseComments(supabase, id);
 
   if (error) {
     throw error;
+  }
+
+  if (caseCommentsError) {
+    throw caseCommentsError;
   }
 
   return (
