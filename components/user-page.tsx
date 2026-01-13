@@ -9,12 +9,14 @@ import UserSettings from './user-settings';
 interface UserPageProps {
   profile: NonNullable<Profile>;
   user: User;
+  ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
 const UserPage: FC<UserPageProps> = ({
   profile,
   user,
+  ownUserReviewsAndCases,
   userReviewsAndCases,
 }) => {
   return (
@@ -34,10 +36,26 @@ const UserPage: FC<UserPageProps> = ({
         <UserSettings profile={profile} user={user} />
       </div>
 
-      {userReviewsAndCases && (
+      {ownUserReviewsAndCases && (
         <div className=" mt-12 lg:mt-24">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
             Deine eingereichten Fälle
+          </h1>
+          <ArchiveList
+            configKey="reviewsAndCases"
+            items={ownUserReviewsAndCases ?? []}
+            className="mt-8 mb-12 lg:mb-24"
+            pageSize={3}
+            showPageNumbers
+            syncWithURL={false}
+          />
+        </div>
+      )}
+
+      {ownUserReviewsAndCases && (
+        <div className=" mt-12 lg:mt-24">
+          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
+            Fälle die du bewertet hast
           </h1>
           <ArchiveList
             configKey="reviewsAndCases"

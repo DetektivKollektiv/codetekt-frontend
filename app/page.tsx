@@ -20,6 +20,12 @@ export default async function Home() {
 
   const { user, profile, isAuthenticated } = await getAuth();
 
+  // cases the user has created (and their aggregated reviews)
+  let ownUserReviewsAndCases:
+    | null
+    | (UserCases[number] | AggregatedReviews[number])[] = null;
+
+  // cases the user has reviewed (and their aggregated reviews)
   let userReviewsAndCases:
     | null
     | (UserCases[number] | AggregatedReviews[number])[] = null;
@@ -30,31 +36,59 @@ export default async function Home() {
       user.id
     );
 
-    const { data: userReviewsData, error: userReviewsError } =
-      await getUserReviews(supabase, user.id);
-
-    const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
-      userCasesData?.some((userCase) => review.case_id === userCase.id)
+    const ownUserAggregatedReviewsData = aggregatedReviewsData?.filter(
+      (review) =>
+        userCasesData?.some((userCase) => review.case_id === userCase.id)
     );
 
-    const filteredUserCases = userCasesData?.filter(
+    const ownFilteredUserCases = userCasesData?.filter(
       (userCase) =>
-        !userAggregatedReviewsData?.some(
+        !ownUserAggregatedReviewsData?.some(
           (review) => review.case_id === userCase.id
         )
     );
 
+    ownUserReviewsAndCases = [
+      ...(ownFilteredUserCases ?? []),
+      ...(ownUserAggregatedReviewsData ?? []),
+    ];
+
+    if (userCasesError) {
+      console.error(
+        'Error fetching own user cases or reviews:',
+        userCasesError
+      );
+    }
+  }
+
+  if (isAuthenticated && user) {
+    const { data: userReviewsData, error: userReviewsError } =
+      await getUserReviews(supabase, user.id);
+
+    // 1. Eigene Reviews aus aggregatedReviewsData (Vorrang)
+    const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
+      userReviewsData?.some(
+        (userReview) => review.case_id === userReview.case_id
+      )
+    );
+
+    // 2. Eigene Reviews, die NICHT in aggregatedReviewsData sind
+    const userReviewsDataFiltered = userReviewsData?.filter(
+      (review) =>
+        !aggregatedReviewsData?.some(
+          (aggReview) => aggReview.case_id === review.case_id
+        )
+    );
+
     userReviewsAndCases = [
-      ...(filteredUserCases ?? []),
+      ...(userReviewsDataFiltered?.map(
+        (userReviews) => userReviews.cases as UserCases[number]
+      ) ?? []),
       ...(userAggregatedReviewsData ?? []),
     ];
 
-    if (userCasesError || userReviewsError) {
-      console.error(
-        'Error fetching user cases or reviews:',
-        userCasesError,
-        userReviewsError
-      );
+    if (userReviewsError) {
+      console.error('Error fetching user reviews:', userReviewsError);
     }
   }
 
@@ -68,7 +102,8 @@ export default async function Home() {
         <UserPage
           profile={profile}
           user={user}
-          userReviewsAndCases={userReviewsAndCases ?? []}
+          userReviewsAndCases={ownUserReviewsAndCases ?? []}
+          ownUserReviewsAndCases={userReviewsAndCases ?? []}
         />
       ) : (
         <>
