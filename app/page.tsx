@@ -7,6 +7,7 @@ import {
   getAggregatedReviews,
 } from '@/lib/queries/getAggregatedReviews';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
+import { getUserReviews } from '@/lib/queries/getUserReviews';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
@@ -30,6 +31,11 @@ export default async function Home() {
       user.id
     );
 
+    const { data: userReviewsData, error: userReviewsError } =
+      await getUserReviews(supabase, user.id);
+
+    console.log('User Reviews Data:', userReviewsData, userReviewsError);
+
     const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
       userCasesData?.some((userCase) => review.case_id === userCase.id)
     );
@@ -46,8 +52,12 @@ export default async function Home() {
       ...(userAggregatedReviewsData ?? []),
     ];
 
-    if (userCasesError) {
-      console.error('Error fetching user cases:', userCasesError);
+    if (userCasesError || userReviewsError) {
+      console.error(
+        'Error fetching user cases or reviews:',
+        userCasesError,
+        userReviewsError
+      );
     }
   }
 
@@ -58,7 +68,10 @@ export default async function Home() {
   return (
     <main className="h-full flex-1">
       {isAuthenticated && user && profile ? (
-        <UserPage profile={profile} userReviewsAndCases={[]} />
+        <UserPage
+          profile={profile}
+          userReviewsAndCases={userReviewsAndCases || []}
+        />
       ) : (
         <>
           <div className="pb-12 bg-gradient-neutral-coral">
