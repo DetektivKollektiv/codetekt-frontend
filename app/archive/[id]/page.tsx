@@ -34,7 +34,7 @@ export default async function Page({
   }
 
   return (
-    <div className="page-max-w w-full mt-12 lg:mt-24 mb-24 lg:mb-32">
+    <div className="page-max-w w-full mt-10 lg:mt-12 mb-24 lg:mb-32">
       <ArchiveDetail
         aggregatedReview={aggregatedReview}
         caseComments={caseComments || []}
