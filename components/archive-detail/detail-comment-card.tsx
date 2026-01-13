@@ -10,7 +10,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { ThumbsUp } from 'lucide-react';
+import { Flag, ThumbsUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface DetailCommentCardProps {
@@ -74,21 +74,34 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
       <CardContent className="p-6 h-full">
         <div className="space-y-4 flex flex-col h-full">
           {/* Author info */}
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarFallback>
-                {getInitials(comment.profiles?.username || null)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm truncate">
-                {comment.profiles?.username || 'Unbekannt'}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {format(createdAt, 'PPP', { locale: de })}
-                {isEdited && <span className="ml-2 italic">(Bearbeitet)</span>}
-              </p>
+          <div className="flex  gap-3 justify-between">
+            <div className="flex gap-3 items-center">
+              <Avatar>
+                <AvatarFallback>
+                  {getInitials(comment.profiles?.username || null)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm truncate">
+                  {comment.profiles?.username || 'Unbekannt'}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {format(createdAt, 'PPP', { locale: de })}
+                  {isEdited && (
+                    <span className="ml-2 italic">(Bearbeitet)</span>
+                  )}
+                </p>
+              </div>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLikeClick}
+              disabled={!userId}
+              className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
+            >
+              <Flag className="h-4 w-4 text-destructive" />
+            </Button>
           </div>
 
           {/* Comment content */}
@@ -107,11 +120,11 @@ export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
               disabled={!userId || likeMutation.isPending}
               className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
             >
+              <span className="text-sm font-medium">{likeCount}</span>
               <ThumbsUp
                 className="h-4 w-4"
                 fill={isLiked ? 'currentColor' : 'none'}
               />
-              <span className="text-sm font-medium">{likeCount}</span>
             </Button>
           </div>
         </div>
