@@ -23,8 +23,6 @@ export default async function Home() {
     supabase
   );
 
-  console.log('Open Cases on Home Page:', openCases);
-
   const { user, profile, isAuthenticated } = await getAuth();
 
   // cases the user has created (and their aggregated reviews)
