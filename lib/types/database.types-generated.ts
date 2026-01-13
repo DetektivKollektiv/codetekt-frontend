@@ -322,18 +322,21 @@ export type Database = {
       };
       profiles: {
         Row: {
+          get_notifications: boolean;
           id: string;
           is_admin: boolean;
           updated_at: string | null;
           username: string | null;
         };
         Insert: {
+          get_notifications?: boolean;
           id: string;
           is_admin?: boolean;
           updated_at?: string | null;
           username?: string | null;
         };
         Update: {
+          get_notifications?: boolean;
           id?: string;
           is_admin?: boolean;
           updated_at?: string | null;
