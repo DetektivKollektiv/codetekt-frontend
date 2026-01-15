@@ -2,9 +2,8 @@
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { FC, useMemo, useState } from 'react';
-import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
+import QuestionCard from './question-card';
 import ReviewNavigation from './review-navigation';
 
 interface ReviewProps {
@@ -26,6 +25,11 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     [currentQuestionId, reviewTemplate]
   );
 
+  const reviewTemplateNavigationItems = useMemo(
+    () => reviewTemplate.filter((item) => item),
+    [currentQuestionId, reviewTemplate]
+  );
+
   return (
     <div
       className="page-max-w lg:grid lg:gap-6"
@@ -37,23 +41,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         <CaseCard case={caseData} />
         <div className="mt-4">
           <ReviewNavigation
-            items={reviewTemplate}
+            items={reviewTemplateNavigationItems}
             currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
           />
         </div>
       </div>
-      <Card className="py-6">
-        <CardHeader className="relative">
-          <CardTitle className=" text-display-sm">
-            {currentQuestion.metadata.title}
-          </CardTitle>
-          <CardDescription className="max-w-xl">
-            {currentQuestion.metadata.text}
-          </CardDescription>
-          <HelpButton className="absolute top-6 right-6" />
-        </CardHeader>
-      </Card>
+      <QuestionCard question={currentQuestion} />
     </div>
   );
 };
