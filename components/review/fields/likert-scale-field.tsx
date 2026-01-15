@@ -34,7 +34,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
   return (
     <div className="space-y-3">
       <h3 className="text-body-md font-medium">{field.question}</h3>
-      <div className="grid grid-cols-1 gap-3  lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         {field.options.map((option) => {
           const isSelected = selectedValue === option.value;
 

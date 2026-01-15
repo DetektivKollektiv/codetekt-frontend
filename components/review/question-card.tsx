@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '../ui/card';
@@ -18,9 +19,10 @@ import { TrafficLightHeader } from './fields/traffic-light-header';
 
 interface QuestionCardProps {
   question: NonNullable<ReviewTemplate>[number];
+  children: ReactNode;
 }
 
-const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
+const QuestionCard: FC<QuestionCardProps> = ({ question, children }) => {
   // Build the fields with headers inserted where needed
   const renderFieldsWithHeaders = (): ReactNode[] => {
     const elements: ReactNode[] = [];
@@ -58,7 +60,7 @@ const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
   };
 
   return (
-    <Card className="py-6">
+    <Card className="pt-6 flex flex-col">
       <CardHeader className="relative">
         <CardTitle className=" text-display-sm">
           {question.metadata.title}
@@ -71,6 +73,9 @@ const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
       <CardContent className="space-y-12 md:space-y-8 ">
         {renderFieldsWithHeaders()}
       </CardContent>
+      <CardFooter className="mt-auto flex-1 flex flex-col justify-end">
+        {children}
+      </CardFooter>
     </Card>
   );
 };
