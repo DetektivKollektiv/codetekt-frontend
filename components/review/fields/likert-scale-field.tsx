@@ -60,8 +60,10 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
                   isSelected && 'text-white'
                 )}
                 style={{
-                  borderColor: option.color,
-                  backgroundColor: isSelected ? option.color : 'transparent',
+                  borderColor: `hsl(${option.color})`,
+                  backgroundColor: isSelected
+                    ? `hsl(${option.color})`
+                    : 'transparent',
                 }}
               >
                 {isSelected && <Check className="size-3" strokeWidth={3} />}
