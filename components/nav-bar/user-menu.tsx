@@ -51,11 +51,7 @@ export default function UserMenu({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem className="text-body-md" asChild>
-          <Link href="#">Profil</Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="text-body-md" asChild>
-          <Link href="#">Rangliste</Link>
+          <Link href="/#user-settings">Einstellungen</Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

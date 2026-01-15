@@ -35,7 +35,7 @@ const UserPage: FC<UserPageProps> = ({
         </p>
       </div>
 
-      <div className="page-max-w w-full mt-12">
+      <div className="page-max-w w-full mt-12" id="user-settings">
         <UserSettings profile={profile} user={user} />
       </div>
 
