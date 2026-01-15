@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Check, Circle } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { FC } from 'react';
 
 interface ReviewNavigationItem {
@@ -35,7 +35,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
             key={item.id}
             onClick={() => onItemClick(item.id)}
             className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all',
+              'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all h-9',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
               isActive && 'bg-primary text-primary-foreground',
               !isActive && !isIndented && 'bg-muted hover:bg-muted/80',
@@ -45,17 +45,19 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           >
             <div
               className={cn(
-                'flex items-center justify-center size-6 rounded-full border-2 shrink-0',
+                'flex items-center justify-center size-4 rounded-full border-2 shrink-0',
                 isActive && 'bg-white border-white',
                 !isActive && !isIndented && 'border-primary',
                 !isActive && isIndented && 'border-muted-foreground/40'
               )}
             >
-              {isActive && <Check className="size-4 text-primary" />}
+              {isActive && (
+                <Check className="size-3 text-primary" strokeWidth={4} />
+              )}
             </div>
             <span
               className={cn(
-                'font-medium',
+                'font-medium text-body-md md:text-body-sm',
                 !isActive && isIndented && 'text-muted-foreground'
               )}
             >

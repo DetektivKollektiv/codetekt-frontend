@@ -22,7 +22,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
           {/* Stimme voll zu */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <HelpCircle className="size-6 md:size-5 text-brand-green" />
+              <HelpCircle
+                className="size-6 md:size-5 text-brand-green"
+                strokeWidth={2.5}
+              />
             </TooltipTrigger>
             <TooltipContent>
               <p className="font-medium text-body-md">Stimme voll zu</p>
@@ -35,7 +38,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
           {/* Stimme eher zu */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <HelpCircle className="size-6 md:size-5 text-brand-yellow" />
+              <HelpCircle
+                className="size-6 md:size-5 text-brand-yellow"
+                strokeWidth={2.5}
+              />
             </TooltipTrigger>
             <TooltipContent>
               <p className="font-medium text-body-md">Stimme eher zu</p>
@@ -48,7 +54,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
           {/* Stimme eher nicht zu */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <HelpCircle className="size-6 md:size-5 text-brand-orange" />
+              <HelpCircle
+                className="size-6 md:size-5 text-brand-orange"
+                strokeWidth={2.5}
+              />
             </TooltipTrigger>
             <TooltipContent>
               <p className="font-medium text-body-md">Stimme eher nicht zu</p>
@@ -61,7 +70,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
           {/* Stimme nicht zu */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <HelpCircle className="size-6 md:size-5 text-brand-coral" />
+              <HelpCircle
+                className="size-6 md:size-5 text-brand-coral"
+                strokeWidth={2.5}
+              />
             </TooltipTrigger>
             <TooltipContent>
               <p className="font-medium text-body-md">Stimme nicht zu</p>

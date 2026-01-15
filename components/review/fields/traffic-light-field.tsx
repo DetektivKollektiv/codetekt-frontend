@@ -34,8 +34,8 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
   const questionText = field.options[0]?.question ?? '';
 
   return (
-    <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 md:gap-12 md:min-h-8 border-b pb-6 last:border-0 last:pb-0">
-      <Label className="flex-1 text-body-md font-medium cursor-pointer leading-normal">
+    <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 md:gap-12 md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
+      <Label className="flex-1 text-body-md md:text-body-sm font-medium cursor-pointer leading-normal">
         {questionText}
       </Label>
       <RadioGroup

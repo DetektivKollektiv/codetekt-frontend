@@ -56,7 +56,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
               {/* Colored circle indicator */}
               <span
                 className={cn(
-                  'flex size-5 items-center justify-center rounded-full border-2 transition-all',
+                  'flex size-4 items-center justify-center rounded-full border-2 transition-all',
                   isSelected && 'text-white'
                 )}
                 style={{
@@ -69,7 +69,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
 
               {/* Text and description */}
               <div className="flex flex-col items-center text-center">
-                <span className="text-body-md font-semibold">
+                <span className="text-body-md md:text-body-sm font-semibold">
                   {option.text}
                 </span>
                 <span className="text-body-sm text-muted-foreground">
