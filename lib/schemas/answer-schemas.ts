@@ -7,7 +7,7 @@ export const trafficLightAnswerSchema = z
   .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
   .nullable();
 export const likertScaleAnswerSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
   .nullable();
 export const textAreaAnswerSchema = z.string().nullable();
 
