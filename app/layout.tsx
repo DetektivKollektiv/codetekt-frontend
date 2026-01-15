@@ -1,6 +1,7 @@
 import Footer from '@/components/footer';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
 
+import LoadingComponent from '@/components/loading-component';
 import NavBar from '@/components/nav-bar';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -24,21 +25,21 @@ export default async function RootLayout({
 }>) {
   return (
     <ReactQueryClientProvider>
-      <Suspense fallback={<div>Codetekt Lädt</div>}>
-        <html
-          lang="de"
-          className="scroll-pt-32 scroll-smooth"
-          suppressHydrationWarning
-        >
-          <body className={`antialiased`}>
+      <html
+        lang="de"
+        className="scroll-pt-32 scroll-smooth"
+        suppressHydrationWarning
+      >
+        <body className={`antialiased`}>
+          <Suspense fallback={<LoadingComponent />}>
             <NavBar />
             <main className="page-mt page-min-h flex flex-col">
               <div className="flex-1 flex flex-col">{children}</div>
               <Footer />
             </main>
-          </body>
-        </html>
-      </Suspense>
+          </Suspense>
+        </body>
+      </html>
     </ReactQueryClientProvider>
   );
 }
