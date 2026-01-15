@@ -9,6 +9,7 @@ import { getCaseTitle, getLocalDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
+import ImagePlaceholder from '../image-placeholder';
 import CardText from './card-text';
 import NoEvaluation from './no-evaluation';
 
@@ -39,11 +40,12 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
                 onError={() => setImageError(true)}
               />
             ) : (
-              <div className=" aspect-video lg:aspect-[4/3] flex-shrink-0 bg-gradient-brand rounded-lg flex items-center justify-center">
-                <span className="text-white text-sm font-semibold">
-                  Kein Bild verfügbar
-                </span>
-              </div>
+              <ImagePlaceholder
+                width={317}
+                height={238}
+                className="rounded-lg"
+                seed={caseItem.case_number!}
+              />
             )}
           </div>
 
