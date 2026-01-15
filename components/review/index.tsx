@@ -39,6 +39,16 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     [currentQuestionId, reviewTemplate]
   );
 
+  const setNextQuestion = () => {
+    const currentIndex = reviewTemplateWithAnserValues.findIndex(
+      (q) => q.id === currentQuestionId
+    );
+    if (currentIndex < reviewTemplateWithAnserValues.length - 1) {
+      const nextQuestionId = reviewTemplateWithAnserValues[currentIndex + 1].id;
+      setCurrentQuestionId(nextQuestionId);
+    }
+  };
+
   return (
     <div
       className="page-max-w lg:grid lg:gap-6"
@@ -57,15 +67,24 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         </div>
       </div>
       <QuestionCard question={currentQuestion}>
-        {isLastQuestion ? (
-          <Button variant="default" className="w-full">
-            Fall abschließen
+        <div className="flex flex-col w-full gap-2">
+          <Button variant="destructive" className="w-full">
+            Einspruch gegen Antworten erheben
           </Button>
-        ) : (
-          <Button variant="default" className="w-full">
-            Nächste Frage
-          </Button>
-        )}
+          {isLastQuestion ? (
+            <Button variant="default" className="w-full">
+              Fall abschließen
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              className="w-full"
+              onClick={setNextQuestion}
+            >
+              Nächste Frage
+            </Button>
+          )}
+        </div>
       </QuestionCard>
     </div>
   );
