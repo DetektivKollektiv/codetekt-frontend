@@ -76,7 +76,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
                 </Link>
               ) : (
                 <Link href={`/review/${caseItem.id}`}>
-                  <Button variant={'default'}>Fall bewerten</Button>
+                  <Button variant={'default'}>Fall bearbeiten</Button>
                 </Link>
               )}
             </div>
