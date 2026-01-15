@@ -1,13 +1,13 @@
 import { FunctionsResponse } from '@supabase/functions-js';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Field } from '../schemas';
+import { ReviewTemplateData } from '../schemas';
 import { Database } from '../types/database.types';
 
 export async function getReviewTemplate(
   client: SupabaseClient<Database>,
   caseId: string
-): Promise<FunctionsResponse<Field[]>> {
-  return client.functions.invoke<Field[]>('get-review-template', {
+): Promise<FunctionsResponse<ReviewTemplateData[]>> {
+  return client.functions.invoke<ReviewTemplateData[]>('get-review-template', {
     body: { case_id: caseId },
   });
 }
