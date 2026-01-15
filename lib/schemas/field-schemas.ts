@@ -30,34 +30,34 @@ export const chipFieldSchema = baseFieldSchema.extend({
   type: z.literal('chip'),
   question: z.string(),
   options: z.array(chipOptionSchema),
-  answer_value: chipAnswerSchema,
+  answer_value: chipAnswerSchema.optional(),
 });
 
 export const traficLightFieldSchema = baseFieldSchema.extend({
   type: z.literal('traffic-light'),
   options: z.tuple([traficLightOptionSchema]),
-  answer_value: trafficLightAnswerSchema,
+  answer_value: trafficLightAnswerSchema.optional(),
 });
 
 export const likertScaleFieldSchema = baseFieldSchema.extend({
   type: z.literal('likert-scale'),
   question: z.string(),
   options: z.array(likertScaleOptionSchema),
-  answer_value: likertScaleAnswerSchema,
+  answer_value: likertScaleAnswerSchema.optional(),
 });
 
 export const textAreaFieldSchema = baseFieldSchema.extend({
   type: z.literal('text-area'),
   question: z.string(),
   options: z.array(textAreaOptionSchema),
-  answer_value: textAreaAnswerSchema,
+  answer_value: textAreaAnswerSchema.optional(),
 });
 
 export const multiLineTextFieldSchema = baseFieldSchema.extend({
   type: z.literal('multi-line-text'),
   question: z.string(),
   options: z.array(multiLineTextOptionSchema),
-  answer_value: multyLineTextAnswerSchema,
+  answer_value: multyLineTextAnswerSchema.optional(),
   additonal_option_count: z.number(),
   max_length: z.number(),
   placeholder: z.string(),

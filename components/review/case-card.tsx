@@ -27,12 +27,9 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
   return (
     <>
       <Dialog>
-        <DialogTrigger asChild disabled={caseData.content_type !== 'text'}>
+        <DialogTrigger asChild>
           <Card
-            className={`overflow-hidden text-left ${
-              caseData.content_type === 'text' &&
-              'cursor-pointer hover:shadow-lg transition-shadow '
-            }`}
+            className={`overflow-hidden text-left cursor-pointer hover:shadow-lg transition-shadow`}
           >
             {caseData.open_graph_data?.og_image ? (
               <Image
@@ -58,7 +55,14 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
             </CardHeader>
             <CardContent>
               {caseData.content_type === 'url' ? (
-                <Link href={caseData.content}>{caseData.content}</Link>
+                <Link
+                  href={caseData.content}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="line-clamp-1 underline"
+                >
+                  {caseData.content}
+                </Link>
               ) : (
                 <p className="line-clamp-3">{caseData.content}</p>
               )}
@@ -70,7 +74,18 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
           <DialogHeader>
             <DialogTitle>{getCaseTitle(caseData)}</DialogTitle>
           </DialogHeader>
-          <p>{caseData.content}</p>
+          {caseData.content_type === 'url' ? (
+            <Link
+              href={caseData.content}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              {caseData.content}
+            </Link>
+          ) : (
+            <p>{caseData.content}</p>
+          )}
         </DialogContent>
       </Dialog>
     </>

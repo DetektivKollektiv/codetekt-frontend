@@ -21,7 +21,8 @@ export default async function Page({
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
     if (!parsed.success) {
       console.error('Invalid review template data:', parsed.error);
-      notFound();
+      //notFound();
+      return <div>{JSON.stringify(reviewTemplate)}</div>;
     }
   }
 
