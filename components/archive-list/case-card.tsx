@@ -73,11 +73,11 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
               {'review_answers_in_progress' in caseItem &&
               caseItem.review_answers_in_progress &&
               caseItem.review_answers_in_progress.length > 0 ? (
-                <Link href={`/archive/${caseItem.id}`}>
+                <Link href={`/review/${caseItem.id}`}>
                   <Button variant={'default'}>Bewertung bearbeiten</Button>
                 </Link>
               ) : (
-                <Link href={`/archive/${caseItem.id}`}>
+                <Link href={`/review/${caseItem.id}`}>
                   <Button variant={'default'}>Fall bewerten</Button>
                 </Link>
               )}
