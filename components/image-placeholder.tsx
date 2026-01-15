@@ -16,7 +16,7 @@ interface PlaceholderGeneratorProps {
 export default function ImagePlaceholder({
   width = 1024,
   height = 720,
-  circleCount = 10,
+  circleCount = 6,
   spread = 200,
   minSize = 100,
   maxSize = 400,

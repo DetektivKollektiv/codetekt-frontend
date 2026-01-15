@@ -8,6 +8,7 @@ import { getLocalDate } from '@/lib/utils';
 import { ArrowLeft, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import ImagePlaceholder from '../image-placeholder';
 
 interface DetailHeaderProps {
   aggregatedReview: NonNullable<AggregatedReview>;
@@ -34,7 +35,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
       <Link href="/archive">
         <Button variant="ghost" size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Zurück zur Übersicht
+          Zum Archive
         </Button>
       </Link>
 
@@ -76,8 +77,14 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                   />
                 </div>
               ) : (
-                <div className="aspect-video rounded-lg bg-muted flex items-center justify-center">
-                  <p className="text-body-sm text-muted-foreground">
+                <div className="aspect-video rounded-lg bg-muted flex items-center justify-center relative">
+                  <ImagePlaceholder
+                    width={640}
+                    height={360}
+                    seed={caseData.case_number!}
+                    className="rounded-lg aspect-video max-w-full opacity-20 absolute inset-0 z-0"
+                  />
+                  <p className="text-body-md text-foreground font-bold z-10">
                     Kein Bild verfügbar
                   </p>
                 </div>
