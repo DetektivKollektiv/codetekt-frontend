@@ -31,20 +31,22 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
           <Card
             className={`overflow-hidden text-left cursor-pointer hover:shadow-lg transition-shadow`}
           >
-            {caseData.open_graph_data?.og_image ? (
-              <Image
-                height={168}
-                width={300}
-                src={caseData.open_graph_data.og_image}
-                alt={caseData.open_graph_data.og_image_alt || 'Case image'}
-              />
-            ) : (
-              <ImagePlaceholder
-                width={300}
-                height={168}
-                seed={caseData.case_number}
-              />
-            )}
+            <div className="hidden lg:block">
+              {caseData.open_graph_data?.og_image ? (
+                <Image
+                  height={168}
+                  width={300}
+                  src={caseData.open_graph_data.og_image}
+                  alt={caseData.open_graph_data.og_image_alt || 'Case image'}
+                />
+              ) : (
+                <ImagePlaceholder
+                  width={300}
+                  height={168}
+                  seed={caseData.case_number}
+                />
+              )}
+            </div>
             <CardHeader>
               <CardTitle className="line-clamp-1">
                 {getCaseTitle(caseData)}

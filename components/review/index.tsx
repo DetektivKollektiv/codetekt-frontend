@@ -25,7 +25,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     [currentQuestionId, reviewTemplate]
   );
 
-  const reviewTemplateNavigationItems = useMemo(
+  const reviewTemplateNavigationQuestions = useMemo(
     () => reviewTemplate.filter((item) => item),
     [currentQuestionId, reviewTemplate]
   );
@@ -39,9 +39,9 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     >
       <div>
         <CaseCard case={caseData} />
-        <div className="mt-4">
+        <div className="my-4 lg:my-0 lg:mt-4">
           <ReviewNavigation
-            items={reviewTemplateNavigationItems}
+            reviewTemplateQuestions={reviewTemplateNavigationQuestions}
             currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
           />

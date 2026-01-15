@@ -1,71 +1,92 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
-import { FC } from 'react';
-
-interface ReviewNavigationItem {
-  id: string;
-  metadata: {
-    title: string;
-    indent_level?: number;
-  };
-}
+import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { FC, useMemo } from 'react';
+import { Button } from '../ui/button';
+import ReviewNavigationItem from './review-navigation-item';
 
 interface ReviewNavigationProps {
-  items: ReviewNavigationItem[];
+  reviewTemplateQuestions: NonNullable<ReviewTemplate>;
   currentItemId: string;
   onItemClick: (id: string) => void;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
-  items,
+  reviewTemplateQuestions,
   currentItemId,
   onItemClick,
 }) => {
-  return (
-    <nav className="flex flex-col gap-2">
-      {items.map((item) => {
-        const isActive = item.id === currentItemId;
-        const indentLevel = item.metadata.indent_level ?? 0;
-        const isIndented = indentLevel > 0;
+  const currentQuestion = useMemo(
+    () =>
+      reviewTemplateQuestions.find((item) => item.id === currentItemId) ||
+      reviewTemplateQuestions[0],
+    [currentItemId, reviewTemplateQuestions]
+  );
 
-        return (
-          <button
-            key={item.id}
-            onClick={() => onItemClick(item.id)}
-            className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all h-9',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
-              isActive && 'bg-primary text-primary-foreground',
-              !isActive && !isIndented && 'bg-muted hover:bg-muted/80',
-              !isActive && isIndented && 'bg-transparent hover:bg-muted/50',
-              isIndented && 'ml-8'
-            )}
-          >
-            <div
-              className={cn(
-                'flex items-center justify-center size-4 rounded-full border-2 shrink-0',
-                isActive && 'bg-white border-white',
-                !isActive && !isIndented && 'border-primary',
-                !isActive && isIndented && 'border-muted-foreground/40'
-              )}
-            >
-              {isActive && (
-                <Check className="size-3 text-primary" strokeWidth={4} />
-              )}
-            </div>
-            <span
-              className={cn(
-                'font-medium text-body-md md:text-body-sm',
-                !isActive && isIndented && 'text-muted-foreground'
-              )}
-            >
-              {item.metadata.title}
-            </span>
-          </button>
-        );
-      })}
+  return (
+    <nav>
+      <div className="flex-col gap-2 hidden lg:flex">
+        {reviewTemplateQuestions.map((reviewTemplateQuestion) => {
+          const isActive = reviewTemplateQuestion.id === currentItemId;
+          const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
+          const isIndented = indentLevel > 0;
+          return (
+            <ReviewNavigationItem
+              key={reviewTemplateQuestion.id}
+              reviewTemplateQuestion={reviewTemplateQuestion}
+              onItemClick={onItemClick}
+              isActive={isActive}
+              isIndented={isIndented}
+            />
+          );
+        })}
+      </div>
+      <div className="flex gap-2 lg:hidden">
+        <Button
+          variant="secondary"
+          size="icon"
+          className="cursor-pointer"
+          disabled={currentQuestion === reviewTemplateQuestions[0]}
+          onClick={() => {
+            const currentIndex = reviewTemplateQuestions.findIndex(
+              (item) => item.id === currentQuestion.id
+            );
+            if (currentIndex > 0) {
+              onItemClick(reviewTemplateQuestions[currentIndex - 1].id);
+            }
+          }}
+        >
+          <ArrowLeft size={16} />
+        </Button>
+        <ReviewNavigationItem
+          className="w-full cursor-default"
+          key={currentQuestion.id}
+          reviewTemplateQuestion={currentQuestion}
+          onItemClick={() => {}}
+          isActive={true}
+          isIndented={false}
+        />
+        <Button
+          variant="secondary"
+          size="icon"
+          className="cursor-pointer"
+          disabled={
+            currentQuestion ===
+            reviewTemplateQuestions[reviewTemplateQuestions.length - 1]
+          }
+          onClick={() => {
+            const currentIndex = reviewTemplateQuestions.findIndex(
+              (item) => item.id === currentQuestion.id
+            );
+            if (currentIndex < reviewTemplateQuestions.length - 1) {
+              onItemClick(reviewTemplateQuestions[currentIndex + 1].id);
+            }
+          }}
+        >
+          <ArrowRight size={16} />
+        </Button>
+      </div>
     </nav>
   );
 };
