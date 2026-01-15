@@ -23,7 +23,7 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
       key={reviewTemplateQuestion.id}
       onClick={() => onItemClick(reviewTemplateQuestion.id)}
       className={cn(
-        'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all h-9',
+        'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all h-9 border border-muted-foreground/30 hover:border-muted-foreground/50',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
         isActive && 'bg-primary text-primary-foreground',
         !isActive && !isIndented && 'bg-muted hover:bg-muted/80',

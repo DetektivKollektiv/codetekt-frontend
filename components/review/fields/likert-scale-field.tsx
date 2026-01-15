@@ -34,7 +34,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
   return (
     <div className="space-y-3">
       <h3 className="text-body-md font-medium">{field.question}</h3>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3  lg:grid-cols-5">
         {field.options.map((option) => {
           const isSelected = selectedValue === option.value;
 
@@ -45,11 +45,11 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
               disabled={isDisabled}
               onClick={() => handleSelect(option.value)}
               className={cn(
-                'flex flex-col items-center gap-3 rounded-xl border-2 bg-muted/30 px-4 py-6 transition-all',
+                'flex flex-col items-center gap-3 rounded-xl border bg-muted px-4 py-6 transition-all',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 isSelected
                   ? 'border-primary bg-muted/50'
-                  : 'border-transparent hover:border-muted-foreground/20',
+                  : 'border-muted-foreground/30 hover:border-muted-foreground/50',
                 isDisabled && 'cursor-not-allowed opacity-60'
               )}
             >
