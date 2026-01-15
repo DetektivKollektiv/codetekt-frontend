@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '../ui/card';
 import { HelpButton } from '../ui/help-button';
+import { MultiLineTextField } from './fields/multi-line-text-field';
 
 interface QuestionCardProps {
   question: NonNullable<ReviewTemplate>[number];
@@ -26,7 +27,14 @@ const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
         </CardDescription>
         <HelpButton className="absolute top-6 right-6" />
       </CardHeader>
-      <CardContent>{}</CardContent>
+      <CardContent className="space-y-6">
+        {question.fields.map((field) => {
+          if (field.type === 'multi-line-text') {
+            return <MultiLineTextField key={field.id} field={field} />;
+          }
+          return null;
+        })}
+      </CardContent>
     </Card>
   );
 };
