@@ -12,6 +12,7 @@ import { HelpButton } from '../ui/help-button';
 import { ChipField } from './fields/chip-field';
 import { LikertScaleField } from './fields/likert-scale-field';
 import { MultiLineTextField } from './fields/multi-line-text-field';
+import { TextAreaField } from './fields/text-area-field';
 import { TrafficLightField } from './fields/traffic-light-field';
 import { TrafficLightHeader } from './fields/traffic-light-header';
 
@@ -46,6 +47,8 @@ const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
         elements.push(<TrafficLightField key={field.id} field={field} />);
       } else if (field.type === 'likert-scale') {
         elements.push(<LikertScaleField key={field.id} field={field} />);
+      } else if (field.type === 'text-area') {
+        elements.push(<TextAreaField key={field.id} field={field} />);
       }
 
       previousFieldType = field.type;
