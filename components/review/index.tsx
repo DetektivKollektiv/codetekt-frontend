@@ -13,6 +13,9 @@ interface ReviewProps {
 }
 
 const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
+  const [reviewTemplateWithAnserValues, setReviewTemplateWithAnswerValues] =
+    useState(reviewTemplate);
+
   const [currentQuestionId, setCurrentQuestionId] = useState(
     reviewTemplate[0].id
   );

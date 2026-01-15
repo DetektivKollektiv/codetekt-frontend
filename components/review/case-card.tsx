@@ -6,7 +6,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Case } from '@/lib/queries/getCase';
-import { getLocalDate } from '@/lib/utils';
+import { getCaseTitle, getLocalDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -27,7 +27,7 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
   return (
     <>
       <Dialog>
-        <DialogTrigger disabled={caseData.content_type !== 'text'}>
+        <DialogTrigger asChild disabled={caseData.content_type !== 'text'}>
           <Card
             className={`overflow-hidden text-left ${
               caseData.content_type === 'text' &&
@@ -49,7 +49,9 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
               />
             )}
             <CardHeader>
-              <CardTitle>Fall {caseData.case_number}</CardTitle>
+              <CardTitle className="line-clamp-1">
+                {getCaseTitle(caseData)}
+              </CardTitle>
               <CardDescription>
                 Eingereicht am: {getLocalDate(caseData.submitted_at)}
               </CardDescription>
@@ -66,7 +68,7 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
 
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>{getCaseTitle(caseData)}</DialogTitle>
           </DialogHeader>
           <p>{caseData.content}</p>
         </DialogContent>

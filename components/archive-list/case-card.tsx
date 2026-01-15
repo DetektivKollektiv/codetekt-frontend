@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { OpenCases } from '@/lib/queries/getOpenCases';
 import { UserCases } from '@/lib/queries/getUserCases';
-import { getLocalDate } from '@/lib/utils';
+import { getCaseTitle, getLocalDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
@@ -60,11 +60,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             {/* Title & Description */}
             <CardText
               date={getLocalDate(caseItem.submitted_at!)}
-              title={
-                'Fall ' +
-                caseItem.case_number +
-                (ogData?.og_title ? ': ' + ogData?.og_title : '')
-              }
+              title={getCaseTitle(caseItem)}
               description={ogData?.og_description ?? caseItem.content}
             />
 
