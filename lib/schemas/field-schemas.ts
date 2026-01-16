@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   chipAnswerSchema,
   likertScaleAnswerSchema,
-  multyLineTextAnswerSchema,
+  multiLineTextAnswerSchema,
   textAnswerSchema,
   textAreaAnswerSchema,
   trafficLightAnswerSchema,
@@ -14,7 +14,7 @@ import {
   multiLineTextOptionSchema,
   textAreaOptionSchema,
   textOptionSchema,
-  traficLightOptionSchema,
+  trafficLightOptionSchema,
 } from './option-schemas.ts';
 
 // Base field schema with conditional properties
@@ -34,9 +34,10 @@ export const chipFieldSchema = baseFieldSchema.extend({
   answer_value: chipAnswerSchema.optional(),
 });
 
-export const traficLightFieldSchema = baseFieldSchema.extend({
+export const trafficLightFieldSchema = baseFieldSchema.extend({
   type: z.literal('traffic-light'),
-  options: z.tuple([traficLightOptionSchema]),
+  question: z.string(),
+  options: z.array(trafficLightOptionSchema),
   answer_value: trafficLightAnswerSchema.optional(),
 });
 
@@ -65,7 +66,7 @@ export const multiLineTextFieldSchema = baseFieldSchema.extend({
   type: z.literal('multi-line-text'),
   question: z.string(),
   options: z.array(multiLineTextOptionSchema),
-  answer_value: multyLineTextAnswerSchema.optional(),
+  answer_value: multiLineTextAnswerSchema.optional(),
   additonal_option_count: z.number(),
   max_length: z.number(),
   placeholder: z.string(),
@@ -74,7 +75,7 @@ export const multiLineTextFieldSchema = baseFieldSchema.extend({
 // Discriminated union of all field types
 export const fieldSchema = z.discriminatedUnion('type', [
   chipFieldSchema,
-  traficLightFieldSchema,
+  trafficLightFieldSchema,
   likertScaleFieldSchema,
   textAreaFieldSchema,
   multiLineTextFieldSchema,

@@ -2,11 +2,11 @@
 
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { traficLightFieldSchema } from '@/lib/schemas/field-schemas';
+import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC, useState } from 'react';
 import { z } from 'zod';
 
-type TrafficLightField = z.infer<typeof traficLightFieldSchema>;
+type TrafficLightField = z.infer<typeof trafficLightFieldSchema>;
 
 // Traffic light values: 1 = green, 2 = yellow/orange, 3 = orange, 4 = red, 0 = no answer
 type TrafficLightValue = 0 | 1 | 2 | 3 | null;

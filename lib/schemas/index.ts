@@ -4,7 +4,7 @@
 export {
   chipAnswerSchema,
   likertScaleAnswerSchema,
-  multyLineTextAnswerSchema,
+  multiLineTextAnswerSchema,
   reviewAnswerSchema,
   textAreaAnswerSchema,
   trafficLightAnswerSchema,
@@ -25,7 +25,7 @@ export {
   likertScaleOptionSchema,
   multiLineTextOptionSchema,
   textAreaOptionSchema,
-  traficLightOptionSchema,
+  trafficLightOptionSchema,
 } from './option-schemas.ts';
 
 // Field schemas
@@ -36,7 +36,7 @@ export {
   likertScaleFieldSchema,
   multiLineTextFieldSchema,
   textAreaFieldSchema,
-  traficLightFieldSchema,
+  trafficLightFieldSchema,
   type Field,
 } from './field-schemas.ts';
 

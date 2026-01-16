@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Base answer value schemas for different field types
-export const multyLineTextAnswerSchema = z.array(z.string()).nullable();
+export const multiLineTextAnswerSchema = z.array(z.string()).nullable();
 export const chipAnswerSchema = z.array(z.string()).nullable();
 export const trafficLightAnswerSchema = z
   .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
@@ -16,7 +16,7 @@ export const textAnswerSchema = z.string().nullable();
 export const reviewAnswerSchema = z.record(
   z.string(),
   z.union([
-    multyLineTextAnswerSchema,
+    multiLineTextAnswerSchema,
     chipAnswerSchema,
     trafficLightAnswerSchema,
     likertScaleAnswerSchema,
