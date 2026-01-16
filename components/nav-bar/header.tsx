@@ -19,23 +19,19 @@ import {
 } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { NavLink } from '@/lib/types';
-import { Tables } from '@/lib/types/database.types-generated';
-import { User } from '@supabase/supabase-js';
+import { useQuery } from '@tanstack/react-query';
 import { Toaster } from '../ui/sonner';
 import DesktopNavigation from './desktop-navigation';
 import UserMenu from './user-menu';
 
 export default function Header({
-  user,
-  profile,
-  isAuthenticated,
+  auth,
   authenticatedNavigation,
   guestNavigation,
 }: {
-  user: User | null;
-  profile: Tables<'profiles'> | null;
-  isAuthenticated: boolean | null;
+  auth: Awaited<ReturnType<typeof getAuth>>;
   authenticatedNavigation: NavLink[];
   guestNavigation: NavLink[];
 }) {
@@ -45,7 +41,26 @@ export default function Header({
 
   const client = createClient();
 
-  // const { data: country, isLoading, isError } = useQuery(getAuth(client))
+  const {
+    data: { isAuthenticated, user, profile },
+    refetch,
+  } = useQuery({
+    queryFn: () => getAuth(client),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  React.useEffect(() => {
+    const { data } = client.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION') {
+        return;
+      }
+
+      refetch();
+    });
+
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   React.useEffect(() => {
     setMobileOpen(false);

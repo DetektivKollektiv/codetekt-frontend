@@ -47,14 +47,12 @@ const authenticatedNavigation: NavLink[] = [
 
 export default async function NavBar() {
   const client = await createClient();
-  const { user, profile, isAuthenticated } = await getAuth(client);
+  const auth = await getAuth(client);
   return (
     <Header
       authenticatedNavigation={authenticatedNavigation}
       guestNavigation={guestNavigation}
-      user={user}
-      profile={profile}
-      isAuthenticated={isAuthenticated}
+      auth={auth}
     />
   );
 }
