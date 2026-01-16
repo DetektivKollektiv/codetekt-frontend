@@ -2,7 +2,10 @@
 
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
+import { Profile } from '@/lib/queries/getProfile';
+import { User } from '@/lib/queries/getUser';
 import { DetailComments } from './detail-comments';
+import DetailCreateComment from './detail-create-comment';
 import { DetailEvaluation } from './detail-evaluation';
 import { DetailHeader } from './detail-header';
 import { DetailRating } from './detail-rating';
@@ -11,14 +14,16 @@ interface ArchiveDetailProps {
   aggregatedReview: NonNullable<AggregatedReview>;
   caseComments: CaseComments;
   isAuthenticated: boolean;
-  userId?: string;
+  user: User['user'] | null;
+  profile: Profile | null;
 }
 
 export function ArchiveDetail({
   aggregatedReview,
   caseComments,
   isAuthenticated,
-  userId,
+  user,
+  profile,
 }: ArchiveDetailProps) {
   return (
     <div className="space-y-12">
@@ -37,7 +42,13 @@ export function ArchiveDetail({
       )}
 
       {/* Comments Section */}
-      <DetailComments comments={caseComments} userId={userId} />
+      <DetailComments comments={caseComments} userId={user?.id} />
+
+      <DetailCreateComment
+        user={user}
+        isAuthenticated={isAuthenticated}
+        profile={profile}
+      />
     </div>
   );
 }

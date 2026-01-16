@@ -12,10 +12,10 @@ export default async function Page({
 }) {
   const { id } = await params;
   const supabase = await createClient();
+
   const { data: reviewTemplate, error } = await getReviewTemplate(supabase, id);
   const { data: caseData, error: caseError } = await getCase(supabase, id);
 
-  // validate reviewTemplate with zod it should be of type Field[]
   if (reviewTemplate) {
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
     if (!parsed.success) {

@@ -1,4 +1,4 @@
-import { ArchiveDetail } from '@/components/archive-detail/archive-detail';
+import { ArchiveDetail } from '@/components/archive-detail';
 import { getAggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getCaseComments } from '@/lib/queries/getCaseComments';
 import { getAuth } from '@/lib/supabase/getAuth';
@@ -19,7 +19,7 @@ export default async function Page({
   const { data: caseComments, error: caseCommentsError } =
     await getCaseComments(supabase, id);
 
-  const { isAuthenticated, user } = await getAuth(supabase);
+  const { isAuthenticated, user, profile } = await getAuth(supabase);
 
   if (error) {
     throw error;
@@ -39,7 +39,8 @@ export default async function Page({
         aggregatedReview={aggregatedReview}
         caseComments={caseComments || []}
         isAuthenticated={isAuthenticated}
-        userId={user?.id}
+        user={user}
+        profile={profile}
       />
     </div>
   );
