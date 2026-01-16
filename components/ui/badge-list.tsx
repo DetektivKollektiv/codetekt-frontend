@@ -49,7 +49,7 @@ export function BadgeList({
   }, [contentType, keywordType]);
 
   return (
-    <div className="overflow-hidden relative">
+    <div className="overflow-hidden relative pb-px">
       {/* Hidden measurement container with ALL badges */}
       <div
         ref={measureRef}
@@ -58,30 +58,34 @@ export function BadgeList({
       >
         {contentType[0] && (
           <Badge variant="default">
-            <div className="text-body-sm">
+            <div className="text-body-sm whitespace-normal">
               {capitalizeFirstLetter(contentType[0])}
             </div>
           </Badge>
         )}
         {keywordType.map((keyword, idx) => (
           <Badge key={`measure-${idx}`} variant="outline">
-            <div className="text-body-sm">{capitalizeFirstLetter(keyword)}</div>
+            <div className="text-body-sm whitespace-normal">
+              {capitalizeFirstLetter(keyword)}
+            </div>
           </Badge>
         ))}
       </div>
 
       {/* Visible container */}
-      <div ref={containerRef} className="flex flex-wrap gap-2">
+      <div ref={containerRef} className="flex flex-shrink-0 gap-2">
         {contentType[0] && (
           <Badge variant="default">
-            <div className="text-body-sm">
+            <div className="text-body-sm whitespace-normal">
               {capitalizeFirstLetter(contentType[0])}
             </div>
           </Badge>
         )}
         {keywordType.slice(0, visibleCount).map((keyword, idx) => (
           <Badge key={idx} variant="outline">
-            <div className="text-body-sm">{capitalizeFirstLetter(keyword)}</div>
+            <div className="text-body-sm whitespace-nowrap">
+              {capitalizeFirstLetter(keyword)}
+            </div>
           </Badge>
         ))}
       </div>
