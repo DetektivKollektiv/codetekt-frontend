@@ -3,6 +3,7 @@ import {
   chipAnswerSchema,
   likertScaleAnswerSchema,
   multyLineTextAnswerSchema,
+  textAnswerSchema,
   textAreaAnswerSchema,
   trafficLightAnswerSchema,
 } from './answer-schemas.ts';
@@ -12,6 +13,7 @@ import {
   likertScaleOptionSchema,
   multiLineTextOptionSchema,
   textAreaOptionSchema,
+  textOptionSchema,
   traficLightOptionSchema,
 } from './option-schemas.ts';
 
@@ -22,7 +24,6 @@ export const baseFieldSchema = z.object({
   is_required: z.union([z.boolean(), z.array(conditionSchema)]).optional(),
   is_shown: z.union([z.boolean(), z.array(conditionSchema)]).optional(),
   is_disputable: z.union([z.boolean(), z.array(conditionSchema)]).optional(),
-  prefilled_answer_value: z.unknown().optional(),
 });
 
 // Specific field type schemas
@@ -53,6 +54,13 @@ export const textAreaFieldSchema = baseFieldSchema.extend({
   answer_value: textAreaAnswerSchema.optional(),
 });
 
+export const textFieldSchema = baseFieldSchema.extend({
+  type: z.literal('text'),
+  question: z.string(),
+  options: z.array(textOptionSchema),
+  answer_value: textAnswerSchema.optional(),
+});
+
 export const multiLineTextFieldSchema = baseFieldSchema.extend({
   type: z.literal('multi-line-text'),
   question: z.string(),
@@ -70,6 +78,7 @@ export const fieldSchema = z.discriminatedUnion('type', [
   likertScaleFieldSchema,
   textAreaFieldSchema,
   multiLineTextFieldSchema,
+  textFieldSchema,
 ]);
 
 export type Field = z.infer<typeof fieldSchema>;

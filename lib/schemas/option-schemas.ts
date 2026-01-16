@@ -32,6 +32,13 @@ export const textAreaOptionSchema = z.object({
   max_length: z.number(),
 });
 
+export const textOptionSchema = z.object({
+  id: z.string(),
+  placeholder: z.string(),
+  max_length: z.number(),
+  min_length: z.number().optional(),
+});
+
 export const multiLineTextOptionSchema = z.object({
   id: z.string(),
   text: z.string(),

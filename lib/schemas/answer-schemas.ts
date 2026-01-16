@@ -10,6 +10,7 @@ export const likertScaleAnswerSchema = z
   .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
   .nullable();
 export const textAreaAnswerSchema = z.string().nullable();
+export const textAnswerSchema = z.string().nullable();
 
 // Generic review answer schema (record of field_id -> answer value)
 export const reviewAnswerSchema = z.record(
@@ -20,6 +21,7 @@ export const reviewAnswerSchema = z.record(
     trafficLightAnswerSchema,
     likertScaleAnswerSchema,
     textAreaAnswerSchema,
+    textAnswerSchema,
   ])
 );
 
