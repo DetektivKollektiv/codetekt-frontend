@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { RatingStyle } from '@/lib/utils/rating-helpers';
 import { FC } from 'react';
+import { HelpButton } from '../ui/help-button';
 
 interface EvaluationProps {
   ratingStyle: RatingStyle;
@@ -12,7 +13,10 @@ const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
   return (
     <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-48 lg:h-auto relative">
       <div>
-        <h4 className="text-sm font-semibold mb-2">Bewertung</h4>
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="text-body-sm font-semibold">Bewertung</h4>
+          <HelpButton theme="dark" />
+        </div>
         <Badge
           className={cn(
             ratingStyle.colorClass,
@@ -25,7 +29,9 @@ const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
 
       {warningTags.length > 0 && (
         <div>
-          <h4 className="text-sm font-semibold mb-2">Tags zur Bewertung</h4>
+          <h4 className="text-body-sm font-semibold mb-2">
+            Tags zur Bewertung
+          </h4>
           <div className="break-words min-w-0 hyphens-auto text-destructive text-body-sm">
             {warningTags.slice(0, 4).map((tag, idx) => (
               <span className="" key={tag}>

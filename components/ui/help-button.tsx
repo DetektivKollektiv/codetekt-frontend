@@ -31,7 +31,7 @@ const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
         ref={ref}
         variant="ghost"
         size={size}
-        className={cn(helpButtonVariants({ theme }), className)}
+        className={cn(helpButtonVariants({ theme }), className, 'text-body-sm')}
         {...props}
       >
         <HelpCircle className="w-4 h-4 mr-2" />
