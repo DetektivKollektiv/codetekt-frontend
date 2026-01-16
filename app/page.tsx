@@ -23,7 +23,7 @@ export default async function Home() {
     supabase
   );
 
-  const { user, profile, isAuthenticated } = await getAuth();
+  const { user, profile, isAuthenticated } = await getAuth(supabase);
 
   // cases the user has created (and their aggregated reviews)
   let ownUserReviewsAndCases:

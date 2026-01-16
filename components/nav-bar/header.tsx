@@ -43,6 +43,10 @@ export default function Header({
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const pathname = usePathname();
 
+  const client = createClient();
+
+  // const { data: country, isLoading, isError } = useQuery(getAuth(client))
+
   React.useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -65,8 +69,7 @@ export default function Header({
     : guestNavigation;
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await client.auth.signOut();
     setMobileOpen(false);
     router.push('/auth/login');
   };

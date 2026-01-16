@@ -1,4 +1,6 @@
 import { getAuth } from '@/lib/supabase/getAuth';
+
+import { createClient } from '@/lib/supabase/server';
 import { NavLink } from '@/lib/types';
 import Header from './header';
 
@@ -44,7 +46,8 @@ const authenticatedNavigation: NavLink[] = [
 ];
 
 export default async function NavBar() {
-  const { user, profile, isAuthenticated } = await getAuth();
+  const client = await createClient();
+  const { user, profile, isAuthenticated } = await getAuth(client);
   return (
     <Header
       authenticatedNavigation={authenticatedNavigation}

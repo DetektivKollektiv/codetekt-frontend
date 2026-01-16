@@ -19,7 +19,7 @@ export default async function Page({
   const { data: caseComments, error: caseCommentsError } =
     await getCaseComments(supabase, id);
 
-  const { isAuthenticated, user } = await getAuth();
+  const { isAuthenticated, user } = await getAuth(supabase);
 
   if (error) {
     throw error;

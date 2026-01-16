@@ -2,7 +2,6 @@ import Review from '@/components/review';
 import { getCase } from '@/lib/queries/getCase';
 import { getReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { reviewTemplateSchema } from '@/lib/schemas';
-import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 
@@ -25,8 +24,6 @@ export default async function Page({
       return <div>{JSON.stringify(reviewTemplate)}</div>;
     }
   }
-
-  const { isAuthenticated, user } = await getAuth();
 
   if (error) {
     throw error;

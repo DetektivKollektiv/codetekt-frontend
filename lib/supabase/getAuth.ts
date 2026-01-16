@@ -1,28 +1,32 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { getClaims } from '../queries/getClaims';
 import { getProfile } from '../queries/getProfile';
 import { getUser } from '../queries/getUser';
-import { createClient } from './server';
+import { Database } from '../types/database.types';
 
-export const getAuth = async () => {
-  const client = await createClient();
-  const { data } = await getClaims(client);
-  const { data: user } = await getUser(client);
+export const getAuth = async (client: SupabaseClient<Database>) => {
+  const { data: claimsData, error: ClaimsError } = await getClaims(client);
+  const { data: userData } = await getUser(client);
   let isAuthenticated = false;
 
   let profile = null;
 
-  if (data?.claims.sub) {
-    profile = await getProfile(client, data?.claims.sub);
+  if (claimsData?.claims.sub) {
+    profile = await getProfile(client, claimsData?.claims.sub);
   }
 
-  if (user?.user) {
+  if (userData?.user) {
     isAuthenticated = true;
   }
 
+  if (ClaimsError) {
+    throw ClaimsError;
+  }
+
   return {
-    claims: data?.claims,
+    claims: claimsData?.claims,
     profile: profile?.data ?? null,
-    user: user?.user,
+    user: userData?.user,
     isAuthenticated,
   };
 };
