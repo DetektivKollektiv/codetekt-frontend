@@ -1,9 +1,11 @@
 import { CreateCaseForm } from '@/components/create-case-form';
 import { getAuth } from '@/lib/supabase/getAuth';
+import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 
 export default async function SubmitPage() {
-  const { user, isAuthenticated } = await getAuth();
+  const client = await createClient();
+  const { user, isAuthenticated } = await getAuth(client);
 
   return (
     <div className="w-full h-full flex-1 relative">
