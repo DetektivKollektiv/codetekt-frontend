@@ -60,7 +60,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
               <ImagePlaceholder
                 width={317}
                 height={238}
-                className="rounded-lg"
+                className="rounded-lg w-full h-full object-cover aspect-video lg:aspect-[4/3]"
                 seed={caseItem.cases.case_number!}
               />
             )}

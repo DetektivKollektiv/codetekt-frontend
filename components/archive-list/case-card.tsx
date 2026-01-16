@@ -43,7 +43,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
               <ImagePlaceholder
                 width={317}
                 height={238}
-                className="rounded-lg"
+                className="rounded-lg w-full h-full object-cover aspect-video lg:aspect-[4/3]"
                 seed={caseItem.case_number!}
               />
             )}
