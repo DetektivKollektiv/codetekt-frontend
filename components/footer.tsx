@@ -15,8 +15,8 @@ const Footer: FC<FooterProps> = ({}) => {
       <div className="w-full bg-gradient-brand h-px"></div>
       <div className="page-max-w text-secondary-foreground py-12">
         {/* Desktop Version */}
-        <div className="hidden lg:grid grid-cols-4 h-56">
-          <div>
+        <div className="hidden lg:grid grid-cols-3 w-full h-56">
+          <div className="lg:w-40">
             <h3 className="font-bold text-heading-lg mb-3">Aktion</h3>
             <ul className="space-y-2 text-secondary-foreground/60">
               <li>
@@ -36,32 +36,7 @@ const Footer: FC<FooterProps> = ({}) => {
               </li>
             </ul>
           </div>
-          <div>
-            <h3 className="font-bold text-heading-lg mb-3">codetekt</h3>
-            <ul className="space-y-2 text-secondary-foreground/60">
-              <li>
-                <Link href="#" className="hover:underline">
-                  Überblick
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:underline">
-                  Der Verein
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:underline">
-                  Trust-Checking
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:underline">
-                  FAQ
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
+          <div className="lg:w-40 mx-auto">
             <h3 className="font-bold text-heading-lg mb-3">Kontakt</h3>
             <ul className="space-y-2 text-secondary-foreground/60">
               <li>
@@ -73,28 +48,33 @@ const Footer: FC<FooterProps> = ({}) => {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline">
+                <Link
+                  href="https://www.instagram.com/codetekt/"
+                  className="hover:underline"
+                >
                   Instagram
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline">
-                  Twitter
+                <Link
+                  href="https://www.tiktok.com/@codetekt"
+                  className="hover:underline"
+                >
+                  TikTok
                 </Link>
               </li>
+
               <li>
-                <Link href="#" className="hover:underline">
-                  Facebook
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:underline">
+                <Link
+                  href="https://www.linkedin.com/company/codetekt"
+                  className="hover:underline"
+                >
                   LinkedIn
                 </Link>
               </li>
             </ul>
           </div>
-          <div>
+          <div className="lg:w-40 lg:ml-auto">
             <h3 className="font-bold text-heading-lg mb-3">Rechtliches</h3>
             <ul className="space-y-2 text-secondary-foreground/60">
               <li>
@@ -140,29 +120,6 @@ const Footer: FC<FooterProps> = ({}) => {
 
           <AccordionItem className="border-none" value="item-2">
             <AccordionTrigger className="font-bold text-heading-sm relative [&[data-state=open]>div]:hidden">
-              codetekt
-              <div className="w-full bg-gradient-brand h-px absolute bottom-0 left-0"></div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <ul className="space-y-2 text-secondary-foreground/60 pl-4 text-body-md">
-                <li>
-                  <Link href="#">Überblick</Link>
-                </li>
-                <li>
-                  <Link href="#">Der Verein</Link>
-                </li>
-                <li>
-                  <Link href="#">Trust-Checking</Link>
-                </li>
-                <li>
-                  <Link href="#">FAQ</Link>
-                </li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem className="border-none" value="item-3">
-            <AccordionTrigger className="font-bold text-heading-sm relative [&[data-state=open]>div]:hidden">
               Kontakt
               <div className="w-full bg-gradient-brand h-px absolute bottom-0 left-0"></div>
             </AccordionTrigger>
@@ -187,7 +144,7 @@ const Footer: FC<FooterProps> = ({}) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem className="border-none" value="item-4">
+          <AccordionItem className="border-none" value="item-3">
             <AccordionTrigger className="font-bold text-heading-sm relative [&[data-state=open]>div]:hidden">
               Rechtliches
             </AccordionTrigger>
