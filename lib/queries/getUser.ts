@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '../types/database.types-generated';
+import { Database } from '../types/database.types';
 
 export function getUser(client: SupabaseClient<Database>) {
   return client.auth.getUser();
