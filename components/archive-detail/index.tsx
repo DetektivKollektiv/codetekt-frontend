@@ -1,9 +1,8 @@
-'use client';
-
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
 import { Profile } from '@/lib/queries/getProfile';
 import { User } from '@/lib/queries/getUser';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { DetailComments } from './detail-comments';
 import DetailCreateComment from './detail-create-comment';
 import { DetailEvaluation } from './detail-evaluation';
@@ -16,6 +15,7 @@ interface ArchiveDetailProps {
   isAuthenticated: boolean;
   user: User['user'] | null;
   profile: Profile | null;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
 export function ArchiveDetail({
@@ -24,6 +24,7 @@ export function ArchiveDetail({
   isAuthenticated,
   user,
   profile,
+  auth,
 }: ArchiveDetailProps) {
   return (
     <div className="space-y-12">
@@ -44,11 +45,7 @@ export function ArchiveDetail({
       {/* Comments Section */}
       <DetailComments comments={caseComments} userId={user?.id} />
 
-      <DetailCreateComment
-        user={user}
-        isAuthenticated={isAuthenticated}
-        profile={profile}
-      />
+      <DetailCreateComment auth={auth} />
     </div>
   );
 }

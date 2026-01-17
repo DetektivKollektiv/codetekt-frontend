@@ -21,7 +21,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { NavLink } from '@/lib/types';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Toaster } from '../ui/sonner';
 import DesktopNavigation from './desktop-navigation';
 import UserMenu from './user-menu';
@@ -40,10 +40,12 @@ export default function Header({
   const pathname = usePathname();
 
   const client = createClient();
+  const queryClient = useQueryClient();
 
   const {
     data: { isAuthenticated, user, profile },
     refetch,
+    isFetching,
   } = useQuery({
     queryFn: () => getAuth(client),
     queryKey: ['auth'],
@@ -55,12 +57,17 @@ export default function Header({
       if (event === 'INITIAL_SESSION') {
         return;
       }
-
+      console.log('Auth event:', event);
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
       refetch();
     });
 
     return () => data.subscription.unsubscribe();
   }, []);
+
+  React.useEffect(() => {
+    console.log('isFetching:', isFetching);
+  }, [isFetching]);
 
   React.useEffect(() => {
     setMobileOpen(false);

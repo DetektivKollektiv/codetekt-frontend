@@ -19,8 +19,8 @@ export default async function Page({
   const { data: caseComments, error: caseCommentsError } =
     await getCaseComments(supabase, id);
 
-  const { isAuthenticated, user, profile } = await getAuth(supabase);
-
+  const auth = await getAuth(supabase);
+  const { isAuthenticated, user, profile } = auth;
   if (error) {
     throw error;
   }
@@ -36,6 +36,7 @@ export default async function Page({
   return (
     <div className=" w-full mt-10 lg:mt-12 mb-24 lg:mb-32">
       <ArchiveDetail
+        auth={auth}
         aggregatedReview={aggregatedReview}
         caseComments={caseComments || []}
         isAuthenticated={isAuthenticated}

@@ -1,5 +1,7 @@
-import { Profile } from '@/lib/queries/getProfile';
-import { User } from '@/lib/queries/getUser';
+'use client';
+import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { FC } from 'react';
 import { Button } from '../ui/button';
@@ -13,17 +15,20 @@ import {
 import { Textarea } from '../ui/textarea';
 
 interface DetailCreateCommentProps {
-  user: User['user'] | null;
-  isAuthenticated: boolean;
-  profile: Profile | null;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
-const DetailCreateComment: FC<DetailCreateCommentProps> = ({
-  user,
-  isAuthenticated,
-  profile,
-}) => {
-  console.log('DetailCreateComment - user:', user);
+const DetailCreateComment: FC<DetailCreateCommentProps> = ({ auth }) => {
+  const supabase = createClient();
+
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  const { isAuthenticated, user, profile } = authData;
+
   return (
     <div className="page-max-w ">
       {isAuthenticated ? (
