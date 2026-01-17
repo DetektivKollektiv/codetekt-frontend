@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
+import { getAuth } from '@/lib/supabase/getAuth';
 import type { EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -10,10 +11,10 @@ import { DetailCommentCard } from './detail-comment-card';
 
 interface DetailCommentsProps {
   comments: CaseComments;
-  userId?: string;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
-export function DetailComments({ comments, userId }: DetailCommentsProps) {
+export function DetailComments({ comments, auth }: DetailCommentsProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     slidesToScroll: 1,
@@ -81,7 +82,7 @@ export function DetailComments({ comments, userId }: DetailCommentsProps) {
                   key={comment.id}
                   className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0 h-auto flex w-full"
                 >
-                  <DetailCommentCard comment={comment} userId={userId} />
+                  <DetailCommentCard comment={comment} auth={auth} />
                 </div>
               ))}
             </div>

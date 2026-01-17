@@ -2,26 +2,41 @@
 import { ArchiveList } from '@/components/archive-list';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { OpenCases } from '@/lib/queries/getOpenCases';
-import { Profile } from '@/lib/queries/getProfile';
 import { UserCases } from '@/lib/queries/getUserCases';
-import { User } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
+import { useQuery } from '@tanstack/react-query';
 import { FC } from 'react';
 import UserSettings from './user-settings';
+
 interface UserPageProps {
-  profile: NonNullable<Profile>;
-  user: User;
+  auth: Awaited<ReturnType<typeof getAuth>>;
   openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
 const UserPage: FC<UserPageProps> = ({
-  profile,
-  user,
+  auth,
   ownUserReviewsAndCases,
   userReviewsAndCases,
   openCases,
 }) => {
+  const supabase = createClient();
+
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  const { profile, user } = authData;
+
+  // Handle case when user logs out while component is mounted
+  if (!profile || !user) {
+    return null;
+  }
+
   return (
     <>
       <div className="page-max-w w-full mt-12 lg:mt-24">
@@ -36,7 +51,7 @@ const UserPage: FC<UserPageProps> = ({
       </div>
 
       <div className="page-max-w w-full mt-12" id="user-settings">
-        <UserSettings profile={profile} user={user} />
+        <UserSettings auth={auth} />
       </div>
 
       {ownUserReviewsAndCases && (

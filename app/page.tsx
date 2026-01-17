@@ -23,7 +23,8 @@ export default async function Home() {
     supabase
   );
 
-  const { user, profile, isAuthenticated } = await getAuth(supabase);
+  const auth = await getAuth(supabase);
+  const { user, profile, isAuthenticated } = auth;
 
   // cases the user has created (and their aggregated reviews)
   let ownUserReviewsAndCases:
@@ -109,8 +110,7 @@ export default async function Home() {
     <main className="h-full flex-1">
       {isAuthenticated && user && profile ? (
         <UserPage
-          profile={profile}
-          user={user}
+          auth={auth}
           userReviewsAndCases={ownUserReviewsAndCases ?? []}
           ownUserReviewsAndCases={userReviewsAndCases ?? []}
           openCases={openCases ?? []}

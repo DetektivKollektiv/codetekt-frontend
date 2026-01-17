@@ -20,7 +20,6 @@ export default async function Page({
     await getCaseComments(supabase, id);
 
   const auth = await getAuth(supabase);
-  const { isAuthenticated, user, profile } = auth;
   if (error) {
     throw error;
   }
@@ -39,9 +38,6 @@ export default async function Page({
         auth={auth}
         aggregatedReview={aggregatedReview}
         caseComments={caseComments || []}
-        isAuthenticated={isAuthenticated}
-        user={user}
-        profile={profile}
       />
     </div>
   );

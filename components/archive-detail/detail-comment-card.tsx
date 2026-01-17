@@ -21,6 +21,7 @@ import { commentModerationQuery } from '@/lib/queries/getCommentModeration';
 import { commentReportsQuery } from '@/lib/queries/getCommentReports';
 import { toggleCommentLikeMutation } from '@/lib/queries/toggleCommentLike';
 import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -30,12 +31,20 @@ import { toast } from 'sonner';
 
 interface DetailCommentCardProps {
   comment: CaseComments[number];
-  userId?: string;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
-export function DetailCommentCard({ comment, userId }: DetailCommentCardProps) {
+export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
   const supabase = createClient();
   const queryClient = useQueryClient();
+
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  const userId = authData.user?.id;
   const [isLiked, setIsLiked] = useState(false);
   const [isReported, setIsReported] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);

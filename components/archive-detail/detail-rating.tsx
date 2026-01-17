@@ -3,12 +3,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { HelpButton } from '@/components/ui/help-button';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
+import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { getRatingStyle } from '@/lib/utils/rating-helpers';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 
 interface DetailRatingProps {
   aggregatedReview: NonNullable<AggregatedReview>;
-  isAuthenticated: boolean;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
 // Define rating levels and reviewer avatars
@@ -22,8 +25,17 @@ const reviewerColors = [
 
 export function DetailRating({
   aggregatedReview,
-  isAuthenticated,
+  auth,
 }: DetailRatingProps) {
+  const supabase = createClient();
+
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  const { isAuthenticated } = authData;
   const score = Number(aggregatedReview.result_score);
   const currentRating = getRatingStyle(score);
   const reviewerCount = aggregatedReview.reviewer_ids.length;

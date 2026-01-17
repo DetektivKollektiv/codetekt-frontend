@@ -21,27 +21,33 @@ import {
   type CreateCaseFormData,
 } from '@/lib/schemas/case-schemas';
 import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { cn } from '@/lib/utils';
-import { User } from '@supabase/supabase-js';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface CreateCaseFormProps {
-  user: User;
-  isAuthenticated: boolean;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
 export function CreateCaseForm({
   className,
-  user,
-  isAuthenticated,
+  auth,
 }: React.ComponentPropsWithoutRef<'div'> & CreateCaseFormProps) {
   // Auth context
   const router = useRouter();
   const supabase = createClient();
+
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  const { isAuthenticated, user } = authData;
 
   // Form state
   const [contentType, setContentType] = useState<ContentType>('url');

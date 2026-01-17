@@ -1,7 +1,5 @@
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
-import { Profile } from '@/lib/queries/getProfile';
-import { User } from '@/lib/queries/getUser';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { DetailComments } from './detail-comments';
 import DetailCreateComment from './detail-create-comment';
@@ -12,18 +10,12 @@ import { DetailRating } from './detail-rating';
 interface ArchiveDetailProps {
   aggregatedReview: NonNullable<AggregatedReview>;
   caseComments: CaseComments;
-  isAuthenticated: boolean;
-  user: User['user'] | null;
-  profile: Profile | null;
   auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
 export function ArchiveDetail({
   aggregatedReview,
   caseComments,
-  isAuthenticated,
-  user,
-  profile,
   auth,
 }: ArchiveDetailProps) {
   return (
@@ -32,10 +24,7 @@ export function ArchiveDetail({
       <DetailHeader aggregatedReview={aggregatedReview} />
 
       {/* Rating Overview */}
-      <DetailRating
-        aggregatedReview={aggregatedReview}
-        isAuthenticated={isAuthenticated}
-      />
+      <DetailRating aggregatedReview={aggregatedReview} auth={auth} />
 
       {/* Evaluation Section */}
       {aggregatedReview.data && (
@@ -43,7 +32,7 @@ export function ArchiveDetail({
       )}
 
       {/* Comments Section */}
-      <DetailComments comments={caseComments} userId={user?.id} />
+      <DetailComments comments={caseComments} auth={auth} />
 
       <DetailCreateComment auth={auth} />
     </div>

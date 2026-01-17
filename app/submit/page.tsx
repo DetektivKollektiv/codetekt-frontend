@@ -5,7 +5,8 @@ import Image from 'next/image';
 
 export default async function SubmitPage() {
   const client = await createClient();
-  const { user, isAuthenticated } = await getAuth(client);
+  const auth = await getAuth(client);
+  const { user } = auth;
 
   return (
     <div className="w-full h-full flex-1 relative">
@@ -38,9 +39,7 @@ export default async function SubmitPage() {
         {/* Fall einreichen Form */}
         <div className="page-max-w mt-12">
           <div className="lg:max-w-xl xl:max-w-2xl">
-            {user && (
-              <CreateCaseForm user={user} isAuthenticated={isAuthenticated} />
-            )}
+            {user && <CreateCaseForm auth={auth} />}
           </div>
         </div>
       </div>

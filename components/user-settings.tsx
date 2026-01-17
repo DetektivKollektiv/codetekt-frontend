@@ -11,28 +11,34 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Profile } from '@/lib/queries/getProfile';
 import { updateProfileMutation } from '@/lib/queries/updateProfile';
 import { updateUserEmailMutation } from '@/lib/queries/updateUserEmail';
 import { createClient } from '@/lib/supabase/client';
-import { User } from '@supabase/supabase-js';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAuth } from '@/lib/supabase/getAuth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FC, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface UserSettingsProps {
-  profile: NonNullable<Profile>;
-  user: User;
+  auth: Awaited<ReturnType<typeof getAuth>>;
 }
 
-const UserSettings: FC<UserSettingsProps> = ({ profile, user }) => {
-  const [email, setEmail] = useState(user.email || '');
-  const [getNotifications, setGetNotifications] = useState(
-    profile.get_notifications
-  );
-
+const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
   const supabase = createClient();
   const queryClient = useQueryClient();
+
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+    initialData: auth,
+  });
+
+  const { profile, user } = authData;
+
+  const [email, setEmail] = useState(user?.email || '');
+  const [getNotifications, setGetNotifications] = useState(
+    profile?.get_notifications ?? false
+  );
 
   useEffect(() => {
     if (user?.email) {
