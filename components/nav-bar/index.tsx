@@ -5,17 +5,8 @@ import { NavLink } from '@/lib/types';
 import Header from './header';
 
 const guestNavigation: NavLink[] = [
-  {
-    label: 'Plattform & Community',
-    href: '#',
-    children: [
-      { label: 'Gelöste Fälle', href: '/archive' },
-      { label: 'Fall einreichen', href: '/submit' },
-      { label: 'Login', href: '/auth/login' },
-      { label: 'Detektiv*in werden', href: '/auth/sign-up' },
-    ],
-  },
-  { label: 'Workshops', href: '#' },
+  { label: 'Gelöste Fälle', href: '/archive' },
+  { label: 'Fall einreichen', href: '/submit' },
   {
     label: 'Zu Codetekt',
     href: 'https://codetekt.org/',
