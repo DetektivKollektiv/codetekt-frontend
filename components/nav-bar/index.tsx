@@ -17,14 +17,8 @@ const guestNavigation: NavLink[] = [
   },
   { label: 'Workshops', href: '#' },
   {
-    label: 'Über Codetekt',
-    href: '#',
-    children: [
-      { label: 'Der Verein', href: '#' },
-      { label: 'Trust-Checking', href: '#' },
-      { label: 'FAQ', href: '#' },
-      { label: 'Spenden', href: '#' },
-    ],
+    label: 'Zu Codetekt',
+    href: 'https://codetekt.org/',
   },
 ];
 
@@ -33,15 +27,8 @@ const authenticatedNavigation: NavLink[] = [
   { label: 'Fall einreichen', href: '/submit' },
   { label: 'Gelöste Fälle', href: '/archive' },
   {
-    label: 'Über Codetekt',
-    href: '#',
-    children: [
-      { label: 'Der Verein', href: '#' },
-      { label: 'Workshops', href: '#' },
-      { label: 'Trust-Checking', href: '#' },
-      { label: 'FAQ', href: '#' },
-      { label: 'Spenden', href: '#' },
-    ],
+    label: 'Zu Codetekt',
+    href: 'https://codetekt.org/',
   },
 ];
 
