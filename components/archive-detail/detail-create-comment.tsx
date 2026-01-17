@@ -76,7 +76,7 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({ auth }) => {
               </CardTitle>
               <CardDescription className="mt-4">Mach mit!</CardDescription>
             </div>
-            <div className="flex flex-col w-full md:w-80">
+            <div className="flex flex-col w-full md:w-80 gap-2">
               <Button variant="ghost">Anmelden</Button>
               <Button variant="default">Detektiv*in werden</Button>
             </div>
