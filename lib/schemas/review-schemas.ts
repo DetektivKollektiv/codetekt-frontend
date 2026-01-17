@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   chipAnswerSchema,
   likertScaleAnswerSchema,
-  multyLineTextAnswerSchema,
+  multiLineTextAnswerSchema,
   textAreaAnswerSchema,
   trafficLightAnswerSchema,
 } from './answer-schemas';
@@ -10,7 +10,7 @@ import {
 // Submitted review answer schema with all required fields and validation
 export const submittedReviewAnswerSchema = z
   .object({
-    keyword_type: multyLineTextAnswerSchema,
+    keyword_type: multiLineTextAnswerSchema,
     content_type: chipAnswerSchema,
     grammar: trafficLightAnswerSchema,
     structure: trafficLightAnswerSchema,
@@ -46,7 +46,7 @@ export const submittedReviewAnswerSchema = z
 // In-progress schema - all optional
 export const inProgressReviewAnswerSchema = z
   .object({
-    keyword_type: multyLineTextAnswerSchema.optional(),
+    keyword_type: multiLineTextAnswerSchema.optional(),
     content_type: chipAnswerSchema.optional(),
     grammar: trafficLightAnswerSchema.optional(),
     structure: trafficLightAnswerSchema.optional(),
