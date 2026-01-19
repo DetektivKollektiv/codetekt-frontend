@@ -23,10 +23,7 @@ const reviewerColors = [
   'hsl(var(--brand-yellow))',
 ];
 
-export function DetailRating({
-  aggregatedReview,
-  auth,
-}: DetailRatingProps) {
+export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
   const supabase = createClient();
 
   const { data: authData } = useQuery({
@@ -90,15 +87,23 @@ export function DetailRating({
               </p>
               {/* Reviewer avatars */}
               <div className="flex -gap-2">
-                {reviewerColors.slice(0, reviewerCount).map((color, index) => (
-                  <div
-                    key={index}
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-heading-sm"
-                    style={{ backgroundColor: color }}
-                  >
-                    {String.fromCharCode(65 + index)}
-                  </div>
-                ))}
+                {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
+                  const letter = String.fromCharCode(
+                    65 + (reviewerId.charCodeAt(0) % 26)
+                  );
+                  return (
+                    <div
+                      key={reviewerId}
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white text-heading-sm"
+                      style={{
+                        backgroundColor:
+                          reviewerColors[index % reviewerColors.length],
+                      }}
+                    >
+                      {letter}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ) : (
@@ -112,15 +117,23 @@ export function DetailRating({
               </p>
               {/* Reviewer avatars */}
               <div className="flex -space-x-2">
-                {reviewerColors.slice(0, reviewerCount).map((color, index) => (
-                  <div
-                    key={index}
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-body-sm"
-                    style={{ backgroundColor: color }}
-                  >
-                    {String.fromCharCode(65 + index)}
-                  </div>
-                ))}
+                {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
+                  const letter = String.fromCharCode(
+                    65 + (reviewerId.charCodeAt(0) % 26)
+                  );
+                  return (
+                    <div
+                      key={reviewerId}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-body-sm"
+                      style={{
+                        backgroundColor:
+                          reviewerColors[index % reviewerColors.length],
+                      }}
+                    >
+                      {letter}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
