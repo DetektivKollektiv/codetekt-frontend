@@ -17,7 +17,7 @@ export function DetailEvaluationCard({ field }: DetailEvaluationCardProps) {
   const distributionData = getDistributionData(field);
   const average = field.average;
   const ratingStyle = getRatingStyle(average);
-  console.log('field:', field);
+
   return (
     <Card className="h-full">
       <CardContent className="p-6 space-y-4">

@@ -57,17 +57,12 @@ export default function Header({
       if (event === 'INITIAL_SESSION') {
         return;
       }
-      console.log('Auth event:', event);
       queryClient.invalidateQueries({ queryKey: ['auth'] });
       refetch();
     });
 
     return () => data.subscription.unsubscribe();
   }, []);
-
-  React.useEffect(() => {
-    console.log('isFetching:', isFetching);
-  }, [isFetching]);
 
   React.useEffect(() => {
     setMobileOpen(false);

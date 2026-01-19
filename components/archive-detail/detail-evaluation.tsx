@@ -16,7 +16,6 @@ interface DetailEvaluationProps {
 }
 
 export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
-  console.log('reviewData in DetailEvaluation:', reviewData);
   return (
     <section className="space-y-6 page-max-w">
       {/* Header */}

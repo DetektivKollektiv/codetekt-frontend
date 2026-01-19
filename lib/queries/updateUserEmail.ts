@@ -17,7 +17,7 @@ export async function updateUserEmail(
 export const updateUserEmailMutation = (client: SupabaseClient<Database>) => ({
   mutationFn: async (data: UpdateUserEmailData) => {
     const { data: result, error } = await updateUserEmail(client, data.email);
-    console.log('Update User Email Result:', result, error);
+
     if (error) throw error;
     return result;
   },
