@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const multiLineTextAnswerSchema = z.array(z.string()).nullable();
 export const chipAnswerSchema = z.array(z.string()).nullable();
 export const trafficLightAnswerSchema = z
-  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
+  .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
   .nullable();
 export const likertScaleAnswerSchema = z
   .union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)])

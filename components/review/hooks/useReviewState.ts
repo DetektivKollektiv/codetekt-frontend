@@ -77,11 +77,6 @@ export const useReviewState = (reviewTemplate: NonNullable<ReviewTemplate>) => {
           ...question,
           fields: question.fields.map((field) => {
             if (field.id !== fieldId) return field;
-            console.log('Updating field value:', {
-              questionId,
-              fieldId,
-              value,
-            });
             return {
               ...field,
               answer_value: value,

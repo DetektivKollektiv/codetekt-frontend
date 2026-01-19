@@ -10,7 +10,6 @@ import {
   validateInProgressReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -28,7 +27,6 @@ interface ReviewProps {
 
 const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const supabase = createClient();
-  const router = useRouter();
 
   // Auth context
   const { data: authData } = useQuery({
@@ -60,7 +58,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     const data = buildInProgressReviewAnswerData(
       reviewTemplateWithAnswersValues
     );
-    console.log('Built inProgressReviewAnswerData:', data);
+
     return data;
   }, [reviewTemplateWithAnswersValues]);
 
