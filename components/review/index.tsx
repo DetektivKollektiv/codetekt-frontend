@@ -1,14 +1,20 @@
 'use client';
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
 import { Field } from '@/lib/schemas/field-schemas';
+import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import {
   buildInProgressReviewAnswerData,
   validateFieldValue,
   validateInProgressReviewAnswer,
 } from '@/lib/utils/review-validation';
-import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import CaseCard from './case-card';
 import { ChipField } from './fields/chip-field';
@@ -27,6 +33,17 @@ interface ReviewProps {
 }
 
 const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
+  const supabase = createClient();
+  const router = useRouter();
+
+  // Auth context
+  const { data: authData } = useQuery({
+    queryFn: () => getAuth(supabase),
+    queryKey: ['auth'],
+  });
+
+  const userId = authData?.user?.id;
+
   // Initialize answer_value from initial_answer_value on mount
   const initializeAnswerValues = (
     template: NonNullable<ReviewTemplate>
@@ -52,6 +69,10 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     Map<string, string>
   >(new Map());
 
+  // Track unsaved changes
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const lastSavedDataRef = useRef<string | null>(null);
+
   // Resolve all conditions to booleans
   const resolvedReviewTemplate = useMemo(
     () => resolveReviewTemplateConditions(reviewTemplateWithAnswersValues),
@@ -64,6 +85,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       reviewTemplateWithAnswersValues
     );
     console.log('Built inProgressReviewAnswerData:', data);
+
+    // Check if data has changed from last saved version
+    const currentDataStr = JSON.stringify(data);
+    if (lastSavedDataRef.current !== null && lastSavedDataRef.current !== currentDataStr) {
+      setHasUnsavedChanges(true);
+    }
+
     return data;
   }, [reviewTemplateWithAnswersValues]);
 
@@ -84,6 +112,52 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       resolvedReviewTemplate
     );
   }, [resolvedReviewTemplate]);
+
+  // Warn user before leaving page with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  // Block in-app navigation with unsaved changes
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
+
+      if (link && link.href) {
+        // Check if it's an internal navigation (not external link or hash)
+        const isInternal = link.href.startsWith(window.location.origin);
+        const isSamePage = link.href.split('#')[0] === window.location.href.split('#')[0];
+        const isHashOnly = link.getAttribute('href')?.startsWith('#');
+
+        if (isInternal && !isSamePage && !isHashOnly) {
+          const confirmed = window.confirm(
+            'Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?'
+          );
+
+          if (!confirmed) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick, true);
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+    };
+  }, [hasUnsavedChanges]);
 
   // Function to update answer value for a specific field
   const updateFieldValue = (
@@ -245,7 +319,23 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     }
   };
 
-  // Handler to save in-progress review (Step 2: will send to server)
+  // Handler to save in-progress review
+  const { mutate: saveInProgress, isPending: isSaving } = useMutation({
+    ...saveReviewAnswersInProgressMutation(supabase),
+    onSuccess: (result) => {
+      toast.success('Entwurf gespeichert');
+      console.log('✓ Saved successfully:', result);
+
+      // Mark data as saved
+      setHasUnsavedChanges(false);
+      lastSavedDataRef.current = JSON.stringify(inProgressReviewAnswerData);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Fehler beim Speichern');
+      console.error('✗ Save failed:', error);
+    },
+  });
+
   const handleSaveInProgress = () => {
     console.log('=== SAVE IN PROGRESS ===');
     console.log('Data to save:', inProgressReviewAnswerData);
@@ -255,14 +345,20 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       inProgressReviewAnswerData
     );
 
-    if (validationResult.success) {
-      console.log('✓ Validation successful');
-      console.log('Validated data:', validationResult.data);
-      // TODO Step 2: Send to server
-      // await saveToReviewAnswersInProgress(validationResult.data);
-    } else {
+    if (!validationResult.success) {
       console.error('✗ Validation failed:', validationResult.error);
+      toast.error('Validierungsfehler beim Speichern');
+      return;
     }
+
+    // Check if user is authenticated
+    if (!userId) {
+      toast.error('Du musst angemeldet sein, um zu speichern');
+      return;
+    }
+
+    console.log('✓ Validation successful');
+    console.log('Validated data:', validationResult.data);
 
     // Log any field-level validation errors
     if (fieldValidationErrors.size > 0) {
@@ -271,6 +367,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         Object.fromEntries(fieldValidationErrors)
       );
     }
+
+    // Save to server
+    saveInProgress({
+      case_id: caseData.id,
+      reviewed_by: userId,
+      data: validationResult.data,
+    });
   };
 
   return (
