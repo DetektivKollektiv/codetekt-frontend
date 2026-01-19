@@ -48,6 +48,17 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     [reviewTemplateWithAnswersValues]
   );
 
+  // Filter out questions where all fields are not shown
+  const shownReviewTemplateQuestions = useMemo(
+    () =>
+      resolvedReviewTemplate.filter((question) =>
+        question.fields.every(
+          (field) => field.is_shown === true || field.is_shown === undefined
+        )
+      ),
+    [resolvedReviewTemplate]
+  );
+
   useEffect(() => {
     console.log(
       'Updated resolvedReviewTemplate answer values:',
@@ -84,17 +95,18 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   };
 
   const isLastQuestion = useMemo(() => {
-    const currentIndex = resolvedReviewTemplate.findIndex(
+    const currentIndex = shownReviewTemplateQuestions.findIndex(
       (q) => q.id === currentQuestionId
     );
-    return currentIndex === resolvedReviewTemplate.length - 1;
-  }, [currentQuestionId, resolvedReviewTemplate]);
+    return currentIndex === shownReviewTemplateQuestions.length - 1;
+  }, [currentQuestionId, shownReviewTemplateQuestions]);
 
   const currentQuestion = useMemo(
     () =>
-      resolvedReviewTemplate.find((item) => item.id === currentQuestionId) ||
-      resolvedReviewTemplate[0],
-    [currentQuestionId, resolvedReviewTemplate]
+      shownReviewTemplateQuestions.find(
+        (item) => item.id === currentQuestionId
+      ) || shownReviewTemplateQuestions[0],
+    [currentQuestionId, shownReviewTemplateQuestions]
   );
 
   // Build the fields with headers inserted where needed
@@ -165,11 +177,11 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   };
 
   const setNextQuestion = () => {
-    const currentIndex = resolvedReviewTemplate.findIndex(
+    const currentIndex = shownReviewTemplateQuestions.findIndex(
       (q) => q.id === currentQuestionId
     );
-    if (currentIndex < resolvedReviewTemplate.length - 1) {
-      const nextQuestionId = resolvedReviewTemplate[currentIndex + 1].id;
+    if (currentIndex < shownReviewTemplateQuestions.length - 1) {
+      const nextQuestionId = shownReviewTemplateQuestions[currentIndex + 1].id;
       setCurrentQuestionId(nextQuestionId);
     }
   };
@@ -185,7 +197,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         <CaseCard case={caseData} />
         <div className="my-4 lg:my-0 lg:mt-4">
           <ReviewNavigation
-            reviewTemplateQuestions={resolvedReviewTemplate}
+            reviewTemplateQuestions={shownReviewTemplateQuestions}
             currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
           />
