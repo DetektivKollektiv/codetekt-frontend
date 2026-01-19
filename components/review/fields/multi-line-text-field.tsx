@@ -6,6 +6,7 @@ import { multiLineTextFieldSchema } from '@/lib/schemas/field-schemas';
 import { X } from 'lucide-react';
 import { FC } from 'react';
 import { z } from 'zod';
+import { FieldContainer } from './field-container';
 
 type MultiLineTextField = z.infer<typeof multiLineTextFieldSchema>;
 
@@ -37,8 +38,7 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   };
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-body-md font-medium">{field.question}</h3>
+    <FieldContainer title={field.question}>
       <div className="space-y-2">
         {/* Pre-defined options (disabled, read-only) */}
         {field.options.map((option) => (
@@ -83,6 +83,6 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
           );
         })}
       </div>
-    </div>
+    </FieldContainer>
   );
 };

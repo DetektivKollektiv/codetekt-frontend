@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { FC } from 'react';
 import { z } from 'zod';
+import { FieldContainer } from './field-container';
 
 type ChipField = z.infer<typeof chipFieldSchema>;
 
@@ -28,8 +29,7 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
   };
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-body-md font-medium">{field.question}</h3>
+    <FieldContainer title={field.question}>
       <div className="flex flex-wrap gap-2">
         {field.options.map((option) => {
           const isSelected = selectedValues.includes(option.id);
@@ -62,6 +62,6 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
           );
         })}
       </div>
-    </div>
+    </FieldContainer>
   );
 };

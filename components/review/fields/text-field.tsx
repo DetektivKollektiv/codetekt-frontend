@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { textFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC } from 'react';
 import { z } from 'zod';
+import { FieldContainer } from './field-container';
 
 type TextField = z.infer<typeof textFieldSchema>;
 
@@ -21,8 +22,7 @@ export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
   };
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-body-md font-medium">{field.question}</h3>
+    <FieldContainer title={field.question}>
       <div className="space-y-2">
         <Input
           value={value}
@@ -35,6 +35,6 @@ export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
           {value.length} / {option.max_length}
         </div>
       </div>
-    </div>
+    </FieldContainer>
   );
 };

@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { textAreaFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC } from 'react';
 import { z } from 'zod';
+import { FieldContainer } from './field-container';
 
 type TextAreaField = z.infer<typeof textAreaFieldSchema>;
 
@@ -21,8 +22,7 @@ export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
   };
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-body-md font-medium">{field.question}</h3>
+    <FieldContainer title={field.question}>
       <div className="space-y-2">
         <Textarea
           value={value}
@@ -35,6 +35,6 @@ export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
           {value.length} / {option.max_length}
         </div>
       </div>
-    </div>
+    </FieldContainer>
   );
 };

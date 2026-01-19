@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { FC } from 'react';
 import { z } from 'zod';
+import { FieldContainer } from './field-container';
 
 type LikertScaleField = z.infer<typeof likertScaleFieldSchema>;
 type LikertScaleValue = 0 | 1 | 2 | 3 | 4 | null;
@@ -27,8 +28,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
   };
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-body-md font-medium">{field.question}</h3>
+    <FieldContainer title={field.question}>
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         {field.options.map((option) => {
           const isSelected = selectedValue === option.value;
@@ -77,6 +77,6 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
           );
         })}
       </div>
-    </div>
+    </FieldContainer>
   );
 };
