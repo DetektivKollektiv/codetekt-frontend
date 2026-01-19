@@ -2,9 +2,16 @@
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { Field } from '@/lib/schemas/field-schemas';
-import { FC, useMemo, useState } from 'react';
+import { FC, ReactNode, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import CaseCard from './case-card';
+import { ChipField } from './fields/chip-field';
+import { LikertScaleField } from './fields/likert-scale-field';
+import { MultiLineTextField } from './fields/multi-line-text-field';
+import { TextAreaField } from './fields/text-area-field';
+import { TextField } from './fields/text-field';
+import { TrafficLightField } from './fields/traffic-light-field';
+import { TrafficLightHeader } from './fields/traffic-light-header';
 import QuestionCard from './question-card';
 import ReviewNavigation from './review-navigation';
 
@@ -77,6 +84,73 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     [reviewTemplateWithAnswersValues]
   );
 
+  // Build the fields with headers inserted where needed
+  const renderFieldsWithHeaders = (): ReactNode[] => {
+    const elements: ReactNode[] = [];
+    let previousFieldType: string | null = null;
+
+    currentQuestion.fields.forEach((field) => {
+      // Check if we need to show header before this traffic-light field
+      // Show header if: this is traffic-light AND previous was not traffic-light (or is first)
+      if (
+        field.type === 'traffic-light' &&
+        previousFieldType !== 'traffic-light'
+      ) {
+        elements.push(
+          <TrafficLightHeader key={`header-${field.id}`} className="mb-4" />
+        );
+      }
+
+      // Handler function for this field
+      const handleChange = (value: Field['answer_value']) => {
+        updateFieldValue(currentQuestion.id, field.id, value);
+      };
+
+      // Render the field based on its type
+      if (field.type === 'multi-line-text') {
+        elements.push(
+          <MultiLineTextField
+            key={field.id}
+            field={field}
+            onChange={handleChange}
+          />
+        );
+      } else if (field.type === 'chip') {
+        elements.push(
+          <ChipField key={field.id} field={field} onChange={handleChange} />
+        );
+      } else if (field.type === 'traffic-light') {
+        elements.push(
+          <TrafficLightField
+            key={field.id}
+            field={field}
+            onChange={handleChange}
+          />
+        );
+      } else if (field.type === 'likert-scale') {
+        elements.push(
+          <LikertScaleField
+            key={field.id}
+            field={field}
+            onChange={handleChange}
+          />
+        );
+      } else if (field.type === 'text-area') {
+        elements.push(
+          <TextAreaField key={field.id} field={field} onChange={handleChange} />
+        );
+      } else if (field.type === 'text') {
+        elements.push(
+          <TextField key={field.id} field={field} onChange={handleChange} />
+        );
+      }
+
+      previousFieldType = field.type;
+    });
+
+    return elements;
+  };
+
   const setNextQuestion = () => {
     const currentIndex = reviewTemplateWithAnswersValues.findIndex(
       (q) => q.id === currentQuestionId
@@ -105,25 +179,30 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
           />
         </div>
       </div>
-      <QuestionCard question={currentQuestion} onFieldChange={updateFieldValue}>
-        <div className="flex flex-col w-full gap-2">
-          <Button variant="destructive" className="w-full">
-            Einspruch gegen Antworten erheben
-          </Button>
-          {isLastQuestion ? (
-            <Button variant="default" className="w-full">
-              Fall abschließen
+      <QuestionCard
+        question={currentQuestion}
+        footer={
+          <div className="flex flex-col w-full gap-2">
+            <Button variant="destructive" className="w-full">
+              Einspruch gegen Antworten erheben
             </Button>
-          ) : (
-            <Button
-              variant="default"
-              className="w-full"
-              onClick={setNextQuestion}
-            >
-              Nächste Frage
-            </Button>
-          )}
-        </div>
+            {isLastQuestion ? (
+              <Button variant="default" className="w-full">
+                Fall abschließen
+              </Button>
+            ) : (
+              <Button
+                variant="default"
+                className="w-full"
+                onClick={setNextQuestion}
+              >
+                Nächste Frage
+              </Button>
+            )}
+          </div>
+        }
+      >
+        {renderFieldsWithHeaders()}
       </QuestionCard>
     </div>
   );
