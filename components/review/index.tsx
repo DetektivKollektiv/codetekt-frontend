@@ -52,7 +52,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const shownReviewTemplateQuestions = useMemo(
     () =>
       resolvedReviewTemplate.filter((question) =>
-        question.fields.every(
+        question.fields.some(
           (field) => field.is_shown === true || field.is_shown === undefined
         )
       ),
@@ -62,9 +62,9 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   useEffect(() => {
     console.log(
       'Updated resolvedReviewTemplate answer values:',
-      reviewTemplateWithAnswersValues
+      resolvedReviewTemplate
     );
-  }, [reviewTemplateWithAnswersValues]);
+  }, [resolvedReviewTemplate]);
 
   // Function to update answer value for a specific field
   const updateFieldValue = (
