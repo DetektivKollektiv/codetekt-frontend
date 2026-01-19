@@ -1,8 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import type { CaseComments } from '@/lib/queries/getCaseComments';
+import { caseCommentsQuery, type CaseComments } from '@/lib/queries/getCaseComments';
+import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
+import { useQuery } from '@tanstack/react-query';
 import type { EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -12,9 +14,17 @@ import { DetailCommentCard } from './detail-comment-card';
 interface DetailCommentsProps {
   comments: CaseComments;
   auth: Awaited<ReturnType<typeof getAuth>>;
+  caseId: string;
 }
 
-export function DetailComments({ comments, auth }: DetailCommentsProps) {
+export function DetailComments({ comments, auth, caseId }: DetailCommentsProps) {
+  const supabase = createClient();
+
+  const { data: commentsData } = useQuery({
+    ...caseCommentsQuery(supabase, caseId),
+    initialData: comments,
+  });
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     slidesToScroll: 1,
@@ -48,7 +58,7 @@ export function DetailComments({ comments, auth }: DetailCommentsProps) {
       emblaApi.off('reInit', onSelect).off('select', onSelect);
     };
   }, [emblaApi, onSelect]);
-  if (!comments || comments.length === 0) {
+  if (!commentsData || commentsData.length === 0) {
     return (
       <section className="space-y-6 page-max-w">
         <div>
@@ -67,7 +77,7 @@ export function DetailComments({ comments, auth }: DetailCommentsProps) {
       <div className="page-max-w">
         <h2 className="text-2xl font-bold">Kommentare</h2>
         <p className="text-muted-foreground mt-1">
-          {comments.length} Kommentar{comments.length !== 1 ? 'e' : ''} zu
+          {commentsData.length} Kommentar{commentsData.length !== 1 ? 'e' : ''} zu
           diesem Fall
         </p>
       </div>
@@ -77,7 +87,7 @@ export function DetailComments({ comments, auth }: DetailCommentsProps) {
         <div className="relative overflow-visible page-max-w">
           <div className="embla" ref={emblaRef}>
             <div className="embla__container flex gap-4 items-stretch">
-              {comments.map((comment) => (
+              {commentsData.map((comment) => (
                 <div
                   key={comment.id}
                   className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0 h-auto flex w-full"
@@ -90,7 +100,7 @@ export function DetailComments({ comments, auth }: DetailCommentsProps) {
         </div>
       </div>
       {/* Navigation buttons */}
-      {comments.length > 1 && (
+      {commentsData.length > 1 && (
         <div className="page-max-w relative flex justify-between">
           <Button
             variant="outline"

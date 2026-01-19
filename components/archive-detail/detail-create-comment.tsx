@@ -1,4 +1,9 @@
 'use client';
+import { createCommentMutation } from '@/lib/queries/createComment';
+import {
+  createCommentFormSchema,
+  type CreateCommentFormData,
+} from '@/lib/schemas/comment-schemas';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -14,11 +19,6 @@ import {
   CardTitle,
 } from '../ui/card';
 import { Textarea } from '../ui/textarea';
-import { createCommentMutation } from '@/lib/queries/createComment';
-import {
-  createCommentFormSchema,
-  type CreateCommentFormData,
-} from '@/lib/schemas/comment-schemas';
 
 interface DetailCreateCommentProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
@@ -127,7 +127,7 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
                 placeholder="Dein Kommentar..."
                 className={
                   errors.content
-                    ? 'border-red-500 mb-2 w-full flex-1 resize-none'
+                    ? 'border-destructive mb-2 w-full flex-1 resize-none'
                     : 'mb-4 w-full flex-1 resize-none'
                 }
                 value={content}
@@ -139,7 +139,7 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
               {errors.content && (
                 <p
                   id="content-error"
-                  className="text-sm text-red-500 mb-4"
+                  className="text-sm text-destructive mb-4"
                   role="alert"
                 >
                   {errors.content}
