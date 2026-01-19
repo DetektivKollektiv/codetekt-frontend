@@ -1,6 +1,7 @@
 'use client';
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { Field } from '@/lib/schemas/field-schemas';
 import { FC, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import CaseCard from './case-card';
@@ -13,38 +14,76 @@ interface ReviewProps {
 }
 
 const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
-  const [reviewTemplateWithAnserValues, setReviewTemplateWithAnswerValues] =
-    useState(reviewTemplate);
+  // Initialize answer_value from initial_answer_value on mount
+  const initializeAnswerValues = (
+    template: NonNullable<ReviewTemplate>
+  ): NonNullable<ReviewTemplate> => {
+    return template.map((question) => ({
+      ...question,
+      fields: question.fields.map((field) => ({
+        ...field,
+        answer_value: field.initial_answer_value ?? field.answer_value,
+      })) as typeof question.fields,
+    })) as NonNullable<ReviewTemplate>;
+  };
+
+  const [reviewTemplateWithAnswersValues, setReviewTemplateWithAnswerValues] =
+    useState(() => initializeAnswerValues(reviewTemplate));
 
   const [currentQuestionId, setCurrentQuestionId] = useState(
     reviewTemplate[0].id
   );
 
+  // Function to update answer value for a specific field
+  const updateFieldValue = (
+    questionId: string,
+    fieldId: string,
+    value: Field['answer_value']
+  ) => {
+    setReviewTemplateWithAnswerValues((prev) =>
+      prev.map((question) => {
+        if (question.id !== questionId) return question;
+        return {
+          ...question,
+          fields: question.fields.map((field) => {
+            if (field.id !== fieldId) return field;
+            return {
+              ...field,
+              answer_value: value,
+            } as typeof field;
+          }),
+        };
+      })
+    );
+  };
+
   const isLastQuestion = useMemo(() => {
-    const currentIndex = reviewTemplateWithAnserValues.findIndex(
+    const currentIndex = reviewTemplateWithAnswersValues.findIndex(
       (q) => q.id === currentQuestionId
     );
-    return currentIndex === reviewTemplateWithAnserValues.length - 1;
-  }, [currentQuestionId, reviewTemplateWithAnserValues]);
+    return currentIndex === reviewTemplateWithAnswersValues.length - 1;
+  }, [currentQuestionId, reviewTemplateWithAnswersValues]);
 
   const currentQuestion = useMemo(
     () =>
-      reviewTemplate.find((item) => item.id === currentQuestionId) ||
-      reviewTemplate[0],
-    [currentQuestionId, reviewTemplate]
+      reviewTemplateWithAnswersValues.find(
+        (item) => item.id === currentQuestionId
+      ) || reviewTemplateWithAnswersValues[0],
+    [currentQuestionId, reviewTemplateWithAnswersValues]
   );
 
   const reviewTemplateNavigationQuestions = useMemo(
-    () => reviewTemplate.filter((item) => item),
-    [currentQuestionId, reviewTemplate]
+    () => reviewTemplateWithAnswersValues.filter((item) => item),
+    [reviewTemplateWithAnswersValues]
   );
 
   const setNextQuestion = () => {
-    const currentIndex = reviewTemplateWithAnserValues.findIndex(
+    const currentIndex = reviewTemplateWithAnswersValues.findIndex(
       (q) => q.id === currentQuestionId
     );
-    if (currentIndex < reviewTemplateWithAnserValues.length - 1) {
-      const nextQuestionId = reviewTemplateWithAnserValues[currentIndex + 1].id;
+    if (currentIndex < reviewTemplateWithAnswersValues.length - 1) {
+      const nextQuestionId =
+        reviewTemplateWithAnswersValues[currentIndex + 1].id;
       setCurrentQuestionId(nextQuestionId);
     }
   };
@@ -66,7 +105,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
           />
         </div>
       </div>
-      <QuestionCard question={currentQuestion}>
+      <QuestionCard question={currentQuestion} onFieldChange={updateFieldValue}>
         <div className="flex flex-col w-full gap-2">
           <Button variant="destructive" className="w-full">
             Einspruch gegen Antworten erheben

@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { z } from 'zod';
 
 type TrafficLightField = z.infer<typeof trafficLightFieldSchema>;
@@ -20,13 +20,10 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
   field,
   onChange,
 }) => {
-  const [value, setValue] = useState<TrafficLightValue>(
-    field.answer_value ?? null
-  );
+  const value = (field.answer_value ?? null) as TrafficLightValue;
 
   const handleChange = (newValue: string) => {
     const numValue = parseInt(newValue, 10) as TrafficLightValue;
-    setValue(numValue);
     onChange?.(numValue);
   };
 

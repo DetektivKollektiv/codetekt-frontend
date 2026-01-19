@@ -17,7 +17,6 @@ export default async function Page({
   const { data: caseData, error: caseError } = await getCase(supabase, id);
 
   if (reviewTemplate) {
-    console.log('Review template data:', reviewTemplate);
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
     console.log('Parsed review template:', parsed);
     if (!parsed.success) {

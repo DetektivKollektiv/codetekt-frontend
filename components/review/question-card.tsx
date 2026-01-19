@@ -1,5 +1,6 @@
 'use client';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { Field } from '@/lib/schemas/field-schemas';
 import { FC, ReactNode } from 'react';
 import {
   Card,
@@ -21,9 +22,18 @@ import { TrafficLightHeader } from './fields/traffic-light-header';
 interface QuestionCardProps {
   question: NonNullable<ReviewTemplate>[number];
   children: ReactNode;
+  onFieldChange: (
+    questionId: string,
+    fieldId: string,
+    value: Field['answer_value']
+  ) => void;
 }
 
-const QuestionCard: FC<QuestionCardProps> = ({ question, children }) => {
+const QuestionCard: FC<QuestionCardProps> = ({
+  question,
+  children,
+  onFieldChange,
+}) => {
   // Build the fields with headers inserted where needed
   const renderFieldsWithHeaders = (): ReactNode[] => {
     const elements: ReactNode[] = [];
@@ -41,19 +51,48 @@ const QuestionCard: FC<QuestionCardProps> = ({ question, children }) => {
         );
       }
 
+      // Handler function for this field
+      const handleChange = (value: Field['answer_value']) => {
+        onFieldChange(question.id, field.id, value);
+      };
+
       // Render the field based on its type
       if (field.type === 'multi-line-text') {
-        elements.push(<MultiLineTextField key={field.id} field={field} />);
+        elements.push(
+          <MultiLineTextField
+            key={field.id}
+            field={field}
+            onChange={handleChange}
+          />
+        );
       } else if (field.type === 'chip') {
-        elements.push(<ChipField key={field.id} field={field} />);
+        elements.push(
+          <ChipField key={field.id} field={field} onChange={handleChange} />
+        );
       } else if (field.type === 'traffic-light') {
-        elements.push(<TrafficLightField key={field.id} field={field} />);
+        elements.push(
+          <TrafficLightField
+            key={field.id}
+            field={field}
+            onChange={handleChange}
+          />
+        );
       } else if (field.type === 'likert-scale') {
-        elements.push(<LikertScaleField key={field.id} field={field} />);
+        elements.push(
+          <LikertScaleField
+            key={field.id}
+            field={field}
+            onChange={handleChange}
+          />
+        );
       } else if (field.type === 'text-area') {
-        elements.push(<TextAreaField key={field.id} field={field} />);
+        elements.push(
+          <TextAreaField key={field.id} field={field} onChange={handleChange} />
+        );
       } else if (field.type === 'text') {
-        elements.push(<TextField key={field.id} field={field} />);
+        elements.push(
+          <TextField key={field.id} field={field} onChange={handleChange} />
+        );
       }
 
       previousFieldType = field.type;

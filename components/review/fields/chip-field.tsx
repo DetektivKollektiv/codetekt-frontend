@@ -3,7 +3,7 @@
 import { chipFieldSchema } from '@/lib/schemas/field-schemas';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { z } from 'zod';
 
 type ChipField = z.infer<typeof chipFieldSchema>;
@@ -14,11 +14,7 @@ interface ChipFieldProps {
 }
 
 export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
-  const initialValues = (field.prefilled_answer_value ??
-    field.answer_value ??
-    []) as string[];
-  const [selectedValues, setSelectedValues] = useState<string[]>(initialValues);
-
+  const selectedValues = (field.answer_value ?? []) as string[];
   const isDisabled = field.is_disabled === true;
 
   const handleToggle = (optionId: string) => {
@@ -28,7 +24,6 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
       ? selectedValues.filter((id) => id !== optionId)
       : [...selectedValues, optionId];
 
-    setSelectedValues(newValues);
     onChange?.(newValues);
   };
 

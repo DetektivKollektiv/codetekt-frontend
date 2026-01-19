@@ -2,7 +2,7 @@
 
 import { Input } from '@/components/ui/input';
 import { textFieldSchema } from '@/lib/schemas/field-schemas';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { z } from 'zod';
 
 type TextField = z.infer<typeof textFieldSchema>;
@@ -14,10 +14,9 @@ interface TextFieldProps {
 
 export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
   const option = field.options[0];
-  const [value, setValue] = useState<string>(field.answer_value ?? '');
+  const value = (field.answer_value ?? '') as string;
 
   const handleChange = (newValue: string) => {
-    setValue(newValue);
     onChange?.(newValue);
   };
 

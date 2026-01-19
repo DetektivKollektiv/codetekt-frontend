@@ -3,7 +3,7 @@
 import { likertScaleFieldSchema } from '@/lib/schemas/field-schemas';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { z } from 'zod';
 
 type LikertScaleField = z.infer<typeof likertScaleFieldSchema>;
@@ -18,16 +18,11 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
   field,
   onChange,
 }) => {
-  const [selectedValue, setSelectedValue] = useState<LikertScaleValue>(
-    field.answer_value ?? null
-  );
-
+  const selectedValue = (field.answer_value ?? null) as LikertScaleValue;
   const isDisabled = field.is_disabled === true;
 
   const handleSelect = (value: LikertScaleValue) => {
     if (isDisabled) return;
-
-    setSelectedValue(value);
     onChange?.(value);
   };
 

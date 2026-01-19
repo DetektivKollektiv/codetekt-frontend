@@ -2,7 +2,7 @@
 
 import { Textarea } from '@/components/ui/textarea';
 import { textAreaFieldSchema } from '@/lib/schemas/field-schemas';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { z } from 'zod';
 
 type TextAreaField = z.infer<typeof textAreaFieldSchema>;
@@ -14,10 +14,9 @@ interface TextAreaFieldProps {
 
 export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
   const option = field.options[0];
-  const [value, setValue] = useState<string>(field.answer_value ?? '');
+  const value = (field.answer_value ?? '') as string;
 
   const handleChange = (newValue: string) => {
-    setValue(newValue);
     onChange?.(newValue);
   };
 

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { multiLineTextFieldSchema } from '@/lib/schemas/field-schemas';
 import { X } from 'lucide-react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { z } from 'zod';
 
 type MultiLineTextField = z.infer<typeof multiLineTextFieldSchema>;
@@ -19,25 +19,20 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   onChange,
 }) => {
   const additionalInputCount = field.additonal_option_count ?? 0;
-
-  // answer_value fills the additional slots, cap to additonal_option_count
-  const initialAnswerValues = (field.answer_value ?? []).slice(
+  const answerValues = ((field.answer_value ?? []) as string[]).slice(
     0,
     additionalInputCount
   );
-  const [answerValues, setAnswerValues] = useState<string[]>(initialAnswerValues);
 
   const handleAnswerChange = (index: number, value: string) => {
     const newValues = [...answerValues];
     newValues[index] = value;
-    setAnswerValues(newValues);
     onChange?.(newValues.filter(Boolean));
   };
 
   const handleAnswerClear = (index: number) => {
     const newValues = [...answerValues];
     newValues[index] = '';
-    setAnswerValues(newValues);
     onChange?.(newValues.filter(Boolean));
   };
 
@@ -48,11 +43,7 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
         {/* Pre-defined options (disabled, read-only) */}
         {field.options.map((option) => (
           <div key={option.id} className="flex gap-2">
-            <Input
-              value={option.text}
-              disabled
-              className="flex-1"
-            />
+            <Input value={option.text} disabled className="flex-1" />
             <Button
               type="button"
               variant="secondary"
