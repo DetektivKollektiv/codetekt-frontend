@@ -1,7 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { caseCommentsQuery, type CaseComments } from '@/lib/queries/getCaseComments';
+import {
+  caseCommentsQuery,
+  type CaseComments,
+} from '@/lib/queries/getCaseComments';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { useQuery } from '@tanstack/react-query';
@@ -17,7 +20,11 @@ interface DetailCommentsProps {
   caseId: string;
 }
 
-export function DetailComments({ comments, auth, caseId }: DetailCommentsProps) {
+export function DetailComments({
+  comments,
+  auth,
+  caseId,
+}: DetailCommentsProps) {
   const supabase = createClient();
 
   const { data: commentsData } = useQuery({
@@ -77,8 +84,8 @@ export function DetailComments({ comments, auth, caseId }: DetailCommentsProps) 
       <div className="page-max-w">
         <h2 className="text-2xl font-bold">Kommentare</h2>
         <p className="text-muted-foreground mt-1">
-          {commentsData.length} Kommentar{commentsData.length !== 1 ? 'e' : ''} zu
-          diesem Fall
+          {commentsData.length} Kommentar{commentsData.length !== 1 ? 'e' : ''}{' '}
+          zu diesem Fall
         </p>
       </div>
 
