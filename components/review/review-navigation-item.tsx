@@ -29,7 +29,9 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
         isActive && 'bg-primary text-primary-foreground',
         !isActive && 'bg-muted hover:bg-muted/80',
-        isDestructive && !isActive && 'border-destructive bg-destructive/10 hover:bg-destructive/20',
+        isDestructive &&
+          !isActive &&
+          'border-destructive bg-destructive/10 hover:bg-destructive/20',
         isIndented && 'ml-8',
         className
       )}
@@ -44,10 +46,12 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
       >
         {isActive && <Check className="size-3 text-primary" strokeWidth={4} />}
       </div>
-      <span className={cn(
-        'font-medium text-body-md md:text-body-sm',
-        isDestructive && !isActive && 'text-destructive'
-      )}>
+      <span
+        className={cn(
+          'font-medium text-body-md md:text-body-sm',
+          isDestructive && !isActive && 'text-destructive'
+        )}
+      >
         {reviewTemplateQuestion.metadata.title}
       </span>
     </button>
