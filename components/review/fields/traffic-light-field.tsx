@@ -28,7 +28,7 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
   };
 
   // Get the question text from the first option
-  const questionText = field.options[0]?.text || '';
+  const questionText = field.question || '';
 
   return (
     <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 md:gap-12 md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
