@@ -19,11 +19,17 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
   const ogData = caseData.open_graph_data;
   const reviewData = aggregatedReview.data;
 
-  const title = ogData?.og_title || caseData.content || 'Titel nicht verfügbar';
+  const title =
+    aggregatedReview.data?.metadata.title ||
+    ogData?.og_title ||
+    caseData.content ||
+    'Titel nicht verfügbar';
+
   const description =
     ogData?.og_description ||
     caseData.content ||
     'Keine Beschreibung verfügbar';
+
   const imageUrl = ogData?.og_image;
 
   const contentType = reviewData?.metadata?.content_type || [];
@@ -58,9 +64,21 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                 <h2 className="text-heading-xl leading-tight">{title}</h2>
               </div>
 
-              <p className="text-body-md text-muted-foreground leading-relaxed">
-                {description}
-              </p>
+              {aggregatedReview.cases.content_type === 'url' ? (
+                <Link
+                  href={aggregatedReview.cases.content}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-body-md text-muted-foreground underline
+        break-all leading-relaxed"
+                >
+                  {description}
+                </Link>
+              ) : (
+                <p className="text-body-md text-muted-foreground leading-relaxed">
+                  {description}
+                </p>
+              )}
             </div>
 
             {/* Right: Image and metadata */}
