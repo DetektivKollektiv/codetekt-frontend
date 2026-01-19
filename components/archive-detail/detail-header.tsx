@@ -69,9 +69,10 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                   href={aggregatedReview.cases.content}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-body-md text-muted-foreground underline
+                  className="block text-body-md text-primary underline
         break-all leading-relaxed"
                 >
+                  <LinkIcon className="w-4 h-4 mr-2 flex-shrink-0 inline mb-0.5" />
                   {description}
                 </Link>
               ) : (
@@ -124,22 +125,6 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                   ))}
                 </div>
               </div>
-
-              {/* Hinterlegter Link if content is URL */}
-              {caseData.content_type === 'url' && (
-                <div className="space-y-2">
-                  <p className="text-body-sm font-medium">Hinterlegter Link:</p>
-                  <a
-                    href={caseData.content}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-body-sm text-primary hover:underline break-all flex items-start gap-2"
-                  >
-                    <LinkIcon className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <span>{caseData.content}</span>
-                  </a>
-                </div>
-              )}
 
               {/* Datum */}
               <div className="space-y-2">
