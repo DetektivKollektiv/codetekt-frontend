@@ -1,33 +1,30 @@
 import { InProgressReviewAnswer } from '@/lib/schemas/review-schemas';
 import { Database } from '@/lib/types/database.types';
+import { FunctionsResponse } from '@supabase/functions-js';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface SaveReviewAnswersInProgressData {
   case_id: string;
-  reviewed_by: string;
   data: InProgressReviewAnswer;
+}
+
+interface SaveReviewAnswersInProgressResponse {
+  saved: boolean;
 }
 
 export async function saveReviewAnswersInProgress(
   client: SupabaseClient<Database>,
   saveData: SaveReviewAnswersInProgressData
-) {
-  // Use upsert to create or update the in-progress review
-  return client
-    .from('review_answers_in_progress')
-    .upsert(
-      {
+): Promise<FunctionsResponse<SaveReviewAnswersInProgressResponse>> {
+  return client.functions.invoke<SaveReviewAnswersInProgressResponse>(
+    'set-review-answers-in-progress',
+    {
+      body: {
         case_id: saveData.case_id,
-        reviewed_by: saveData.reviewed_by,
         data: saveData.data,
-        has_unpublished_changes: true,
       },
-      {
-        onConflict: 'case_id,reviewed_by',
-      }
-    )
-    .select('id, updated_at')
-    .single();
+    }
+  );
 }
 
 export const saveReviewAnswersInProgressMutation = (

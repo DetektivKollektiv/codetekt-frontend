@@ -193,7 +193,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     // Save to server
     saveInProgress({
       case_id: caseData.id,
-      reviewed_by: userId,
       data: validationResult.data,
     });
   };
