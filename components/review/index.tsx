@@ -51,9 +51,9 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   useEffect(() => {
     console.log(
       'Updated resolvedReviewTemplate answer values:',
-      resolvedReviewTemplate
+      reviewTemplateWithAnswersValues
     );
-  }, [resolvedReviewTemplate]);
+  }, [reviewTemplateWithAnswersValues]);
 
   // Function to update answer value for a specific field
   const updateFieldValue = (
@@ -68,6 +68,11 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
           ...question,
           fields: question.fields.map((field) => {
             if (field.id !== fieldId) return field;
+            console.log('Updating field value:', {
+              questionId,
+              fieldId,
+              value,
+            });
             return {
               ...field,
               answer_value: value,
@@ -90,11 +95,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       resolvedReviewTemplate.find((item) => item.id === currentQuestionId) ||
       resolvedReviewTemplate[0],
     [currentQuestionId, resolvedReviewTemplate]
-  );
-
-  const reviewTemplateNavigationQuestions = useMemo(
-    () => resolvedReviewTemplate.filter((item) => item),
-    [resolvedReviewTemplate]
   );
 
   // Build the fields with headers inserted where needed
@@ -185,7 +185,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         <CaseCard case={caseData} />
         <div className="my-4 lg:my-0 lg:mt-4">
           <ReviewNavigation
-            reviewTemplateQuestions={reviewTemplateNavigationQuestions}
+            reviewTemplateQuestions={resolvedReviewTemplate}
             currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
           />

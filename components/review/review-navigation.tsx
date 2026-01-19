@@ -24,10 +24,20 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
     [currentItemId, reviewTemplateQuestions]
   );
 
+  const shownReviewTemplateQuestions = useMemo(
+    () =>
+      reviewTemplateQuestions.filter((question) =>
+        question.fields.every(
+          (field) => field.is_shown === true || field.is_shown === undefined
+        )
+      ),
+    [reviewTemplateQuestions]
+  );
+
   return (
     <nav>
       <div className="flex-col gap-2 hidden lg:flex">
-        {reviewTemplateQuestions.map((reviewTemplateQuestion) => {
+        {shownReviewTemplateQuestions.map((reviewTemplateQuestion) => {
           const isActive = reviewTemplateQuestion.id === currentItemId;
           const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
           const isIndented = indentLevel > 0;
