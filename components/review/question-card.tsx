@@ -17,7 +17,11 @@ interface QuestionCardProps {
   footer: ReactNode;
 }
 
-const QuestionCard: FC<QuestionCardProps> = ({ question, children, footer }) => {
+const QuestionCard: FC<QuestionCardProps> = ({
+  question,
+  children,
+  footer,
+}) => {
   return (
     <Card className="pt-6 flex flex-col">
       <CardHeader className="relative">

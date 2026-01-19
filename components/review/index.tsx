@@ -2,7 +2,8 @@
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { Field } from '@/lib/schemas/field-schemas';
-import { FC, ReactNode, useMemo, useState } from 'react';
+import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
+import { FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import CaseCard from './case-card';
 import { ChipField } from './fields/chip-field';
@@ -41,6 +42,19 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     reviewTemplate[0].id
   );
 
+  // Resolve all conditions to booleans
+  const resolvedReviewTemplate = useMemo(
+    () => resolveReviewTemplateConditions(reviewTemplateWithAnswersValues),
+    [reviewTemplateWithAnswersValues]
+  );
+
+  useEffect(() => {
+    console.log(
+      'Updated resolvedReviewTemplate answer values:',
+      resolvedReviewTemplate
+    );
+  }, [resolvedReviewTemplate]);
+
   // Function to update answer value for a specific field
   const updateFieldValue = (
     questionId: string,
@@ -65,23 +79,22 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   };
 
   const isLastQuestion = useMemo(() => {
-    const currentIndex = reviewTemplateWithAnswersValues.findIndex(
+    const currentIndex = resolvedReviewTemplate.findIndex(
       (q) => q.id === currentQuestionId
     );
-    return currentIndex === reviewTemplateWithAnswersValues.length - 1;
-  }, [currentQuestionId, reviewTemplateWithAnswersValues]);
+    return currentIndex === resolvedReviewTemplate.length - 1;
+  }, [currentQuestionId, resolvedReviewTemplate]);
 
   const currentQuestion = useMemo(
     () =>
-      reviewTemplateWithAnswersValues.find(
-        (item) => item.id === currentQuestionId
-      ) || reviewTemplateWithAnswersValues[0],
-    [currentQuestionId, reviewTemplateWithAnswersValues]
+      resolvedReviewTemplate.find((item) => item.id === currentQuestionId) ||
+      resolvedReviewTemplate[0],
+    [currentQuestionId, resolvedReviewTemplate]
   );
 
   const reviewTemplateNavigationQuestions = useMemo(
-    () => reviewTemplateWithAnswersValues.filter((item) => item),
-    [reviewTemplateWithAnswersValues]
+    () => resolvedReviewTemplate.filter((item) => item),
+    [resolvedReviewTemplate]
   );
 
   // Build the fields with headers inserted where needed
@@ -152,12 +165,11 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   };
 
   const setNextQuestion = () => {
-    const currentIndex = reviewTemplateWithAnswersValues.findIndex(
+    const currentIndex = resolvedReviewTemplate.findIndex(
       (q) => q.id === currentQuestionId
     );
-    if (currentIndex < reviewTemplateWithAnswersValues.length - 1) {
-      const nextQuestionId =
-        reviewTemplateWithAnswersValues[currentIndex + 1].id;
+    if (currentIndex < resolvedReviewTemplate.length - 1) {
+      const nextQuestionId = resolvedReviewTemplate[currentIndex + 1].id;
       setCurrentQuestionId(nextQuestionId);
     }
   };
