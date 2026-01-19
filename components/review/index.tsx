@@ -10,9 +10,11 @@ import {
   validateInProgressReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { SaveAll } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
+import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
 import { useReviewState } from './hooks/useReviewState';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
@@ -66,6 +68,10 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const { hasUnsavedChanges, markAsSaved } = useUnsavedChangesWarning({
     data: inProgressReviewAnswerData,
   });
+
+  useEffect(() => {
+    console.log('Unsaved changes:', hasUnsavedChanges);
+  }, [hasUnsavedChanges]);
 
   // Filter out questions where all fields are not shown
   const shownReviewTemplateQuestions = useMemo(
@@ -185,7 +191,19 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       </div>
       <QuestionCard
         question={currentQuestion}
-        onSave={handleSaveInProgress}
+        headerActions={
+          <>
+            <HelpButton />
+            <Button
+              variant={hasUnsavedChanges ? 'destructive' : 'outline'}
+              size={'default'}
+              onClick={handleSaveInProgress}
+            >
+              <SaveAll className="w-4 h-4 mr-2" />
+              Speichern
+            </Button>
+          </>
+        }
         footer={
           <div className="flex flex-col w-full gap-2">
             {isLastQuestion ? (

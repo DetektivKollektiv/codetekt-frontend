@@ -16,15 +16,22 @@ export const useUnsavedChangesWarning = ({
   message = 'Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?',
 }: UseUnsavedChangesWarningOptions) => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const lastSavedDataRef = useRef<string | null>(null);
+  const lastSavedDataRef = useRef<string>(JSON.stringify(data));
+  const isInitialMount = useRef(true);
 
   // Check if data has changed from last saved version
   useEffect(() => {
+    // Skip the initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     const currentDataStr = JSON.stringify(data);
-    if (
-      lastSavedDataRef.current !== null &&
-      lastSavedDataRef.current !== currentDataStr
-    ) {
+    const hasChanged = lastSavedDataRef.current !== currentDataStr;
+
+    if (hasChanged) {
+      console.log('Data changed');
       setHasUnsavedChanges(true);
     }
   }, [data]);

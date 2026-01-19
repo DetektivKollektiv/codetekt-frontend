@@ -1,8 +1,6 @@
 'use client';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
-import { SaveAll } from 'lucide-react';
 import { FC, ReactNode } from 'react';
-import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
@@ -11,20 +9,19 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
-import { HelpButton } from '../ui/help-button';
 
 interface QuestionCardProps {
   question: NonNullable<ReviewTemplate>[number];
   children: ReactNode;
   footer: ReactNode;
-  onSave?: () => void;
+  headerActions?: ReactNode;
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
   question,
   children,
   footer,
-  onSave,
+  headerActions,
 }) => {
   return (
     <Card className="pt-6 flex flex-col">
@@ -35,13 +32,11 @@ const QuestionCard: FC<QuestionCardProps> = ({
         <CardDescription className="max-w-xl">
           {question.metadata.text}
         </CardDescription>
-        <div className="absolute top-6 right-6 space-x-4">
-          <HelpButton />
-          <Button variant="outline" size={'default'} onClick={onSave}>
-            <SaveAll className="w-4 h-4 mr-2" />
-            Speichern
-          </Button>
-        </div>
+        {headerActions && (
+          <div className="absolute top-6 right-6 space-x-4">
+            {headerActions}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-12 md:space-y-8 flex-1">
         {children}
