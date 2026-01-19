@@ -2,30 +2,24 @@
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
-import { Field } from '@/lib/schemas/field-schemas';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import {
   buildInProgressReviewAnswerData,
-  validateFieldValue,
   validateInProgressReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import CaseCard from './case-card';
-import { ChipField } from './fields/chip-field';
-import { LikertScaleField } from './fields/likert-scale-field';
-import { MultiLineTextField } from './fields/multi-line-text-field';
-import { TextAreaField } from './fields/text-area-field';
-import { TextField } from './fields/text-field';
-import { TrafficLightField } from './fields/traffic-light-field';
-import { TrafficLightHeader } from './fields/traffic-light-header';
+import { useReviewState } from './hooks/useReviewState';
+import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import QuestionCard from './question-card';
 import ReviewNavigation from './review-navigation';
+import { renderFieldsWithHeaders } from './utils/render-fields';
 
 interface ReviewProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
@@ -44,34 +38,16 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
 
   const userId = authData?.user?.id;
 
-  // Initialize answer_value from initial_answer_value on mount
-  const initializeAnswerValues = (
-    template: NonNullable<ReviewTemplate>
-  ): NonNullable<ReviewTemplate> => {
-    return template.map((question) => ({
-      ...question,
-      fields: question.fields.map((field) => ({
-        ...field,
-        answer_value: field.initial_answer_value ?? field.answer_value,
-      })) as typeof question.fields,
-    })) as NonNullable<ReviewTemplate>;
-  };
-
-  const [reviewTemplateWithAnswersValues, setReviewTemplateWithAnswerValues] =
-    useState(() => initializeAnswerValues(reviewTemplate));
+  // Review state management
+  const {
+    reviewTemplateWithAnswersValues,
+    fieldValidationErrors,
+    updateFieldValue,
+  } = useReviewState(reviewTemplate);
 
   const [currentQuestionId, setCurrentQuestionId] = useState(
     reviewTemplate[0].id
   );
-
-  // State for validation errors per field
-  const [fieldValidationErrors, setFieldValidationErrors] = useState<
-    Map<string, string>
-  >(new Map());
-
-  // Track unsaved changes
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const lastSavedDataRef = useRef<string | null>(null);
 
   // Resolve all conditions to booleans
   const resolvedReviewTemplate = useMemo(
@@ -85,15 +61,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       reviewTemplateWithAnswersValues
     );
     console.log('Built inProgressReviewAnswerData:', data);
-
-    // Check if data has changed from last saved version
-    const currentDataStr = JSON.stringify(data);
-    if (lastSavedDataRef.current !== null && lastSavedDataRef.current !== currentDataStr) {
-      setHasUnsavedChanges(true);
-    }
-
     return data;
   }, [reviewTemplateWithAnswersValues]);
+
+  // Unsaved changes warning
+  const { hasUnsavedChanges, markAsSaved } = useUnsavedChangesWarning({
+    data: inProgressReviewAnswerData,
+  });
 
   // Filter out questions where all fields are not shown
   const shownReviewTemplateQuestions = useMemo(
@@ -113,116 +87,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     );
   }, [resolvedReviewTemplate]);
 
-  // Warn user before leaving page with unsaved changes
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasUnsavedChanges]);
-
-  // Block in-app navigation with unsaved changes
-  useEffect(() => {
-    if (!hasUnsavedChanges) return;
-
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-
-      if (link && link.href) {
-        // Check if it's an internal navigation (not external link or hash)
-        const isInternal = link.href.startsWith(window.location.origin);
-        const isSamePage = link.href.split('#')[0] === window.location.href.split('#')[0];
-        const isHashOnly = link.getAttribute('href')?.startsWith('#');
-
-        if (isInternal && !isSamePage && !isHashOnly) {
-          const confirmed = window.confirm(
-            'Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?'
-          );
-
-          if (!confirmed) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleClick, true);
-    return () => {
-      document.removeEventListener('click', handleClick, true);
-    };
-  }, [hasUnsavedChanges]);
-
-  // Function to update answer value for a specific field
-  const updateFieldValue = (
-    questionId: string,
-    fieldId: string,
-    value: Field['answer_value']
-  ) => {
-    // Find the field to validate it
-    const question = reviewTemplateWithAnswersValues.find(
-      (q) => q.id === questionId
-    );
-    const field = question?.fields.find((f) => f.id === fieldId);
-
-    if (field) {
-      // Validate the new value
-      const validationResult = validateFieldValue(field, value);
-
-      if (!validationResult.success) {
-        // Store validation error
-        setFieldValidationErrors((prev) => {
-          const next = new Map(prev);
-          next.set(
-            fieldId,
-            validationResult.error.issues[0]?.message || 'Invalid value'
-          );
-          return next;
-        });
-        console.warn(
-          'Validation error for field',
-          fieldId,
-          validationResult.error
-        );
-      } else {
-        // Clear any existing validation error for this field
-        setFieldValidationErrors((prev) => {
-          const next = new Map(prev);
-          next.delete(fieldId);
-          return next;
-        });
-      }
-    }
-
-    // Update the value regardless of validation (for in-progress saves)
-    setReviewTemplateWithAnswerValues((prev) =>
-      prev.map((question) => {
-        if (question.id !== questionId) return question;
-        return {
-          ...question,
-          fields: question.fields.map((field) => {
-            if (field.id !== fieldId) return field;
-            console.log('Updating field value:', {
-              questionId,
-              fieldId,
-              value,
-            });
-            return {
-              ...field,
-              answer_value: value,
-            } as typeof field;
-          }),
-        };
-      })
-    );
-  };
-
   const isLastQuestion = useMemo(() => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
       (q) => q.id === currentQuestionId
@@ -237,77 +101,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       ) || shownReviewTemplateQuestions[0],
     [currentQuestionId, shownReviewTemplateQuestions]
   );
-
-  // Build the fields with headers inserted where needed
-  const renderFieldsWithHeaders = (): ReactNode[] => {
-    const elements: ReactNode[] = [];
-    let previousFieldType: string | null = null;
-
-    currentQuestion.fields.forEach((field) => {
-      // Check if we need to show header before this traffic-light field
-      // Show header if: this is traffic-light AND previous was not traffic-light (or is first)
-      if (field.is_shown === false) {
-        return; // Skip fields that are not shown
-      }
-
-      if (
-        field.type === 'traffic-light' &&
-        previousFieldType !== 'traffic-light'
-      ) {
-        elements.push(
-          <TrafficLightHeader key={`header-${field.id}`} className="mb-4" />
-        );
-      }
-
-      // Handler function for this field
-      const handleChange = (value: Field['answer_value']) => {
-        updateFieldValue(currentQuestion.id, field.id, value);
-      };
-
-      // Render the field based on its type
-      if (field.type === 'multi-line-text') {
-        elements.push(
-          <MultiLineTextField
-            key={field.id}
-            field={field}
-            onChange={handleChange}
-          />
-        );
-      } else if (field.type === 'chip') {
-        elements.push(
-          <ChipField key={field.id} field={field} onChange={handleChange} />
-        );
-      } else if (field.type === 'traffic-light') {
-        elements.push(
-          <TrafficLightField
-            key={field.id}
-            field={field}
-            onChange={handleChange}
-          />
-        );
-      } else if (field.type === 'likert-scale') {
-        elements.push(
-          <LikertScaleField
-            key={field.id}
-            field={field}
-            onChange={handleChange}
-          />
-        );
-      } else if (field.type === 'text-area') {
-        elements.push(
-          <TextAreaField key={field.id} field={field} onChange={handleChange} />
-        );
-      } else if (field.type === 'text') {
-        elements.push(
-          <TextField key={field.id} field={field} onChange={handleChange} />
-        );
-      }
-
-      previousFieldType = field.type;
-    });
-
-    return elements;
-  };
 
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
@@ -327,8 +120,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       console.log('✓ Saved successfully:', result);
 
       // Mark data as saved
-      setHasUnsavedChanges(false);
-      lastSavedDataRef.current = JSON.stringify(inProgressReviewAnswerData);
+      markAsSaved();
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Speichern');
@@ -414,7 +206,10 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
           </div>
         }
       >
-        {renderFieldsWithHeaders()}
+        {renderFieldsWithHeaders({
+          currentQuestion,
+          onFieldChange: updateFieldValue,
+        })}
       </QuestionCard>
     </div>
   );
