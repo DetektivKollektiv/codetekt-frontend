@@ -1,28 +1,29 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { Button } from '../ui/button';
 
 interface DetailEvaluationCarouselProps {
   children: ReactNode;
   options?: EmblaOptionsType;
   showNavigation?: boolean;
-  navigationButtonsPortal: string;
+  portalContainerId: string;
 }
 
 export function DetailEvaluationCarousel({
   children,
   options,
   showNavigation = true,
-  navigationButtonsPortal,
+  portalContainerId,
 }: DetailEvaluationCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+  const [portalContainer, setPortalContainer] = useState<Element | null>(null);
 
   const onPrevButtonClick = useCallback(() => {
     if (!emblaApi) return;
@@ -40,6 +41,7 @@ export function DetailEvaluationCarousel({
   }, []);
 
   useEffect(() => {
+    console.log('emblaApi changed:', emblaApi);
     if (!emblaApi) return;
 
     onSelect(emblaApi);
@@ -50,6 +52,11 @@ export function DetailEvaluationCarousel({
     };
   }, [emblaApi, onSelect]);
 
+  useEffect(() => {
+    const element = document.getElementById(portalContainerId);
+    setPortalContainer(element);
+  }, [portalContainerId]);
+
   return (
     <div className="overflow-visible">
       {/* Carousel */}
@@ -59,6 +66,7 @@ export function DetailEvaluationCarousel({
 
       {/* Navigation buttons */}
       {showNavigation &&
+        portalContainer &&
         createPortal(
           <>
             <Button
@@ -86,7 +94,7 @@ export function DetailEvaluationCarousel({
               <ChevronRight className="w-4 h-4" />
             </Button>
           </>,
-          document.getElementById(navigationButtonsPortal) as Element
+          portalContainer
         )}
     </div>
   );

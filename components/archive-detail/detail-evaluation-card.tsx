@@ -3,7 +3,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type { FieldDefinition } from '@/lib/config/field-definitions';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
 import {
   getDistributionData,
@@ -11,18 +10,14 @@ import {
 } from '@/lib/utils/rating-helpers';
 
 interface DetailEvaluationCardProps {
-  field: FieldDefinition;
-  fieldData: ReviewAggregationData['fields'][string];
+  field: ReviewAggregationData['questions'][number]['fields'][number];
 }
 
-export function DetailEvaluationCard({
-  field,
-  fieldData,
-}: DetailEvaluationCardProps) {
-  const distributionData = getDistributionData(fieldData);
-  const average = fieldData.average;
+export function DetailEvaluationCard({ field }: DetailEvaluationCardProps) {
+  const distributionData = getDistributionData(field);
+  const average = field.average;
   const ratingStyle = getRatingStyle(average);
-  console.log('fieldData:', fieldData);
+  console.log('field:', field);
   return (
     <Card className="h-full">
       <CardContent className="p-6 space-y-4">
@@ -84,7 +79,7 @@ export function DetailEvaluationCard({
         </div>
 
         {/* Warnings if any */}
-        {fieldData.warnings && fieldData.warnings.length > 0 && (
+        {/* {fieldData.warnings && fieldData.warnings.length > 0 && (
           <>
             <Separator />
             <div>
@@ -100,7 +95,7 @@ export function DetailEvaluationCard({
               </ul>
             </div>
           </>
-        )}
+        )} */}
       </CardContent>
     </Card>
   );

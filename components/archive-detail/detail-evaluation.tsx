@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { HelpButton } from '@/components/ui/help-button';
-import { categories, fieldDefinitions } from '@/lib/config/field-definitions';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
 import { DetailEvaluationCard } from './detail-evaluation-card';
 import { DetailEvaluationCarousel } from './detail-evaluation-carousel';
@@ -17,6 +16,7 @@ interface DetailEvaluationProps {
 }
 
 export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
+  console.log('reviewData in DetailEvaluation:', reviewData);
   return (
     <section className="space-y-6 page-max-w">
       {/* Header */}
@@ -32,27 +32,29 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
       </div>
 
       {/* Accordion with categories */}
-      <Accordion type="single" className="space-y-4">
-        {categories.map((category) => {
-          const hasFields = category.fieldIds.some(
-            (fieldId) => reviewData.fields?.[fieldId]
-          );
-          const CategoryIcon = category.icon;
-          const hasMultipleFields = category.fieldIds.length > 1;
+      <Accordion
+        type="single"
+        className="space-y-4"
+        defaultValue={reviewData.questions[0]?.id}
+      >
+        {reviewData.questions.map((question) => {
+          const hasFields = question.fields && question.fields.length > 0;
 
           if (!hasFields) return null;
 
           return (
             <AccordionItem
-              value={category.id}
+              value={question.id}
               className="border rounded-lg px-4 relative overflow-hidden last:border-b"
-              key={category.id}
-              id={`accordion-content-${category.id}`}
+              key={question.id}
+              id={`accordion-content-${question.id}`}
             >
               <AccordionTrigger className="hover:no-underline">
                 <div className="flex items-center gap-3">
-                  <CategoryIcon className="w-5 h-5" />
-                  <span className="font-semibold">{category.title}</span>
+                  {/* <CategoryIcon className="w-5 h-5" /> */}
+                  <span className="font-semibold">
+                    {question.metadata.title}
+                  </span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pt-4 pb-6">
@@ -62,27 +64,21 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                     slidesToScroll: 1,
                     dragFree: false,
                   }}
-                  showNavigation={hasMultipleFields}
-                  navigationButtonsPortal={`accordion-content-${category.id}`}
+                  showNavigation={question.fields.length > 0}
+                  portalContainerId={`accordion-content-${question.id}`}
                 >
-                  {category.fieldIds.map((fieldId) => {
-                    const fieldData = reviewData.fields?.[fieldId];
-                    if (!fieldData) return null;
-
-                    const field = fieldDefinitions[fieldId];
-
-                    return (
-                      <div
-                        key={fieldId}
-                        className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0"
-                      >
-                        <DetailEvaluationCard
-                          field={field}
-                          fieldData={fieldData}
-                        />
-                      </div>
-                    );
-                  })}
+                  <div>
+                    {question.fields.map((field) => {
+                      return (
+                        <div
+                          key={field.id}
+                          className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0"
+                        >
+                          <DetailEvaluationCard field={field} />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </DetailEvaluationCarousel>
               </AccordionContent>
             </AccordionItem>

@@ -1,7 +1,7 @@
 export {
   aggregationFieldValueSchema,
   reviewAggregationSchema,
-  type ReviewAggregationInput,
+  type ReviewAggregationData,
 } from './aggregation-schemas';
 export {
   chipAnswerSchema,
