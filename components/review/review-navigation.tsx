@@ -10,12 +10,14 @@ interface ReviewNavigationProps {
   reviewTemplateQuestions: NonNullable<ReviewTemplate>;
   currentItemId: string;
   onItemClick: (id: string) => void;
+  questionsWithErrors?: Set<string>;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
   reviewTemplateQuestions,
   currentItemId,
   onItemClick,
+  questionsWithErrors = new Set(),
 }) => {
   const currentQuestion = useMemo(
     () =>
@@ -31,6 +33,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           const isActive = reviewTemplateQuestion.id === currentItemId;
           const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
           const isIndented = indentLevel > 0;
+          const isDestructive = questionsWithErrors.has(reviewTemplateQuestion.id);
           return (
             <ReviewNavigationItem
               key={reviewTemplateQuestion.id}
@@ -38,6 +41,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
               onItemClick={onItemClick}
               isActive={isActive}
               isIndented={isIndented}
+              isDestructive={isDestructive}
             />
           );
         })}

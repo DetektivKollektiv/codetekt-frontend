@@ -7,6 +7,7 @@ import { getAuth } from '@/lib/supabase/getAuth';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import {
   buildInProgressReviewAnswerData,
+  getQuestionsWithSubmittedValidationErrors,
   validateInProgressReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -48,6 +49,9 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const [currentQuestionId, setCurrentQuestionId] = useState(
     reviewTemplate[0].id
   );
+
+  // Track if user has ever reached the last question (enables stricter validation)
+  const [hasReachedLastQuestion, setHasReachedLastQuestion] = useState(false);
 
   // Resolve all conditions to booleans
   const resolvedReviewTemplate = useMemo(
@@ -98,6 +102,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     return currentIndex === shownReviewTemplateQuestions.length - 1;
   }, [currentQuestionId, shownReviewTemplateQuestions]);
 
+  // Track when user reaches last question
+  useEffect(() => {
+    if (isLastQuestion) {
+      setHasReachedLastQuestion(true);
+    }
+  }, [isLastQuestion]);
+
   const currentQuestion = useMemo(
     () =>
       shownReviewTemplateQuestions.find(
@@ -105,6 +116,21 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       ) || shownReviewTemplateQuestions[0],
     [currentQuestionId, shownReviewTemplateQuestions]
   );
+
+  // Get questions with submitted validation errors (only after user reaches last question)
+  const questionsWithErrors = useMemo(() => {
+    if (!hasReachedLastQuestion) {
+      return new Set<string>();
+    }
+    return getQuestionsWithSubmittedValidationErrors(
+      reviewTemplateWithAnswersValues,
+      inProgressReviewAnswerData
+    );
+  }, [
+    hasReachedLastQuestion,
+    reviewTemplateWithAnswersValues,
+    inProgressReviewAnswerData,
+  ]);
 
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
@@ -186,6 +212,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
             reviewTemplateQuestions={shownReviewTemplateQuestions}
             currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
+            questionsWithErrors={questionsWithErrors}
           />
         </div>
       </div>

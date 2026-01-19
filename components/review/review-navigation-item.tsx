@@ -8,6 +8,7 @@ interface ReviewNavigationItemProps {
   onItemClick: (id: string) => void;
   isActive: boolean;
   isIndented: boolean;
+  isDestructive?: boolean;
   className?: string;
 }
 
@@ -16,6 +17,7 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
   onItemClick,
   isActive,
   isIndented,
+  isDestructive = false,
   className,
 }) => {
   return (
@@ -27,6 +29,7 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
         isActive && 'bg-primary text-primary-foreground',
         !isActive && 'bg-muted hover:bg-muted/80',
+        isDestructive && !isActive && 'border-destructive bg-destructive/10 hover:bg-destructive/20',
         isIndented && 'ml-8',
         className
       )}
@@ -35,12 +38,16 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
         className={cn(
           'flex items-center justify-center size-4 rounded-full border-2 shrink-0',
           isActive && 'bg-white border-white',
-          !isActive && 'border-primary'
+          !isActive && !isDestructive && 'border-primary',
+          !isActive && isDestructive && 'border-destructive'
         )}
       >
         {isActive && <Check className="size-3 text-primary" strokeWidth={4} />}
       </div>
-      <span className="font-medium text-body-md md:text-body-sm">
+      <span className={cn(
+        'font-medium text-body-md md:text-body-sm',
+        isDestructive && !isActive && 'text-destructive'
+      )}>
         {reviewTemplateQuestion.metadata.title}
       </span>
     </button>

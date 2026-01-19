@@ -11,6 +11,7 @@ import { Field } from '../schemas/field-schemas';
 import {
   InProgressReviewAnswer,
   inProgressReviewAnswerSchema,
+  submittedReviewAnswerSchema,
 } from '../schemas/review-schemas';
 
 /**
@@ -92,6 +93,14 @@ export const validateInProgressReviewAnswer = (
 };
 
 /**
+ * Validate the complete review answer as a submitted review
+ * Returns validation result with any errors based on stricter requirements
+ */
+export const validateSubmittedReviewAnswer = (data: InProgressReviewAnswer) => {
+  return submittedReviewAnswerSchema.safeParse(data);
+};
+
+/**
  * Get validation errors for all fields in the review template
  * Returns a map of field IDs to error messages
  */
@@ -115,4 +124,39 @@ export const getFieldValidationErrors = (
   });
 
   return errors;
+};
+
+/**
+ * Get question IDs that have validation errors based on submitted schema
+ * Returns a Set of question IDs
+ */
+export const getQuestionsWithSubmittedValidationErrors = (
+  reviewTemplate: NonNullable<ReviewTemplate>,
+  data: InProgressReviewAnswer
+): Set<string> => {
+  const questionIdsWithErrors = new Set<string>();
+
+  // First, validate the complete data
+  const validationResult = submittedReviewAnswerSchema.safeParse(data);
+
+  if (validationResult.success) {
+    return questionIdsWithErrors; // No errors
+  }
+
+  // Map field IDs from errors to question IDs
+  const errorFieldIds = new Set(
+    validationResult.error.issues.map((issue) => issue.path[0] as string)
+  );
+
+  // Find which questions contain these fields
+  reviewTemplate.forEach((question) => {
+    const hasErrorField = question.fields.some((field) =>
+      errorFieldIds.has(field.id)
+    );
+    if (hasErrorField) {
+      questionIdsWithErrors.add(question.id);
+    }
+  });
+
+  return questionIdsWithErrors;
 };
