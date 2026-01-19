@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fieldSchema } from './field-schemas.ts';
+import { fieldSchema } from './field-schemas';
 
 // Review template schema
 export const reviewTemplateSchema = z.object({

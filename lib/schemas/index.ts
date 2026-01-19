@@ -1,6 +1,8 @@
-// Re-export all schemas for backwards compatibility and easy imports
-
-// Answer schemas
+export {
+  aggregationFieldValueSchema,
+  reviewAggregationSchema,
+  type ReviewAggregationInput,
+} from './aggregation-schemas';
 export {
   chipAnswerSchema,
   likertScaleAnswerSchema,
@@ -9,70 +11,7 @@ export {
   textAreaAnswerSchema,
   trafficLightAnswerSchema,
   type ReviewAnswer,
-} from './answer-schemas.ts';
-
-// Condition schemas
-export {
-  comparisonConditionSchema,
-  conditionSchema,
-  equalsConditionSchema,
-  type Condtion,
-} from './condition-schemas.ts';
-
-// Option schemas
-export {
-  chipOptionSchema,
-  likertScaleOptionSchema,
-  multiLineTextOptionSchema,
-  textAreaOptionSchema,
-  trafficLightOptionSchema,
-} from './option-schemas.ts';
-
-// Field schemas
-export {
-  baseFieldSchema,
-  chipFieldSchema,
-  fieldSchema,
-  likertScaleFieldSchema,
-  multiLineTextFieldSchema,
-  textAreaFieldSchema,
-  trafficLightFieldSchema,
-  type Field,
-} from './field-schemas.ts';
-
-// Template schemas
-export {
-  reviewTemplateSchema,
-  type ReviewTemplateData,
-} from './template-schemas.ts';
-
-// Aggregation schemas
-export {
-  aggregationFieldValueSchema,
-  reviewAggregationSchema,
-  type ReviewAggregationData,
-} from './aggregation-schemas.ts';
-
-// Review schemas
-export {
-  inProgressReviewAnswerSchema,
-  submittedReviewAnswerSchema,
-  type InProgressReviewAnswerData,
-  type SubmittedReviewAnswerData,
-} from './review-schemas.ts';
-
-// Open Graph schemas
-export {
-  ogImageObjectSchema,
-  openGraphDataSchema,
-  setOpenGraphDataRequestSchema,
-  urlSchema,
-  type OgImageObject,
-  type OpenGraphData,
-  type SetOpenGraphDataRequest,
-} from './open-graph-schemas.ts';
-
-// Case schemas
+} from './answer-schemas';
 export {
   caseInsertSchema,
   contentTypeSchema,
@@ -84,3 +23,45 @@ export {
   type ContentType,
   type CreateCaseFormData,
 } from './case-schemas';
+export {
+  comparisonConditionSchema,
+  conditionSchema,
+  equalsConditionSchema,
+  type Condition,
+} from './condition-schemas';
+export {
+  baseFieldSchema,
+  chipFieldSchema,
+  fieldSchema,
+  likertScaleFieldSchema,
+  multiLineTextFieldSchema,
+  textAreaFieldSchema,
+  trafficLightFieldSchema,
+  type Field,
+} from './field-schemas';
+export {
+  ogImageObjectSchema,
+  openGraphDataSchema,
+  setOpenGraphDataRequestSchema,
+  urlSchema,
+  type OgImageObject,
+  type OpenGraphData,
+  type SetOpenGraphDataRequest,
+} from './open-graph-schemas';
+export {
+  chipOptionSchema,
+  likertScaleOptionSchema,
+  multiLineTextOptionSchema,
+  textAreaOptionSchema,
+  trafficLightOptionSchema,
+} from './option-schemas';
+export {
+  inProgressReviewAnswerSchema,
+  submittedReviewAnswerSchema,
+  type InProgressReviewAnswer,
+  type SubmittedReviewAnswer,
+} from './review-schemas';
+export {
+  reviewTemplateSchema,
+  type ReviewTemplateData,
+} from './template-schemas';
