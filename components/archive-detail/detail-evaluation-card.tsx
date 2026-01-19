@@ -26,7 +26,9 @@ export function DetailEvaluationCard({ field }: DetailEvaluationCardProps) {
           <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2">
             Frage
           </p>
-          <p className="font-medium leading-relaxed">{field.question}</p>
+          <p className="font-medium leading-relaxed line-clamp-3 h-20 text-ellipsis">
+            {field.question}
+          </p>
         </div>
 
         <Separator />
@@ -61,13 +63,15 @@ export function DetailEvaluationCard({ field }: DetailEvaluationCardProps) {
               <div key={entry.level} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">{entry.label}</span>
-                  <span className="font-semibold">{entry.percentage}%</span>
+                  <span className="font-semibold">
+                    {entry.percentage.toFixed(0)}%
+                  </span>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full transition-all duration-300"
                     style={{
-                      width: `${entry.percentage}%`,
+                      width: `${entry.percentage.toFixed(0)}%`,
                       backgroundColor: entry.backgroundColor,
                       color: entry.textColor,
                     }}
@@ -77,25 +81,6 @@ export function DetailEvaluationCard({ field }: DetailEvaluationCardProps) {
             ))}
           </div>
         </div>
-
-        {/* Warnings if any */}
-        {/* {fieldData.warnings && fieldData.warnings.length > 0 && (
-          <>
-            <Separator />
-            <div>
-              <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2">
-                Hinweise
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                {fieldData.warnings.map((warning, idx) => (
-                  <li key={idx} className="text-orange-600">
-                    {warning}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </>
-        )} */}
       </CardContent>
     </Card>
   );
