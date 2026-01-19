@@ -32,7 +32,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
       title={field.question}
       isDisputable={field.is_disputable as boolean}
     >
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
         {field.options.map((option) => {
           const isSelected = selectedValue === option.value;
 
@@ -58,9 +58,9 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
                   isSelected && 'text-white'
                 )}
                 style={{
-                  borderColor: `hsl(${option.color})`,
+                  borderColor: `${option.color}`,
                   backgroundColor: isSelected
-                    ? `hsl(${option.color})`
+                    ? `${option.color}`
                     : 'transparent',
                 }}
               >
