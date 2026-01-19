@@ -23,6 +23,7 @@ export const submittedReviewAnswerSchema = z
     content_advertising: trafficLightAnswerSchema,
     additional_rating: likertScaleAnswerSchema,
     additional_comment: textAreaAnswerSchema,
+    comment: textAreaAnswerSchema.optional(),
   })
   .strict() // keine extra keys erlaubt
   .refine(
@@ -57,6 +58,7 @@ export const inProgressReviewAnswerSchema = z
     content_advertising: trafficLightAnswerSchema.optional(),
     additional_rating: likertScaleAnswerSchema.optional(),
     additional_comment: textAreaAnswerSchema.optional(),
+    comment: textAreaAnswerSchema.optional(),
   })
   .strict();
 
