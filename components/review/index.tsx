@@ -117,6 +117,10 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     currentQuestion.fields.forEach((field) => {
       // Check if we need to show header before this traffic-light field
       // Show header if: this is traffic-light AND previous was not traffic-light (or is first)
+      if (field.is_shown === false) {
+        return; // Skip fields that are not shown
+      }
+
       if (
         field.type === 'traffic-light' &&
         previousFieldType !== 'traffic-light'
