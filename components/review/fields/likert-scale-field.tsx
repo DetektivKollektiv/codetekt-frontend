@@ -28,7 +28,10 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
   };
 
   return (
-    <FieldContainer title={field.question}>
+    <FieldContainer
+      title={field.question}
+      isDisputable={field.is_disputable as boolean}
+    >
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-5">
         {field.options.map((option) => {
           const isSelected = selectedValue === option.value;

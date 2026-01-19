@@ -38,7 +38,10 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   };
 
   return (
-    <FieldContainer title={field.question}>
+    <FieldContainer
+      title={field.question}
+      isDisputable={field.is_disputable as boolean}
+    >
       <div className="space-y-2">
         {/* Pre-defined options (disabled, read-only) */}
         {field.options.map((option) => (

@@ -22,7 +22,10 @@ export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
   };
 
   return (
-    <FieldContainer title={field.question}>
+    <FieldContainer
+      title={field.question}
+      isDisputable={field.is_disputable as boolean}
+    >
       <div className="space-y-2">
         <Textarea
           value={value}

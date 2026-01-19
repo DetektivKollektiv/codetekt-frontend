@@ -29,7 +29,10 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
   };
 
   return (
-    <FieldContainer title={field.question}>
+    <FieldContainer
+      title={field.question}
+      isDisputable={field.is_disputable as boolean}
+    >
       <div className="flex flex-wrap gap-2">
         {field.options.map((option) => {
           const isSelected = selectedValues.includes(option.id);

@@ -2,13 +2,13 @@ import { FC, ReactNode } from 'react';
 
 interface FieldContainerProps {
   title: string;
-  is_disputable?: boolean;
+  isDisputable?: boolean;
   children: ReactNode;
 }
 
 export const FieldContainer: FC<FieldContainerProps> = ({
   title,
-  is_disputable = false,
+  isDisputable = false,
   children,
 }) => {
   return (
