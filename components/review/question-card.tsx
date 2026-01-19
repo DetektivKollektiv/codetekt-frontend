@@ -33,8 +33,10 @@ const QuestionCard: FC<QuestionCardProps> = ({
         </CardDescription>
         <HelpButton className="absolute top-6 right-6" />
       </CardHeader>
-      <CardContent className="space-y-12 md:space-y-8 ">{children}</CardContent>
-      <CardFooter className="mt-auto flex-1 flex flex-col justify-end">
+      <CardContent className="space-y-12 md:space-y-8 flex-1">
+        {children}
+      </CardContent>
+      <CardFooter className="mt-auto flex flex-col justify-end">
         {footer}
       </CardFooter>
     </Card>

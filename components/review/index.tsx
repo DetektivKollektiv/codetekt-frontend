@@ -195,9 +195,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         question={currentQuestion}
         footer={
           <div className="flex flex-col w-full gap-2">
-            <Button variant="destructive" className="w-full">
-              Einspruch gegen Antworten erheben
-            </Button>
             {isLastQuestion ? (
               <Button variant="default" className="w-full">
                 Fall abschließen
