@@ -67,18 +67,16 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                   showNavigation={question.fields.length > 0}
                   portalContainerId={`accordion-content-${question.id}`}
                 >
-                  <div>
-                    {question.fields.map((field) => {
-                      return (
-                        <div
-                          key={field.id}
-                          className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0"
-                        >
-                          <DetailEvaluationCard field={field} />
-                        </div>
-                      );
-                    })}
-                  </div>
+                  {question.fields.map((field) => {
+                    return (
+                      <div
+                        key={field.id}
+                        className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0"
+                      >
+                        <DetailEvaluationCard field={field} />
+                      </div>
+                    );
+                  })}
                 </DetailEvaluationCarousel>
               </AccordionContent>
             </AccordionItem>
