@@ -26,8 +26,7 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
         'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all h-9 border border-muted-foreground/30 hover:border-muted-foreground/50',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
         isActive && 'bg-primary text-primary-foreground',
-        !isActive && !isIndented && 'bg-muted hover:bg-muted/80',
-        !isActive && isIndented && 'bg-transparent hover:bg-muted/50',
+        !isActive && 'bg-muted hover:bg-muted/80',
         isIndented && 'ml-8',
         className
       )}
@@ -36,18 +35,12 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
         className={cn(
           'flex items-center justify-center size-4 rounded-full border-2 shrink-0',
           isActive && 'bg-white border-white',
-          !isActive && !isIndented && 'border-primary',
-          !isActive && isIndented && 'border-muted-foreground/40'
+          !isActive && 'border-primary'
         )}
       >
         {isActive && <Check className="size-3 text-primary" strokeWidth={4} />}
       </div>
-      <span
-        className={cn(
-          'font-medium text-body-md md:text-body-sm',
-          !isActive && isIndented && 'text-muted-foreground'
-        )}
-      >
+      <span className="font-medium text-body-md md:text-body-sm">
         {reviewTemplateQuestion.metadata.title}
       </span>
     </button>
