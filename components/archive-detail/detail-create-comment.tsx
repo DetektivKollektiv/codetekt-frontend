@@ -1,9 +1,10 @@
 'use client';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import {
   Card,
@@ -13,13 +14,23 @@ import {
   CardTitle,
 } from '../ui/card';
 import { Textarea } from '../ui/textarea';
+import { createCommentMutation } from '@/lib/queries/createComment';
+import {
+  createCommentFormSchema,
+  type CreateCommentFormData,
+} from '@/lib/schemas/comment-schemas';
 
 interface DetailCreateCommentProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
+  caseId: string;
 }
 
-const DetailCreateComment: FC<DetailCreateCommentProps> = ({ auth }) => {
+const DetailCreateComment: FC<DetailCreateCommentProps> = ({
+  auth,
+  caseId,
+}) => {
   const supabase = createClient();
+  const queryClient = useQueryClient();
 
   const { data: authData } = useQuery({
     queryFn: () => getAuth(supabase),
@@ -28,6 +39,62 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({ auth }) => {
   });
 
   const { isAuthenticated, user, profile } = authData;
+
+  // Form state
+  const [content, setContent] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Mutation
+  const { mutate, isPending } = useMutation({
+    ...createCommentMutation(supabase),
+    onSuccess: () => {
+      toast.success('Kommentar erfolgreich erstellt!');
+      setContent('');
+      setErrors({});
+      // Invalidate comments query to refetch
+      queryClient.invalidateQueries({ queryKey: ['case-comments', caseId] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Ein Fehler ist aufgetreten');
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+
+    // Check authentication
+    if (!isAuthenticated || !user) {
+      toast.error('Du musst angemeldet sein, um zu kommentieren');
+      return;
+    }
+
+    // Validate form data
+    const formData: CreateCommentFormData = {
+      content,
+      case_id: caseId,
+    };
+
+    const validation = createCommentFormSchema.safeParse(formData);
+
+    if (!validation.success) {
+      // Map Zod errors to form fields
+      const fieldErrors: Record<string, string> = {};
+      validation.error.issues.forEach((err) => {
+        const path = err.path.join('.');
+        fieldErrors[path] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    // Submit to database
+    mutate({
+      content: validation.data.content,
+      case_id: validation.data.case_id,
+      author_id: user.id,
+    });
+  };
 
   return (
     <div className="page-max-w ">
@@ -49,21 +116,47 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({ auth }) => {
             </CardHeader>
           </CardContent>
           <CardContent className="p-0 flex-1 flex flex-col">
-            <p className="text-heading-lg font-bold">
-              Neuen Kommentar verfassen
-            </p>
-            <p className="text-body-lg text-muted-foreground mb-4">
-              {profile?.username}
-            </p>
-            <Textarea
-              placeholder="Dein Kommentar..."
-              className="mb-4 w-full flex-1 resize-none"
-            />
-            <Button disabled={!isAuthenticated} variant="secondary">
-              {isAuthenticated
-                ? 'Kommentar erstellen'
-                : 'Anmelden zum Kommentieren'}
-            </Button>
+            <form onSubmit={handleSubmit} className="flex flex-col h-full">
+              <p className="text-heading-lg font-bold">
+                Neuen Kommentar verfassen
+              </p>
+              <p className="text-body-lg text-muted-foreground mb-4">
+                {profile?.username}
+              </p>
+              <Textarea
+                placeholder="Dein Kommentar..."
+                className={
+                  errors.content
+                    ? 'border-red-500 mb-2 w-full flex-1 resize-none'
+                    : 'mb-4 w-full flex-1 resize-none'
+                }
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                disabled={isPending}
+                aria-describedby={errors.content ? 'content-error' : undefined}
+                aria-invalid={!!errors.content}
+              />
+              {errors.content && (
+                <p
+                  id="content-error"
+                  className="text-sm text-red-500 mb-4"
+                  role="alert"
+                >
+                  {errors.content}
+                </p>
+              )}
+              <Button
+                type="submit"
+                disabled={!isAuthenticated || isPending}
+                variant="secondary"
+              >
+                {isPending
+                  ? 'Wird erstellt...'
+                  : isAuthenticated
+                    ? 'Kommentar erstellen'
+                    : 'Anmelden zum Kommentieren'}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       ) : (

@@ -34,7 +34,7 @@ export function ArchiveDetail({
       {/* Comments Section */}
       <DetailComments comments={caseComments} auth={auth} />
 
-      <DetailCreateComment auth={auth} />
+      <DetailCreateComment auth={auth} caseId={aggregatedReview.case_id} />
     </div>
   );
 }
