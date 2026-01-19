@@ -22,9 +22,10 @@ export const submittedReviewAnswerSchema = z
     content_logic: trafficLightAnswerSchema,
     content_advertising: trafficLightAnswerSchema,
     additional_rating: likertScaleAnswerSchema,
-    additional_comment: textAreaAnswerSchema,
+    additional_comment: textAreaAnswerSchema.optional(),
     comment: textAreaAnswerSchema.optional(),
   })
+
   .strict() // keine extra keys erlaubt
   .refine(
     (data) => {
@@ -32,6 +33,7 @@ export const submittedReviewAnswerSchema = z
       if (data.additional_rating !== null && data.additional_rating < 3) {
         return (
           data.additional_comment !== null &&
+          data.additional_comment !== undefined &&
           data.additional_comment.trim().length > 0
         );
       }
@@ -40,6 +42,15 @@ export const submittedReviewAnswerSchema = z
     {
       message: 'additional_comment is required when additional_rating < 3',
       path: ['additional_comment'],
+      when(payload) {
+        // Only run this refinement if both fields we care about have no issues
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'additional_rating' ||
+            iss.path?.[0] === 'additional_comment'
+        );
+        return !hasRelevantIssues;
+      },
     }
   );
 

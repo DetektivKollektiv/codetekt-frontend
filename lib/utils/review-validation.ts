@@ -139,6 +139,8 @@ export const getQuestionsWithSubmittedValidationErrors = (
   // First, validate the complete data
   const validationResult = submittedReviewAnswerSchema.safeParse(data);
 
+  console.log('Validation result:', validationResult);
+
   if (validationResult.success) {
     return questionIdsWithErrors; // No errors
   }
