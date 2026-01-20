@@ -21,6 +21,7 @@ import { useReviewState } from './hooks/useReviewState';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import QuestionCard from './question-card';
 import ReviewNavigation from './review-navigation';
+import SuccesCard from './success-card';
 import { renderFieldsWithHeaders } from './utils/render-fields';
 
 interface ReviewProps {
@@ -30,6 +31,7 @@ interface ReviewProps {
 
 const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const supabase = createClient();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Auth context
   const { data: authData } = useQuery({
@@ -209,44 +211,48 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
           />
         </div>
       </div>
-      <QuestionCard
-        question={currentQuestion}
-        headerActions={
-          <>
-            <HelpButton />
-            <Button
-              variant={hasUnsavedChanges ? 'destructive' : 'outline'}
-              size={'default'}
-              onClick={handleSaveInProgress}
-            >
-              <SaveAll className="w-4 h-4 mr-2" />
-              Speichern
-            </Button>
-          </>
-        }
-        footer={
-          <div className="flex flex-col w-full gap-2">
-            {isLastQuestion ? (
-              <Button variant="default" className="w-full">
-                Fall abschließen
-              </Button>
-            ) : (
+      {isSubmitted ? (
+        <SuccesCard />
+      ) : (
+        <QuestionCard
+          question={currentQuestion}
+          headerActions={
+            <>
+              <HelpButton />
               <Button
-                variant="default"
-                className="w-full"
-                onClick={setNextQuestion}
+                variant={hasUnsavedChanges ? 'destructive' : 'outline'}
+                size={'default'}
+                onClick={handleSaveInProgress}
               >
-                Nächste Frage
+                <SaveAll className="w-4 h-4 mr-2" />
+                Speichern
               </Button>
-            )}
-          </div>
-        }
-      >
-        {renderFieldsWithHeaders({
-          currentQuestion,
-          onFieldChange: updateFieldValue,
-        })}
-      </QuestionCard>
+            </>
+          }
+          footer={
+            <div className="flex flex-col w-full gap-2">
+              {isLastQuestion ? (
+                <Button variant="default" className="w-full">
+                  Fall abschließen
+                </Button>
+              ) : (
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={setNextQuestion}
+                >
+                  Nächste Frage
+                </Button>
+              )}
+            </div>
+          }
+        >
+          {renderFieldsWithHeaders({
+            currentQuestion,
+            onFieldChange: updateFieldValue,
+          })}
+        </QuestionCard>
+      )}
     </div>
   );
 };
