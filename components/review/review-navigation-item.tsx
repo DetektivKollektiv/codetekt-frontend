@@ -21,7 +21,8 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
   validationState,
   className,
 }) => {
-  const isError = validationState === 'error';
+  const isError =
+    validationState === 'error' || validationState === 'incomplete';
   const isSuccess = validationState === 'success';
   const showCheckIcon = isSuccess;
   const showErrorIcon = isError;
