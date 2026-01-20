@@ -50,9 +50,21 @@ const UserPage: FC<UserPageProps> = ({
         </p>
       </div>
 
-      <div className="page-max-w w-full mt-12" id="user-settings">
-        <UserSettings auth={auth} />
-      </div>
+      {openCases && (
+        <div className="mt-24" id="open-cases">
+          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
+            Fälle die deine Hilfe benötigen
+          </h1>
+          <ArchiveList
+            configKey="openCases"
+            items={openCases ?? []}
+            className="mt-8 mb-12 lg:mb-24"
+            pageSize={4}
+            showPageNumbers
+            syncWithURL={false}
+          />
+        </div>
+      )}
 
       {ownUserReviewsAndCases && (
         <div className="mt-24 lg:mt-32">
@@ -86,21 +98,9 @@ const UserPage: FC<UserPageProps> = ({
         </div>
       )}
 
-      {openCases && (
-        <div className="mt-24 lg:mt-32" id="open-cases">
-          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
-            Fälle die deine Hilfe benötigen
-          </h1>
-          <ArchiveList
-            configKey="openCases"
-            items={openCases ?? []}
-            className="mt-8 mb-12 lg:mb-24"
-            pageSize={4}
-            showPageNumbers
-            syncWithURL={false}
-          />
-        </div>
-      )}
+      <div className="page-max-w w-full mt-12" id="user-settings">
+        <UserSettings auth={auth} />
+      </div>
     </>
   );
 };
