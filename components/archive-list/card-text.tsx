@@ -13,7 +13,13 @@ const CardText: FC<CardTextProps> = ({ date, title, description }) => {
       <h3 className="text-lg font-semibold line-clamp-2 leading-tight mt-2">
         {title || 'Titel nicht verfügbar'}
       </h3>
-      <p className="text-body-md text-muted-foreground line-clamp-3 mt-2 leading-tight">
+      <p
+        className="text-body-md text-muted-foreground line-clamp-3 mt-2 leading-tight"
+        style={{
+          overflowWrap: 'anywhere',
+          hyphens: 'manual',
+        }}
+      >
         {description || 'Keine Beschreibung verfügbar.'}
       </p>
     </div>
