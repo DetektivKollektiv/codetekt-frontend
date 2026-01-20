@@ -20,12 +20,12 @@ const sortAggregatedReviewsByNewestFirst = (items: AggregatedReviews) => {
 const sortAggregatedReviewsByLastUpdated = (items: AggregatedReviews) => {
   return [...items].sort(
     (a, b) =>
-      new Date(b.calculated_at).getTime() - new Date(a.calculated_at).getTime()
+      new Date(b.calculated_at).getTime() - new Date(a.calculated_at).getTime(),
   );
 };
 
 const sortReviewsAndUserCasesByNewestFirst = (
-  items: (UserCases[number] | AggregatedReviews[number])[]
+  items: (UserCases[number] | AggregatedReviews[number])[],
 ) => {
   return [...items].sort((a, b) => {
     const dateA = isUserCase(a)
@@ -54,11 +54,12 @@ export const aggregatedReviewsListConfig = {
   getItemKey: (item: AggregatedReviews[number]) => item.case_id,
   fuseOptions: {
     keys: [
+      { name: 'cases.case_number', weight: 4 },
       { name: 'cases.open_graph_data.og_title', weight: 3 },
-      { name: 'data.metadata.content_type', weight: 2 },
-      { name: 'data.metadata.keyword_type', weight: 2 },
-      { name: 'data.data', weight: 2 },
+      { name: 'cases.content', weight: 2 },
+      { name: 'cases.content_type', weight: 2 },
       { name: 'cases.open_graph_data.og_description', weight: 1 },
+      { name: 'cases.open_graph_data.og_site_name', weight: 1 },
     ],
     threshold: 0.4,
     ignoreLocation: true,
@@ -94,11 +95,18 @@ export const reviewsAndCasesListConfig = {
     isUserCase(item) ? item.id! : item.case_id,
   fuseOptions: {
     keys: [
+      { name: 'case_number', weight: 4 },
+      { name: 'cases.case_number', weight: 4 },
+      { name: 'open_graph_data.og_title', weight: 3 },
       { name: 'cases.open_graph_data.og_title', weight: 3 },
-      { name: 'data.metadata.content_type', weight: 2 },
-      { name: 'data.metadata.keyword_type', weight: 2 },
-      { name: 'data.data', weight: 2 },
+      { name: 'content', weight: 2 },
+      { name: 'cases.content', weight: 2 },
+      { name: 'content_type', weight: 2 },
+      { name: 'cases.content_type', weight: 2 },
+      { name: 'open_graph_data.og_description', weight: 1 },
       { name: 'cases.open_graph_data.og_description', weight: 1 },
+      { name: 'open_graph_data.og_site_name', weight: 1 },
+      { name: 'cases.open_graph_data.og_site_name', weight: 1 },
     ],
     threshold: 0.4,
     ignoreLocation: true,
@@ -123,11 +131,12 @@ export const casesConfig = {
   getItemKey: (item: UserCases[number]) => item.id!,
   fuseOptions: {
     keys: [
-      { name: 'cases.open_graph_data.og_title', weight: 3 },
-      { name: 'data.metadata.content_type', weight: 2 },
-      { name: 'data.metadata.keyword_type', weight: 2 },
-      { name: 'data.data', weight: 2 },
-      { name: 'cases.open_graph_data.og_description', weight: 1 },
+      { name: 'case_number', weight: 4 },
+      { name: 'open_graph_data.og_title', weight: 3 },
+      { name: 'content', weight: 2 },
+      { name: 'content_type', weight: 2 },
+      { name: 'open_graph_data.og_description', weight: 1 },
+      { name: 'open_graph_data.og_site_name', weight: 1 },
     ],
     threshold: 0.4,
     ignoreLocation: true,
@@ -148,7 +157,7 @@ export const casesConfig = {
 };
 
 export const isUserCase = (
-  item: UserCases[number] | AggregatedReviews[number]
+  item: UserCases[number] | AggregatedReviews[number],
 ): item is UserCases[number] => {
   return (item as UserCases[number]).id !== undefined;
 };

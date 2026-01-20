@@ -48,36 +48,36 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
 
   const sortPreferenceKey =
     'configKey' in props
-      ? configFromKey?.sortPreferenceKey ?? 'archive-sort-preference'
-      : ('sortPreferenceKey' in props ? props.sortPreferenceKey : undefined) ??
-        'archive-sort-preference';
+      ? (configFromKey?.sortPreferenceKey ?? 'archive-sort-preference')
+      : (('sortPreferenceKey' in props ? props.sortPreferenceKey : undefined) ??
+        'archive-sort-preference');
 
   const emptyMessage =
     'configKey' in props
-      ? configFromKey?.emptyMessage ?? 'Keine Einträge gefunden.'
-      : ('emptyMessage' in props ? props.emptyMessage : undefined) ??
-        'Keine Einträge gefunden.';
+      ? (configFromKey?.emptyMessage ?? 'Keine Einträge gefunden.')
+      : (('emptyMessage' in props ? props.emptyMessage : undefined) ??
+        'Keine Einträge gefunden.');
 
   const searchPlaceholder =
     'configKey' in props
-      ? configFromKey?.searchPlaceholder ?? 'Durchsuchen...'
-      : ('searchPlaceholder' in props ? props.searchPlaceholder : undefined) ??
-        'Durchsuchen...';
+      ? (configFromKey?.searchPlaceholder ?? 'Durchsuchen...')
+      : (('searchPlaceholder' in props ? props.searchPlaceholder : undefined) ??
+        'Durchsuchen...');
 
   const itemCountLabel =
     'configKey' in props
-      ? configFromKey?.itemCountLabel ??
+      ? (configFromKey?.itemCountLabel ??
         ((count: number) =>
-          `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`)
-      : ('itemCountLabel' in props ? props.itemCountLabel : undefined) ??
+          `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`))
+      : (('itemCountLabel' in props ? props.itemCountLabel : undefined) ??
         ((count: number) =>
-          `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`);
+          `${count} ${count === 1 ? 'Eintrag' : 'Einträge'} gefunden`));
 
   const loadingMessage =
     'configKey' in props
-      ? configFromKey?.loadingMessage ?? 'Laden...'
-      : ('loadingMessage' in props ? props.loadingMessage : undefined) ??
-        'Laden...';
+      ? (configFromKey?.loadingMessage ?? 'Laden...')
+      : (('loadingMessage' in props ? props.loadingMessage : undefined) ??
+        'Laden...');
 
   const router = useRouter();
   const pathname = usePathname();
@@ -155,6 +155,7 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
   // Configure Fuse.js for searching
   const fuse = useMemo(() => {
     if (!items) return null;
+    console.log('Fuse Options:', items);
     return new Fuse(items, fuseOptions);
   }, [items, fuseOptions]);
 
@@ -162,13 +163,17 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
     if (!items) return [];
     if (!searchQuery || !fuse) return items;
 
-    const results = fuse.search(searchQuery);
+    // Check if search query contains "Fall" followed by a number (e.g., "Fall 2")
+    const fallMatch = searchQuery.match(/fall\s*(\d+)/i);
+    const searchTerm = fallMatch ? fallMatch[1] : searchQuery;
+
+    const results = fuse.search(searchTerm);
     return results.map((result) => result.item);
   }, [items, searchQuery, fuse]);
 
   const sortedItems = useMemo<TItem[]>(() => {
     const currentSortOption = sortOptions.find(
-      (opt) => opt.key === currentSort
+      (opt) => opt.key === currentSort,
     );
     if (!currentSortOption) return searchedItems;
     return currentSortOption.sortFn(searchedItems);
@@ -210,7 +215,6 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full md:max-w-80 order-last md:order-none"
-          disabled={sortedItems.length === 0}
         />
         <div className="flex-1 flex justify-between items-end w-full">
           <div className="text-sm text-muted-foreground whitespace-nowrap">
@@ -246,7 +250,7 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
               </p>
             </CardContent>
           </Card>
-        ) : !items || items.length === 0 ? (
+        ) : !items || items.length === 0 || paginatedItems.length === 0 ? (
           <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted ">
             <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
               <p className="text-muted-foreground">{emptyMessage}</p>
