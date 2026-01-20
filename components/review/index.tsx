@@ -73,10 +73,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     data: inProgressReviewAnswerData,
   });
 
-  useEffect(() => {
-    console.log('Unsaved changes:', hasUnsavedChanges);
-  }, [hasUnsavedChanges]);
-
   // Filter out questions where all fields are not shown
   const shownReviewTemplateQuestions = useMemo(
     () =>
@@ -88,12 +84,12 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     [resolvedReviewTemplate],
   );
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log(
       'Updated resolvedReviewTemplate answer values:',
       resolvedReviewTemplate,
     );
-  }, [resolvedReviewTemplate]);
+  }, [resolvedReviewTemplate]); */
 
   const isLastQuestion = useMemo(() => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
@@ -123,12 +119,12 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       return new Map();
     }
     return getQuestionsValidationState(
-      reviewTemplateWithAnswersValues,
+      resolvedReviewTemplate,
       inProgressReviewAnswerData,
     );
   }, [
     hasReachedLastQuestion,
-    reviewTemplateWithAnswersValues,
+    resolvedReviewTemplate,
     inProgressReviewAnswerData,
   ]);
 
@@ -152,7 +148,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     ...saveReviewAnswersInProgressMutation(supabase),
     onSuccess: (result) => {
       toast.success('Entwurf gespeichert');
-      console.log('✓ Saved successfully:', result);
 
       // Mark data as saved
       markAsSaved();
@@ -164,9 +159,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   });
 
   const handleSaveInProgress = () => {
-    console.log('=== SAVE IN PROGRESS ===');
-    console.log('Data to save:', inProgressReviewAnswerData);
-
     // Validate the complete data
     const validationResult = validateInProgressReviewAnswer(
       inProgressReviewAnswerData,
@@ -183,9 +175,6 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
       toast.error('Du musst angemeldet sein, um zu speichern');
       return;
     }
-
-    console.log('✓ Validation successful');
-    console.log('Validated data:', validationResult.data);
 
     // Log any field-level validation errors
     if (fieldValidationErrors.size > 0) {

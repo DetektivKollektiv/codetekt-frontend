@@ -132,43 +132,6 @@ export const getFieldValidationErrors = (
 export type QuestionValidationState = 'error' | 'success' | 'incomplete';
 
 /**
- * Get question IDs that have validation errors based on submitted schema
- * Returns a Set of question IDs
- */
-export const getQuestionsWithSubmittedValidationErrors = (
-  reviewTemplate: NonNullable<ReviewTemplate>,
-  data: InProgressReviewAnswer,
-): Set<string> => {
-  const questionIdsWithErrors = new Set<string>();
-
-  // First, validate the complete data
-  const validationResult = submittedReviewAnswerSchema.safeParse(data);
-
-  console.log('Validation result:', validationResult);
-
-  if (validationResult.success) {
-    return questionIdsWithErrors; // No errors
-  }
-
-  // Map field IDs from errors to question IDs
-  const errorFieldIds = new Set(
-    validationResult.error.issues.map((issue) => issue.path[0] as string),
-  );
-
-  // Find which questions contain these fields
-  reviewTemplate.forEach((question) => {
-    const hasErrorField = question.fields.some((field) =>
-      errorFieldIds.has(field.id),
-    );
-    if (hasErrorField) {
-      questionIdsWithErrors.add(question.id);
-    }
-  });
-
-  return questionIdsWithErrors;
-};
-
-/**
  * Get validation state for all questions
  * Returns a Map of question IDs to their validation state
  */
@@ -193,11 +156,20 @@ export const getQuestionsValidationState = (
     });
   }
 
+  console.log('Field IDs with errors:', errorFieldIds);
+
+  console.log('reviewTemplate', reviewTemplate);
+
   // Determine state for each question
   reviewTemplate.forEach((question) => {
     // Get visible fields (those that are shown)
     const visibleFields = question.fields.filter(
       (field) => field.is_shown === true || field.is_shown === undefined,
+    );
+
+    console.log(
+      `Validating question ${question.id} with visible fields:`,
+      visibleFields,
     );
 
     if (visibleFields.length === 0) {
