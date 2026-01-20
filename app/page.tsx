@@ -15,13 +15,11 @@ import Link from 'next/link';
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: aggregatedReviewsData, error } = await getAggregatedReviews(
-    supabase
-  );
+  const { data: aggregatedReviewsData, error } =
+    await getAggregatedReviews(supabase);
 
-  const { data: openCases, error: openCasesError } = await getOpenCases(
-    supabase
-  );
+  const { data: openCases, error: openCasesError } =
+    await getOpenCases(supabase);
 
   const auth = await getAuth(supabase);
   const { user, profile, isAuthenticated } = auth;
@@ -39,19 +37,19 @@ export default async function Home() {
   if (isAuthenticated && user) {
     const { data: userCasesData, error: userCasesError } = await getUserCases(
       supabase,
-      user.id
+      user.id,
     );
 
     const ownUserAggregatedReviewsData = aggregatedReviewsData?.filter(
       (review) =>
-        userCasesData?.some((userCase) => review.case_id === userCase.id)
+        userCasesData?.some((userCase) => review.case_id === userCase.id),
     );
 
     const ownFilteredUserCases = userCasesData?.filter(
       (userCase) =>
         !ownUserAggregatedReviewsData?.some(
-          (review) => review.case_id === userCase.id
-        )
+          (review) => review.case_id === userCase.id,
+        ),
     );
 
     ownUserReviewsAndCases = [
@@ -62,7 +60,7 @@ export default async function Home() {
     if (userCasesError) {
       console.error(
         'Error fetching own user cases or reviews:',
-        userCasesError
+        userCasesError,
       );
     }
   }
@@ -74,21 +72,21 @@ export default async function Home() {
     // 1. Eigene Reviews aus aggregatedReviewsData (Vorrang)
     const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
       userReviewsData?.some(
-        (userReview) => review.case_id === userReview.case_id
-      )
+        (userReview) => review.case_id === userReview.case_id,
+      ),
     );
 
     // 2. Eigene Reviews, die NICHT in aggregatedReviewsData sind
     const userReviewsDataFiltered = userReviewsData?.filter(
       (review) =>
         !aggregatedReviewsData?.some(
-          (aggReview) => aggReview.case_id === review.case_id
-        )
+          (aggReview) => aggReview.case_id === review.case_id,
+        ),
     );
 
     userReviewsAndCases = [
       ...(userReviewsDataFiltered?.map(
-        (userReviews) => userReviews.cases as UserCases[number]
+        (userReviews) => userReviews.cases as UserCases[number],
       ) ?? []),
       ...(userAggregatedReviewsData ?? []),
     ];
@@ -111,8 +109,8 @@ export default async function Home() {
       {isAuthenticated && user && profile ? (
         <UserPage
           auth={auth}
-          userReviewsAndCases={ownUserReviewsAndCases ?? []}
-          ownUserReviewsAndCases={userReviewsAndCases ?? []}
+          userReviewsAndCases={userReviewsAndCases ?? []}
+          ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
           openCases={openCases ?? []}
         />
       ) : (

@@ -1,6 +1,5 @@
 'use client';
 
-import { BadgeList } from '@/components/ui/badge-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { OpenCases } from '@/lib/queries/getOpenCases';
@@ -10,6 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
 import ImagePlaceholder from '../image-placeholder';
+import { BadgeList } from '../ui/badge-list';
 import CardText from './card-text';
 import NoEvaluation from './no-evaluation';
 
@@ -54,8 +54,8 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             {/* Badges */}
             <div className="opacity-40">
               <BadgeList
-                contentType={['Kategorie']}
-                keywordType={['Stichwort', 'Stichwort', 'Stichwort']}
+                contentType={['Bewertungen unveröffentlicht']}
+                keywordType={[]}
               />
             </div>
 
@@ -68,17 +68,9 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
 
             {/* Action Buttons */}
             <div className="flex gap-3 flex-1 items-end">
-              {'review_answers_in_progress' in caseItem &&
-              caseItem.review_answers_in_progress &&
-              caseItem.review_answers_in_progress.length > 0 ? (
-                <Link href={`/review/${caseItem.id}`}>
-                  <Button variant={'default'}>Bewertung bearbeiten</Button>
-                </Link>
-              ) : (
-                <Link href={`/review/${caseItem.id}`}>
-                  <Button variant={'default'}>Fall bearbeiten</Button>
-                </Link>
-              )}
+              <Link href={`/review/${caseItem.id}`}>
+                <Button variant={'default'}>Fall bearbeiten</Button>
+              </Link>
             </div>
           </div>
 

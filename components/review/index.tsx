@@ -14,6 +14,7 @@ import {
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Edit, SaveAll } from 'lucide-react';
+import Link from 'next/link';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -316,7 +317,6 @@ const Review: FC<ReviewProps> = ({
             size={'default'}
             className="w-full"
             onClick={() => {
-              console.log('Edit mode enabled');
               setIsEditable(true);
               setCurrentQuestionId(shownReviewTemplateQuestions[0].id);
             }}
@@ -324,6 +324,11 @@ const Review: FC<ReviewProps> = ({
             <Edit className="w-4 h-4 mr-2" />
             Fall bearbeiten
           </Button>
+          <Link href={`/#open-cases`} className="w-full mt-2">
+            <Button variant={'default'} size={'default'} className="w-full">
+              Weitere Fälle bearbeiten
+            </Button>
+          </Link>
         </SuccesCard>
       ) : (
         <QuestionCard

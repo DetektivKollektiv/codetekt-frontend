@@ -106,13 +106,13 @@ const Footer: FC<FooterProps> = ({}) => {
             <AccordionContent>
               <ul className="space-y-2 text-secondary-foreground/60 pl-4 text-body-md">
                 <li>
-                  <Link href="#">Fall bearbeiten</Link>
+                  <Link href="/#open-cases">Fall bearbeiten</Link>
                 </li>
                 <li>
                   <Link href="/submit">Fall einreichen</Link>
                 </li>
                 <li>
-                  <Link href="#">Gelöste Fälle ansehen</Link>
+                  <Link href="/archive">Gelöste Fälle ansehen</Link>
                 </li>
               </ul>
             </AccordionContent>
