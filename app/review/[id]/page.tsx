@@ -38,6 +38,8 @@ export default async function Page({
     isSubmitted = !!submittedReview;
   }
 
+  console.log('Review Template:', reviewTemplate);
+
   if (reviewTemplate) {
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
 

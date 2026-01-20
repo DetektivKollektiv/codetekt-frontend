@@ -47,20 +47,27 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
     >
       <div className="space-y-2">
         {/* Pre-defined options (disabled, read-only) */}
-        {field.options.map((option) => (
-          <div key={option.id} className="flex gap-2">
-            <Input value={option.text} disabled className="flex-1" />
-            <Button
-              type="button"
-              variant="secondary"
-              size="icon"
-              disabled
-              aria-label="Clear value"
-            >
-              <X className="size-4" />
-            </Button>
-          </div>
-        ))}
+        {field.options.map((option) => {
+          const isOptionDisabled = option.is_disabled ?? false;
+          return (
+            <div key={option.id} className="flex gap-2">
+              <Input
+                value={option.text}
+                disabled={isOptionDisabled}
+                className={`flex-1 ${isOptionDisabled ? 'text-muted-foreground' : ''}`}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                disabled={isOptionDisabled}
+                aria-label="Clear value"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          );
+        })}
 
         {/* Additional editable inputs for user answers */}
         {Array.from({ length: additionalInputCount }).map((_, index) => {
