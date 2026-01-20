@@ -16,6 +16,8 @@ interface TextAreaFieldProps {
 export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
   const option = field.options[0];
   const value = (field.answer_value ?? '') as string;
+  const isDisabled =
+    field.is_disabled === undefined ? false : (field.is_disabled as boolean);
 
   const handleChange = (newValue: string) => {
     onChange?.(newValue);
@@ -25,6 +27,7 @@ export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
     <FieldContainer
       title={field.question}
       isDisputable={field.is_disputable as boolean}
+      isDisabled={isDisabled}
     >
       <div className="space-y-2">
         <Textarea
@@ -33,6 +36,7 @@ export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
           placeholder={option.placeholder}
           maxLength={option.max_length}
           className="min-h-[200px]"
+          disabled={isDisabled}
         />
         <div className="text-right text-sm text-muted-foreground">
           {value.length} / {option.max_length}

@@ -22,8 +22,10 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   const additionalInputCount = field.additonal_option_count ?? 0;
   const answerValues = ((field.answer_value ?? []) as string[]).slice(
     0,
-    additionalInputCount
+    additionalInputCount,
   );
+  const isDisabled =
+    field.is_disabled === undefined ? false : (field.is_disabled as boolean);
 
   const handleAnswerChange = (index: number, value: string) => {
     const newValues = [...answerValues];
@@ -41,6 +43,7 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
     <FieldContainer
       title={field.question}
       isDisputable={field.is_disputable as boolean}
+      isDisabled={isDisabled}
     >
       <div className="space-y-2">
         {/* Pre-defined options (disabled, read-only) */}
@@ -71,13 +74,14 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
                 placeholder={field.placeholder}
                 maxLength={field.max_length}
                 className="flex-1"
+                disabled={isDisabled}
               />
               <Button
                 type="button"
                 variant="secondary"
                 size="icon"
                 onClick={() => handleAnswerClear(index)}
-                disabled={!value}
+                disabled={!value || isDisabled}
                 aria-label="Clear value"
               >
                 <X className="size-4" />

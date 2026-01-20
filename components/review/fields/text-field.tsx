@@ -25,6 +25,9 @@ export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
     <FieldContainer
       title={field.question}
       isDisputable={field.is_disputable as boolean}
+      isDisabled={
+        field.is_disabled === undefined ? false : (field.is_disabled as boolean)
+      }
     >
       <div className="space-y-2">
         <Input
@@ -33,6 +36,11 @@ export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
           placeholder={option.placeholder}
           maxLength={option.max_length}
           className="w-full"
+          disabled={
+            field.is_disabled === undefined
+              ? false
+              : (field.is_disabled as boolean)
+          }
         />
         <div className="text-right text-sm text-muted-foreground">
           {value.length} / {option.max_length}

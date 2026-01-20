@@ -21,8 +21,11 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
   onChange,
 }) => {
   const value = (field.answer_value ?? null) as TrafficLightValue;
+  const isDisabled =
+    field.is_disabled === undefined ? false : (field.is_disabled as boolean);
 
   const handleChange = (newValue: string) => {
+    if (isDisabled) return;
     const numValue = parseInt(newValue, 10) as TrafficLightValue;
     onChange?.(numValue);
   };
@@ -32,12 +35,15 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
 
   return (
     <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 md:gap-12 md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
-      <Label className="flex-1 text-body-md md:text-body-sm font-medium cursor-pointer leading-normal">
+      <Label
+        className={`flex-1 text-body-md md:text-body-sm font-medium cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''}`}
+      >
         {questionText}
       </Label>
       <RadioGroup
         value={value?.toString() ?? ''}
         onValueChange={handleChange}
+        disabled={isDisabled}
         className="flex justify-between md:justify-end w-full md:w-auto md:items-center gap-2"
       >
         {/* Green - value 1 */}

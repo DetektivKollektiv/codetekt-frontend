@@ -32,6 +32,9 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
     <FieldContainer
       title={field.question}
       isDisputable={field.is_disputable as boolean}
+      isDisabled={
+        field.is_disabled === undefined ? false : (field.is_disabled as boolean)
+      }
     >
       <div className="flex flex-wrap gap-2">
         {field.options.map((option) => {
@@ -49,7 +52,7 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
                 isSelected
                   ? 'border-primary bg-primary/5 text-primary'
                   : 'border-border bg-background text-foreground hover:bg-accent',
-                isDisabled && 'cursor-not-allowed opacity-60'
+                isDisabled && 'cursor-not-allowed opacity-60',
               )}
             >
               {isSelected && (

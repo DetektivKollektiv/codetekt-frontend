@@ -31,6 +31,9 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
     <FieldContainer
       title={field.question}
       isDisputable={field.is_disputable as boolean}
+      isDisabled={
+        field.is_disabled === undefined ? false : (field.is_disabled as boolean)
+      }
     >
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
         {field.options.map((option) => {
@@ -48,14 +51,14 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
                 isSelected
                   ? 'border-primary bg-muted/50'
                   : 'border-muted-foreground/30 hover:border-muted-foreground/50',
-                isDisabled && 'cursor-not-allowed opacity-60'
+                isDisabled && 'cursor-not-allowed opacity-60',
               )}
             >
               {/* Colored circle indicator */}
               <span
                 className={cn(
                   'flex size-4 items-center justify-center rounded-full border-2 transition-all',
-                  isSelected && 'text-white'
+                  isSelected && 'text-white',
                 )}
                 style={{
                   borderColor: `${option.color}`,
