@@ -2,6 +2,7 @@
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
+import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
@@ -9,6 +10,7 @@ import {
   buildInProgressReviewAnswerData,
   getQuestionsValidationState,
   validateInProgressReviewAnswer,
+  validateSubmittedReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { SaveAll } from 'lucide-react';
@@ -32,6 +34,7 @@ interface ReviewProps {
 const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const supabase = createClient();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [inProgressId, setInProgressId] = useState<string | null>(null);
 
   // Auth context
   const { data: authData } = useQuery({
@@ -69,6 +72,14 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
 
     return data;
   }, [reviewTemplateWithAnswersValues]);
+
+  // Check if data is valid for final submission
+  const isValidForSubmission = useMemo(() => {
+    const validationResult = validateSubmittedReviewAnswer(
+      inProgressReviewAnswerData,
+    );
+    return validationResult.success;
+  }, [inProgressReviewAnswerData]);
 
   // Unsaved changes warning
   const { hasUnsavedChanges, markAsSaved } = useUnsavedChangesWarning({
@@ -151,6 +162,11 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     onSuccess: (result) => {
       toast.success('Entwurf gespeichert');
 
+      // Store in_progress_id for later submission
+      if (result?.in_progress_id) {
+        setInProgressId(result.in_progress_id);
+      }
+
       // Mark data as saved
       markAsSaved();
     },
@@ -193,6 +209,78 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     });
   };
 
+  // Handler to submit review (final submission)
+  const { mutate: submitReview, isPending: isSubmitting } = useMutation({
+    ...submitReviewAnswersMutation(supabase),
+    onSuccess: (result) => {
+      toast.success('Fall erfolgreich abgeschlossen');
+      setIsSubmitted(true);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Fehler beim Abschließen des Falls');
+      console.error('✗ Submit failed:', error);
+    },
+  });
+
+  const handleSubmitReview = async () => {
+    // Check if user is authenticated
+    if (!userId) {
+      toast.error('Du musst angemeldet sein, um einen Fall abzuschließen');
+      return;
+    }
+
+    // Validate the complete data with strict schema
+    const validationResult = validateSubmittedReviewAnswer(
+      inProgressReviewAnswerData,
+    );
+
+    if (!validationResult.success) {
+      console.error('✗ Validation failed:', validationResult.error);
+      toast.error('Bitte fülle alle erforderlichen Felder aus');
+      return;
+    }
+
+    // First, save the in-progress data to get/update in_progress_id
+    if (!inProgressId) {
+      // Save first to get the in_progress_id
+      const inProgressValidation = validateInProgressReviewAnswer(
+        inProgressReviewAnswerData,
+      );
+
+      if (!inProgressValidation.success) {
+        console.error(
+          '✗ In-progress validation failed:',
+          inProgressValidation.error,
+        );
+        toast.error('Validierungsfehler');
+        return;
+      }
+
+      // Save and then submit
+      saveInProgress(
+        {
+          case_id: caseData.id,
+          data: inProgressValidation.data,
+        },
+        {
+          onSuccess: (saveResult) => {
+            if (saveResult?.in_progress_id) {
+              // Now submit with the in_progress_id
+              submitReview({
+                in_progress_id: saveResult.in_progress_id,
+              });
+            }
+          },
+        },
+      );
+    } else {
+      // We already have an in_progress_id, submit directly
+      submitReview({
+        in_progress_id: inProgressId,
+      });
+    }
+  };
+
   return (
     <div
       className="page-max-w lg:grid lg:gap-6"
@@ -232,8 +320,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
           footer={
             <div className="flex flex-col w-full gap-2">
               {isLastQuestion ? (
-                <Button variant="default" className="w-full">
-                  Fall abschließen
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={handleSubmitReview}
+                  disabled={!isValidForSubmission || isSubmitting}
+                >
+                  {isSubmitting ? 'Wird abgeschlossen...' : 'Fall abschließen'}
                 </Button>
               ) : (
                 <Button

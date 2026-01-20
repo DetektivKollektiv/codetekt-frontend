@@ -10,11 +10,12 @@ export interface SaveReviewAnswersInProgressData {
 
 interface SaveReviewAnswersInProgressResponse {
   saved: boolean;
+  in_progress_id: string;
 }
 
 export async function saveReviewAnswersInProgress(
   client: SupabaseClient<Database>,
-  saveData: SaveReviewAnswersInProgressData
+  saveData: SaveReviewAnswersInProgressData,
 ): Promise<FunctionsResponse<SaveReviewAnswersInProgressResponse>> {
   return client.functions.invoke<SaveReviewAnswersInProgressResponse>(
     'set-review-answers-in-progress',
@@ -23,17 +24,17 @@ export async function saveReviewAnswersInProgress(
         case_id: saveData.case_id,
         data: saveData.data,
       },
-    }
+    },
   );
 }
 
 export const saveReviewAnswersInProgressMutation = (
-  client: SupabaseClient<Database>
+  client: SupabaseClient<Database>,
 ) => ({
   mutationFn: async (data: SaveReviewAnswersInProgressData) => {
     const { data: result, error } = await saveReviewAnswersInProgress(
       client,
-      data
+      data,
     );
     if (error) throw error;
     return result;
