@@ -144,8 +144,6 @@ export const getQuestionsValidationState = (
   // Validate the complete data against submitted schema
   const validationResult = submittedReviewAnswerSchema.safeParse(data);
 
-  console.log('Validation result for questions state:', validationResult);
-
   // Get field IDs with errors
   const errorFieldIds = new Set<string>();
   if (!validationResult.success) {
@@ -156,22 +154,12 @@ export const getQuestionsValidationState = (
     });
   }
 
-  console.log('Field IDs with errors:', errorFieldIds);
-
-  console.log('reviewTemplate', reviewTemplate);
-
   // Determine state for each question
   reviewTemplate.forEach((question) => {
     // Get visible fields (those that are shown)
     const visibleFields = question.fields.filter(
       (field) => field.is_shown === true || field.is_shown === undefined,
     );
-
-    console.log(
-      `Validating question ${question.id} with visible fields:`,
-      visibleFields,
-    );
-
     if (visibleFields.length === 0) {
       // No visible fields, skip this question
       return;

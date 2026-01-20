@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
 import { getRatingStyle } from '@/lib/utils/rating-helpers';
-import { getWarningTags } from '@/lib/utils/warning-tags';
 import { Share2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,7 +27,6 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   // Type assertion for data field (Json type from Supabase)
   const reviewData = caseItem.data;
   if (!reviewData) return null;
-  const warningTags = getWarningTags(reviewData.fields || {});
   const ogData = caseItem.cases.open_graph_data;
 
   // Safely access metadata with fallbacks
@@ -95,7 +93,19 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           </div>
 
           {/* Right: Evaluation */}
-          <Evaluation ratingStyle={ratingStyle} warningTags={warningTags} />
+          <Evaluation
+            ratingStyle={ratingStyle}
+            warningTags={
+              caseItem.data?.questions
+                .map((question) =>
+                  question.fields.map(
+                    (field) =>
+                      field.tags[Math.floor(field.average) as 0 | 1 | 2 | 4],
+                  ),
+                )
+                .flat() || []
+            }
+          />
         </div>
       </CardContent>
     </Card>

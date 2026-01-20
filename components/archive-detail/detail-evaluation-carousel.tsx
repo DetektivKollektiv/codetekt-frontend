@@ -41,7 +41,6 @@ export function DetailEvaluationCarousel({
   }, []);
 
   useEffect(() => {
-    console.log('emblaApi changed:', emblaApi);
     if (!emblaApi) return;
 
     onSelect(emblaApi);
@@ -94,7 +93,7 @@ export function DetailEvaluationCarousel({
               <ChevronRight className="w-4 h-4" />
             </Button>
           </>,
-          portalContainer
+          portalContainer,
         )}
     </div>
   );

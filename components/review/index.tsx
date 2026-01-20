@@ -106,13 +106,6 @@ const Review: FC<ReviewProps> = ({
     [resolvedReviewTemplate],
   );
 
-  /* useEffect(() => {
-    console.log(
-      'Updated resolvedReviewTemplate answer values:',
-      resolvedReviewTemplate,
-    );
-  }, [resolvedReviewTemplate]); */
-
   const isLastQuestion = useMemo(() => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
       (q) => q.id === currentQuestionId,
@@ -149,11 +142,6 @@ const Review: FC<ReviewProps> = ({
     resolvedReviewTemplate,
     inProgressReviewAnswerData,
   ]);
-
-  // log validation state changes
-  useEffect(() => {
-    console.log('Questions validation state:', questionsValidationState);
-  }, [questionsValidationState]);
 
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(

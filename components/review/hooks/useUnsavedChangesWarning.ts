@@ -31,7 +31,6 @@ export const useUnsavedChangesWarning = ({
     const hasChanged = lastSavedDataRef.current !== currentDataStr;
 
     if (hasChanged) {
-      console.log('Data changed');
       setHasUnsavedChanges(true);
     }
   }, [data]);

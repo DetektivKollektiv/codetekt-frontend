@@ -40,10 +40,9 @@ export default async function Page({
 
   if (reviewTemplate) {
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
-    console.log('Parsed review template:', parsed);
+
     if (!parsed.success) {
-      //notFound();
-      return <div>{JSON.stringify(reviewTemplate)}</div>;
+      notFound();
     }
   }
 
