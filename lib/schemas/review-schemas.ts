@@ -11,8 +11,8 @@ import {
 // Submitted review answer schema with all required fields and validation
 export const submittedReviewAnswerSchema = z
   .object({
-    title: textAnswerSchema,
-    keyword_type: multiLineTextAnswerSchema,
+    title: z.string().min(10).nullable(),
+    keyword_type: z.array(z.string().min(3)).min(1).nullable(),
     content_type: chipAnswerSchema,
     content_accuracy: trafficLightAnswerSchema.optional(),
     content_sources: trafficLightAnswerSchema.optional(),
@@ -44,11 +44,11 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_accuracy'
+            iss.path?.[0] === 'content_accuracy',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
@@ -68,11 +68,11 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_sources'
+            iss.path?.[0] === 'content_sources',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
@@ -80,7 +80,7 @@ export const submittedReviewAnswerSchema = z
       // required when content_type in ["neutral", "opinion", "text_message"]
       if (
         data.content_type?.some((t) =>
-          ['neutral', 'opinion', 'text_message'].includes(t)
+          ['neutral', 'opinion', 'text_message'].includes(t),
         )
       ) {
         return (
@@ -97,17 +97,17 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_language'
+            iss.path?.[0] === 'content_language',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
       if (
         data.content_type?.some((t) =>
-          ['neutral', 'opinion', 'text_message'].includes(t)
+          ['neutral', 'opinion', 'text_message'].includes(t),
         )
       ) {
         return (
@@ -124,17 +124,17 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_clarity'
+            iss.path?.[0] === 'content_clarity',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
       if (
         data.content_type?.some((t) =>
-          ['neutral', 'opinion', 'text_message'].includes(t)
+          ['neutral', 'opinion', 'text_message'].includes(t),
         )
       ) {
         return (
@@ -152,17 +152,17 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_references'
+            iss.path?.[0] === 'content_references',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
       if (
         data.content_type?.some((t) =>
-          ['neutral', 'opinion', 'text_message'].includes(t)
+          ['neutral', 'opinion', 'text_message'].includes(t),
         )
       ) {
         return data.content_logic !== null && data.content_logic !== undefined;
@@ -177,17 +177,17 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_logic'
+            iss.path?.[0] === 'content_logic',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
       if (
         data.content_type?.some((t) =>
-          ['neutral', 'opinion', 'text_message'].includes(t)
+          ['neutral', 'opinion', 'text_message'].includes(t),
         )
       ) {
         return (
@@ -205,11 +205,11 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'content_advertising'
+            iss.path?.[0] === 'content_advertising',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   )
   .refine(
     (data) => {
@@ -231,11 +231,11 @@ export const submittedReviewAnswerSchema = z
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'additional_rating' ||
-            iss.path?.[0] === 'additional_comment'
+            iss.path?.[0] === 'additional_comment',
         );
         return !hasRelevantIssues;
       },
-    }
+    },
   );
 
 // In-progress schema - all optional

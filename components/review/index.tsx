@@ -7,7 +7,7 @@ import { getAuth } from '@/lib/supabase/getAuth';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import {
   buildInProgressReviewAnswerData,
-  getQuestionsWithSubmittedValidationErrors,
+  getQuestionsValidationState,
   validateInProgressReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -47,7 +47,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   } = useReviewState(reviewTemplate);
 
   const [currentQuestionId, setCurrentQuestionId] = useState(
-    reviewTemplate[0].id
+    reviewTemplate[0].id,
   );
 
   // Track if user has ever reached the last question (enables stricter validation)
@@ -56,13 +56,13 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   // Resolve all conditions to booleans
   const resolvedReviewTemplate = useMemo(
     () => resolveReviewTemplateConditions(reviewTemplateWithAnswersValues),
-    [reviewTemplateWithAnswersValues]
+    [reviewTemplateWithAnswersValues],
   );
 
   // Automatically build InProgressReviewAnswer object whenever answers change
   const inProgressReviewAnswerData = useMemo(() => {
     const data = buildInProgressReviewAnswerData(
-      reviewTemplateWithAnswersValues
+      reviewTemplateWithAnswersValues,
     );
 
     return data;
@@ -82,22 +82,22 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     () =>
       resolvedReviewTemplate.filter((question) =>
         question.fields.some(
-          (field) => field.is_shown === true || field.is_shown === undefined
-        )
+          (field) => field.is_shown === true || field.is_shown === undefined,
+        ),
       ),
-    [resolvedReviewTemplate]
+    [resolvedReviewTemplate],
   );
 
   useEffect(() => {
     console.log(
       'Updated resolvedReviewTemplate answer values:',
-      resolvedReviewTemplate
+      resolvedReviewTemplate,
     );
   }, [resolvedReviewTemplate]);
 
   const isLastQuestion = useMemo(() => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
-      (q) => q.id === currentQuestionId
+      (q) => q.id === currentQuestionId,
     );
     return currentIndex === shownReviewTemplateQuestions.length - 1;
   }, [currentQuestionId, shownReviewTemplateQuestions]);
@@ -112,19 +112,19 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   const currentQuestion = useMemo(
     () =>
       shownReviewTemplateQuestions.find(
-        (item) => item.id === currentQuestionId
+        (item) => item.id === currentQuestionId,
       ) || shownReviewTemplateQuestions[0],
-    [currentQuestionId, shownReviewTemplateQuestions]
+    [currentQuestionId, shownReviewTemplateQuestions],
   );
 
-  // Get questions with submitted validation errors (only after user reaches last question)
-  const questionsWithErrors = useMemo(() => {
+  // Get validation state for all questions (only after user reaches last question)
+  const questionsValidationState = useMemo(() => {
     if (!hasReachedLastQuestion) {
-      return new Set<string>();
+      return new Map();
     }
-    return getQuestionsWithSubmittedValidationErrors(
+    return getQuestionsValidationState(
       reviewTemplateWithAnswersValues,
-      inProgressReviewAnswerData
+      inProgressReviewAnswerData,
     );
   }, [
     hasReachedLastQuestion,
@@ -132,9 +132,14 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     inProgressReviewAnswerData,
   ]);
 
+  // log validation state changes
+  useEffect(() => {
+    console.log('Questions validation state:', questionsValidationState);
+  }, [questionsValidationState]);
+
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
-      (q) => q.id === currentQuestionId
+      (q) => q.id === currentQuestionId,
     );
     if (currentIndex < shownReviewTemplateQuestions.length - 1) {
       const nextQuestionId = shownReviewTemplateQuestions[currentIndex + 1].id;
@@ -164,7 +169,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
 
     // Validate the complete data
     const validationResult = validateInProgressReviewAnswer(
-      inProgressReviewAnswerData
+      inProgressReviewAnswerData,
     );
 
     if (!validationResult.success) {
@@ -186,7 +191,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
     if (fieldValidationErrors.size > 0) {
       console.warn(
         'Field validation errors:',
-        Object.fromEntries(fieldValidationErrors)
+        Object.fromEntries(fieldValidationErrors),
       );
     }
 
@@ -211,7 +216,7 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
             reviewTemplateQuestions={shownReviewTemplateQuestions}
             currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
-            questionsWithErrors={questionsWithErrors}
+            questionsValidationState={questionsValidationState}
           />
         </div>
       </div>

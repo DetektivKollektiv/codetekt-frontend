@@ -43,7 +43,7 @@ export const getFieldAnswerSchema = (fieldType: Field['type']) => {
  */
 export const validateFieldValue = (
   field: Field,
-  value: Field['answer_value']
+  value: Field['answer_value'],
 ) => {
   const schema = getFieldAnswerSchema(field.type);
   return schema.safeParse(value);
@@ -54,7 +54,7 @@ export const validateFieldValue = (
  * Maps field IDs to their answer values
  */
 export const buildInProgressReviewAnswerData = (
-  reviewTemplate: NonNullable<ReviewTemplate>
+  reviewTemplate: NonNullable<ReviewTemplate>,
 ): InProgressReviewAnswer => {
   const data: Record<string, unknown> = {};
 
@@ -73,7 +73,7 @@ export const buildInProgressReviewAnswerData = (
   if (!result.success) {
     console.error(
       'Failed to build in-progress review answer data:',
-      result.error
+      result.error,
     );
     // Return the data anyway, but log the error
     return data as InProgressReviewAnswer;
@@ -87,7 +87,7 @@ export const buildInProgressReviewAnswerData = (
  * Returns validation result with any errors
  */
 export const validateInProgressReviewAnswer = (
-  data: InProgressReviewAnswer
+  data: InProgressReviewAnswer,
 ) => {
   return inProgressReviewAnswerSchema.safeParse(data);
 };
@@ -105,7 +105,7 @@ export const validateSubmittedReviewAnswer = (data: InProgressReviewAnswer) => {
  * Returns a map of field IDs to error messages
  */
 export const getFieldValidationErrors = (
-  reviewTemplate: NonNullable<ReviewTemplate>
+  reviewTemplate: NonNullable<ReviewTemplate>,
 ): Map<string, string> => {
   const errors = new Map<string, string>();
 
@@ -116,7 +116,7 @@ export const getFieldValidationErrors = (
         if (!result.success) {
           errors.set(
             field.id,
-            result.error.issues[0]?.message || 'Invalid value'
+            result.error.issues[0]?.message || 'Invalid value',
           );
         }
       }
@@ -127,12 +127,17 @@ export const getFieldValidationErrors = (
 };
 
 /**
+ * Validation state for a question
+ */
+export type QuestionValidationState = 'error' | 'success' | 'incomplete';
+
+/**
  * Get question IDs that have validation errors based on submitted schema
  * Returns a Set of question IDs
  */
 export const getQuestionsWithSubmittedValidationErrors = (
   reviewTemplate: NonNullable<ReviewTemplate>,
-  data: InProgressReviewAnswer
+  data: InProgressReviewAnswer,
 ): Set<string> => {
   const questionIdsWithErrors = new Set<string>();
 
@@ -147,13 +152,13 @@ export const getQuestionsWithSubmittedValidationErrors = (
 
   // Map field IDs from errors to question IDs
   const errorFieldIds = new Set(
-    validationResult.error.issues.map((issue) => issue.path[0] as string)
+    validationResult.error.issues.map((issue) => issue.path[0] as string),
   );
 
   // Find which questions contain these fields
   reviewTemplate.forEach((question) => {
     const hasErrorField = question.fields.some((field) =>
-      errorFieldIds.has(field.id)
+      errorFieldIds.has(field.id),
     );
     if (hasErrorField) {
       questionIdsWithErrors.add(question.id);
@@ -161,4 +166,76 @@ export const getQuestionsWithSubmittedValidationErrors = (
   });
 
   return questionIdsWithErrors;
+};
+
+/**
+ * Get validation state for all questions
+ * Returns a Map of question IDs to their validation state
+ */
+export const getQuestionsValidationState = (
+  reviewTemplate: NonNullable<ReviewTemplate>,
+  data: InProgressReviewAnswer,
+): Map<string, QuestionValidationState> => {
+  const validationStates = new Map<string, QuestionValidationState>();
+
+  // Validate the complete data against submitted schema
+  const validationResult = submittedReviewAnswerSchema.safeParse(data);
+
+  console.log('Validation result for questions state:', validationResult);
+
+  // Get field IDs with errors
+  const errorFieldIds = new Set<string>();
+  if (!validationResult.success) {
+    validationResult.error.issues.forEach((issue) => {
+      if (issue.path[0]) {
+        errorFieldIds.add(issue.path[0] as string);
+      }
+    });
+  }
+
+  // Determine state for each question
+  reviewTemplate.forEach((question) => {
+    // Get visible fields (those that are shown)
+    const visibleFields = question.fields.filter(
+      (field) => field.is_shown === true || field.is_shown === undefined,
+    );
+
+    if (visibleFields.length === 0) {
+      // No visible fields, skip this question
+      return;
+    }
+
+    // Check if any visible field has an error
+    const hasError = visibleFields.some((field) => errorFieldIds.has(field.id));
+
+    if (hasError) {
+      validationStates.set(question.id, 'error');
+      return;
+    }
+
+    // Check if all visible fields have valid answers
+    const allFieldsValid = visibleFields.every((field) => {
+      if (!('answer_value' in field)) return false;
+
+      // Check if field has a value (not null/undefined/empty)
+      const hasValue =
+        field.answer_value !== null &&
+        field.answer_value !== undefined &&
+        field.answer_value !== '';
+
+      if (!hasValue) return false;
+
+      // Validate the field value against its schema
+      const result = validateFieldValue(field, field.answer_value);
+      return result.success;
+    });
+
+    if (allFieldsValid) {
+      validationStates.set(question.id, 'success');
+    } else {
+      validationStates.set(question.id, 'incomplete');
+    }
+  });
+
+  return validationStates;
 };

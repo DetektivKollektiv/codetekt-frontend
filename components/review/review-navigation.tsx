@@ -1,6 +1,7 @@
 'use client';
 
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { QuestionValidationState } from '@/lib/utils/review-validation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { FC, useMemo } from 'react';
 import { Button } from '../ui/button';
@@ -10,20 +11,20 @@ interface ReviewNavigationProps {
   reviewTemplateQuestions: NonNullable<ReviewTemplate>;
   currentItemId: string;
   onItemClick: (id: string) => void;
-  questionsWithErrors?: Set<string>;
+  questionsValidationState?: Map<string, QuestionValidationState>;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
   reviewTemplateQuestions,
   currentItemId,
   onItemClick,
-  questionsWithErrors = new Set(),
+  questionsValidationState = new Map(),
 }) => {
   const currentQuestion = useMemo(
     () =>
       reviewTemplateQuestions.find((item) => item.id === currentItemId) ||
       reviewTemplateQuestions[0],
-    [currentItemId, reviewTemplateQuestions]
+    [currentItemId, reviewTemplateQuestions],
   );
 
   return (
@@ -33,8 +34,8 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           const isActive = reviewTemplateQuestion.id === currentItemId;
           const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
           const isIndented = indentLevel > 0;
-          const isDestructive = questionsWithErrors.has(
-            reviewTemplateQuestion.id
+          const validationState = questionsValidationState.get(
+            reviewTemplateQuestion.id,
           );
           return (
             <ReviewNavigationItem
@@ -43,7 +44,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
               onItemClick={onItemClick}
               isActive={isActive}
               isIndented={isIndented}
-              isDestructive={isDestructive}
+              validationState={validationState}
             />
           );
         })}
@@ -56,7 +57,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           disabled={currentQuestion === reviewTemplateQuestions[0]}
           onClick={() => {
             const currentIndex = reviewTemplateQuestions.findIndex(
-              (item) => item.id === currentQuestion.id
+              (item) => item.id === currentQuestion.id,
             );
             if (currentIndex > 0) {
               onItemClick(reviewTemplateQuestions[currentIndex - 1].id);
@@ -83,7 +84,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           }
           onClick={() => {
             const currentIndex = reviewTemplateQuestions.findIndex(
-              (item) => item.id === currentQuestion.id
+              (item) => item.id === currentQuestion.id,
             );
             if (currentIndex < reviewTemplateQuestions.length - 1) {
               onItemClick(reviewTemplateQuestions[currentIndex + 1].id);
