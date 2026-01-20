@@ -15,11 +15,18 @@ export default async function Page({
   const { id } = await params;
   const supabase = await createClient();
 
-  const auth = await getAuth(supabase);
-  const userId = auth.user?.id;
+  // Run these queries in parallel
+  const [
+    auth,
+    { data: reviewTemplate, error },
+    { data: caseData, error: caseError },
+  ] = await Promise.all([
+    getAuth(supabase),
+    getReviewTemplate(supabase, id),
+    getCase(supabase, id),
+  ]);
 
-  const { data: reviewTemplate, error } = await getReviewTemplate(supabase, id);
-  const { data: caseData, error: caseError } = await getCase(supabase, id);
+  const userId = auth.user?.id;
 
   let isSubmitted = false;
   if (userId) {
@@ -58,7 +65,6 @@ export default async function Page({
         reviewTemplate={reviewTemplate}
         case={caseData}
         isSubmitted={isSubmitted}
-        hasUnsubmittedChanges={submittedReview}
       />
     </div>
   );

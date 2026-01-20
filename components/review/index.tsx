@@ -30,14 +30,12 @@ interface ReviewProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
   case: NonNullable<Case>;
   isSubmitted: boolean;
-  hasUnsubmittedChanges: boolean; // changes in in-progress review but not in submitted review
 }
 
 const Review: FC<ReviewProps> = ({
   reviewTemplate,
   case: caseData,
   isSubmitted: initialIsSubmitted,
-  hasUnsubmittedChanges,
 }) => {
   const supabase = createClient();
   const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
