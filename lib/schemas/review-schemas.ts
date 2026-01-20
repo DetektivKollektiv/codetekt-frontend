@@ -22,8 +22,8 @@ export const submittedReviewAnswerSchema = z
     content_logic: trafficLightAnswerSchema.optional(),
     content_advertising: trafficLightAnswerSchema.optional(),
     additional_rating: likertScaleAnswerSchema,
-    additional_comment: textAreaAnswerSchema.optional(),
-    comment: textAreaAnswerSchema.optional(),
+    additional_comment: z.string().min(10).nullable().optional(),
+    comment: z.string().min(10).nullable().optional(),
   })
 
   .strict() // keine extra keys erlaubt
