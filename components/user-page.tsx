@@ -53,7 +53,7 @@ const UserPage: FC<UserPageProps> = ({
       {openCases && (
         <div className="mt-24" id="open-cases">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
-            Fälle die deine Hilfe benötigen
+            Fälle, die deine Hilfe benötigen
           </h1>
           <ArchiveList
             configKey="openCases"
@@ -85,7 +85,7 @@ const UserPage: FC<UserPageProps> = ({
       {ownUserReviewsAndCases && (
         <div className=" mt-12 lg:mt-24">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
-            Fälle die du bewertet hast
+            Fälle, die du bewertet hast
           </h1>
           <ArchiveList
             configKey="reviewsAndCases"
