@@ -29,11 +29,16 @@ import { renderFieldsWithHeaders } from './utils/render-fields';
 interface ReviewProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
   case: NonNullable<Case>;
+  isSubmitted: boolean;
 }
 
-const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
+const Review: FC<ReviewProps> = ({
+  reviewTemplate,
+  case: caseData,
+  isSubmitted: initialIsSubmitted,
+}) => {
   const supabase = createClient();
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
   const [inProgressId, setInProgressId] = useState<string | null>(null);
 
   // Auth context
@@ -52,7 +57,9 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
   } = useReviewState(reviewTemplate);
 
   const [currentQuestionId, setCurrentQuestionId] = useState(
-    reviewTemplate[0].id,
+    isSubmitted
+      ? reviewTemplate[reviewTemplate.length - 1].id
+      : reviewTemplate[0].id,
   );
 
   // Track if user has ever reached the last question (enables stricter validation)
@@ -293,9 +300,9 @@ const Review: FC<ReviewProps> = ({ reviewTemplate, case: caseData }) => {
         <div className="my-4 lg:my-0 lg:mt-4">
           <ReviewNavigation
             reviewTemplateQuestions={shownReviewTemplateQuestions}
-            currentItemId={currentQuestionId}
             onItemClick={setCurrentQuestionId}
             questionsValidationState={questionsValidationState}
+            currentQuestion={currentQuestion}
           />
         </div>
       </div>

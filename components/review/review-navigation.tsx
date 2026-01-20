@@ -3,35 +3,28 @@
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { QuestionValidationState } from '@/lib/utils/review-validation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { Button } from '../ui/button';
 import ReviewNavigationItem from './review-navigation-item';
 
 interface ReviewNavigationProps {
   reviewTemplateQuestions: NonNullable<ReviewTemplate>;
-  currentItemId: string;
+  currentQuestion: NonNullable<ReviewTemplate>[number];
   onItemClick: (id: string) => void;
   questionsValidationState?: Map<string, QuestionValidationState>;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
   reviewTemplateQuestions,
-  currentItemId,
+  currentQuestion,
   onItemClick,
   questionsValidationState = new Map(),
 }) => {
-  const currentQuestion = useMemo(
-    () =>
-      reviewTemplateQuestions.find((item) => item.id === currentItemId) ||
-      reviewTemplateQuestions[0],
-    [currentItemId, reviewTemplateQuestions],
-  );
-
   return (
     <nav>
       <div className="flex-col gap-2 hidden lg:flex">
         {reviewTemplateQuestions.map((reviewTemplateQuestion) => {
-          const isActive = reviewTemplateQuestion.id === currentItemId;
+          const isActive = reviewTemplateQuestion.id === currentQuestion.id;
           const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
           const isIndented = indentLevel > 0;
           const validationState = questionsValidationState.get(
