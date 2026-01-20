@@ -98,7 +98,7 @@ const UserPage: FC<UserPageProps> = ({
         </div>
       )}
 
-      <div className="page-max-w w-full mt-12" id="user-settings">
+      <div className="page-max-w w-full mt-12 mb-24" id="user-settings">
         <UserSettings auth={auth} />
       </div>
     </>
