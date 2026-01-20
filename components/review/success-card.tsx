@@ -1,7 +1,5 @@
-import { Edit } from 'lucide-react';
 import Image from 'next/image';
 import { FC } from 'react';
-import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
@@ -11,9 +9,11 @@ import {
   CardTitle,
 } from '../ui/card';
 
-interface SuccesCardProps {}
+interface SuccesCardProps {
+  children?: React.ReactNode;
+}
 
-const SuccesCard: FC<SuccesCardProps> = ({}) => {
+const SuccesCard: FC<SuccesCardProps> = ({ children }) => {
   return (
     <Card className="pt-6 flex flex-col">
       <CardHeader className="relative">
@@ -34,11 +34,7 @@ const SuccesCard: FC<SuccesCardProps> = ({}) => {
         />
       </CardContent>
       <CardFooter className="mt-auto flex flex-col justify-end">
-        {' '}
-        <Button variant={'outline'} size={'default'} className="w-full">
-          <Edit className="w-4 h-4 mr-2" />
-          Fall bearbeiten
-        </Button>
+        {children}
       </CardFooter>
     </Card>
   );

@@ -13,7 +13,7 @@ import {
   validateSubmittedReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { SaveAll } from 'lucide-react';
+import { Edit, SaveAll } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -30,16 +30,19 @@ interface ReviewProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
   case: NonNullable<Case>;
   isSubmitted: boolean;
+  hasUnsubmittedChanges: boolean; // changes in in-progress review but not in submitted review
 }
 
 const Review: FC<ReviewProps> = ({
   reviewTemplate,
   case: caseData,
   isSubmitted: initialIsSubmitted,
+  hasUnsubmittedChanges,
 }) => {
   const supabase = createClient();
   const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
   const [inProgressId, setInProgressId] = useState<string | null>(null);
+  const [isEditable, setIsEditable] = useState(!initialIsSubmitted);
 
   // Auth context
   const { data: authData } = useQuery({
@@ -222,6 +225,7 @@ const Review: FC<ReviewProps> = ({
     onSuccess: (result) => {
       toast.success('Fall erfolgreich abgeschlossen');
       setIsSubmitted(true);
+      setIsEditable(false);
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Abschließen des Falls');
@@ -303,11 +307,26 @@ const Review: FC<ReviewProps> = ({
             onItemClick={setCurrentQuestionId}
             questionsValidationState={questionsValidationState}
             currentQuestion={currentQuestion}
+            disabled={!isEditable}
           />
         </div>
       </div>
-      {isSubmitted ? (
-        <SuccesCard />
+      {isSubmitted && !isEditable ? (
+        <SuccesCard>
+          <Button
+            variant={'outline'}
+            size={'default'}
+            className="w-full"
+            onClick={() => {
+              console.log('Edit mode enabled');
+              setIsEditable(true);
+              setCurrentQuestionId(shownReviewTemplateQuestions[0].id);
+            }}
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            Fall bearbeiten
+          </Button>
+        </SuccesCard>
       ) : (
         <QuestionCard
           question={currentQuestion}

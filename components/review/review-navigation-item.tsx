@@ -11,6 +11,7 @@ interface ReviewNavigationItemProps {
   isIndented: boolean;
   validationState?: QuestionValidationState;
   className?: string;
+  disabled?: boolean;
 }
 
 const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
@@ -20,6 +21,7 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
   isIndented,
   validationState,
   className,
+  disabled,
 }) => {
   const isError =
     validationState === 'error' || validationState === 'incomplete';
@@ -31,6 +33,7 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
     <button
       key={reviewTemplateQuestion.id}
       onClick={() => onItemClick(reviewTemplateQuestion.id)}
+      disabled={disabled}
       className={cn(
         'flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all h-9 border border-muted-foreground/30 hover:border-muted-foreground/50',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
@@ -45,6 +48,9 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
           !isActive &&
           'border-brand-green/50 bg-brand-green/5 hover:bg-brand-green/10',
         isIndented && 'ml-8',
+        // Disabled state
+        disabled &&
+          'opacity-50 cursor-not-allowed hover:bg-muted hover:border-muted-foreground/30',
         className,
       )}
     >

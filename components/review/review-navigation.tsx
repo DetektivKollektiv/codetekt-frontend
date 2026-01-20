@@ -12,6 +12,7 @@ interface ReviewNavigationProps {
   currentQuestion: NonNullable<ReviewTemplate>[number];
   onItemClick: (id: string) => void;
   questionsValidationState?: Map<string, QuestionValidationState>;
+  disabled?: boolean;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
@@ -19,6 +20,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
   currentQuestion,
   onItemClick,
   questionsValidationState = new Map(),
+  disabled = false,
 }) => {
   return (
     <nav>
@@ -38,6 +40,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
               isActive={isActive}
               isIndented={isIndented}
               validationState={validationState}
+              disabled={disabled}
             />
           );
         })}
@@ -47,7 +50,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           variant="secondary"
           size="icon"
           className="cursor-pointer"
-          disabled={currentQuestion === reviewTemplateQuestions[0]}
+          disabled={currentQuestion === reviewTemplateQuestions[0] || disabled}
           onClick={() => {
             const currentIndex = reviewTemplateQuestions.findIndex(
               (item) => item.id === currentQuestion.id,
@@ -66,6 +69,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           onItemClick={() => {}}
           isActive={true}
           isIndented={false}
+          disabled={disabled}
         />
         <Button
           variant="secondary"
@@ -73,7 +77,8 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           className="cursor-pointer"
           disabled={
             currentQuestion ===
-            reviewTemplateQuestions[reviewTemplateQuestions.length - 1]
+              reviewTemplateQuestions[reviewTemplateQuestions.length - 1] ||
+            disabled
           }
           onClick={() => {
             const currentIndex = reviewTemplateQuestions.findIndex(

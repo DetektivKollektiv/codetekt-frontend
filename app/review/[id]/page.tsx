@@ -58,6 +58,7 @@ export default async function Page({
         reviewTemplate={reviewTemplate}
         case={caseData}
         isSubmitted={isSubmitted}
+        hasUnsubmittedChanges={submittedReview}
       />
     </div>
   );
