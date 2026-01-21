@@ -4,10 +4,15 @@ export type RatingLevel = 0 | 1 | 2 | 3;
 
 export interface RatingStyle {
   label: string;
-  colorClass: string;
-  background: string;
-  text: string;
+
+  backgroundColor: string;
+  foregroundColor: string;
+
+  backgroundClass: string;
+  textClass: string;
+  textForegroundClass: string;
 }
+
 export const scoreToIndex = (score: number): RatingLevel => {
   return Math.ceil(score) as RatingLevel;
 };
@@ -21,30 +26,47 @@ export function getRatingStyle(score: number): RatingStyle {
   if (s < 1) {
     return {
       label: 'Vertrauenswürdig',
-      colorClass: 'bg-brand-green text-neutral-0',
-      background: 'hsl(var(--brand-green))',
-      text: 'hsl(var(--neutral-0))',
+      backgroundColor: 'hsl(var(--brand-green))',
+      foregroundColor: 'hsl(var(--neutral-0))',
+      backgroundClass: 'bg-brand-green',
+      textClass: 'text-brand-green',
+      textForegroundClass: 'text-neutral-0',
     };
+
+    /* return {
+      label: 'Vertrauenswürdig',
+      background: 'hsl(var(--brand-green))',
+      foreground: 'hsl(var(--neutral-0))',
+      backgroundClass: 'bg-brand-green',
+      textClass: 'text-brand-green',
+      textForegroundClass: 'text-neutral-0',
+    }; */
   } else if (s < 2) {
     return {
       label: 'Eher vertrauenswürdig',
-      colorClass: 'bg-brand-yellow text-neutral-800',
-      background: 'hsl(var(--brand-yellow))',
-      text: 'hsl(var(--neutral-800))',
+      backgroundColor: 'hsl(var(--brand-yellow))',
+      foregroundColor: 'hsl(var(--neutral-800))',
+      backgroundClass: 'bg-brand-yellow',
+      textClass: 'text-brand-yellow',
+      textForegroundClass: 'text-neutral-800',
     };
   } else if (s < 3) {
     return {
       label: 'Eher nicht vertrauenswürdig',
-      colorClass: 'bg-brand-orange text-neutral-0',
-      background: 'hsl(var(--brand-orange))',
-      text: 'hsl(var(--neutral-0))',
+      backgroundColor: 'hsl(var(--brand-orange))',
+      foregroundColor: 'hsl(var(--neutral-0))',
+      backgroundClass: 'bg-brand-orange',
+      textClass: 'text-brand-orange',
+      textForegroundClass: 'text-neutral-0',
     };
   } else {
     return {
       label: 'Nicht vertrauenswürdig',
-      colorClass: 'bg-destructive text-destructive-foreground',
-      background: 'hsl(var(--destructive))',
-      text: 'hsl(var(--neutral-0))',
+      backgroundColor: 'hsl(var(--destructive))',
+      foregroundColor: 'hsl(var(--neutral-0))',
+      backgroundClass: 'bg-destructive',
+      textClass: 'text-destructive',
+      textForegroundClass: 'text-destructive-foreground',
     };
   }
 }

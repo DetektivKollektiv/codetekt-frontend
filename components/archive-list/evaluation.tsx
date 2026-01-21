@@ -19,7 +19,8 @@ const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
         </div>
         <Badge
           className={cn(
-            ratingStyle.colorClass,
+            ratingStyle.backgroundClass,
+            ratingStyle.textForegroundClass,
             'w-full justify-center pointer-events-none',
           )}
         >

@@ -60,8 +60,8 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                   style={
                     isActive
                       ? {
-                          backgroundColor: rating.background,
-                          color: rating.text,
+                          backgroundColor: rating.backgroundColor,
+                          color: rating.foregroundColor,
                         }
                       : undefined
                   }
@@ -89,7 +89,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
               <div className="flex -gap-2">
                 {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
-                    65 + (reviewerId.charCodeAt(0) % 26)
+                    65 + (reviewerId.charCodeAt(0) % 26),
                   );
                   return (
                     <div
@@ -119,7 +119,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
               <div className="flex -space-x-2">
                 {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
-                    65 + (reviewerId.charCodeAt(0) % 26)
+                    65 + (reviewerId.charCodeAt(0) % 26),
                   );
                   return (
                     <div

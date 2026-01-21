@@ -64,13 +64,13 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                 <div className="flex items-center gap-3">
                   <NewIcon
                     style={{
-                      color: getRatingStyle(question.score).background,
+                      color: getRatingStyle(question.score).backgroundColor,
                     }}
                   />
                   <span
                     className="font-semibold"
                     style={{
-                      color: getRatingStyle(question.score).background,
+                      color: getRatingStyle(question.score).backgroundColor,
                     }}
                   >
                     {question.metadata.title}

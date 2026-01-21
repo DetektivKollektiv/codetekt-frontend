@@ -38,8 +38,8 @@ export function DetailTrafficLightEvaluation({
             ? {
                 borderWidth: '1px',
                 borderStyle: 'solid',
-                borderColor: ratingStyle.background,
-                color: ratingStyle.background,
+                borderColor: ratingStyle.backgroundColor,
+                color: ratingStyle.backgroundColor,
                 borderRadius: '0.5rem',
               }
             : {}
@@ -48,9 +48,9 @@ export function DetailTrafficLightEvaluation({
         {/* Question section */}
         <div>
           <p
-            className="text-sm text-muted-foreground uppercase tracking-wide mb-2"
+            className="text-sm uppercase tracking-wide mb-2"
             style={{
-              color: ratingStyle.colorClass,
+              color: ratingStyle.backgroundColor,
             }}
           >
             Frage
@@ -71,8 +71,8 @@ export function DetailTrafficLightEvaluation({
             <Badge
               className="text-sm font-semibold px-3 py-2 w-full justify-center"
               style={{
-                backgroundColor: ratingStyle.background,
-                color: ratingStyle.text,
+                backgroundColor: ratingStyle.backgroundColor,
+                color: ratingStyle.foregroundColor,
               }}
             >
               {ratingStyle.label}
