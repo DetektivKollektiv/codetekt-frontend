@@ -4,7 +4,6 @@ import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
 import { Button } from '../ui/button';
 
 interface DetailEvaluationCarouselProps {
@@ -62,39 +61,36 @@ export function DetailEvaluationCarousel({
       <div className="embla" ref={emblaRef}>
         <div className="embla__container flex gap-4">{children}</div>
       </div>
-
-      {/* Navigation buttons */}
-      {showNavigation &&
-        portalContainer &&
-        createPortal(
-          <>
-            <Button
-              variant="outline"
-              size="icon"
-              className={`absolute left-0 top-1/2 -translate-y-1/2 translate-x-0 z-20 rounded-full shadow-lg  ${
-                prevBtnDisabled ? 'hidden' : ''
-              }`}
-              onClick={onPrevButtonClick}
-              disabled={prevBtnDisabled}
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 z-20 rounded-full shadow-lg  ${
-                nextBtnDisabled ? 'hidden' : ''
-              }`}
-              onClick={onNextButtonClick}
-              disabled={nextBtnDisabled}
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </>,
-          portalContainer,
-        )}
+      <div className="flex justify-between mt-4 w-full">
+        <div>
+          <Button
+            variant="outline"
+            size="icon"
+            className={`z-20 rounded-full shadow-lg transition-opacity  ${
+              prevBtnDisabled ? 'disabled:opacity-0' : ''
+            }`}
+            onClick={onPrevButtonClick}
+            disabled={prevBtnDisabled}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+        </div>
+        <div>
+          <Button
+            variant="outline"
+            size="icon"
+            className={`z-20 rounded-full shadow-lg transition-opacity  ${
+              nextBtnDisabled ? 'disabled:opacity-0' : ''
+            }`}
+            onClick={onNextButtonClick}
+            disabled={nextBtnDisabled}
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
