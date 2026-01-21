@@ -32,7 +32,7 @@ export default async function Page({
     notFound();
   }
 
-  console.log('Aggregated Review:', aggregatedReview);
+  // console.log('Aggregated Review:', aggregatedReview);
 
   return (
     <div className=" w-full mt-10 lg:mt-12 mb-24 lg:mb-32">

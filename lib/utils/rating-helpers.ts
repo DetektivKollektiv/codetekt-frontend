@@ -1,3 +1,5 @@
+import { ReviewAggregationData } from '../schemas';
+
 export type RatingLevel = 0 | 1 | 2 | 3;
 
 export interface RatingStyle {
@@ -15,30 +17,30 @@ export interface RatingStyle {
 export function getRatingStyle(score: number): RatingStyle {
   if (score < 1) {
     return {
-      label: 'Nicht vertrauenswürdig',
-      colorClass: 'bg-destructive text-destructive-foreground',
-      background: 'hsl(var(--brand-coral))',
+      label: 'Vertrauenswürdig',
+      colorClass: 'bg-brand-green text-neutral-0',
+      background: 'hsl(var(--brand-green))',
       text: 'hsl(var(--neutral-0))',
     };
   } else if (score < 2) {
-    return {
-      label: 'Eher nicht vertrauenswürdig',
-      colorClass: 'bg-brand-orange text-neutral-0',
-      background: 'hsl(var(--brand-orange))',
-      text: 'hsl(var(--neutral-0))',
-    };
-  } else if (score < 3) {
     return {
       label: 'Eher vertrauenswürdig',
       colorClass: 'bg-brand-yellow text-neutral-800',
       background: 'hsl(var(--brand-yellow))',
       text: 'hsl(var(--neutral-800))',
     };
+  } else if (score < 3) {
+    return {
+      label: 'Eher nicht vertrauenswürdig',
+      colorClass: 'bg-brand-orange text-neutral-0',
+      background: 'hsl(var(--brand-orange))',
+      text: 'hsl(var(--neutral-0))',
+    };
   } else {
     return {
-      label: 'Vertrauenswürdig',
-      colorClass: 'bg-brand-green text-neutral-0',
-      background: 'hsl(var(--brand-green))',
+      label: 'Nicht vertrauenswürdig',
+      colorClass: 'bg-destructive text-destructive-foreground',
+      background: 'hsl(var(--brand-coral))',
       text: 'hsl(var(--neutral-0))',
     };
   }
@@ -52,15 +54,15 @@ export function getRatingLevelColor(level: RatingLevel): {
   text: string;
 } {
   const backgroundColors = {
-    0: 'hsl(var(--brand-coral))',
-    1: 'hsl(var(--brand-orange))',
-    2: 'hsl(var(--brand-yellow))',
-    3: 'hsl(var(--brand-green))',
+    0: 'hsl(var(--brand-green))',
+    1: 'hsl(var(--brand-yellow))',
+    2: 'hsl(var(--brand-orange))',
+    3: 'hsl(var(--brand-coral))',
   };
   const textColors = {
     0: 'hsl(var(--neutral-0))',
-    1: 'hsl(var(--neutral-0))',
-    2: 'hsl(var(--neutral-800))',
+    1: 'hsl(var(--neutral-800))',
+    2: 'hsl(var(--neutral-0))',
     3: 'hsl(var(--neutral-0))',
   };
   return { background: backgroundColors[level], text: textColors[level] };
@@ -71,10 +73,10 @@ export function getRatingLevelColor(level: RatingLevel): {
  */
 export function getRatingLevelLabel(level: RatingLevel): string {
   const labels = {
-    0: 'Nicht vertrauenswürdig',
-    1: 'Eher nicht vertrauenswürdig',
-    2: 'Eher vertrauenswürdig',
-    3: 'Vertrauenswürdig',
+    0: 'Vertrauenswürdig',
+    1: 'Eher vertrauenswürdig',
+    2: 'Eher nicht vertrauenswürdig',
+    3: 'Nicht vertrauenswürdig',
   };
   return labels[level];
 }
@@ -124,3 +126,16 @@ export function getDistributionData(field: {
     },
   ];
 }
+
+export const getWarningTags = (reviewData: ReviewAggregationData) => {
+  return reviewData.questions
+    .flatMap((question) =>
+      question.fields.flatMap((field) => {
+        if (!('tags' in field)) return [];
+
+        const index = Math.floor(field.average) as 0 | 1 | 2 | 3;
+        return [{ [index]: field.tags[index] }];
+      }),
+    )
+    .sort((a, b) => Number(Object.keys(b)[0]) - Number(Object.keys(a)[0]));
+};

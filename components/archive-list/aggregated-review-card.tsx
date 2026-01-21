@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
-import { getRatingStyle } from '@/lib/utils/rating-helpers';
+import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
+import { handleShare } from '@/lib/utils/share';
 import { Share2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,8 +34,9 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const contentType = reviewData.metadata?.content_type || [];
   const keywordType = reviewData.metadata?.keyword_type || [];
 
-  const handleShare = () => {
+  const share = () => {
     // Placeholder for share functionality
+    handleShare(caseItem, ogData);
     console.log('Share case:', caseItem.case_id);
   };
 
@@ -85,7 +87,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
               <Link href={`/archive/${caseItem.case_id}`}>
                 <Button variant={'destructive'}>Fall ansehen</Button>
               </Link>
-              <Button variant="outline" onClick={handleShare}>
+              <Button variant="outline" onClick={share}>
                 <Share2 className="w-4 h-4" />
                 Fall teilen
               </Button>
@@ -95,16 +97,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           {/* Right: Evaluation */}
           <Evaluation
             ratingStyle={ratingStyle}
-            warningTags={
-              caseItem.data?.questions
-                .map((question) =>
-                  question.fields.map(
-                    (field) =>
-                      field.tags[Math.floor(field.average) as 0 | 1 | 2 | 4],
-                  ),
-                )
-                .flat() || []
-            }
+            warningTags={getWarningTags(reviewData)}
           />
         </div>
       </CardContent>

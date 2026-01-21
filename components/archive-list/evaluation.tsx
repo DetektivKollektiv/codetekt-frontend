@@ -1,12 +1,12 @@
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { RatingStyle } from '@/lib/utils/rating-helpers';
+import { getRatingLevelColor, RatingStyle } from '@/lib/utils/rating-helpers';
 import { FC } from 'react';
 import { HelpButton } from '../ui/help-button';
 
 interface EvaluationProps {
   ratingStyle: RatingStyle;
-  warningTags: string[];
+  warningTags: { [K in 0 | 1 | 2 | 3]?: string }[];
 }
 
 const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
@@ -20,7 +20,7 @@ const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
         <Badge
           className={cn(
             ratingStyle.colorClass,
-            'w-full justify-center pointer-events-none'
+            'w-full justify-center pointer-events-none',
           )}
         >
           {ratingStyle.label}
@@ -34,8 +34,15 @@ const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
           </h4>
           <div className="break-words min-w-0 hyphens-auto text-destructive text-body-sm">
             {warningTags.slice(0, 4).map((tag, idx) => (
-              <span className="" key={tag}>
-                {tag}
+              <span
+                style={{
+                  color: getRatingLevelColor(
+                    Number(Object.keys(tag)[0]) as 0 | 1 | 2 | 3,
+                  ).background,
+                }}
+                key={JSON.stringify(tag)}
+              >
+                {Object.values(tag)[0]}
                 {idx < warningTags.slice(0, 4).length - 1 ? ', ' : ''}
               </span>
             ))}

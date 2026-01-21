@@ -119,13 +119,6 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
 
                   setAdditionalAnswerValues(newValues);
 
-                  console.log(
-                    'onChange called with:',
-                    answerValues,
-                    newValues,
-                    [...answerValues, ...newValues],
-                  );
-
                   onChange?.([...answerValues, ...newValues]);
                 }}
                 placeholder={field.placeholder}

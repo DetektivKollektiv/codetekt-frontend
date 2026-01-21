@@ -155,7 +155,6 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
   // Configure Fuse.js for searching
   const fuse = useMemo(() => {
     if (!items) return null;
-    console.log('Fuse Options:', items);
     return new Fuse(items, fuseOptions);
   }, [items, fuseOptions]);
 
