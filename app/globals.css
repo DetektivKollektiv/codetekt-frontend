@@ -110,7 +110,7 @@
     --accent-foreground: var(--neutral-800); /* #140735 */
 
     /* Destructive */
-    --destructive: var(--brand-coral); /* #FF7268 */
+    --destructive: 360 100% 65%; /* #FF4D4D */
     --destructive-foreground: var(--neutral-0); /* #FFFFFF */
 
     /* Structure / Focus */
