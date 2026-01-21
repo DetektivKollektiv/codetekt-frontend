@@ -1,5 +1,3 @@
-import type { ReviewAggregationData } from '../schemas/aggregation-schemas';
-
 export type RatingLevel = 0 | 1 | 2 | 3;
 
 export interface RatingStyle {
@@ -45,7 +43,6 @@ export function getRatingStyle(score: number): RatingStyle {
     };
   }
 }
-
 
 /**
  * Get color for a specific rating level (0-3)
@@ -127,22 +124,3 @@ export function getDistributionData(field: {
     },
   ];
 }
-
-/**
- * Extract all warning tags from review fields
- */
-export function getWarningTags(
-  fields: ReviewAggregationData['fields']
-): string[] {
-  if (!fields) return [];
-
-  const warnings: string[] = [];
-  Object.values(fields).forEach((field) => {
-    if (field.warnings && field.warnings.length > 0) {
-      warnings.push(...field.warnings);
-    }
-  });
-
-  return Array.from(new Set(warnings));
-}
-
