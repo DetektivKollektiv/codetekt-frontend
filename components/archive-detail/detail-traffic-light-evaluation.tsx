@@ -47,14 +47,21 @@ export function DetailTrafficLightEvaluation({
       >
         {/* Question section */}
         <div>
-          <p
-            className="text-sm uppercase tracking-wide mb-2"
-            style={{
-              color: ratingStyle.backgroundColor,
-            }}
-          >
-            Frage
-          </p>
+          <div className="flex gap-2 items-end mb-2">
+            <p
+              className={`text-body-md uppercase tracking-wide  ${highlightHeader ? ratingStyle.textClass : 'text-muted-foreground'}`}
+            >
+              Frage
+            </p>
+            {highlightHeader && (
+              <>
+                <p className="text-body-sm text-muted-foreground mb-0.5">•</p>
+                <p className="text-body-sm text-muted-foreground mb-0.5">
+                  Ausschlaggebend
+                </p>
+              </>
+            )}
+          </div>
           <p className="font-medium leading-relaxed line-clamp-3 h-20 text-ellipsis">
             {field.question}
           </p>
