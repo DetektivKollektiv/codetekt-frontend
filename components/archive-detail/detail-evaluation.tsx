@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +7,8 @@ import {
 } from '@/components/ui/accordion';
 import { HelpButton } from '@/components/ui/help-button';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
+import dynamicIconImports from 'lucide-react/dynamicIconImports';
+import dynamic from 'next/dynamic';
 import { DetailEvaluationCard } from './detail-evaluation-card';
 import { DetailEvaluationCarousel } from './detail-evaluation-carousel';
 
@@ -40,6 +41,15 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
           const hasFields = question.fields && question.fields.length > 0;
 
           if (!hasFields) return null;
+          const NewIcon = dynamic(
+            dynamicIconImports[
+              (question.metadata.icon as keyof typeof dynamicIconImports) ||
+                'badge'
+            ],
+            {
+              ssr: false,
+            },
+          );
 
           return (
             <AccordionItem
@@ -50,7 +60,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
             >
               <AccordionTrigger className="hover:no-underline">
                 <div className="flex items-center gap-3">
-                  {/* <CategoryIcon className="w-5 h-5" /> */}
+                  <NewIcon />
                   <span className="font-semibold">
                     {question.metadata.title}
                   </span>
@@ -67,14 +77,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                   portalContainerId={`accordion-content-${question.id}`}
                 >
                   {question.fields.map((field) => {
-                    return (
-                      <div
-                        key={field.id}
-                        className="flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0"
-                      >
-                        <DetailEvaluationCard field={field} />
-                      </div>
-                    );
+                    return <DetailEvaluationCard field={field} />;
                   })}
                 </DetailEvaluationCarousel>
               </AccordionContent>
