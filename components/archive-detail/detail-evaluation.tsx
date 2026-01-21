@@ -7,10 +7,12 @@ import {
 } from '@/components/ui/accordion';
 import { HelpButton } from '@/components/ui/help-button';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
+import { getRatingStyle } from '@/lib/utils/rating-helpers';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 import dynamic from 'next/dynamic';
-import { DetailEvaluationCard } from './detail-evaluation-card';
 import { DetailEvaluationCarousel } from './detail-evaluation-carousel';
+import { DetailTextEvaluation } from './detail-text-evaluation';
+import { DetailTrafficLightEvaluation } from './detail-traffic-light-evaluation';
 
 interface DetailEvaluationProps {
   reviewData: ReviewAggregationData;
@@ -39,7 +41,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
       >
         {reviewData.questions.map((question) => {
           const hasFields = question.fields && question.fields.length > 0;
-
+          console.log('Question Fields:', question);
           if (!hasFields) return null;
           const NewIcon = dynamic(
             dynamicIconImports[
@@ -60,8 +62,17 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
             >
               <AccordionTrigger className="hover:no-underline">
                 <div className="flex items-center gap-3">
-                  <NewIcon />
-                  <span className="font-semibold">
+                  <NewIcon
+                    style={{
+                      color: getRatingStyle(question.score).background,
+                    }}
+                  />
+                  <span
+                    className="font-semibold"
+                    style={{
+                      color: getRatingStyle(question.score).background,
+                    }}
+                  >
                     {question.metadata.title}
                   </span>
                 </div>
@@ -77,9 +88,20 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                   portalContainerId={`accordion-content-${question.id}`}
                 >
                   {question.fields.map((field) => {
-                    return (
-                      <DetailEvaluationCard field={field} key={field.id} />
-                    );
+                    if (field.type === 'traffic-light') {
+                      return (
+                        <DetailTrafficLightEvaluation
+                          field={field}
+                          key={field.id}
+                        />
+                      );
+                    }
+
+                    if (field.type === 'text' || field.type === 'text-area') {
+                      return (
+                        <DetailTextEvaluation field={field} key={field.id} />
+                      );
+                    }
                   })}
                 </DetailEvaluationCarousel>
               </AccordionContent>

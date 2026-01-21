@@ -35,9 +35,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const keywordType = reviewData.metadata?.keyword_type || [];
 
   const share = () => {
-    // Placeholder for share functionality
     handleShare(caseItem, ogData);
-    console.log('Share case:', caseItem.case_id);
   };
 
   return (
