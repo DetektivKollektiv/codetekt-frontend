@@ -88,11 +88,34 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                   portalContainerId={`accordion-content-${question.id}`}
                 >
                   {question.fields.map((field) => {
+                    const fieldWithHighestAverage = question.fields
+                      .filter((f) => f.type === 'traffic-light')
+                      .reduce(
+                        (prev, current) => {
+                          if (prev.average === undefined) return current;
+                          if (current.average === undefined) return prev;
+                          return prev.average > current.average
+                            ? prev
+                            : current;
+                        },
+                        question.fields.find(
+                          (f) => f.type === 'traffic-light',
+                        )!,
+                      );
+
+                    console.log(
+                      'Field with Highest Average:',
+                      fieldWithHighestAverage,
+                    );
+
                     if (field.type === 'traffic-light') {
                       return (
                         <DetailTrafficLightEvaluation
                           field={field}
                           key={field.id}
+                          highlightHeader={
+                            field.id === fieldWithHighestAverage.id
+                          }
                         />
                       );
                     }

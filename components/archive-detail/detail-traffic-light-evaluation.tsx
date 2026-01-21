@@ -10,6 +10,7 @@ import {
 } from '@/lib/utils/rating-helpers';
 
 interface DetailTrafficLightEvaluationProps {
+  highlightHeader?: boolean;
   field: Extract<
     ReviewAggregationData['questions'][number]['fields'][number],
     { type: 'traffic-light' }
@@ -18,6 +19,7 @@ interface DetailTrafficLightEvaluationProps {
 
 export function DetailTrafficLightEvaluation({
   field,
+  highlightHeader,
 }: DetailTrafficLightEvaluationProps) {
   const distributionData = getDistributionData(field);
 
@@ -29,10 +31,28 @@ export function DetailTrafficLightEvaluation({
       className="h-full flex-[0_0_100%] md:flex-[0_0_calc(50%-0.5rem)] lg:flex-[0_0_calc(33.333%-0.667rem)] min-w-0"
       key={field.id}
     >
-      <CardContent className="p-6 space-y-4">
+      <CardContent
+        className="p-6 space-y-4"
+        style={
+          highlightHeader
+            ? {
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: ratingStyle.background,
+                color: ratingStyle.background,
+                borderRadius: '0.5rem',
+              }
+            : {}
+        }
+      >
         {/* Question section */}
         <div>
-          <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2">
+          <p
+            className="text-sm text-muted-foreground uppercase tracking-wide mb-2"
+            style={{
+              color: ratingStyle.colorClass,
+            }}
+          >
             Frage
           </p>
           <p className="font-medium leading-relaxed line-clamp-3 h-20 text-ellipsis">
