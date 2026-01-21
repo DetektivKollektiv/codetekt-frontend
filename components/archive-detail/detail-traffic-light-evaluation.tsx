@@ -21,7 +21,7 @@ export function DetailTrafficLightEvaluation({
 }: DetailTrafficLightEvaluationProps) {
   const distributionData = getDistributionData(field);
 
-  console.log('Distribution Data:', distributionData);
+  console.log('field:', field);
   const average = field.average;
   const ratingStyle = getRatingStyle(average);
 

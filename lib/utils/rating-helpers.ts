@@ -8,28 +8,31 @@ export interface RatingStyle {
   background: string;
   text: string;
 }
-
+export const scoreToIndex = (score: number): RatingLevel => {
+  return Math.ceil(score) as RatingLevel;
+};
 /**
  * Determines the rating style based on the score
  * @param score - The score from 0-3
  * @returns RatingStyle object with label, Tailwind color classes, and inline style colors
  */
 export function getRatingStyle(score: number): RatingStyle {
-  if (score < 1) {
+  const s = scoreToIndex(score);
+  if (s < 1) {
     return {
       label: 'Vertrauenswürdig',
       colorClass: 'bg-brand-green text-neutral-0',
       background: 'hsl(var(--brand-green))',
       text: 'hsl(var(--neutral-0))',
     };
-  } else if (score < 2) {
+  } else if (s < 2) {
     return {
       label: 'Eher vertrauenswürdig',
       colorClass: 'bg-brand-yellow text-neutral-800',
       background: 'hsl(var(--brand-yellow))',
       text: 'hsl(var(--neutral-800))',
     };
-  } else if (score < 3) {
+  } else if (s < 3) {
     return {
       label: 'Eher nicht vertrauenswürdig',
       colorClass: 'bg-brand-orange text-neutral-0',
@@ -133,7 +136,7 @@ export const getWarningTags = (reviewData: ReviewAggregationData) => {
       question.fields.flatMap((field) => {
         if (!('tags' in field)) return [];
 
-        const index = Math.floor(field.average) as 0 | 1 | 2 | 3;
+        const index = scoreToIndex(field.average);
         return [{ [index]: field.tags[index] }];
       }),
     )
