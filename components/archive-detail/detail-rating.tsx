@@ -86,7 +86,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 dich jetzt!
               </p>
               {/* Reviewer avatars */}
-              <div className="flex -gap-2">
+              <div className="flex -space-x-2">
                 {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
                     65 + (reviewerId.charCodeAt(0) % 26),
