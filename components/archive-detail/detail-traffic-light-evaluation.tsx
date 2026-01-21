@@ -20,6 +20,8 @@ export function DetailTrafficLightEvaluation({
   field,
 }: DetailTrafficLightEvaluationProps) {
   const distributionData = getDistributionData(field);
+
+  console.log('Distribution Data:', distributionData);
   const average = field.average;
   const ratingStyle = getRatingStyle(average);
 
@@ -48,7 +50,7 @@ export function DetailTrafficLightEvaluation({
           </p>
           <div className="flex items-center gap-2">
             <Badge
-              className="text-sm font-semibold px-3 py-1 w-full text-center"
+              className="text-sm font-semibold px-3 py-2 w-full justify-center"
               style={{
                 backgroundColor: ratingStyle.background,
                 color: ratingStyle.text,

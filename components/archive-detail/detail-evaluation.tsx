@@ -77,7 +77,9 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                   portalContainerId={`accordion-content-${question.id}`}
                 >
                   {question.fields.map((field) => {
-                    return <DetailEvaluationCard field={field} />;
+                    return (
+                      <DetailEvaluationCard field={field} key={field.id} />
+                    );
                   })}
                 </DetailEvaluationCarousel>
               </AccordionContent>

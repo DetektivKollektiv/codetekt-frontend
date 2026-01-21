@@ -40,7 +40,7 @@ export function getRatingStyle(score: number): RatingStyle {
     return {
       label: 'Nicht vertrauenswürdig',
       colorClass: 'bg-destructive text-destructive-foreground',
-      background: 'hsl(var(--brand-coral))',
+      background: 'hsl(var(--destructive))',
       text: 'hsl(var(--neutral-0))',
     };
   }
@@ -57,7 +57,7 @@ export function getRatingLevelColor(level: RatingLevel): {
     0: 'hsl(var(--brand-green))',
     1: 'hsl(var(--brand-yellow))',
     2: 'hsl(var(--brand-orange))',
-    3: 'hsl(var(--brand-coral))',
+    3: 'hsl(var(--destructive))',
   };
   const textColors = {
     0: 'hsl(var(--neutral-0))',
@@ -97,18 +97,11 @@ export function getDistributionData(field: {
 }): DistributionEntry[] {
   return [
     {
-      level: 3,
-      label: getRatingLevelLabel(3),
-      percentage: field.percentages[3],
-      textColor: getRatingLevelColor(3).text,
-      backgroundColor: getRatingLevelColor(3).background,
-    },
-    {
-      level: 2,
-      label: getRatingLevelLabel(2),
-      percentage: field.percentages[2],
-      textColor: getRatingLevelColor(2).text,
-      backgroundColor: getRatingLevelColor(2).background,
+      level: 0,
+      label: getRatingLevelLabel(0),
+      percentage: field.percentages[0],
+      textColor: getRatingLevelColor(0).text,
+      backgroundColor: getRatingLevelColor(0).background,
     },
     {
       level: 1,
@@ -118,11 +111,18 @@ export function getDistributionData(field: {
       backgroundColor: getRatingLevelColor(1).background,
     },
     {
-      level: 0,
-      label: getRatingLevelLabel(0),
-      percentage: field.percentages[0],
-      textColor: getRatingLevelColor(0).text,
-      backgroundColor: getRatingLevelColor(0).background,
+      level: 2,
+      label: getRatingLevelLabel(2),
+      percentage: field.percentages[2],
+      textColor: getRatingLevelColor(2).text,
+      backgroundColor: getRatingLevelColor(2).background,
+    },
+    {
+      level: 3,
+      label: getRatingLevelLabel(3),
+      percentage: field.percentages[3],
+      textColor: getRatingLevelColor(3).text,
+      backgroundColor: getRatingLevelColor(3).background,
     },
   ];
 }
