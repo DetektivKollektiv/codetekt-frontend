@@ -49,7 +49,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
       </Link>
 
       {/* Case number title */}
-      <div className="flex w-full justify-between items-end">
+      <div className="flex flex-col gap-2 md:flex-row w-full justify-between md:items-end">
         <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
           Fall {caseData.case_number}
         </h1>
