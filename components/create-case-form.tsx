@@ -70,7 +70,7 @@ export function CreateCaseForm({
     ...createCaseMutation(supabase),
     onSuccess: () => {
       toast.success('Fall erfolgreich eingereicht!');
-      router.push('/archive');
+      router.push('/');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Ein Fehler ist aufgetreten');
@@ -285,7 +285,15 @@ export function CreateCaseForm({
 
           {/* Action Buttons */}
           <div className="flex flex-col  gap-3">
-            <Button type="submit" disabled={isPending || !isAuthenticated}>
+            <Button
+              type="submit"
+              disabled={
+                isPending ||
+                !isAuthenticated ||
+                !privacyAccepted ||
+                !termsAccepted
+              }
+            >
               {isPending ? 'Wird eingereicht...' : 'Fall einreichen'}
             </Button>
             <Button
