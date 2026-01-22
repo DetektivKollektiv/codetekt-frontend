@@ -3,12 +3,11 @@
 import { BadgeList } from '@/components/ui/badge-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ShareButton } from '@/components/ui/share-button';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
 import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
-import { handleShare } from '@/lib/utils/share';
-import { Share2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
@@ -38,10 +37,6 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
     ) || [];
 
   const keywordType = reviewData.metadata?.keyword_type || [];
-
-  const share = () => {
-    handleShare(caseItem, ogData);
-  };
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
@@ -90,10 +85,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
               <Link href={`/archive/${caseItem.case_id}`}>
                 <Button variant={'destructive'}>Fall ansehen</Button>
               </Link>
-              <Button variant="outline" onClick={share}>
-                <Share2 className="w-4 h-4" />
-                Fall teilen
-              </Button>
+              <ShareButton caseId={caseItem.case_id} />
             </div>
           </div>
 
