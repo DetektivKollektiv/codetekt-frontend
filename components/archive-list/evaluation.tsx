@@ -21,7 +21,7 @@ const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
           className={cn(
             ratingStyle.backgroundClass,
             ratingStyle.textForegroundClass,
-            'w-full justify-center pointer-events-none',
+            'w-full justify-center pointer-events-none h-9',
           )}
         >
           {ratingStyle.label}
