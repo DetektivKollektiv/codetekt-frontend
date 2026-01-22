@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { textFieldSchema } from '@/lib/schemas/field-schemas';
+import { Field, textFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC } from 'react';
 import { z } from 'zod';
 import { FieldContainer } from './field-container';
@@ -11,9 +11,14 @@ type TextField = z.infer<typeof textFieldSchema>;
 interface TextFieldProps {
   field: TextField;
   onChange?: (value: string) => void;
+  onCreateReviewDispute: (field: Field) => void;
 }
 
-export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
+export const TextField: FC<TextFieldProps> = ({
+  field,
+  onChange,
+  onCreateReviewDispute,
+}) => {
   const option = field.options[0];
   const value = (field.answer_value ?? '') as string;
 
@@ -28,6 +33,7 @@ export const TextField: FC<TextFieldProps> = ({ field, onChange }) => {
       isDisabled={
         field.is_disabled === undefined ? false : (field.is_disabled as boolean)
       }
+      onCreateReviewDispute={() => onCreateReviewDispute(field)}
     >
       <div className="space-y-2">
         <Input

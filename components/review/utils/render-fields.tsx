@@ -16,8 +16,9 @@ interface RenderFieldsOptions {
   onFieldChange: (
     questionId: string,
     fieldId: string,
-    value: Field['answer_value']
+    value: Field['answer_value'],
   ) => void;
+  onCreateReviewDispute: (field: Field) => void;
 }
 
 /**
@@ -26,6 +27,7 @@ interface RenderFieldsOptions {
 export const renderFieldsWithHeaders = ({
   currentQuestion,
   onFieldChange,
+  onCreateReviewDispute,
 }: RenderFieldsOptions): ReactNode[] => {
   const elements: ReactNode[] = [];
   let previousFieldType: string | null = null;
@@ -43,7 +45,7 @@ export const renderFieldsWithHeaders = ({
       previousFieldType !== 'traffic-light'
     ) {
       elements.push(
-        <TrafficLightHeader key={`header-${field.id}`} className="mb-4" />
+        <TrafficLightHeader key={`header-${field.id}`} className="mb-4" />,
       );
     }
 
@@ -59,11 +61,17 @@ export const renderFieldsWithHeaders = ({
           key={field.id}
           field={field}
           onChange={handleChange}
-        />
+          onCreateReviewDispute={onCreateReviewDispute}
+        />,
       );
     } else if (field.type === 'chip') {
       elements.push(
-        <ChipField key={field.id} field={field} onChange={handleChange} />
+        <ChipField
+          key={field.id}
+          field={field}
+          onChange={handleChange}
+          onCreateReviewDispute={onCreateReviewDispute}
+        />,
       );
     } else if (field.type === 'traffic-light') {
       elements.push(
@@ -71,7 +79,7 @@ export const renderFieldsWithHeaders = ({
           key={field.id}
           field={field}
           onChange={handleChange}
-        />
+        />,
       );
     } else if (field.type === 'likert-scale') {
       elements.push(
@@ -79,15 +87,26 @@ export const renderFieldsWithHeaders = ({
           key={field.id}
           field={field}
           onChange={handleChange}
-        />
+          onCreateReviewDispute={onCreateReviewDispute}
+        />,
       );
     } else if (field.type === 'text-area') {
       elements.push(
-        <TextAreaField key={field.id} field={field} onChange={handleChange} />
+        <TextAreaField
+          key={field.id}
+          field={field}
+          onChange={handleChange}
+          onCreateReviewDispute={onCreateReviewDispute}
+        />,
       );
     } else if (field.type === 'text') {
       elements.push(
-        <TextField key={field.id} field={field} onChange={handleChange} />
+        <TextField
+          key={field.id}
+          field={field}
+          onChange={handleChange}
+          onCreateReviewDispute={onCreateReviewDispute}
+        />,
       );
     }
 

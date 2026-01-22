@@ -1,6 +1,6 @@
 'use client';
 
-import { chipFieldSchema } from '@/lib/schemas/field-schemas';
+import { chipFieldSchema, Field } from '@/lib/schemas/field-schemas';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { FC } from 'react';
@@ -12,9 +12,14 @@ type ChipField = z.infer<typeof chipFieldSchema>;
 interface ChipFieldProps {
   field: ChipField;
   onChange?: (values: string[]) => void;
+  onCreateReviewDispute: (field: Field) => void;
 }
 
-export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
+export const ChipField: FC<ChipFieldProps> = ({
+  field,
+  onChange,
+  onCreateReviewDispute,
+}) => {
   const selectedValues = (field.answer_value ?? []) as string[];
   const isDisabled = field.is_disabled === true;
 
@@ -35,6 +40,7 @@ export const ChipField: FC<ChipFieldProps> = ({ field, onChange }) => {
       isDisabled={
         field.is_disabled === undefined ? false : (field.is_disabled as boolean)
       }
+      onCreateReviewDispute={() => onCreateReviewDispute(field)}
     >
       <div className="flex flex-wrap gap-2">
         {field.options.map((option) => {

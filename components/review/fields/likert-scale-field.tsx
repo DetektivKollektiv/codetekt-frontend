@@ -1,6 +1,6 @@
 'use client';
 
-import { likertScaleFieldSchema } from '@/lib/schemas/field-schemas';
+import { Field, likertScaleFieldSchema } from '@/lib/schemas/field-schemas';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { FC } from 'react';
@@ -13,11 +13,13 @@ type LikertScaleValue = 0 | 1 | 2 | 3 | 4 | null;
 interface LikertScaleFieldProps {
   field: LikertScaleField;
   onChange?: (value: LikertScaleValue) => void;
+  onCreateReviewDispute: (field: Field) => void;
 }
 
 export const LikertScaleField: FC<LikertScaleFieldProps> = ({
   field,
   onChange,
+  onCreateReviewDispute,
 }) => {
   const selectedValue = (field.answer_value ?? null) as LikertScaleValue;
   const isDisabled = field.is_disabled === true;
@@ -34,6 +36,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
       isDisabled={
         field.is_disabled === undefined ? false : (field.is_disabled as boolean)
       }
+      onCreateReviewDispute={() => onCreateReviewDispute(field)}
     >
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
         {field.options.map((option) => {

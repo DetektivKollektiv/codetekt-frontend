@@ -1,8 +1,10 @@
 'use client';
+import { createReviewDisputeMutation } from '@/lib/queries/createReviewDispute';
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
 import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
+import { Field } from '@/lib/schemas';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
@@ -18,7 +20,18 @@ import Link from 'next/link';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
 import { HelpButton } from '../ui/help-button';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
 import CaseCard from './case-card';
 import { useReviewState } from './hooks/useReviewState';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
@@ -42,6 +55,10 @@ const Review: FC<ReviewProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
   const [inProgressId, setInProgressId] = useState<string | null>(null);
   const [isEditable, setIsEditable] = useState(!initialIsSubmitted);
+  const [isDisputeSubmitting, setIsDisputeSubmitting] = useState(false);
+  const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
+  const [disputingField, setDisputingField] = useState<Field | null>(null);
+  const [disputeReason, setDisputeReason] = useState('');
 
   // Auth context
   const { data: authData } = useQuery({
@@ -279,91 +296,186 @@ const Review: FC<ReviewProps> = ({
     }
   };
 
+  // Mutation for creating review dispute
+  const { mutate: createDispute } = useMutation({
+    ...createReviewDisputeMutation(supabase, userId || ''),
+    onMutate: () => {
+      setIsDisputeSubmitting(true);
+    },
+    onSuccess: () => {
+      toast.success(
+        'Korrektur erfolgreich beantragt. Unser Team wird die Bewertung überprüfen.',
+      );
+      setIsDisputeSubmitting(false);
+      setIsDisputeDialogOpen(false);
+      setDisputeReason('');
+      setDisputingField(null);
+    },
+    onError: (error: Error) => {
+      toast.error(
+        error.message ||
+          'Fehler beim Beantragen der Korrektur. Bitte versuche es erneut.',
+      );
+      setIsDisputeSubmitting(false);
+    },
+  });
+
+  const openDisputeDialog = (field: Field) => {
+    if (!userId) {
+      toast.error('Du musst angemeldet sein, um eine Korrektur zu beantragen');
+      return;
+    }
+    setDisputingField(field);
+    setIsDisputeDialogOpen(true);
+  };
+
+  const handleDisputeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!disputingField || !disputeReason.trim()) return;
+
+    // Get the current value from the field
+    const currentValue = String(disputingField.answer_value || '');
+
+    createDispute({
+      caseId: caseData.id,
+      fieldId: disputingField.id,
+      originalValue: currentValue,
+      reason: disputeReason,
+    });
+  };
+
   return (
-    <div
-      className="page-max-w lg:grid lg:gap-6"
-      style={{
-        gridTemplateColumns: '300px 1fr ',
-      }}
-    >
-      <div>
-        <CaseCard case={caseData} />
-        <div className="my-4 lg:my-0 lg:mt-4">
-          <ReviewNavigation
-            reviewTemplateQuestions={shownReviewTemplateQuestions}
-            onItemClick={setCurrentQuestionId}
-            questionsValidationState={questionsValidationState}
-            currentQuestion={currentQuestion}
-            disabled={!isEditable}
-          />
-        </div>
-      </div>
-      {isSubmitted && !isEditable ? (
-        <SuccesCard>
-          <Button
-            variant={'outline'}
-            size={'default'}
-            className="w-full"
-            onClick={() => {
-              setIsEditable(true);
-              setCurrentQuestionId(shownReviewTemplateQuestions[0].id);
-            }}
-          >
-            <Edit className="w-4 h-4 mr-2" />
-            Fall bearbeiten
-          </Button>
-          <Link href={`/#open-cases`} className="w-full mt-2">
-            <Button variant={'default'} size={'default'} className="w-full">
-              Weitere Fälle bearbeiten
-            </Button>
-          </Link>
-        </SuccesCard>
-      ) : (
-        <QuestionCard
-          question={currentQuestion}
-          headerActions={
-            <>
-              <HelpButton />
-              <Button
-                variant={hasUnsavedChanges ? 'destructive' : 'outline'}
-                size={'default'}
-                onClick={handleSaveInProgress}
-              >
-                <SaveAll className="w-4 h-4 mr-2" />
-                Speichern
-              </Button>
-            </>
-          }
-          footer={
-            <div className="flex flex-col w-full gap-2">
-              {isLastQuestion ? (
-                <Button
-                  variant="default"
-                  className="w-full"
-                  onClick={handleSubmitReview}
-                  disabled={!isValidForSubmission || isSubmitting}
-                >
-                  {isSubmitting ? 'Wird abgeschlossen...' : 'Fall abschließen'}
-                </Button>
-              ) : (
-                <Button
-                  variant="default"
-                  className="w-full"
-                  onClick={setNextQuestion}
-                >
-                  Nächste Frage
-                </Button>
-              )}
+    <>
+      <Dialog open={isDisputeDialogOpen} onOpenChange={setIsDisputeDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <form onSubmit={handleDisputeSubmit}>
+            <DialogHeader>
+              <DialogTitle>Korrektur beantragen</DialogTitle>
+              <DialogDescription>
+                Bitte gib den Grund für die Korrektur an. Unser Team wird die
+                Bewertung überprüfen.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-3">
+                <Label htmlFor="dispute-reason">Grund der Korrektur</Label>
+                <Textarea
+                  id="dispute-reason"
+                  placeholder="Beschreibe, warum diese Bewertung korrigiert werden sollte..."
+                  value={disputeReason}
+                  onChange={(e) => setDisputeReason(e.target.value)}
+                  required
+                  rows={4}
+                />
+              </div>
             </div>
-          }
-        >
-          {renderFieldsWithHeaders({
-            currentQuestion,
-            onFieldChange: updateFieldValue,
-          })}
-        </QuestionCard>
-      )}
-    </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" type="button">
+                  Abbrechen
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                disabled={!disputeReason.trim() || isDisputeSubmitting}
+              >
+                {isDisputeSubmitting
+                  ? 'Wird gesendet...'
+                  : 'Korrektur beantragen'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <div
+        className="page-max-w lg:grid lg:gap-6"
+        style={{
+          gridTemplateColumns: '300px 1fr ',
+        }}
+      >
+        <div>
+          <CaseCard case={caseData} />
+          <div className="my-4 lg:my-0 lg:mt-4">
+            <ReviewNavigation
+              reviewTemplateQuestions={shownReviewTemplateQuestions}
+              onItemClick={setCurrentQuestionId}
+              questionsValidationState={questionsValidationState}
+              currentQuestion={currentQuestion}
+              disabled={!isEditable}
+            />
+          </div>
+        </div>
+        {isSubmitted && !isEditable ? (
+          <SuccesCard>
+            <Button
+              variant={'outline'}
+              size={'default'}
+              className="w-full"
+              onClick={() => {
+                setIsEditable(true);
+                setCurrentQuestionId(shownReviewTemplateQuestions[0].id);
+              }}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Fall bearbeiten
+            </Button>
+            <Link href={`/#open-cases`} className="w-full mt-2">
+              <Button variant={'default'} size={'default'} className="w-full">
+                Weitere Fälle bearbeiten
+              </Button>
+            </Link>
+          </SuccesCard>
+        ) : (
+          <QuestionCard
+            question={currentQuestion}
+            headerActions={
+              <>
+                <HelpButton />
+                <Button
+                  variant={hasUnsavedChanges ? 'destructive' : 'outline'}
+                  size={'default'}
+                  onClick={handleSaveInProgress}
+                >
+                  <SaveAll className="w-4 h-4 mr-2" />
+                  Speichern
+                </Button>
+              </>
+            }
+            footer={
+              <div className="flex flex-col w-full gap-2">
+                {isLastQuestion ? (
+                  <Button
+                    variant="default"
+                    className="w-full"
+                    onClick={handleSubmitReview}
+                    disabled={!isValidForSubmission || isSubmitting}
+                  >
+                    {isSubmitting
+                      ? 'Wird abgeschlossen...'
+                      : 'Fall abschließen'}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="default"
+                    className="w-full"
+                    onClick={setNextQuestion}
+                  >
+                    Nächste Frage
+                  </Button>
+                )}
+              </div>
+            }
+          >
+            {renderFieldsWithHeaders({
+              currentQuestion,
+              onFieldChange: updateFieldValue,
+              onCreateReviewDispute: openDisputeDialog,
+            })}
+          </QuestionCard>
+        )}
+      </div>
+    </>
   );
 };
 

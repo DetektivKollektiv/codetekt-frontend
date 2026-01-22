@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { multiLineTextFieldSchema } from '@/lib/schemas/field-schemas';
+import { Field, multiLineTextFieldSchema } from '@/lib/schemas/field-schemas';
 import { X } from 'lucide-react';
 import { FC, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
@@ -13,11 +13,13 @@ type MultiLineTextField = z.infer<typeof multiLineTextFieldSchema>;
 interface MultiLineTextFieldProps {
   field: MultiLineTextField;
   onChange?: (values: string[]) => void;
+  onCreateReviewDispute: (field: Field) => void;
 }
 
 export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   field,
   onChange,
+  onCreateReviewDispute,
 }) => {
   const initialAnswerValues = useRef(
     (field.initial_answer_value ?? []) as string[],
@@ -75,6 +77,7 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
       title={field.question}
       isDisputable={field.is_disputable as boolean}
       isDisabled={isDisabled}
+      onCreateReviewDispute={() => onCreateReviewDispute(field)}
     >
       <div className="space-y-2">
         {/* Pre-defined options (disabled, read-only) */}

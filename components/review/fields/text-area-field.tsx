@@ -1,7 +1,7 @@
 'use client';
 
 import { Textarea } from '@/components/ui/textarea';
-import { textAreaFieldSchema } from '@/lib/schemas/field-schemas';
+import { Field, textAreaFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC } from 'react';
 import { z } from 'zod';
 import { FieldContainer } from './field-container';
@@ -11,9 +11,14 @@ type TextAreaField = z.infer<typeof textAreaFieldSchema>;
 interface TextAreaFieldProps {
   field: TextAreaField;
   onChange?: (value: string) => void;
+  onCreateReviewDispute: (field: Field) => void;
 }
 
-export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
+export const TextAreaField: FC<TextAreaFieldProps> = ({
+  field,
+  onChange,
+  onCreateReviewDispute,
+}) => {
   const option = field.options[0];
   const value = (field.answer_value ?? '') as string;
   const isDisabled =
@@ -28,6 +33,7 @@ export const TextAreaField: FC<TextAreaFieldProps> = ({ field, onChange }) => {
       title={field.question}
       isDisputable={field.is_disputable as boolean}
       isDisabled={isDisabled}
+      onCreateReviewDispute={() => onCreateReviewDispute(field)}
     >
       <div className="space-y-2">
         <Textarea
