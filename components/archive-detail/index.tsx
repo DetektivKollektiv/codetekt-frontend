@@ -18,10 +18,6 @@ export function ArchiveDetail({
   caseComments,
   auth,
 }: ArchiveDetailProps) {
-  console.log(
-    'Rendering ArchiveDetail with aggregatedReview:',
-    aggregatedReview,
-  );
   return (
     <div className="space-y-12">
       {/* Header Section */}

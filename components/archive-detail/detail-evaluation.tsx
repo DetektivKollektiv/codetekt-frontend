@@ -41,7 +41,6 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
       >
         {reviewData.questions.map((question) => {
           const hasFields = question.fields && question.fields.length > 0;
-          console.log('Question Fields:', question);
           if (!hasFields) return null;
           const NewIcon = dynamic(
             dynamicIconImports[
@@ -102,12 +101,6 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                           (f) => f.type === 'traffic-light',
                         )!,
                       );
-
-                    console.log(
-                      'Field with Highest Average:',
-                      fieldWithHighestAverage,
-                    );
-
                     if (field.type === 'traffic-light') {
                       return (
                         <DetailTrafficLightEvaluation
