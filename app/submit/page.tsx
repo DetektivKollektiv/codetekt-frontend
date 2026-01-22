@@ -20,7 +20,7 @@ export default async function SubmitPage() {
               <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
                 Fall einreichen
               </h1>
-              <p className="text-body-md max-w-xl xl:max-w-3xl ">
+              <p className="text-body-md max-w-xl xl:max-w-3xl mt-4">
                 Hier kannst du Inhalte zur Überprüfung einreichen – etwa
                 Behauptungen aus Gesprächen, Online-Artikel, Social-Media-Posts
                 oder Messenger-Nachrichten. Wir leiten deinen Fall direkt an
