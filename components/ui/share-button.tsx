@@ -8,7 +8,7 @@ import { Button } from './button';
 const shareButtonVariants = cva('', {
   variants: {
     theme: {
-      light: 'text-foreground hover:bg-accent',
+      light: 'hover:bg-accent',
       dark: 'text-white hover:bg-white/10 hover:text-white',
     },
   },
@@ -25,7 +25,7 @@ export interface ShareButtonProps
 }
 
 const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
-  ({ className, theme, caseId, size = 'lg', ...props }, ref) => {
+  ({ className, theme, caseId, size = 'sm', ...props }, ref) => {
     const handleShare = async () => {
       const shareData: ShareData = {
         title: `Fall`,

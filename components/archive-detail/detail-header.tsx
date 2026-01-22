@@ -6,10 +6,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
 import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
-import { ArrowLeft, LinkIcon } from 'lucide-react';
+import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ImagePlaceholder from '../image-placeholder';
+import { HelpButton } from '../ui/help-button';
+import { ShareButton } from '../ui/share-button';
 
 interface DetailHeaderProps {
   aggregatedReview: NonNullable<AggregatedReview>;
@@ -47,9 +49,21 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
       </Link>
 
       {/* Case number title */}
-      <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
-        Fall {caseData.case_number}
-      </h1>
+      <div className="flex w-full justify-between items-end">
+        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
+          Fall {caseData.case_number}
+        </h1>
+        <div className="flex gap-2">
+          <Link href={`/review/${aggregatedReview.case_id}`}>
+            <Button variant={'outline'} size={'sm'}>
+              <Edit className="w-4 h-4 mr-2" />
+              Fall bearbeiten
+            </Button>
+          </Link>
+          <ShareButton caseId={aggregatedReview.case_id} size={'sm'} />
+          <HelpButton />
+        </div>
+      </div>
 
       {/* Main content card */}
       <Card>
