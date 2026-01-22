@@ -29,6 +29,7 @@ export default async function RootLayout({
         lang="de"
         className="scroll-pt-32 scroll-smooth"
         suppressHydrationWarning
+        data-scroll-behavior="smooth"
       >
         <body className={`antialiased`}>
           <Suspense fallback={<LoadingComponent />}>
