@@ -47,11 +47,11 @@ export default async function Page({
   }
 
   if (error) {
-    throw error;
+    notFound();
   }
 
   if (caseError) {
-    throw caseError;
+    notFound();
   }
 
   if (!reviewTemplate || !caseData) {
