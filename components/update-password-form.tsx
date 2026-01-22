@@ -37,7 +37,7 @@ export function UpdatePasswordForm({
       router.push('/');
     } catch (error: unknown) {
       setError(
-        error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten'
+        error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten',
       );
     } finally {
       setIsLoading(false);
@@ -61,6 +61,7 @@ export function UpdatePasswordForm({
                   type="password"
                   placeholder="Neues Passwort"
                   required
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

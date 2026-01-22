@@ -42,7 +42,7 @@ export function LoginForm({
       router.push('/');
     } catch (error: unknown) {
       setError(
-        error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten'
+        error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten',
       );
     } finally {
       setIsLoading(false);
@@ -68,6 +68,7 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -86,6 +87,7 @@ export function LoginForm({
                   id="password"
                   type="password"
                   required
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

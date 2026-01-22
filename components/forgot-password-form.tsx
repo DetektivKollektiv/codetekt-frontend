@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useState } from "react";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { createClient } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export function ForgotPasswordForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
+}: React.ComponentPropsWithoutRef<'div'>) {
+  const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,23 +38,29 @@ export function ForgotPasswordForm({
       if (error) throw error;
       setSuccess(true);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Ein Fehler ist aufgetreten");
+      setError(
+        error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten',
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       {success ? (
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Überprüfe deine E-Mail</CardTitle>
-            <CardDescription>Anleitung zum Zurücksetzen des Passworts gesendet</CardDescription>
+            <CardDescription>
+              Anleitung zum Zurücksetzen des Passworts gesendet
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Falls du dich mit deiner E-Mail-Adresse und einem Passwort registriert hast, erhältst du eine E-Mail zum Zurücksetzen deines Passworts.
+              Falls du dich mit deiner E-Mail-Adresse und einem Passwort
+              registriert hast, erhältst du eine E-Mail zum Zurücksetzen deines
+              Passworts.
             </p>
           </CardContent>
         </Card>
@@ -63,7 +69,8 @@ export function ForgotPasswordForm({
           <CardHeader>
             <CardTitle className="text-2xl">Passwort zurücksetzen</CardTitle>
             <CardDescription>
-              Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts
+              Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum
+              Zurücksetzen deines Passworts
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -76,17 +83,20 @@ export function ForgotPasswordForm({
                     type="email"
                     placeholder="m@example.com"
                     required
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Wird gesendet..." : "Zurücksetzungs-E-Mail senden"}
+                  {isLoading
+                    ? 'Wird gesendet...'
+                    : 'Zurücksetzungs-E-Mail senden'}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Hast du bereits ein Konto?{" "}
+                Hast du bereits ein Konto?{' '}
                 <Link
                   href="/auth/login"
                   className="underline underline-offset-4"
