@@ -17,14 +17,14 @@ import CardText from './card-text';
 import Evaluation from './evaluation';
 
 interface AggregatedReviewCardProps {
-  caseItem: AggregatedReviews[number];
+  caseItem: NonNullable<AggregatedReviews[number]>;
 }
 
 export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   caseItem,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const ratingStyle = getRatingStyle(caseItem.result_score);
+  const ratingStyle = getRatingStyle(caseItem.result_score || 0);
 
   // Type assertion for data field (Json type from Supabase)
   const reviewData = caseItem.data;
@@ -36,7 +36,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
     reviewData.metadata?.content_type?.map((item: string) =>
       capitalizeFirstLetter(item),
     ) || [];
-  console.log('contentType:', contentType);
+
   const keywordType = reviewData.metadata?.keyword_type || [];
 
   const share = () => {
