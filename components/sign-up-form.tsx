@@ -53,7 +53,7 @@ export function SignUpForm({
           password,
           username,
         },
-      }
+      },
     );
 
     if (fnError) {
@@ -110,6 +110,7 @@ export function SignUpForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -121,6 +122,7 @@ export function SignUpForm({
                   type="text"
                   placeholder="meinbenutzername"
                   required
+                  autoComplete="username"
                   minLength={3}
                   maxLength={50}
                   pattern="[a-zA-Z0-9_\-]+"
@@ -137,6 +139,7 @@ export function SignUpForm({
                   id="password"
                   type="password"
                   required
+                  autoComplete="new-password"
                   minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -150,6 +153,7 @@ export function SignUpForm({
                   id="repeat-password"
                   type="password"
                   required
+                  autoComplete="new-password"
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
                 />
