@@ -20,17 +20,17 @@ const Footer: FC<FooterProps> = ({}) => {
             <h3 className="font-bold text-heading-lg mb-3">Aktion</h3>
             <ul className="space-y-2 text-secondary-foreground/60">
               <li>
-                <Link href="#" className="hover:underline">
+                <Link href="/#open-cases" className="hover:underline">
                   Fall bearbeiten
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline">
+                <Link href="/submit" className="hover:underline">
                   Fall einreichen
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline">
+                <Link href="/archive" className="hover:underline">
                   Gelöste Fälle ansehen
                 </Link>
               </li>
