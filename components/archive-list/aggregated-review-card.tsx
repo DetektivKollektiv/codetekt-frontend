@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
+import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
 import { handleShare } from '@/lib/utils/share';
 import { Share2 } from 'lucide-react';
@@ -31,7 +32,11 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const ogData = caseItem.cases.open_graph_data;
 
   // Safely access metadata with fallbacks
-  const contentType = reviewData.metadata?.content_type || [];
+  const contentType =
+    reviewData.metadata?.content_type?.map((item: string) =>
+      capitalizeFirstLetter(item),
+    ) || [];
+  console.log('contentType:', contentType);
   const keywordType = reviewData.metadata?.keyword_type || [];
 
   const share = () => {

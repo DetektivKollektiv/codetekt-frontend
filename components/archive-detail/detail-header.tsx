@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
+import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { ArrowLeft, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -115,7 +116,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                 <div className="flex flex-wrap gap-2">
                   {contentType.map((type) => (
                     <Badge key={type} variant="secondary">
-                      {type}
+                      {capitalizeFirstLetter(type)}
                     </Badge>
                   ))}
                   {keywordType.map((keyword) => (
