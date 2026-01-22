@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { multiLineTextFieldSchema } from '@/lib/schemas/field-schemas';
 import { X } from 'lucide-react';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 import { FieldContainer } from './field-container';
 
@@ -19,20 +19,40 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   field,
   onChange,
 }) => {
-  const initialAnsewerValues = useRef(
+  const initialAnswerValues = useRef(
     (field.initial_answer_value ?? []) as string[],
   );
 
-  const [addtionalAnswerValues, setAdditionalAnswerValues] = useState<string[]>(
+  const [additionalAnswerValues, setAdditionalAnswerValues] = useState<
+    string[]
+  >(
     Array.from({ length: field.additonal_option_count ?? 0 }).map(
       (_, index) =>
-        field.answer_value?.[index + field.additonal_option_count - 1] ?? '',
+        field.answer_value?.[
+          index + (field.initial_answer_value?.length ?? 0)
+        ] ?? '',
     ),
   );
 
+  useEffect(() => {
+    const newAdditionalValues = Array.from({
+      length: field.additonal_option_count ?? 0,
+    }).map(
+      (_, index) =>
+        field.answer_value?.[
+          index + (field.initial_answer_value?.length ?? 0)
+        ] ?? '',
+    );
+    setAdditionalAnswerValues(newAdditionalValues);
+  }, [
+    field.answer_value,
+    field.additonal_option_count,
+    field.initial_answer_value,
+  ]);
+
   const answerValues = ((field.answer_value ?? []) as string[]).slice(
     0,
-    initialAnsewerValues.current.length,
+    initialAnswerValues.current.length,
   );
 
   const isDisabled =
@@ -81,8 +101,8 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
         })}
 
         {/* Additional editable inputs for user answers */}
-        {initialAnsewerValues.current &&
-          initialAnsewerValues.current.map((answer_value, index) => {
+        {initialAnswerValues.current &&
+          initialAnswerValues.current.map((answer_value, index) => {
             return (
               <div key={`additional-${index}`} className="flex gap-2">
                 <Input
@@ -107,18 +127,16 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
             );
           })}
 
-        {addtionalAnswerValues.map((_, index) => {
-          const value = addtionalAnswerValues[index];
+        {additionalAnswerValues.map((_, index) => {
+          const value = additionalAnswerValues[index];
           return (
             <div key={`additional-${index}`} className="flex gap-2">
               <Input
                 value={value}
                 onChange={(e) => {
-                  const newValues = addtionalAnswerValues.slice();
+                  const newValues = additionalAnswerValues.slice();
                   newValues[index] = e.target.value;
-
                   setAdditionalAnswerValues(newValues);
-
                   onChange?.([...answerValues, ...newValues]);
                 }}
                 placeholder={field.placeholder}
@@ -131,10 +149,9 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
                 variant="secondary"
                 size="icon"
                 onClick={() => {
-                  const newValues = addtionalAnswerValues.slice();
+                  const newValues = additionalAnswerValues.slice();
                   newValues[index] = '';
                   setAdditionalAnswerValues(newValues);
-
                   onChange?.([...answerValues, ...newValues]);
                 }}
                 disabled={!value}
