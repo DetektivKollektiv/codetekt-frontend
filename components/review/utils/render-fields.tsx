@@ -108,6 +108,11 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
+          issues={
+            questionsValidationState
+              ?.get(currentQuestion.id)
+              ?.issues.filter((issue) => issue.path[0] === field.id) || []
+          }
         />,
       );
     } else if (field.type === 'text-area') {
