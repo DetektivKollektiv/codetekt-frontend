@@ -87,7 +87,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
               </p>
               {/* Reviewer avatars */}
               <div className="flex -space-x-2">
-                {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
+                {/*  {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
                     65 + (reviewerId.charCodeAt(0) % 26),
                   );
@@ -103,7 +103,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                       {letter}
                     </div>
                   );
-                })}
+                })} */}
               </div>
             </div>
           ) : (
@@ -117,7 +117,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
               </p>
               {/* Reviewer avatars */}
               <div className="flex -space-x-2">
-                {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
+                {/* {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
                     65 + (reviewerId.charCodeAt(0) % 26),
                   );
@@ -133,7 +133,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                       {letter}
                     </div>
                   );
-                })}
+                })} */}
               </div>
             </div>
           )}
