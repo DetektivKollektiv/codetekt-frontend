@@ -144,9 +144,18 @@ const Review: FC<ReviewProps> = ({
   }, [inProgressReviewAnswerData]);
 
   // Unsaved changes warning
-  const { hasUnsavedChanges, markAsSaved } = useUnsavedChangesWarning({
+  const {
+    hasUnsavedChanges,
+    markAsSaved,
+    setIsActive: setUnsavedChangesWarningActive,
+  } = useUnsavedChangesWarning({
     data: inProgressReviewAnswerData,
   });
+
+  useEffect(() => {
+    console.log('isEditable changed:', isEditable);
+    setUnsavedChangesWarningActive(isEditable);
+  }, [isEditable, setUnsavedChangesWarningActive]);
 
   // Filter out questions where all fields are not shown
   const shownReviewTemplateQuestions = useMemo(

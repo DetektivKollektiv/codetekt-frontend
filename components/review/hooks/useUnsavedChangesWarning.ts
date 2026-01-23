@@ -15,6 +15,7 @@ export const useUnsavedChangesWarning = ({
   data,
   message = 'Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?',
 }: UseUnsavedChangesWarningOptions) => {
+  const [isActive, setIsActive] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const lastSavedDataRef = useRef<string>(JSON.stringify(data));
   const isInitialMount = useRef(true);
@@ -38,7 +39,7 @@ export const useUnsavedChangesWarning = ({
   // Warn user before leaving page with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
+      if (hasUnsavedChanges && isActive) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -50,9 +51,10 @@ export const useUnsavedChangesWarning = ({
 
   // Block in-app navigation with unsaved changes
   useEffect(() => {
-    if (!hasUnsavedChanges) return;
+    if (!hasUnsavedChanges && !isActive) return;
 
     const handleClick = (e: MouseEvent) => {
+      if (!isActive) return;
       const target = e.target as HTMLElement;
       const link = target.closest('a');
 
@@ -84,7 +86,6 @@ export const useUnsavedChangesWarning = ({
    * Mark current data as saved
    */
   const markAsSaved = () => {
-    console.log('Marking data as saved for unsaved changes tracking');
     setHasUnsavedChanges(false);
     lastSavedDataRef.current = JSON.stringify(data);
   };
@@ -92,5 +93,6 @@ export const useUnsavedChangesWarning = ({
   return {
     hasUnsavedChanges,
     markAsSaved,
+    setIsActive,
   };
 };

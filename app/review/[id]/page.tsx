@@ -6,12 +6,14 @@ import { reviewTemplateSchema } from '@/lib/schemas';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const { id } = await params;
   const supabase = await createClient();
 
