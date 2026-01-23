@@ -32,7 +32,7 @@ export default function DesktopNavigation({ items }: { items: NavLink[] }) {
               variant="ghost"
               className={cn(
                 'text-body-md font-medium',
-                item.highlight && 'text-primary'
+                item.highlight && 'text-primary',
               )}
             >
               <Link href={item.href}>{item.label}</Link>
@@ -48,7 +48,7 @@ export default function DesktopNavigation({ items }: { items: NavLink[] }) {
                 variant="ghost"
                 className={cn(
                   'flex items-center gap-1 text-body-md font-medium',
-                  item.highlight && 'text-primary'
+                  item.highlight && 'text-primary',
                 )}
               >
                 {item.label}
@@ -57,7 +57,7 @@ export default function DesktopNavigation({ items }: { items: NavLink[] }) {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="start" className="min-w-[220px]">
-              {item.children!.map((child, index) => (
+              {item.children!.map((child) => (
                 <DropdownMenuItem
                   key={child.label}
                   asChild

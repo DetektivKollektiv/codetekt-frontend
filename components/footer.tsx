@@ -7,9 +7,7 @@ import {
 import Link from 'next/link';
 import { FC } from 'react';
 
-interface FooterProps {}
-
-const Footer: FC<FooterProps> = ({}) => {
+const Footer: FC = ({}) => {
   return (
     <footer className="w-full bg-secondary ">
       <div className="w-full bg-gradient-brand h-px"></div>

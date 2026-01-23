@@ -26,7 +26,7 @@ export interface HelpButtonProps
 }
 
 const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
-  ({ className, theme, href = '/help', size = 'sm', ...props }, ref) => {
+  ({ className, theme, size = 'sm', ...props }, ref) => {
     const buttonContent = (
       <Button
         ref={ref}

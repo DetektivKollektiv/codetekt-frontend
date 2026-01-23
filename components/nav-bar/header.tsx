@@ -45,7 +45,6 @@ export default function Header({
   const {
     data: { isAuthenticated, user, profile },
     refetch,
-    isFetching,
   } = useQuery({
     queryFn: () => getAuth(client),
     queryKey: ['auth'],
@@ -53,7 +52,7 @@ export default function Header({
   });
 
   React.useEffect(() => {
-    const { data } = client.auth.onAuthStateChange((event, session) => {
+    const { data } = client.auth.onAuthStateChange((event) => {
       if (event === 'INITIAL_SESSION') {
         return;
       }
@@ -62,7 +61,7 @@ export default function Header({
     });
 
     return () => data.subscription.unsubscribe();
-  }, []);
+  }, [client.auth, queryClient, refetch]);
 
   React.useEffect(() => {
     setMobileOpen(false);
@@ -171,7 +170,7 @@ export default function Header({
                         onClick={() => setMobileOpen(false)}
                         className={cn(
                           'block text-heading-sm font-medium',
-                          item.highlight && 'text-primary'
+                          item.highlight && 'text-primary',
                         )}
                       >
                         {item.label}

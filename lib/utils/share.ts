@@ -37,7 +37,7 @@ const fallbackShare = (url: string) => {
       // Show toast notification
       toast.success('Link zum Fall wurde in die Zwischenablage kopiert!');
     },
-    (err) => {
+    () => {
       toast.error('Fehler beim Kopieren des Links in die Zwischenablage.');
     },
   );

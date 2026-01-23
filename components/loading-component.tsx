@@ -1,9 +1,7 @@
 import Image from 'next/image';
 import { FC } from 'react';
 
-interface LoadingComponentProps {}
-
-const LoadingComponent: FC<LoadingComponentProps> = ({}) => {
+const LoadingComponent: FC = ({}) => {
   return (
     <div className="w-full h-screen bg-background flex items-center justify-center">
       <Image

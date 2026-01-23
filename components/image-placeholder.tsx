@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 interface PlaceholderGeneratorProps {
   width?: number;
@@ -26,13 +26,6 @@ export default function ImagePlaceholder({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tempCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  let lcgState = seed;
-
-  const seededRandom = () => {
-    lcgState = (lcgState * 1664525 + 1013904223) % 4294967296;
-    return lcgState / 4294967296;
-  };
-
   // Hole Farben aus CSS-Variablen
   const getColor = (cssVar: string): string => {
     if (typeof window === 'undefined') return '#000000';
@@ -50,7 +43,7 @@ export default function ImagePlaceholder({
     x: number,
     y: number,
     radius: number,
-    color: string
+    color: string,
   ) => {
     tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
     tempCtx.globalCompositeOperation = 'source-over';
@@ -72,7 +65,7 @@ export default function ImagePlaceholder({
     ctx.drawImage(tempCanvas, 0, 0);
   };
 
-  const draw = () => {
+  const draw = useCallback(() => {
     const canvas = canvasRef.current;
     const tempCanvas = tempCanvasRef.current;
     if (!canvas || !tempCanvas) return;
@@ -82,7 +75,13 @@ export default function ImagePlaceholder({
     if (!ctx || !tempCtx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    lcgState = seed;
+
+    let lcgState = seed;
+
+    const seededRandom = () => {
+      lcgState = (lcgState * 1664525 + 1013904223) % 4294967296;
+      return lcgState / 4294967296;
+    };
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -106,7 +105,7 @@ export default function ImagePlaceholder({
 
       drawCircle(ctx, tempCtx, tempCanvas, canvas, x, y, radius, color);
     }
-  };
+  }, [circleCount, spread, minSize, maxSize, seed]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -119,7 +118,7 @@ export default function ImagePlaceholder({
     tempCanvas.height = height;
 
     draw();
-  }, [width, height, circleCount, spread, minSize, maxSize, seed]);
+  }, [width, height, circleCount, spread, minSize, maxSize, seed, draw]);
 
   return (
     <>

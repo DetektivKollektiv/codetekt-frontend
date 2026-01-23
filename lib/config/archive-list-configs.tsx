@@ -1,6 +1,7 @@
 import { AggregatedReviewCard } from '@/components/archive-list/aggregated-review-card';
 import { CaseCard } from '@/components/archive-list/case-card';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import { Case } from '../queries/getCase';
 import { OpenCases } from '../queries/getOpenCases';
 import { UserCases } from '../queries/getUserCases';
 
@@ -8,11 +9,11 @@ import { UserCases } from '../queries/getUserCases';
 const sortAggregatedReviewsByNewestFirst = (items: AggregatedReviews) => {
   return [...items].sort((a, b) => {
     const bDate = Array.isArray(b.cases)
-      ? (b.cases as any)[0]?.submitted_at
-      : (b.cases as any)?.submitted_at;
+      ? (b.cases as Case[])[0]?.submitted_at
+      : (b.cases as Case)?.submitted_at;
     const aDate = Array.isArray(a.cases)
-      ? (a.cases as any)[0]?.submitted_at
-      : (a.cases as any)?.submitted_at;
+      ? (a.cases as Case[])[0]?.submitted_at
+      : (a.cases as Case)?.submitted_at;
     return new Date(bDate || 0).getTime() - new Date(aDate || 0).getTime();
   });
 };

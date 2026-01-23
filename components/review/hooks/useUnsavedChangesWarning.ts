@@ -47,7 +47,7 @@ export const useUnsavedChangesWarning = ({
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasUnsavedChanges]);
+  }, [hasUnsavedChanges, isActive]);
 
   // Block in-app navigation with unsaved changes
   useEffect(() => {
@@ -80,7 +80,7 @@ export const useUnsavedChangesWarning = ({
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [hasUnsavedChanges, message]);
+  }, [hasUnsavedChanges, message, isActive]);
 
   /**
    * Mark current data as saved
