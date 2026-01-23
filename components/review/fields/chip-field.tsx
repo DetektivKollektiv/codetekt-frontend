@@ -13,12 +13,14 @@ interface ChipFieldProps {
   field: ChipField;
   onChange?: (values: string[]) => void;
   onCreateReviewDispute: (field: Field) => void;
+  isSingle?: boolean;
 }
 
 export const ChipField: FC<ChipFieldProps> = ({
   field,
   onChange,
   onCreateReviewDispute,
+  isSingle = true,
 }) => {
   const selectedValues = (field.answer_value ?? []) as string[];
   const isDisabled = field.is_disabled === true;
@@ -26,9 +28,17 @@ export const ChipField: FC<ChipFieldProps> = ({
   const handleToggle = (optionId: string) => {
     if (isDisabled) return;
 
-    const newValues = selectedValues.includes(optionId)
-      ? selectedValues.filter((id) => id !== optionId)
-      : [...selectedValues, optionId];
+    let newValues: string[];
+
+    if (isSingle) {
+      // Single selection mode: select only this option
+      newValues = selectedValues.includes(optionId) ? [] : [optionId];
+    } else {
+      // Multiple selection mode: toggle the option
+      newValues = selectedValues.includes(optionId)
+        ? selectedValues.filter((id) => id !== optionId)
+        : [...selectedValues, optionId];
+    }
 
     onChange?.(newValues);
   };
