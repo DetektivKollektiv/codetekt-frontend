@@ -26,7 +26,10 @@ export const submittedReviewAnswerSchema = z
     content_advertising: trafficLightAnswerSchema.optional(),
     additional_rating: likertScaleAnswerSchema,
     additional_comment: z.string().min(10).nullable().optional(),
-    comment: z.string().min(10).nullable().optional(),
+    comment: z
+      .union([z.literal(''), z.string().min(10)])
+      .nullable()
+      .optional(),
   })
 
   .strict() // keine extra keys erlaubt
