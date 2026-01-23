@@ -12,7 +12,7 @@ export function BadgeList({
   keywordType: string[];
 }) {
   return (
-    <div className="overflow-hidden relative pb-px">
+    <div className="overflow-hidden relative pb-px flex-shrink-0">
       <div className="flex flex-wrap gap-2 h-7">
         {contentType[0] && (
           <Badge variant="default">
