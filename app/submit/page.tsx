@@ -2,8 +2,11 @@ import { CreateCaseForm } from '@/components/create-case-form';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
+import { connection } from 'next/server';
 
 export default async function SubmitPage() {
+  await connection();
+
   const client = await createClient();
   const auth = await getAuth(client);
   const { user } = auth;

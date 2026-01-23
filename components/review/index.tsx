@@ -255,6 +255,8 @@ const Review: FC<ReviewProps> = ({
           queryKey: ['review-template', caseData?.id],
         }),
       ]);
+
+      markAsSaved();
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Abschließen des Falls');
@@ -334,7 +336,7 @@ const Review: FC<ReviewProps> = ({
       queryClient.invalidateQueries({
         queryKey: ['review-template', caseData?.id],
       });
-
+      markAsSaved();
       router.push('/');
     },
     onError: (error: Error) => {

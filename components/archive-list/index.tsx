@@ -7,8 +7,8 @@ import type { IFuseOptions } from 'fuse.js';
 import Fuse from 'fuse.js';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { Card, CardContent } from '../ui/card';
 import { Separator } from '../ui/separator';
+import EmptyCard from './empty-card';
 import { ArchiveListSortSelect, getSavedSortPreference } from './sort-select';
 import { ArchiveListProps, SortOption } from './types';
 
@@ -236,25 +236,11 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
         } `}
       >
         {isLoading ? (
-          <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted">
-            <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
-              <p className="text-muted-foreground">{loadingMessage}</p>
-            </CardContent>
-          </Card>
+          <EmptyCard message={loadingMessage} />
         ) : isError ? (
-          <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted">
-            <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
-              <p className="text-destructive">
-                Fehler beim Laden: {error?.message}
-              </p>
-            </CardContent>
-          </Card>
+          <EmptyCard message={`Fehler beim Laden: ${error?.message}`} />
         ) : !items || items.length === 0 || paginatedItems.length === 0 ? (
-          <Card className="overflow-hidden hover:shadow-lg transition-shadow h-48 lg:h-72 w-full flex bg-muted ">
-            <CardContent className="p-4 lg:p-6 w-full flex items-center justify-center">
-              <p className="text-muted-foreground">{emptyMessage}</p>
-            </CardContent>
-          </Card>
+          <EmptyCard message={emptyMessage} />
         ) : (
           paginatedItems.map((item) => (
             <div key={getItemKey(item)}>{renderItem(item)}</div>

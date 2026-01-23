@@ -10,6 +10,7 @@ import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
 import { getRatingStyle } from '@/lib/utils/rating-helpers';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 import dynamic from 'next/dynamic';
+import EmptyCard from '../archive-list/empty-card';
 import { DetailEvaluationCarousel } from './detail-evaluation-carousel';
 import { DetailTextEvaluation } from './detail-text-evaluation';
 import { DetailTrafficLightEvaluation } from './detail-traffic-light-evaluation';
@@ -34,97 +35,101 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
       </div>
 
       {/* Accordion with categories */}
-      <Accordion
-        type="single"
-        className="space-y-4"
-        defaultValue={reviewData.questions[0]?.id}
-      >
-        {reviewData.questions.map((question) => {
-          const hasFields = question.fields && question.fields.length > 0;
-          if (!hasFields) return null;
-          const NewIcon = dynamic(
-            dynamicIconImports[
-              (question.metadata.icon as keyof typeof dynamicIconImports) ||
-                'badge'
-            ],
-            {
-              ssr: false,
-            },
-          );
+      {reviewData.questions.length > 0 ? (
+        <Accordion
+          type="single"
+          className="space-y-4"
+          defaultValue={reviewData.questions[0]?.id}
+        >
+          {reviewData.questions.map((question) => {
+            const hasFields = question.fields && question.fields.length > 0;
+            if (!hasFields) return null;
+            const NewIcon = dynamic(
+              dynamicIconImports[
+                (question.metadata.icon as keyof typeof dynamicIconImports) ||
+                  'badge'
+              ],
+              {
+                ssr: false,
+              },
+            );
 
-          return (
-            <AccordionItem
-              value={question.id}
-              className="border rounded-lg px-4 relative overflow-hidden last:border-b"
-              key={question.id}
-              id={`accordion-content-${question.id}`}
-            >
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-3">
-                  <NewIcon
-                    style={{
-                      color: getRatingStyle(question.score).backgroundColor,
+            return (
+              <AccordionItem
+                value={question.id}
+                className="border rounded-lg px-4 relative overflow-hidden last:border-b"
+                key={question.id}
+                id={`accordion-content-${question.id}`}
+              >
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    <NewIcon
+                      style={{
+                        color: getRatingStyle(question.score).backgroundColor,
+                      }}
+                    />
+                    <span
+                      className="font-semibold"
+                      style={{
+                        color: getRatingStyle(question.score).backgroundColor,
+                      }}
+                    >
+                      {question.metadata.title}
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-4 pb-6">
+                  <DetailEvaluationCarousel
+                    options={{
+                      align: 'start',
+                      slidesToScroll: 1,
+                      dragFree: false,
                     }}
-                  />
-                  <span
-                    className="font-semibold"
-                    style={{
-                      color: getRatingStyle(question.score).backgroundColor,
-                    }}
+                    showNavigation={question.fields.length > 0}
+                    portalContainerId={`accordion-content-${question.id}`}
                   >
-                    {question.metadata.title}
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pt-4 pb-6">
-                <DetailEvaluationCarousel
-                  options={{
-                    align: 'start',
-                    slidesToScroll: 1,
-                    dragFree: false,
-                  }}
-                  showNavigation={question.fields.length > 0}
-                  portalContainerId={`accordion-content-${question.id}`}
-                >
-                  {question.fields.map((field) => {
-                    const fieldWithHighestAverage = question.fields
-                      .filter((f) => f.type === 'traffic-light')
-                      .reduce(
-                        (prev, current) => {
-                          if (prev.average === undefined) return current;
-                          if (current.average === undefined) return prev;
-                          return prev.average > current.average
-                            ? prev
-                            : current;
-                        },
-                        question.fields.find(
-                          (f) => f.type === 'traffic-light',
-                        )!,
-                      );
-                    if (field.type === 'traffic-light') {
-                      return (
-                        <DetailTrafficLightEvaluation
-                          field={field}
-                          key={field.id}
-                          highlightHeader={
-                            field.id === fieldWithHighestAverage.id
-                          }
-                        />
-                      );
-                    }
+                    {question.fields.map((field) => {
+                      const fieldWithHighestAverage = question.fields
+                        .filter((f) => f.type === 'traffic-light')
+                        .reduce(
+                          (prev, current) => {
+                            if (prev.average === undefined) return current;
+                            if (current.average === undefined) return prev;
+                            return prev.average > current.average
+                              ? prev
+                              : current;
+                          },
+                          question.fields.find(
+                            (f) => f.type === 'traffic-light',
+                          )!,
+                        );
+                      if (field.type === 'traffic-light') {
+                        return (
+                          <DetailTrafficLightEvaluation
+                            field={field}
+                            key={field.id}
+                            highlightHeader={
+                              field.id === fieldWithHighestAverage.id
+                            }
+                          />
+                        );
+                      }
 
-                    if (field.type === 'text' || field.type === 'text-area') {
-                      return (
-                        <DetailTextEvaluation field={field} key={field.id} />
-                      );
-                    }
-                  })}
-                </DetailEvaluationCarousel>
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
+                      if (field.type === 'text' || field.type === 'text-area') {
+                        return (
+                          <DetailTextEvaluation field={field} key={field.id} />
+                        );
+                      }
+                    })}
+                  </DetailEvaluationCarousel>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+      ) : (
+        <EmptyCard message={'Keine Bewertung vorhanden'} />
+      )}
     </section>
   );
 }

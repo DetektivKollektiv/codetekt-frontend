@@ -84,6 +84,7 @@ export const useUnsavedChangesWarning = ({
    * Mark current data as saved
    */
   const markAsSaved = () => {
+    console.log('Marking data as saved for unsaved changes tracking');
     setHasUnsavedChanges(false);
     lastSavedDataRef.current = JSON.stringify(data);
   };
