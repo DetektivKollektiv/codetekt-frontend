@@ -1,9 +1,11 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Field, textFieldSchema } from '@/lib/schemas/field-schemas';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { z } from 'zod';
+import { $ZodIssue } from 'zod/v4/core';
 import { FieldContainer } from './field-container';
 
 type TextField = z.infer<typeof textFieldSchema>;
@@ -12,12 +14,14 @@ interface TextFieldProps {
   field: TextField;
   onChange?: (value: string) => void;
   onCreateReviewDispute: (field: Field) => void;
+  issues: $ZodIssue[];
 }
 
 export const TextField: FC<TextFieldProps> = ({
   field,
   onChange,
   onCreateReviewDispute,
+  issues,
 }) => {
   const option = field.options[0];
   const value = (field.answer_value ?? '') as string;
@@ -26,6 +30,9 @@ export const TextField: FC<TextFieldProps> = ({
     onChange?.(newValue);
   };
 
+  const issue = useMemo(() => {
+    return issues.length > 0 ? issues[0] : null;
+  }, [issues]);
   return (
     <FieldContainer
       title={field.question}
@@ -48,8 +55,25 @@ export const TextField: FC<TextFieldProps> = ({
               : (field.is_disabled as boolean)
           }
         />
-        <div className="text-right text-sm text-muted-foreground">
-          {value.length} / {option.max_length}
+        <div className="flex justify-between items-start">
+          {issue && (
+            <Label className="text-destructive">
+              {issue.code === 'too_big'
+                ? `Maximal ${issue.maximum} Zeichen.`
+                : issue.code === 'too_small'
+                  ? `Mindestens ${issue.minimum} Zeichen.`
+                  : 'Fehlerhafte Eingabe.'}
+            </Label>
+          )}
+          <div
+            className={`text-right text-sm ml-auto ${
+              issue?.code === 'too_big' || issue?.code === 'too_small'
+                ? 'text-destructive'
+                : 'text-muted-foreground'
+            }`}
+          >
+            {value.length} / {option.max_length}
+          </div>
         </div>
       </div>
     </FieldContainer>
