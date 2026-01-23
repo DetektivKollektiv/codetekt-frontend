@@ -26,7 +26,9 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   issues,
 }) => {
   console.log('MultiLineTextField field:', field);
-  const initialAnswerValues = useRef((field.answer_value ?? []) as string[]);
+  const initialAnswerValues = useRef(
+    (field.initial_answer_value ?? []) as string[],
+  );
 
   const allError = useMemo(() => {
     return issues.some((issue) => {
