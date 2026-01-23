@@ -48,7 +48,7 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
               )}
             </div>
             <CardHeader>
-              <CardTitle className="line-clamp-1">
+              <CardTitle className="overflow-hidden text-ellipsis whitespace-nowrap">
                 {getCaseTitle(caseData)}
               </CardTitle>
               <CardDescription>

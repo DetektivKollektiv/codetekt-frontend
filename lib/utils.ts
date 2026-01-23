@@ -17,7 +17,7 @@ export const hasEnvVars =
 
 export function getDisplayName(
   profile: Tables<'profiles'> | null,
-  user: User | null
+  user: User | null,
 ) {
   return profile?.username || user?.email || 'Account';
 }
@@ -32,7 +32,7 @@ export const getLocalDate = (dateString: string) => {
 };
 
 export const getCaseTitle = (
-  caseData: NonNullable<Case> | UserCases[number] | OpenCases[number]
+  caseData: NonNullable<Case> | UserCases[number] | OpenCases[number],
 ) => {
   return caseData.open_graph_data?.og_title
     ? `Fall ${caseData.case_number}: ${caseData.open_graph_data.og_title}`
