@@ -37,7 +37,6 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
                 height={238}
                 className="w-full h-full object-cover rounded-lg aspect-video lg:aspect-[4/3]"
                 unoptimized={true}
-                onError={() => setImageError(true)}
               />
             ) : (
               <ImagePlaceholder

@@ -3,22 +3,26 @@ import { Database } from '../types/database.types';
 
 export function getUserReviews(
   client: SupabaseClient<Database>,
-  userId: string
+  userId: string,
 ) {
   return client
     .from('review_answers_in_progress_without_open_disputes')
     .select(
       `
     *,
-    cases (*)
-    `
+    cases (
+      *,
+      open_graph_data (*),
+      review_answers_in_progress (*)
+    )
+    `,
     )
     .eq('reviewed_by', userId);
 }
 
 export const userReviewsQuery = (
   client: SupabaseClient<Database>,
-  userId: string
+  userId: string,
 ) => ({
   queryKey: ['user-reviews'],
   queryFn: async () => {
