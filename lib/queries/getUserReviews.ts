@@ -31,6 +31,6 @@ export const userReviewsQuery = (
     return data;
   },
 });
-export type userReviews = Awaited<
+export type UserReviews = Awaited<
   ReturnType<ReturnType<typeof userReviewsQuery>['queryFn']>
 >;

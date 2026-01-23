@@ -21,7 +21,8 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
   const [imageError, setImageError] = useState(false);
 
   // Type assertion for data field (Json type from Supabase)
-  const ogData = caseItem.open_graph_data;
+  const ogData =
+    'open_graph_data' in caseItem ? caseItem.open_graph_data : undefined;
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
@@ -37,6 +38,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
                 height={238}
                 className="w-full h-full object-cover rounded-lg aspect-video lg:aspect-[4/3]"
                 unoptimized={true}
+                onError={() => setImageError(true)}
               />
             ) : (
               <ImagePlaceholder
