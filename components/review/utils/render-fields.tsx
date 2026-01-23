@@ -94,6 +94,11 @@ export const RenderFieldsWithHeaders = ({
           key={field.id}
           field={field}
           onChange={handleChange}
+          issues={
+            questionsValidationState
+              ?.get(currentQuestion.id)
+              ?.issues.filter((issue) => issue.path[0] === field.id) || []
+          }
         />,
       );
     } else if (field.type === 'likert-scale') {

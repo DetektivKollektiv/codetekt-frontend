@@ -3,8 +3,9 @@
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { z } from 'zod';
+import { $ZodIssue } from 'zod/v4/core';
 
 type TrafficLightField = z.infer<typeof trafficLightFieldSchema>;
 
@@ -14,11 +15,13 @@ type TrafficLightValue = 0 | 1 | 2 | 3 | null;
 interface TrafficLightFieldProps {
   field: TrafficLightField;
   onChange?: (value: TrafficLightValue) => void;
+  issues: $ZodIssue[];
 }
 
 export const TrafficLightField: FC<TrafficLightFieldProps> = ({
   field,
   onChange,
+  issues,
 }) => {
   const value = (field.answer_value ?? null) as TrafficLightValue;
   const isDisabled =
@@ -30,13 +33,17 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
     onChange?.(numValue);
   };
 
+  const issue = useMemo(() => {
+    return issues.length > 0 ? issues[0] : null;
+  }, [issues]);
+
   // Get the question text from the first option
   const questionText = field.question || '';
 
   return (
     <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 md:gap-12 md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
       <Label
-        className={`flex-1 text-body-md md:text-body-sm font-medium cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''}`}
+        className={`flex-1 text-body-md md:text-body-sm font-medium cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
       >
         {questionText}
       </Label>
