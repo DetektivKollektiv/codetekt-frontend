@@ -64,7 +64,7 @@ const Review: FC<ReviewProps> = ({
   const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
   const [disputingField, setDisputingField] = useState<Field | null>(null);
   const [disputeReason, setDisputeReason] = useState('');
-  const [touchedFieldIds, setTouchedFieldIds] = useState<Set<string>>(
+  const [touchedQuestionIds, setTouchedFieldIds] = useState<Set<string>>(
     new Set(),
   );
 
@@ -179,16 +179,10 @@ const Review: FC<ReviewProps> = ({
   useEffect(() => {
     const previousId = previousQuestionRef.current?.id;
     if (previousId && previousId !== currentQuestion.id) {
-      console.log('Marking field as touched:', previousId);
       setTouchedFieldIds((prev) => new Set([...prev, previousId]));
     }
     previousQuestionRef.current = currentQuestion;
-    console.log('Current question:', currentQuestion.id);
   }, [currentQuestion]);
-
-  useEffect(() => {
-    console.log('Touched fields:', Array.from(touchedFieldIds));
-  }, [touchedFieldIds]);
 
   // Get validation state for all questions (only after user reaches last question)
   const questionsValidationState = useMemo(() => {
@@ -430,7 +424,7 @@ const Review: FC<ReviewProps> = ({
           <CaseCard case={caseData} />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
-              touchedFieldsIds={Array.from(touchedFieldIds)}
+              touchedQuestionsIds={Array.from(touchedQuestionIds)}
               reviewTemplateQuestions={shownReviewTemplateQuestions}
               onItemClick={setCurrentQuestionId}
               questionsValidationState={questionsValidationState}
@@ -510,7 +504,7 @@ const Review: FC<ReviewProps> = ({
               questionsValidationState={questionsValidationState}
               onFieldChange={updateFieldValue}
               onCreateReviewDispute={openDisputeDialog}
-              touchedFields={Array.from(touchedFieldIds)}
+              touchedQuestions={Array.from(touchedQuestionIds)}
             />
           </QuestionCard>
         )}

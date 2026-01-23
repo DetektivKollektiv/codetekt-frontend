@@ -28,7 +28,7 @@ export const ChipField: FC<ChipFieldProps> = ({
 }) => {
   const selectedValues = (field.answer_value ?? []) as string[];
   const isDisabled = field.is_disabled === true;
-  console.log('ChipField issues:', issues);
+
   const handleToggle = (optionId: string) => {
     if (isDisabled) return;
 

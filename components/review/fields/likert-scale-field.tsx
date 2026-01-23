@@ -36,8 +36,6 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
     return issues.length > 0 ? issues[0] : null;
   }, [issues]);
 
-  console.log('LikertScaleField issues:', issues);
-
   return (
     <FieldContainer
       title={field.question}

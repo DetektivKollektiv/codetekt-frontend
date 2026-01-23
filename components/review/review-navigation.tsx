@@ -13,7 +13,7 @@ interface ReviewNavigationProps {
   onItemClick: (id: string) => void;
   questionsValidationState?: Map<string, QuestionValidationState>;
   disabled?: boolean;
-  touchedFieldsIds: string[];
+  touchedQuestionsIds: string[];
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
@@ -22,7 +22,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
   onItemClick,
   questionsValidationState = new Map(),
   disabled = false,
-  touchedFieldsIds,
+  touchedQuestionsIds,
 }) => {
   return (
     <nav>
@@ -31,7 +31,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           const isActive = reviewTemplateQuestion.id === currentQuestion.id;
           const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
           const isIndented = indentLevel > 0;
-          const isTouched = touchedFieldsIds.includes(
+          const isTouched = touchedQuestionsIds.includes(
             reviewTemplateQuestion.id,
           );
           const validationState = isTouched

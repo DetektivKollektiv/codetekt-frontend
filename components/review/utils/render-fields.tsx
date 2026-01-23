@@ -14,7 +14,7 @@ type Question = NonNullable<ReviewTemplate>[number];
 
 interface RenderFieldsOptions {
   currentQuestion: Question;
-  touchedFields: string[];
+  touchedQuestions: string[];
   questionsValidationState: Map<string, QuestionValidationState>;
   onFieldChange: (
     questionId: string,
@@ -29,7 +29,7 @@ interface RenderFieldsOptions {
  */
 export const RenderFieldsWithHeaders = ({
   currentQuestion,
-  touchedFields,
+  touchedQuestions,
   onFieldChange,
   onCreateReviewDispute,
   questionsValidationState,
@@ -42,6 +42,14 @@ export const RenderFieldsWithHeaders = ({
     if (field.is_shown === false) {
       return;
     }
+
+    const isTouched = touchedQuestions.includes(currentQuestion.id);
+
+    const issues = isTouched
+      ? questionsValidationState
+          ?.get(currentQuestion.id)
+          ?.issues.filter((issue) => issue.path[0] === field.id) || []
+      : [];
 
     // Check if we need to show header before this traffic-light field
     // Show header if: this is traffic-light AND previous was not traffic-light (or is first)
@@ -67,11 +75,7 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
-          issues={
-            questionsValidationState
-              ?.get(currentQuestion.id)
-              ?.issues.filter((issue) => issue.path[0] === field.id) || []
-          }
+          issues={issues}
         />,
       );
     } else if (field.type === 'chip') {
@@ -81,11 +85,7 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
-          issues={
-            questionsValidationState
-              ?.get(currentQuestion.id)
-              ?.issues.filter((issue) => issue.path[0] === field.id) || []
-          }
+          issues={issues}
         />,
       );
     } else if (field.type === 'traffic-light') {
@@ -94,11 +94,7 @@ export const RenderFieldsWithHeaders = ({
           key={field.id}
           field={field}
           onChange={handleChange}
-          issues={
-            questionsValidationState
-              ?.get(currentQuestion.id)
-              ?.issues.filter((issue) => issue.path[0] === field.id) || []
-          }
+          issues={issues}
         />,
       );
     } else if (field.type === 'likert-scale') {
@@ -108,11 +104,7 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
-          issues={
-            questionsValidationState
-              ?.get(currentQuestion.id)
-              ?.issues.filter((issue) => issue.path[0] === field.id) || []
-          }
+          issues={issues}
         />,
       );
     } else if (field.type === 'text-area') {
@@ -122,11 +114,7 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
-          issues={
-            questionsValidationState
-              ?.get(currentQuestion.id)
-              ?.issues.filter((issue) => issue.path[0] === field.id) || []
-          }
+          issues={issues}
         />,
       );
     } else if (field.type === 'text') {
@@ -136,11 +124,7 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
-          issues={
-            questionsValidationState
-              ?.get(currentQuestion.id)
-              ?.issues.filter((issue) => issue.path[0] === field.id) || []
-          }
+          issues={issues}
         />,
       );
     }
