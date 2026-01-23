@@ -1,10 +1,12 @@
 'use client';
 
+import { Label } from '@/components/ui/label';
 import { chipFieldSchema, Field } from '@/lib/schemas/field-schemas';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { z } from 'zod';
+import { $ZodIssue } from 'zod/v4/core';
 import { FieldContainer } from './field-container';
 
 type ChipField = z.infer<typeof chipFieldSchema>;
@@ -14,6 +16,7 @@ interface ChipFieldProps {
   onChange?: (values: string[]) => void;
   onCreateReviewDispute: (field: Field) => void;
   isSingle?: boolean;
+  issues: $ZodIssue[];
 }
 
 export const ChipField: FC<ChipFieldProps> = ({
@@ -21,10 +24,11 @@ export const ChipField: FC<ChipFieldProps> = ({
   onChange,
   onCreateReviewDispute,
   isSingle = true,
+  issues,
 }) => {
   const selectedValues = (field.answer_value ?? []) as string[];
   const isDisabled = field.is_disabled === true;
-
+  console.log('ChipField issues:', issues);
   const handleToggle = (optionId: string) => {
     if (isDisabled) return;
 
@@ -43,6 +47,10 @@ export const ChipField: FC<ChipFieldProps> = ({
     onChange?.(newValues);
   };
 
+  const issue = useMemo(() => {
+    return issues.length > 0 ? issues[0] : null;
+  }, [issues]);
+
   return (
     <FieldContainer
       title={field.question}
@@ -51,38 +59,49 @@ export const ChipField: FC<ChipFieldProps> = ({
         field.is_disabled === undefined ? false : (field.is_disabled as boolean)
       }
       onCreateReviewDispute={() => onCreateReviewDispute(field)}
+      hasError={issue !== null}
     >
-      <div className="flex flex-wrap gap-2">
-        {field.options.map((option) => {
-          const isSelected = selectedValues.includes(option.id);
+      <div>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {field.options.map((option) => {
+            const isSelected = selectedValues.includes(option.id);
+            return (
+              <button
+                key={option.id}
+                type="button"
+                disabled={isDisabled}
+                onClick={() => handleToggle(option.id)}
+                className={cn(
+                  'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-body-md md:text-body-sm font-medium transition-all h-9',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  isSelected
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-border bg-background text-foreground hover:bg-accent',
+                  isDisabled && 'cursor-not-allowed opacity-60',
+                  issue && 'border-destructive',
+                )}
+              >
+                {isSelected && (
+                  <span className="flex size-4 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground">
+                    <Check className="size-3" strokeWidth={3} />
+                  </span>
+                )}
+                {!isSelected && (
+                  <span className="flex size-5 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
+                )}
+                {option.text}
+              </button>
+            );
+          })}
+        </div>
 
-          return (
-            <button
-              key={option.id}
-              type="button"
-              disabled={isDisabled}
-              onClick={() => handleToggle(option.id)}
-              className={cn(
-                'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-body-md md:text-body-sm font-medium transition-all h-9',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                isSelected
-                  ? 'border-primary bg-primary/5 text-primary'
-                  : 'border-border bg-background text-foreground hover:bg-accent',
-                isDisabled && 'cursor-not-allowed opacity-60',
-              )}
-            >
-              {isSelected && (
-                <span className="flex size-4 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground">
-                  <Check className="size-3" strokeWidth={3} />
-                </span>
-              )}
-              {!isSelected && (
-                <span className="flex size-5 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
-              )}
-              {option.text}
-            </button>
-          );
-        })}
+        {issue && (
+          <Label className="text-destructive">
+            {issue.code === 'invalid_type'
+              ? 'Bitte Auswahl treffen.'
+              : 'Fehlerhafte Auswahl.'}
+          </Label>
+        )}
       </div>
     </FieldContainer>
   );

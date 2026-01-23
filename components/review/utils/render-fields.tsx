@@ -1,7 +1,7 @@
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { Field } from '@/lib/schemas/field-schemas';
 import { QuestionValidationState } from '@/lib/utils/review-validation';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { ChipField } from '../fields/chip-field';
 import { LikertScaleField } from '../fields/likert-scale-field';
 import { MultiLineTextField } from '../fields/multi-line-text-field';
@@ -36,13 +36,6 @@ export const RenderFieldsWithHeaders = ({
 }: RenderFieldsOptions): ReactNode[] => {
   const elements: ReactNode[] = [];
   let previousFieldType: string | null = null;
-
-  useEffect(() => {
-    console.log(
-      'RenderFieldsWithHeaders questionsValidationState:',
-      questionsValidationState,
-    );
-  }, [questionsValidationState]);
 
   currentQuestion.fields.forEach((field) => {
     // Skip fields that are not shown
@@ -88,6 +81,11 @@ export const RenderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
+          issues={
+            questionsValidationState
+              ?.get(currentQuestion.id)
+              ?.issues.filter((issue) => issue.path[0] === field.id) || []
+          }
         />,
       );
     } else if (field.type === 'traffic-light') {

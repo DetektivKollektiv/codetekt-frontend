@@ -25,7 +25,6 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   onCreateReviewDispute,
   issues,
 }) => {
-  console.log('MultiLineTextField field:', field);
   const initialAnswerValues = useRef(
     (field.initial_answer_value ?? []) as string[],
   );

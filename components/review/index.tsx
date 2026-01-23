@@ -186,10 +186,6 @@ const Review: FC<ReviewProps> = ({
     );
   }, [resolvedReviewTemplate, inProgressReviewAnswerData, currentQuestion]);
 
-  useEffect(() => {
-    console.log(questionsValidationState);
-  }, [questionsValidationState]);
-
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
       (q) => q.id === currentQuestionId,
