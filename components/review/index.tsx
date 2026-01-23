@@ -1,11 +1,11 @@
 'use client';
-import { createClient } from '@/lib/supabase/client';
-import { getAuth } from '@/lib/supabase/getAuth';
 import { Case, getCase } from '@/lib/queries/getCase';
 import {
   getReviewTemplate,
   ReviewTemplate,
 } from '@/lib/queries/getReviewTemplate';
+import { createClient } from '@/lib/supabase/client';
+import { getAuth } from '@/lib/supabase/getAuth';
 import { useQuery } from '@tanstack/react-query';
 import { FC } from 'react';
 import ReviewContent from './review-content';

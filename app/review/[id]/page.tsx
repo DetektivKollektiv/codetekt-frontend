@@ -64,7 +64,7 @@ export default async function Page({
     <div className=" w-full mt-10 lg:mt-12 mb-24 lg:mb-32">
       <Review
         reviewTemplate={reviewTemplate}
-        case={caseData}
+        caseData={caseData}
         isSubmitted={isSubmitted}
       />
     </div>
