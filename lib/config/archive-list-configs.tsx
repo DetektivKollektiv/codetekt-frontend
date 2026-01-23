@@ -20,7 +20,8 @@ const sortAggregatedReviewsByNewestFirst = (items: AggregatedReviews) => {
 const sortAggregatedReviewsByLastUpdated = (items: AggregatedReviews) => {
   return [...items].sort(
     (a, b) =>
-      new Date(b.calculated_at).getTime() - new Date(a.calculated_at).getTime(),
+      new Date(b.calculated_at as string).getTime() -
+      new Date(a.calculated_at as string).getTime(),
   );
 };
 
@@ -30,10 +31,10 @@ const sortReviewsAndUserCasesByNewestFirst = (
   return [...items].sort((a, b) => {
     const dateA = isUserCase(a)
       ? new Date(a.submitted_at!).getTime()
-      : new Date(a.calculated_at).getTime();
+      : new Date(a.calculated_at as string).getTime();
     const dateB = isUserCase(b)
       ? new Date(b.submitted_at!).getTime()
-      : new Date(b.calculated_at).getTime();
+      : new Date(b.calculated_at as string).getTime();
     return dateB - dateA;
   });
 };
