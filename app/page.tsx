@@ -34,6 +34,9 @@ export default async function Home() {
     | null
     | (UserCases[number] | AggregatedReviews[number])[] = null;
 
+  // open cases filtered to exclude cases the user has already reviewed
+  let filteredOpenCases = openCases ?? null;
+
   if (isAuthenticated && user) {
     const { data: userCasesData, error: userCasesError } = await getUserCases(
       supabase,
@@ -91,6 +94,15 @@ export default async function Home() {
       ...(userAggregatedReviewsData ?? []),
     ];
 
+    // Filter open cases to exclude cases the user has already reviewed
+    filteredOpenCases =
+      openCases?.filter(
+        (openCase) =>
+          !userReviewsData?.some(
+            (userReview) => userReview.case_id === openCase.id,
+          ),
+      ) ?? null;
+
     if (userReviewsError) {
       console.error('Error fetching user reviews:', userReviewsError);
     }
@@ -111,7 +123,7 @@ export default async function Home() {
           auth={auth}
           userReviewsAndCases={userReviewsAndCases ?? []}
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
-          openCases={openCases ?? []}
+          openCases={filteredOpenCases ?? []}
         />
       ) : (
         <>
