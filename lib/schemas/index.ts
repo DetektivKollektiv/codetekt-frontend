@@ -1,5 +1,4 @@
 export {
-  aggregationFieldValueSchema,
   reviewAggregationSchema,
   type ReviewAggregationData,
 } from './aggregation-schemas';
