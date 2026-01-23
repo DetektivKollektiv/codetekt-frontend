@@ -10,8 +10,7 @@ export function getOpenCases(client: SupabaseClient<Database>) {
       open_graph_data (*),
       review_aggregations (case_id)
     `
-    )
-    .is('review_aggregations.case_id', null);
+    );
 }
 
 export const openCasesQuery = (client: SupabaseClient) => ({
@@ -19,7 +18,7 @@ export const openCasesQuery = (client: SupabaseClient) => ({
   queryFn: async () => {
     const { data, error } = await getOpenCases(client);
     if (error) throw error;
-    return data;
+    return data.filter((c) => !c.review_aggregations);
   },
 });
 
