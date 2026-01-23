@@ -1,9 +1,11 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
+import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -123,7 +125,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               )}
 
               {/* Tags zum Inhalt */}
-              {/*  <div className="space-y-2">
+              <div className="space-y-2">
                 <p className="text-body-sm font-medium">Tags zum Inhalt</p>
                 <div className="flex flex-wrap gap-2">
                   {contentType.map((type) => (
@@ -137,7 +139,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                     </Badge>
                   ))}
                 </div>
-              </div> */}
+              </div>
 
               {/* Datum */}
               <div className="space-y-2">
