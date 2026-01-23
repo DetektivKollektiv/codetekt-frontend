@@ -418,6 +418,7 @@ const Review: FC<ReviewProps> = ({
           <CaseCard case={caseData} />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
+              touchedFieldsIds={Array.from(touchedFieldIds)}
               reviewTemplateQuestions={shownReviewTemplateQuestions}
               onItemClick={setCurrentQuestionId}
               questionsValidationState={questionsValidationState}
