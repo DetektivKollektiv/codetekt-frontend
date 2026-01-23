@@ -42,7 +42,7 @@ import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import QuestionCard from './question-card';
 import ReviewNavigation from './review-navigation';
 import SuccesCard from './success-card';
-import { renderFieldsWithHeaders } from './utils/render-fields';
+import { RenderFieldsWithHeaders } from './utils/render-fields';
 
 interface ReviewProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
@@ -64,6 +64,9 @@ const Review: FC<ReviewProps> = ({
   const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
   const [disputingField, setDisputingField] = useState<Field | null>(null);
   const [disputeReason, setDisputeReason] = useState('');
+  const [touchedFieldIds, setTouchedFieldIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Auth context
   const { data: authData } = useQuery({
@@ -106,7 +109,7 @@ const Review: FC<ReviewProps> = ({
   // Review state management
   const {
     reviewTemplateWithAnswersValues,
-    fieldValidationErrors,
+
     updateFieldValue,
   } = useReviewState(reviewTemplate);
 
@@ -115,9 +118,6 @@ const Review: FC<ReviewProps> = ({
       ? reviewTemplate[reviewTemplate.length - 1].id
       : reviewTemplate[0].id,
   );
-
-  // Track if user has ever reached the last question (enables stricter validation)
-  const [hasReachedLastQuestion, setHasReachedLastQuestion] = useState(false);
 
   // Resolve all conditions to booleans
   const resolvedReviewTemplate = useMemo(
@@ -139,6 +139,7 @@ const Review: FC<ReviewProps> = ({
     const validationResult = validateSubmittedReviewAnswer(
       inProgressReviewAnswerData,
     );
+    console.log('Final submission validation result:', validationResult);
     return validationResult.success;
   }, [inProgressReviewAnswerData]);
 
@@ -165,13 +166,6 @@ const Review: FC<ReviewProps> = ({
     return currentIndex === shownReviewTemplateQuestions.length - 1;
   }, [currentQuestionId, shownReviewTemplateQuestions]);
 
-  // Track when user reaches last question
-  useEffect(() => {
-    if (isLastQuestion) {
-      setHasReachedLastQuestion(true);
-    }
-  }, [isLastQuestion]);
-
   const currentQuestion = useMemo(
     () =>
       shownReviewTemplateQuestions.find(
@@ -180,20 +174,21 @@ const Review: FC<ReviewProps> = ({
     [currentQuestionId, shownReviewTemplateQuestions],
   );
 
+  useEffect(() => {
+    setTouchedFieldIds((prev) => new Set([...prev, currentQuestion.id]));
+  }, [currentQuestion]);
+
   // Get validation state for all questions (only after user reaches last question)
   const questionsValidationState = useMemo(() => {
-    if (!hasReachedLastQuestion) {
-      return new Map();
-    }
     return getQuestionsValidationState(
       resolvedReviewTemplate,
       inProgressReviewAnswerData,
     );
-  }, [
-    hasReachedLastQuestion,
-    resolvedReviewTemplate,
-    inProgressReviewAnswerData,
-  ]);
+  }, [resolvedReviewTemplate, inProgressReviewAnswerData, currentQuestion]);
+
+  useEffect(() => {
+    console.log(questionsValidationState);
+  }, [questionsValidationState]);
 
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
@@ -235,14 +230,6 @@ const Review: FC<ReviewProps> = ({
     if (!userId) {
       toast.error('Du musst angemeldet sein, um zu speichern');
       return;
-    }
-
-    // Log any field-level validation errors
-    if (fieldValidationErrors.size > 0) {
-      console.warn(
-        'Field validation errors:',
-        Object.fromEntries(fieldValidationErrors),
-      );
     }
 
     // Save to server
@@ -509,11 +496,13 @@ const Review: FC<ReviewProps> = ({
               </div>
             }
           >
-            {renderFieldsWithHeaders({
-              currentQuestion,
-              onFieldChange: updateFieldValue,
-              onCreateReviewDispute: openDisputeDialog,
-            })}
+            <RenderFieldsWithHeaders
+              currentQuestion={currentQuestion}
+              questionsValidationState={questionsValidationState}
+              onFieldChange={updateFieldValue}
+              onCreateReviewDispute={openDisputeDialog}
+              touchedFields={Array.from(touchedFieldIds)}
+            />
           </QuestionCard>
         )}
       </div>

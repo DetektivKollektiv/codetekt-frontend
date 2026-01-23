@@ -1,3 +1,4 @@
+import { ZodIssue } from 'zod';
 import { ReviewTemplate } from '../queries/getReviewTemplate';
 import {
   chipAnswerSchema,
@@ -129,7 +130,10 @@ export const getFieldValidationErrors = (
 /**
  * Validation state for a question
  */
-export type QuestionValidationState = 'error' | 'success' | 'incomplete';
+export type QuestionValidationState = {
+  type: 'error' | 'incomplete' | 'success';
+  issues: ZodIssue[];
+};
 
 /**
  * Get validation state for all questions
@@ -169,7 +173,10 @@ export const getQuestionsValidationState = (
     const hasError = visibleFields.some((field) => errorFieldIds.has(field.id));
 
     if (hasError) {
-      validationStates.set(question.id, 'error');
+      validationStates.set(question.id, {
+        type: 'error',
+        issues: validationResult.success ? [] : validationResult.error.issues,
+      });
       return;
     }
 
@@ -191,9 +198,9 @@ export const getQuestionsValidationState = (
     });
 
     if (allFieldsValid) {
-      validationStates.set(question.id, 'success');
+      validationStates.set(question.id, { type: 'success', issues: [] });
     } else {
-      validationStates.set(question.id, 'incomplete');
+      validationStates.set(question.id, { type: 'incomplete', issues: [] });
     }
   });
 

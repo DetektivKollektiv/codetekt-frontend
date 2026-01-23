@@ -1,6 +1,5 @@
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { Field } from '@/lib/schemas/field-schemas';
-import { validateFieldValue } from '@/lib/utils/review-validation';
 import { useEffect, useState } from 'react';
 
 /**
@@ -26,9 +25,6 @@ export const useReviewState = (reviewTemplate: NonNullable<ReviewTemplate>) => {
     setReviewTemplateWithAnswerValues(initializeAnswerValues(reviewTemplate));
   }, [reviewTemplate]);
 
-  const [fieldValidationErrors, setFieldValidationErrors] = useState<
-    Map<string, string>
-  >(new Map());
   /**
    * Update answer value for a specific field
    */
@@ -37,41 +33,6 @@ export const useReviewState = (reviewTemplate: NonNullable<ReviewTemplate>) => {
     fieldId: string,
     value: Field['answer_value'],
   ) => {
-    // Find the field to validate it
-    const question = reviewTemplateWithAnswersValues.find(
-      (q) => q.id === questionId,
-    );
-    const field = question?.fields.find((f) => f.id === fieldId);
-
-    if (field) {
-      // Validate the new value
-      const validationResult = validateFieldValue(field, value);
-
-      if (!validationResult.success) {
-        // Store validation error
-        setFieldValidationErrors((prev) => {
-          const next = new Map(prev);
-          next.set(
-            fieldId,
-            validationResult.error.issues[0]?.message || 'Invalid value',
-          );
-          return next;
-        });
-        console.warn(
-          'Validation error for field',
-          fieldId,
-          validationResult.error,
-        );
-      } else {
-        // Clear any existing validation error for this field
-        setFieldValidationErrors((prev) => {
-          const next = new Map(prev);
-          next.delete(fieldId);
-          return next;
-        });
-      }
-    }
-
     // Update the value regardless of validation (for in-progress saves)
     setReviewTemplateWithAnswerValues((prev) =>
       prev.map((question) => {
@@ -92,7 +53,6 @@ export const useReviewState = (reviewTemplate: NonNullable<ReviewTemplate>) => {
 
   return {
     reviewTemplateWithAnswersValues,
-    fieldValidationErrors,
     updateFieldValue,
   };
 };

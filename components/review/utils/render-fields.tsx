@@ -1,6 +1,7 @@
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { Field } from '@/lib/schemas/field-schemas';
-import { ReactNode } from 'react';
+import { QuestionValidationState } from '@/lib/utils/review-validation';
+import { ReactNode, useEffect } from 'react';
 import { ChipField } from '../fields/chip-field';
 import { LikertScaleField } from '../fields/likert-scale-field';
 import { MultiLineTextField } from '../fields/multi-line-text-field';
@@ -13,6 +14,8 @@ type Question = NonNullable<ReviewTemplate>[number];
 
 interface RenderFieldsOptions {
   currentQuestion: Question;
+  touchedFields: string[];
+  questionsValidationState: Map<string, QuestionValidationState>;
   onFieldChange: (
     questionId: string,
     fieldId: string,
@@ -24,13 +27,22 @@ interface RenderFieldsOptions {
 /**
  * Build the fields with headers inserted where needed
  */
-export const renderFieldsWithHeaders = ({
+export const RenderFieldsWithHeaders = ({
   currentQuestion,
+  touchedFields,
   onFieldChange,
   onCreateReviewDispute,
+  questionsValidationState,
 }: RenderFieldsOptions): ReactNode[] => {
   const elements: ReactNode[] = [];
   let previousFieldType: string | null = null;
+
+  useEffect(() => {
+    console.log(
+      'RenderFieldsWithHeaders questionsValidationState:',
+      questionsValidationState,
+    );
+  }, [questionsValidationState]);
 
   currentQuestion.fields.forEach((field) => {
     // Skip fields that are not shown
@@ -62,6 +74,11 @@ export const renderFieldsWithHeaders = ({
           field={field}
           onChange={handleChange}
           onCreateReviewDispute={onCreateReviewDispute}
+          issues={
+            questionsValidationState
+              ?.get(currentQuestion.id)
+              ?.issues.filter((issue) => issue.path[0] === field.id) || []
+          }
         />,
       );
     } else if (field.type === 'chip') {
