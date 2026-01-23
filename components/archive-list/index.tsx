@@ -6,7 +6,7 @@ import { archiveListConfigs } from '@/lib/config/archive-list-configs';
 import type { IFuseOptions } from 'fuse.js';
 import Fuse from 'fuse.js';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Separator } from '../ui/separator';
 import EmptyCard from './empty-card';
 import { ArchiveListSortSelect, getSavedSortPreference } from './sort-select';
@@ -105,26 +105,29 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
   const [hasCheckedLocalStorage, setHasCheckedLocalStorage] = useState(false);
   const [searchInput, setSearchInput] = useState(searchQuery);
 
-  const updateURL = (page: number, sort: string, search: string) => {
-    if (!syncWithURL) {
-      // Update internal state when URL sync is disabled
-      setInternalPage(page);
-      setInternalSort(sort);
-      setInternalSearch(search);
-      return;
-    }
+  const updateURL = useCallback(
+    (page: number, sort: string, search: string) => {
+      if (!syncWithURL) {
+        // Update internal state when URL sync is disabled
+        setInternalPage(page);
+        setInternalSort(sort);
+        setInternalSearch(search);
+        return;
+      }
 
-    // Update URL when sync is enabled
-    const params = new URLSearchParams();
-    if (page !== 1) params.set('page', String(page));
-    if (sort !== defaultSort) params.set('sort', sort);
-    if (search) params.set('search', search);
+      // Update URL when sync is enabled
+      const params = new URLSearchParams();
+      if (page !== 1) params.set('page', String(page));
+      if (sort !== defaultSort) params.set('sort', sort);
+      if (search) params.set('search', search);
 
-    const queryString = params.toString();
-    const newURL = queryString ? `${pathname}?${queryString}` : pathname;
+      const queryString = params.toString();
+      const newURL = queryString ? `${pathname}?${queryString}` : pathname;
 
-    router.push(newURL, { scroll: false });
-  };
+      router.push(newURL, { scroll: false });
+    },
+    [syncWithURL, defaultSort, pathname, router],
+  );
 
   useEffect(() => {
     if (!syncWithURL || hasCheckedLocalStorage) return;

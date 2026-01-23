@@ -85,8 +85,6 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                       slidesToScroll: 1,
                       dragFree: false,
                     }}
-                    showNavigation={question.fields.length > 0}
-                    portalContainerId={`accordion-content-${question.id}`}
                   >
                     {question.fields.map((field) => {
                       const fieldWithHighestAverage = question.fields

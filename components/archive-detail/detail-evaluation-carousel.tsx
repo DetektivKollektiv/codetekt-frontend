@@ -9,20 +9,15 @@ import { Button } from '../ui/button';
 interface DetailEvaluationCarouselProps {
   children: ReactNode;
   options?: EmblaOptionsType;
-  showNavigation?: boolean;
-  portalContainerId: string;
 }
 
 export function DetailEvaluationCarousel({
   children,
   options,
-  showNavigation = true,
-  portalContainerId,
 }: DetailEvaluationCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-  const [portalContainer, setPortalContainer] = useState<Element | null>(null);
 
   const onPrevButtonClick = useCallback(() => {
     if (!emblaApi) return;
@@ -49,11 +44,6 @@ export function DetailEvaluationCarousel({
       emblaApi.off('reInit', onSelect).off('select', onSelect);
     };
   }, [emblaApi, onSelect]);
-
-  useEffect(() => {
-    const element = document.getElementById(portalContainerId);
-    setPortalContainer(element);
-  }, [portalContainerId]);
 
   return (
     <div className="overflow-visible">
