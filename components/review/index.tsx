@@ -21,7 +21,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Edit, Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import {
@@ -139,7 +139,7 @@ const Review: FC<ReviewProps> = ({
     const validationResult = validateSubmittedReviewAnswer(
       inProgressReviewAnswerData,
     );
-    console.log('Final submission validation result:', validationResult);
+
     return validationResult.success;
   }, [inProgressReviewAnswerData]);
 
@@ -174,9 +174,21 @@ const Review: FC<ReviewProps> = ({
     [currentQuestionId, shownReviewTemplateQuestions],
   );
 
+  const previousQuestionRef = useRef(currentQuestion);
+
   useEffect(() => {
-    setTouchedFieldIds((prev) => new Set([...prev, currentQuestion.id]));
+    const previousId = previousQuestionRef.current?.id;
+    if (previousId && previousId !== currentQuestion.id) {
+      console.log('Marking field as touched:', previousId);
+      setTouchedFieldIds((prev) => new Set([...prev, previousId]));
+    }
+    previousQuestionRef.current = currentQuestion;
+    console.log('Current question:', currentQuestion.id);
   }, [currentQuestion]);
+
+  useEffect(() => {
+    console.log('Touched fields:', Array.from(touchedFieldIds));
+  }, [touchedFieldIds]);
 
   // Get validation state for all questions (only after user reaches last question)
   const questionsValidationState = useMemo(() => {
