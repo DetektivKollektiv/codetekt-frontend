@@ -22,17 +22,13 @@ export const useReviewState = (reviewTemplate: NonNullable<ReviewTemplate>) => {
   const [reviewTemplateWithAnswersValues, setReviewTemplateWithAnswerValues] =
     useState(() => initializeAnswerValues(reviewTemplate));
 
+  useEffect(() => {
+    setReviewTemplateWithAnswerValues(initializeAnswerValues(reviewTemplate));
+  }, [reviewTemplate]);
+
   const [fieldValidationErrors, setFieldValidationErrors] = useState<
     Map<string, string>
   >(new Map());
-
-  useEffect(() => {
-    console.log(
-      'Review template with answer values initialized:',
-      reviewTemplateWithAnswersValues,
-    );
-  }, [reviewTemplateWithAnswersValues]);
-
   /**
    * Update answer value for a specific field
    */

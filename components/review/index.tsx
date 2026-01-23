@@ -1,7 +1,10 @@
 'use client';
 import { createReviewDisputeMutation } from '@/lib/queries/createReviewDispute';
-import { Case } from '@/lib/queries/getCase';
-import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { Case, getCase } from '@/lib/queries/getCase';
+import {
+  getReviewTemplate,
+  ReviewTemplate,
+} from '@/lib/queries/getReviewTemplate';
 import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
 import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
 import { Field } from '@/lib/schemas';
@@ -14,9 +17,10 @@ import {
   validateInProgressReviewAnswer,
   validateSubmittedReviewAnswer,
 } from '@/lib/utils/review-validation';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Edit, SaveAll } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Edit, Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -47,13 +51,14 @@ interface ReviewProps {
 }
 
 const Review: FC<ReviewProps> = ({
-  reviewTemplate,
-  case: caseData,
+  reviewTemplate: initialReviewTemplate,
+  case: initialCaseData,
   isSubmitted: initialIsSubmitted,
 }) => {
   const supabase = createClient();
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
-  const [inProgressId, setInProgressId] = useState<string | null>(null);
   const [isEditable, setIsEditable] = useState(!initialIsSubmitted);
   const [isDisputeSubmitting, setIsDisputeSubmitting] = useState(false);
   const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
@@ -67,6 +72,36 @@ const Review: FC<ReviewProps> = ({
   });
 
   const userId = authData?.user?.id;
+
+  // Case data with useQuery
+  const { data: caseData } = useQuery({
+    queryKey: ['case', initialCaseData.id],
+    queryFn: async () => {
+      const { data, error } = await getCase(supabase, initialCaseData.id);
+      if (error) throw error;
+      return data;
+    },
+    initialData: initialCaseData,
+  });
+
+  // Review template with useQuery
+  const { data: reviewTemplate } = useQuery({
+    queryKey: ['review-template', initialCaseData.id],
+    queryFn: async () => {
+      const { data, error } = await getReviewTemplate(
+        supabase,
+        initialCaseData.id,
+      );
+      if (error) throw error;
+      return data;
+    },
+    initialData: initialReviewTemplate,
+  });
+
+  // Early return if data is null (shouldn't happen with initialData)
+  if (!caseData || !reviewTemplate) {
+    return null;
+  }
 
   // Review state management
   const {
@@ -171,16 +206,10 @@ const Review: FC<ReviewProps> = ({
   };
 
   // Handler to save in-progress review
-  const { mutate: saveInProgress, isPending: isSaving } = useMutation({
+  const { mutate: saveInProgress, isPending: isSavingPending } = useMutation({
     ...saveReviewAnswersInProgressMutation(supabase),
-    onSuccess: (result) => {
+    onSuccess: () => {
       toast.success('Entwurf gespeichert');
-
-      // Store in_progress_id for later submission
-      if (result?.in_progress_id) {
-        setInProgressId(result.in_progress_id);
-      }
-
       // Mark data as saved
       markAsSaved();
     },
@@ -226,10 +255,17 @@ const Review: FC<ReviewProps> = ({
   // Handler to submit review (final submission)
   const { mutate: submitReview, isPending: isSubmitting } = useMutation({
     ...submitReviewAnswersMutation(supabase),
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       toast.success('Fall erfolgreich abgeschlossen');
       setIsSubmitted(true);
       setIsEditable(false);
+      // Invalidate and refetch case and review template data
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] }),
+        queryClient.invalidateQueries({
+          queryKey: ['review-template', caseData?.id],
+        }),
+      ]);
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Abschließen des Falls');
@@ -256,44 +292,38 @@ const Review: FC<ReviewProps> = ({
     }
 
     // First, save the in-progress data to get/update in_progress_id
-    if (!inProgressId) {
-      // Save first to get the in_progress_id
-      const inProgressValidation = validateInProgressReviewAnswer(
-        inProgressReviewAnswerData,
-      );
 
-      if (!inProgressValidation.success) {
-        console.error(
-          '✗ In-progress validation failed:',
-          inProgressValidation.error,
-        );
-        toast.error('Validierungsfehler');
-        return;
-      }
+    // Save first to get the in_progress_id
+    const inProgressValidation = validateInProgressReviewAnswer(
+      inProgressReviewAnswerData,
+    );
 
-      // Save and then submit
-      saveInProgress(
-        {
-          case_id: caseData.id,
-          data: inProgressValidation.data,
-        },
-        {
-          onSuccess: (saveResult) => {
-            if (saveResult?.in_progress_id) {
-              // Now submit with the in_progress_id
-              submitReview({
-                in_progress_id: saveResult.in_progress_id,
-              });
-            }
-          },
-        },
+    if (!inProgressValidation.success) {
+      console.error(
+        '✗ In-progress validation failed:',
+        inProgressValidation.error,
       );
-    } else {
-      // We already have an in_progress_id, submit directly
-      submitReview({
-        in_progress_id: inProgressId,
-      });
+      toast.error('Validierungsfehler');
+      return;
     }
+
+    // Save and then submit
+    saveInProgress(
+      {
+        case_id: caseData.id,
+        data: inProgressValidation.data,
+      },
+      {
+        onSuccess: (saveResult) => {
+          if (saveResult?.in_progress_id) {
+            // Now submit with the in_progress_id
+            submitReview({
+              in_progress_id: saveResult.in_progress_id,
+            });
+          }
+        },
+      },
+    );
   };
 
   // Mutation for creating review dispute
@@ -302,7 +332,7 @@ const Review: FC<ReviewProps> = ({
     onMutate: () => {
       setIsDisputeSubmitting(true);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success(
         'Korrektur erfolgreich beantragt. Unser Team wird die Bewertung überprüfen.',
       );
@@ -310,6 +340,14 @@ const Review: FC<ReviewProps> = ({
       setIsDisputeDialogOpen(false);
       setDisputeReason('');
       setDisputingField(null);
+      // Invalidate queries before navigation
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] }),
+        queryClient.invalidateQueries({
+          queryKey: ['review-template', caseData?.id],
+        }),
+      ]);
+      router.push('/');
     },
     onError: (error: Error) => {
       toast.error(
@@ -436,8 +474,13 @@ const Review: FC<ReviewProps> = ({
                   variant={hasUnsavedChanges ? 'destructive' : 'outline'}
                   size={'default'}
                   onClick={handleSaveInProgress}
+                  disabled={!hasUnsavedChanges || isSavingPending}
                 >
-                  <SaveAll className="w-4 h-4 mr-2" />
+                  {isSavingPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <SaveAll className="w-4 h-4 mr-2" />
+                  )}
                   Speichern
                 </Button>
               </>
