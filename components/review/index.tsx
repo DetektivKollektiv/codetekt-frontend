@@ -340,13 +340,12 @@ const Review: FC<ReviewProps> = ({
       setIsDisputeDialogOpen(false);
       setDisputeReason('');
       setDisputingField(null);
-      // Invalidate queries before navigation
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] }),
-        queryClient.invalidateQueries({
-          queryKey: ['review-template', caseData?.id],
-        }),
-      ]);
+
+      queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ['review-template', caseData?.id],
+      });
+
       router.push('/');
     },
     onError: (error: Error) => {
