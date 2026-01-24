@@ -221,7 +221,7 @@ export default function Header({
       </div>
       <div className="relative w-full h-px bg-gradient-brand">
         <Progress>
-          <Bar className="!h-px !bg-neutral-0 !absolute !top-0 !left-0"></Bar>
+          <Bar className="!h-px !bg-neutral-0 !absolute !top-0 !left-0 !opacity-60"></Bar>
         </Progress>
       </div>
       <Toaster position="top-center" offset="6rem" />
