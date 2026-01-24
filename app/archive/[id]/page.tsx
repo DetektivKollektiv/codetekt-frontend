@@ -12,14 +12,17 @@ export default async function Page({
 }) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data: aggregatedReview, error } = await getAggregatedReview(
-    supabase,
-    id,
-  );
-  const { data: caseComments, error: caseCommentsError } =
-    await getCaseComments(supabase, id);
 
-  const auth = await getAuth(supabase);
+  const [
+    { data: aggregatedReview, error },
+    { data: caseComments, error: caseCommentsError },
+    auth,
+  ] = await Promise.all([
+    getAggregatedReview(supabase, id),
+    getCaseComments(supabase, id),
+    getAuth(supabase),
+  ]);
+
   if (error) {
     throw error;
   }
@@ -31,8 +34,6 @@ export default async function Page({
   if (!aggregatedReview) {
     notFound();
   }
-
-  // console.log('Aggregated Review:', aggregatedReview);
 
   return (
     <div className=" w-full mt-10 lg:mt-12 mb-24 lg:mb-32">

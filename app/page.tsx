@@ -15,13 +15,20 @@ import Link from 'next/link';
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: aggregatedReviewsData, error } =
-    await getAggregatedReviews(supabase);
+  const aggregatedReviewsPromise = getAggregatedReviews(supabase);
+  const openCasesPromise = getOpenCases(supabase);
+  const authPromise = getAuth(supabase);
 
-  const { data: openCases, error: openCasesError } =
-    await getOpenCases(supabase);
+  const [
+    { data: aggregatedReviewsData, error },
+    { data: openCases, error: openCasesError },
+    auth,
+  ] = await Promise.all([
+    aggregatedReviewsPromise,
+    openCasesPromise,
+    authPromise,
+  ]);
 
-  const auth = await getAuth(supabase);
   const { user, profile, isAuthenticated } = auth;
 
   // cases the user has created (and their aggregated reviews)
@@ -38,10 +45,13 @@ export default async function Home() {
   let filteredOpenCases = openCases ?? null;
 
   if (isAuthenticated && user) {
-    const { data: userCasesData, error: userCasesError } = await getUserCases(
-      supabase,
-      user.id,
-    );
+    const [
+      { data: userCasesData, error: userCasesError },
+      { data: userReviewsData, error: userReviewsError },
+    ] = await Promise.all([
+      getUserCases(supabase, user.id),
+      getUserReviews(supabase, user.id),
+    ]);
 
     const ownUserAggregatedReviewsData = aggregatedReviewsData?.filter(
       (review) =>
@@ -66,11 +76,6 @@ export default async function Home() {
         userCasesError,
       );
     }
-  }
-
-  if (isAuthenticated && user) {
-    const { data: userReviewsData, error: userReviewsError } =
-      await getUserReviews(supabase, user.id);
 
     // 1. Eigene Reviews aus aggregatedReviewsData (Vorrang)
     const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
