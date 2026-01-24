@@ -149,13 +149,17 @@ const Footer: FC = ({}) => {
             <AccordionContent>
               <ul className="space-y-2 text-secondary-foreground/60 pl-4 text-body-md">
                 <li>
-                  <Link href="#">Impressum</Link>
+                  <Link href="https://codetekt.org/impressum/">Impressum</Link>
                 </li>
                 <li>
-                  <Link href="#">Datenschutz</Link>
+                  <Link href="https://codetekt.org/datenschutz/">
+                    Datenschutz
+                  </Link>
                 </li>
                 <li>
-                  <Link href="#">Nutzungsbedingungen</Link>
+                  <Link href="https://codetekt.org/datenschutz/">
+                    Nutzungsbedingungen
+                  </Link>
                 </li>
               </ul>
             </AccordionContent>

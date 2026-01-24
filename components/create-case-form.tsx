@@ -232,7 +232,7 @@ export function CreateCaseForm({
                 <label htmlFor="privacy" className="text-sm cursor-pointer">
                   Ich stimme den Bedingungen der{' '}
                   <Link
-                    href="/datenschutz"
+                    href="https://codetekt.org/datenschutz/"
                     className="underline underline-offset-4 hover:text-primary"
                     target="_blank"
                   >
