@@ -1,4 +1,5 @@
 'use client';
+import { Bar, Progress } from '@bprogress/next';
 
 import { Menu } from 'lucide-react';
 import Image from 'next/image';
@@ -218,7 +219,11 @@ export default function Header({
           </div>
         </div>
       </div>
-      <div className="w-full bg-gradient-brand h-px"></div>
+      <div className="relative w-full h-px bg-gradient-brand">
+        <Progress>
+          <Bar className="!h-px !bg-neutral-0 !absolute !top-0 !left-0"></Bar>
+        </Progress>
+      </div>
       <Toaster position="top-center" offset="6rem" />
     </header>
   );

@@ -3,6 +3,7 @@ import { ReactQueryClientProvider } from '@/components/provider/react-query-clie
 
 import LoadingComponent from '@/components/loading-component';
 import NavBar from '@/components/nav-bar';
+import BProgressProvider from '@/components/provider/bprogress-provider';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
@@ -32,13 +33,15 @@ export default async function RootLayout({
         data-scroll-behavior="smooth"
       >
         <body className={`antialiased`}>
-          <Suspense fallback={<LoadingComponent />}>
-            <NavBar />
-            <main className="page-mt page-min-h flex flex-col">
-              <div className="flex-1 flex flex-col">{children}</div>
-              <Footer />
-            </main>
-          </Suspense>
+          <BProgressProvider>
+            <Suspense fallback={<LoadingComponent />}>
+              <NavBar />
+              <main className="page-mt page-min-h flex flex-col">
+                <div className="flex-1 flex flex-col">{children}</div>
+                <Footer />
+              </main>
+            </Suspense>
+          </BProgressProvider>
         </body>
       </html>
     </ReactQueryClientProvider>
