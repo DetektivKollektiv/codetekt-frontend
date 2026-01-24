@@ -82,14 +82,7 @@ export function SignUpForm({
       return;
     }
 
-    if (data.session) {
-      await supabase.auth.setSession({
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token,
-      });
-    }
-
-    router.push('/');
+    router.push('/auth/sign-up-success');
     setIsLoading(false);
   };
 
