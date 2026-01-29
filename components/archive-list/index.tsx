@@ -222,14 +222,16 @@ export const ArchiveList = <TItem,>(props: ArchiveListProps<TItem>) => {
           <div className="text-sm text-muted-foreground whitespace-nowrap">
             {itemCountLabel(sortedItems.length)}
           </div>
-          <ArchiveListSortSelect
-            sortOptions={sortOptions}
-            value={currentSort}
-            onValueChange={handleSortChange}
-            storageKey={sortPreferenceKey}
-            className="justify-self-end ml-auto"
-            disabled={sortedItems.length === 0}
-          />
+          {sortOptions.length > 1 && (
+            <ArchiveListSortSelect
+              sortOptions={sortOptions}
+              value={currentSort}
+              onValueChange={handleSortChange}
+              storageKey={sortPreferenceKey}
+              className={`justify-self-end ml-auto ${sortOptions.length <= 1 ? 'opacity-50' : ''}`}
+              disabled={sortedItems.length === 0}
+            />
+          )}
         </div>
       </div>
       <Separator className="mb-4" />
