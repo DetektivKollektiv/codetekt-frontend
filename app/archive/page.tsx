@@ -4,9 +4,8 @@ import { createClient } from '@/lib/supabase/server';
 
 export default async function Page() {
   const supabase = await createClient();
-  const { data: aggregatedReviews, error } = await getAggregatedReviews(
-    supabase
-  );
+  const { data: aggregatedReviews, error } =
+    await getAggregatedReviews(supabase);
 
   if (error) {
     throw error;
@@ -14,8 +13,8 @@ export default async function Page() {
 
   return (
     <>
-      <div className="page-max-w w-full mt-12 lg:mt-24">
-        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
+      <div className="w-full pt-12 lg:pt-24 bg-gradient-neutral-coral">
+        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase page-max-w">
           Gelöste Fälle
         </h1>
       </div>
