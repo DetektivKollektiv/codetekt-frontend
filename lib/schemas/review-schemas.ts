@@ -14,6 +14,8 @@ export const submittedReviewAnswerSchema = z
     title: z.string().min(10).nullable(),
     keyword_type: z.array(z.string().min(3)).min(1).nullable(),
     content_type: chipAnswerSchema,
+
+    // Inhalt
     content_accuracy: trafficLightAnswerSchema.optional(),
     content_sources: trafficLightAnswerSchema.optional(),
     content_language: trafficLightAnswerSchema.optional(),
@@ -21,6 +23,25 @@ export const submittedReviewAnswerSchema = z
     content_references: trafficLightAnswerSchema.optional(),
     content_logic: trafficLightAnswerSchema.optional(),
     content_advertising: trafficLightAnswerSchema.optional(),
+
+    // Bilder/Videos
+    media_objectivity: trafficLightAnswerSchema.optional(),
+    media_no_ai_or_staging_doubts: trafficLightAnswerSchema.optional(),
+    media_no_obvious_editing: trafficLightAnswerSchema.optional(),
+    media_visualizations_not_distorted: trafficLightAnswerSchema.optional(),
+    media_visualization_data_traceable: trafficLightAnswerSchema.optional(),
+
+    // Quelle
+    source_claims_supported: trafficLightAnswerSchema.optional(),
+    source_listed_and_verifiable: trafficLightAnswerSchema.optional(),
+    source_claims_match_originals: trafficLightAnswerSchema.optional(),
+    source_experts_verified: trafficLightAnswerSchema.optional(),
+    source_experts_reputation: trafficLightAnswerSchema.optional(),
+
+    // Zitate
+    quotes_identifiable_persons: trafficLightAnswerSchema.optional(),
+    quotes_context_accurate: trafficLightAnswerSchema.optional(),
+
     additional_rating: likertScaleAnswerSchema,
     additional_comment: z.string().min(10).nullable().optional(),
     comment: z
@@ -28,8 +49,10 @@ export const submittedReviewAnswerSchema = z
       .nullable()
       .optional(),
   })
-
   .strict() // keine extra keys erlaubt
+  // -------------------------
+  // Inhalt
+  // -------------------------
   .refine(
     (data) => {
       // content_accuracy required when content_type === "neutral"
@@ -79,8 +102,7 @@ export const submittedReviewAnswerSchema = z
   )
   .refine(
     (data) => {
-      // content_language, content_clarity, content_references, content_logic, content_advertising
-      // required when content_type in ["neutral", "opinion", "text_message"]
+      // content_language required when content_type in ["neutral", "opinion", "text_message"]
       if (
         data.content_type?.some((t) =>
           ['neutral', 'opinion', 'text_message'].includes(t),
@@ -214,6 +236,356 @@ export const submittedReviewAnswerSchema = z
       },
     },
   )
+  // -------------------------
+  // Bilder/Videos
+  // required when content_type in ["neutral", "opinion", "text_message"]
+  // -------------------------
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.media_objectivity !== null &&
+          data.media_objectivity !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'media_objectivity is required when content_type is neutral, opinion or text_message',
+      path: ['media_objectivity'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'media_objectivity',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.media_no_ai_or_staging_doubts !== null &&
+          data.media_no_ai_or_staging_doubts !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'media_no_ai_or_staging_doubts is required when content_type is neutral, opinion or text_message',
+      path: ['media_no_ai_or_staging_doubts'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'media_no_ai_or_staging_doubts',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.media_no_obvious_editing !== null &&
+          data.media_no_obvious_editing !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'media_no_obvious_editing is required when content_type is neutral, opinion or text_message',
+      path: ['media_no_obvious_editing'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'media_no_obvious_editing',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.media_visualizations_not_distorted !== null &&
+          data.media_visualizations_not_distorted !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'media_visualizations_not_distorted is required when content_type is neutral, opinion or text_message',
+      path: ['media_visualizations_not_distorted'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'media_visualizations_not_distorted',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.media_visualization_data_traceable !== null &&
+          data.media_visualization_data_traceable !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'media_visualization_data_traceable is required when content_type is neutral, opinion or text_message',
+      path: ['media_visualization_data_traceable'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'media_visualization_data_traceable',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  // -------------------------
+  // Quelle
+  // required when content_type in ["neutral", "opinion", "text_message"]
+  // -------------------------
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.source_claims_supported !== null &&
+          data.source_claims_supported !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'source_claims_supported is required when content_type is neutral, opinion or text_message',
+      path: ['source_claims_supported'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'source_claims_supported',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.source_listed_and_verifiable !== null &&
+          data.source_listed_and_verifiable !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'source_listed_and_verifiable is required when content_type is neutral, opinion or text_message',
+      path: ['source_listed_and_verifiable'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'source_listed_and_verifiable',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.source_claims_match_originals !== null &&
+          data.source_claims_match_originals !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'source_claims_match_originals is required when content_type is neutral, opinion or text_message',
+      path: ['source_claims_match_originals'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'source_claims_match_originals',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.source_experts_verified !== null &&
+          data.source_experts_verified !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'source_experts_verified is required when content_type is neutral, opinion or text_message',
+      path: ['source_experts_verified'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'source_experts_verified',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.source_experts_reputation !== null &&
+          data.source_experts_reputation !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'source_experts_reputation is required when content_type is neutral, opinion or text_message',
+      path: ['source_experts_reputation'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'source_experts_reputation',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  // -------------------------
+  // Zitate
+  // quotes_identifiable_persons required when content_type in ["neutral", "text_message"]
+  // quotes_context_accurate required when content_type in ["neutral", "opinion", "text_message"]
+  // -------------------------
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) => ['neutral', 'text_message'].includes(t))
+      ) {
+        return (
+          data.quotes_identifiable_persons !== null &&
+          data.quotes_identifiable_persons !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'quotes_identifiable_persons is required when content_type is neutral or text_message',
+      path: ['quotes_identifiable_persons'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'quotes_identifiable_persons',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  .refine(
+    (data) => {
+      if (
+        data.content_type?.some((t) =>
+          ['neutral', 'opinion', 'text_message'].includes(t),
+        )
+      ) {
+        return (
+          data.quotes_context_accurate !== null &&
+          data.quotes_context_accurate !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        'quotes_context_accurate is required when content_type is neutral, opinion or text_message',
+      path: ['quotes_context_accurate'],
+      when(payload) {
+        const hasRelevantIssues = payload.issues.some(
+          (iss) =>
+            iss.path?.[0] === 'content_type' ||
+            iss.path?.[0] === 'quotes_context_accurate',
+        );
+        return !hasRelevantIssues;
+      },
+    },
+  )
+  // -------------------------
+  // Additional
+  // -------------------------
   .refine(
     (data) => {
       // Conditional: additional_comment required wenn additional_rating < 3
@@ -230,7 +602,6 @@ export const submittedReviewAnswerSchema = z
       message: 'additional_comment is required when additional_rating < 3',
       path: ['additional_comment'],
       when(payload) {
-        // Only run this refinement if both fields we care about have no issues
         const hasRelevantIssues = payload.issues.some(
           (iss) =>
             iss.path?.[0] === 'additional_rating' ||
@@ -241,12 +612,14 @@ export const submittedReviewAnswerSchema = z
     },
   );
 
-// In-progress schema - all optional
+// In-progress schema - all optional (autosave/draft)
 export const inProgressReviewAnswerSchema = z
   .object({
     title: textAnswerSchema.optional(),
     keyword_type: multiLineTextAnswerSchema.optional(),
     content_type: chipAnswerSchema.optional(),
+
+    // Inhalt
     content_accuracy: trafficLightAnswerSchema.optional(),
     content_sources: trafficLightAnswerSchema.optional(),
     content_language: trafficLightAnswerSchema.optional(),
@@ -254,6 +627,25 @@ export const inProgressReviewAnswerSchema = z
     content_references: trafficLightAnswerSchema.optional(),
     content_logic: trafficLightAnswerSchema.optional(),
     content_advertising: trafficLightAnswerSchema.optional(),
+
+    // Bilder/Videos
+    media_objectivity: trafficLightAnswerSchema.optional(),
+    media_no_ai_or_staging_doubts: trafficLightAnswerSchema.optional(),
+    media_no_obvious_editing: trafficLightAnswerSchema.optional(),
+    media_visualizations_not_distorted: trafficLightAnswerSchema.optional(),
+    media_visualization_data_traceable: trafficLightAnswerSchema.optional(),
+
+    // Quelle
+    source_claims_supported: trafficLightAnswerSchema.optional(),
+    source_listed_and_verifiable: trafficLightAnswerSchema.optional(),
+    source_claims_match_originals: trafficLightAnswerSchema.optional(),
+    source_experts_verified: trafficLightAnswerSchema.optional(),
+    source_experts_reputation: trafficLightAnswerSchema.optional(),
+
+    // Zitate
+    quotes_identifiable_persons: trafficLightAnswerSchema.optional(),
+    quotes_context_accurate: trafficLightAnswerSchema.optional(),
+
     additional_rating: likertScaleAnswerSchema.optional(),
     additional_comment: textAreaAnswerSchema.optional(),
     comment: textAreaAnswerSchema.optional(),
