@@ -82,10 +82,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     [reviewTemplateWithAnswersValues],
   );
 
-  useEffect(() => {
-    console.log('resolvedReviewTemplate:', resolvedReviewTemplate);
-  }, [resolvedReviewTemplate]);
-
   // Automatically build InProgressReviewAnswer object whenever answers change
   const inProgressReviewAnswerData = useMemo(() => {
     const data = buildInProgressReviewAnswerData(
@@ -158,10 +154,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
       inProgressReviewAnswerData,
     );
   }, [resolvedReviewTemplate, inProgressReviewAnswerData]);
-
-  useEffect(() => {
-    console.log('questionsValidationState:', questionsValidationState);
-  }, [questionsValidationState]);
 
   const setNextQuestion = () => {
     const currentIndex = shownReviewTemplateQuestions.findIndex(
