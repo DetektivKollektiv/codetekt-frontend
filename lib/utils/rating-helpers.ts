@@ -152,6 +152,38 @@ export function getDistributionData(field: {
   ];
 }
 
+/**
+ * Get IDs of all fields with the highest rating index (worst rating)
+ * @param fields - Array of fields to analyze
+ * @returns Set of field IDs that have the highest rating index
+ */
+export const getFieldsWithHighestIndex = <
+  T extends { id: string; type: string; average?: number },
+>(
+  fields: T[],
+): Set<string> => {
+  // Get all traffic-light fields with defined averages
+  const trafficLightFields = fields.filter(
+    (f) => f.type === 'traffic-light' && f.average !== undefined,
+  );
+
+  if (trafficLightFields.length === 0) {
+    return new Set();
+  }
+
+  // Find the highest index (worst rating)
+  const highestIndex = Math.max(
+    ...trafficLightFields.map((f) => scoreToIndex(f.average!)),
+  );
+
+  // Get IDs of all fields with the highest index
+  return new Set(
+    trafficLightFields
+      .filter((f) => scoreToIndex(f.average!) === highestIndex)
+      .map((f) => f.id),
+  );
+};
+
 export const getWarningTags = (reviewData: ReviewAggregationData) => {
   return reviewData.questions
     .flatMap((question) =>

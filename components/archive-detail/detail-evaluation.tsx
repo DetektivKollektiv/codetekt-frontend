@@ -7,7 +7,10 @@ import {
 } from '@/components/ui/accordion';
 import { HelpButton } from '@/components/ui/help-button';
 import type { ReviewAggregationData } from '@/lib/schemas/aggregation-schemas';
-import { getRatingStyle } from '@/lib/utils/rating-helpers';
+import {
+  getFieldsWithHighestIndex,
+  getRatingStyle,
+} from '@/lib/utils/rating-helpers';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 import dynamic from 'next/dynamic';
 import EmptyCard from '../archive-list/empty-card';
@@ -87,28 +90,18 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                     }}
                   >
                     {question.fields.map((field) => {
-                      const fieldWithHighestAverage = question.fields
-                        .filter((f) => f.type === 'traffic-light')
-                        .reduce(
-                          (prev, current) => {
-                            if (prev.average === undefined) return current;
-                            if (current.average === undefined) return prev;
-                            return prev.average > current.average
-                              ? prev
-                              : current;
-                          },
-                          question.fields.find(
-                            (f) => f.type === 'traffic-light',
-                          )!,
-                        );
+                      const fieldsWithHighestIndex = getFieldsWithHighestIndex(
+                        question.fields,
+                      );
+
                       if (field.type === 'traffic-light') {
                         return (
                           <DetailTrafficLightEvaluation
                             field={field}
                             key={field.id}
-                            highlightHeader={
-                              field.id === fieldWithHighestAverage.id
-                            }
+                            highlightHeader={fieldsWithHighestIndex.has(
+                              field.id,
+                            )}
                           />
                         );
                       }
