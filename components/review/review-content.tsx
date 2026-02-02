@@ -7,6 +7,7 @@ import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
 import { Field } from '@/lib/schemas';
 import { createClient } from '@/lib/supabase/client';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
+import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import {
   buildInProgressReviewAnswerData,
   getQuestionsValidationState,
@@ -372,7 +373,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
         }}
       >
         <div>
-          <CaseCard case={caseData} />
+          <CaseCard
+            case={caseData}
+            ratingStyle={getPreviewRatingStyle(reviewTemplateWithAnswersValues)}
+          />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
               touchedQuestionsIds={Array.from(touchedQuestionIds)}

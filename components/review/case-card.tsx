@@ -6,11 +6,13 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Case } from '@/lib/queries/getCase';
-import { getCaseTitle, getLocalDate } from '@/lib/utils';
+import { cn, getCaseTitle, getLocalDate } from '@/lib/utils';
+import { RatingStyle } from '@/lib/utils/rating-helpers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 import ImagePlaceholder from '../image-placeholder';
+import { Badge } from '../ui/badge';
 import {
   Card,
   CardContent,
@@ -21,9 +23,10 @@ import {
 
 interface CaseCardProps {
   case: NonNullable<Case>;
+  ratingStyle: RatingStyle;
 }
 
-const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
+const CaseCard: FC<CaseCardProps> = ({ case: caseData, ratingStyle }) => {
   return (
     <>
       <Dialog>
@@ -47,7 +50,7 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
                 />
               )}
             </div>
-            <CardHeader>
+            <CardHeader className="pb-4">
               <CardTitle className="overflow-hidden text-ellipsis whitespace-nowrap">
                 {getCaseTitle(caseData)}
               </CardTitle>
@@ -55,7 +58,17 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData }) => {
                 Eingereicht am: {getLocalDate(caseData.submitted_at)}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+
+            <CardContent className="space-y-4">
+              <Badge
+                className={cn(
+                  ratingStyle.backgroundClass,
+                  ratingStyle.textForegroundClass,
+                  'w-full justify-center pointer-events-none h-9',
+                )}
+              >
+                {ratingStyle.label}
+              </Badge>
               {caseData.content_type === 'url' ? (
                 <Link
                   href={caseData.content}

@@ -1,3 +1,4 @@
+import { ReviewTemplate } from '../queries/getReviewTemplate';
 import { ReviewAggregationData } from '../schemas';
 
 export type RatingLevel = 0 | 1 | 2 | 3;
@@ -195,4 +196,35 @@ export const getWarningTags = (reviewData: ReviewAggregationData) => {
       }),
     )
     .sort((a, b) => Number(Object.keys(b)[0]) - Number(Object.keys(a)[0]));
+};
+
+export const getPreviewRating = (template: NonNullable<ReviewTemplate>) => {
+  const fields = template.flatMap((question) => question.fields);
+  const trafficLightFields = fields
+    .filter((f) => f.type === 'traffic-light')
+    .filter((f) => typeof f.answer_value === 'number' && f.answer_value <= 3);
+  console.log('Traffic light fields for preview rating:', trafficLightFields);
+  const highestAnswerValue =
+    trafficLightFields.length > 0
+      ? Math.max(...trafficLightFields.map((f) => f.answer_value as number))
+      : null;
+
+  return highestAnswerValue;
+};
+
+export const getPreviewRatingStyle = (
+  template: NonNullable<ReviewTemplate>,
+) => {
+  const previewRating = getPreviewRating(template);
+  if (previewRating === null) {
+    return {
+      label: 'Keine Bewertung',
+      backgroundColor: 'hsl(var(--neutral-200))',
+      foregroundColor: 'hsl(var(--neutral-800))',
+      backgroundClass: 'bg-neutral-200',
+      textClass: 'text-neutral-200',
+      textForegroundClass: 'text-neutral-800',
+    } as RatingStyle;
+  }
+  return getRatingStyle(previewRating);
 };

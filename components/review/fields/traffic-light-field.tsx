@@ -2,6 +2,7 @@
 
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { trafficLightAnswerSchema } from '@/lib/schemas';
 import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
@@ -9,8 +10,8 @@ import { $ZodIssue } from 'zod/v4/core';
 
 type TrafficLightField = z.infer<typeof trafficLightFieldSchema>;
 
-// Traffic light values: 1 = green, 2 = yellow/orange, 3 = orange, 4 = red, 0 = no answer
-type TrafficLightValue = 0 | 1 | 2 | 3 | null;
+// Traffic light values: 0 = green, 1 = yellow/orange, 2 = orange, 3 = red, 4 = no answer
+type TrafficLightValue = z.infer<typeof trafficLightAnswerSchema>;
 
 interface TrafficLightFieldProps {
   field: TrafficLightField;
@@ -53,41 +54,22 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
         disabled={isDisabled}
         className="flex justify-between md:justify-end w-full md:w-auto md:items-center gap-2"
       >
-        {/* Green - value 1 */}
-        <RadioGroupItem
-          value="1"
-          className="size-6 md:size-5 border-2 border-brand-green data-[state=checked]:border-brand-green"
-          aria-label="Grün - Stimme voll zu"
-          iconClassName="fill-brand-green stroke-brand-green size-3"
-        />
-        {/* Yellow - value 2 */}
-        <RadioGroupItem
-          value="2"
-          className="size-6 md:size-5 border-2 border-brand-yellow data-[state=checked]:border-brand-yellow"
-          aria-label="Gelb - Stimme eher zu"
-          iconClassName="fill-brand-yellow stroke-brand-yellow size-3"
-        />
-        {/* Orange - value 3 */}
-        <RadioGroupItem
-          value="3"
-          className="size-6 md:size-5 border-2 border-brand-orange data-[state=checked]:border-brand-orange"
-          aria-label="Orange - Stimme eher nicht zu"
-          iconClassName="fill-brand-orange stroke-brand-orange size-3"
-        />
-        {/* Red - value 4 (mapped as 0 in the schema but using 4 for display) */}
-        <RadioGroupItem
-          value="4"
-          className="size-6 md:size-5 border-2 border-brand-coral data-[state=checked]:border-brand-coral"
-          aria-label="Rot - Stimme nicht zu"
-          iconClassName="fill-brand-coral stroke-brand-coral size-3"
-        />
-
-        <RadioGroupItem
-          value="0"
-          className="size-6 md:size-5 border-2 border-muted-foreground data-[state=checked]:border-muted-foreground"
-          aria-label="Keine Antwort"
-          iconClassName="fill-muted-foreground stroke-muted-foreground size-3"
-        />
+        {field.options.map((option) => {
+          return (
+            <RadioGroupItem
+              value={option.value.toString()}
+              className="size-6 md:size-5 border-2"
+              style={{
+                borderColor: option.color,
+              }}
+              key={option.value}
+              iconClassName="size-3 stroke-0"
+              iconStyle={{
+                fill: option.color,
+              }}
+            />
+          );
+        })}
       </RadioGroup>
     </div>
   );
