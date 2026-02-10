@@ -30,31 +30,26 @@ const tagsSchema = z.object({
   3: z.string(),
 });
 
-// Exported type for aggregated field statistics (reused in aggregation.ts)
-export type AggregationFieldStats = {
-  counts: { 0: number; 1: number; 2: number; 3: number };
-  percentages: { 0: number; 1: number; 2: number; 3: number };
-  average: number;
-  tags: { 0: string; 1: string; 2: string; 3: string };
-};
+export const baseAggregationValueSchema = z.object({
+  id: z.string(),
+  question: z.string(),
+  tag: z.string().optional(),
+});
 
 // Schema for aggregated field values
-export const aggregationTrafficLightValueSchema = z.object({
-  id: z.string(),
-  type: z.enum(['traffic-light']),
-  question: z.string(),
-  counts: countsSchema,
-  percentages: percentagesSchema,
-  average: z.number(),
-  tags: tagsSchema,
-});
+export const aggregationTrafficLightValueSchema =
+  baseAggregationValueSchema.extend({
+    type: z.enum(['traffic-light']),
+    counts: countsSchema,
+    percentages: percentagesSchema,
+    average: z.number(),
+  });
 
-export const aggregationTextFieldValueSchema = z.object({
-  id: z.string(),
-  type: z.enum(['text', 'text-area']),
-  question: z.string(),
-  answer_values: z.array(z.string()),
-});
+export const aggregationTextFieldValueSchema =
+  baseAggregationValueSchema.extend({
+    type: z.enum(['text', 'text-area']),
+    answer_values: z.array(z.string()),
+  });
 
 // Reuse the template metadata schema structure
 const questionMetadataSchema = z.object({

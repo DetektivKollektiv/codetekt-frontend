@@ -189,10 +189,10 @@ export const getWarningTags = (reviewData: ReviewAggregationData) => {
   return reviewData.questions
     .flatMap((question) =>
       question.fields.flatMap((field) => {
-        if (!('tags' in field)) return [];
+        if (!('tag' in field) || !('average' in field)) return [];
 
         const index = scoreToIndex(field.average);
-        return [{ [index]: field.tags[index] }];
+        return [{ [index]: field.tag }];
       }),
     )
     .sort((a, b) => Number(Object.keys(b)[0]) - Number(Object.keys(a)[0]));
