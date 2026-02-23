@@ -41,6 +41,12 @@ const leaderBoardData = [
   { username: 'Ben', cases: 15, reviews: 10 },
   { username: 'Clara', cases: 10, reviews: 5 },
   { username: 'David', cases: 5, reviews: 2 },
+  { username: 'Emma', cases: 12, reviews: 8 },
+  { username: 'Felix', cases: 8, reviews: 6 },
+  { username: 'Greta', cases: 7, reviews: 4 },
+  { username: 'Hannah', cases: 6, reviews: 3 },
+  { username: 'Igor', cases: 4, reviews: 1 },
+  { username: 'Jana', cases: 3, reviews: 2 },
 ].sort((a, b) => b.cases + b.reviews - (a.cases + a.reviews));
 
 const UserStatistics: FC<UserStatisticsProps> = ({
@@ -276,43 +282,45 @@ const UserStatistics: FC<UserStatisticsProps> = ({
             <h3 className="text-heading-md text-muted-foreground font-semibold mb-2">
               Leaderboard
             </h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[40px]"></TableHead>
-                  <TableHead>Benutzer</TableHead>
-                  <TableHead className="text-right text-brand-coral">
-                    Eingereicht
-                  </TableHead>
-                  <TableHead className="text-right text-brand-yellow">
-                    Bewertet
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {leaderBoardData.map((user, index) => (
-                  <TableRow key={user.username}>
-                    <TableCell className="font-medium">{index + 1}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary text-heading-md text-primary-foreground">
-                            {getShortUsername(user.username)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span>{user.username}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-semibold ">
-                      {user.cases}
-                    </TableCell>
-                    <TableCell className="text-right font-semibold">
-                      {user.reviews}
-                    </TableCell>
+            <div className="relative max-h-[400px] overflow-y-auto">
+              <Table>
+                <TableHeader className="sticky top-0 bg-background z-10">
+                  <TableRow>
+                    <TableHead className="w-[40px]"></TableHead>
+                    <TableHead>Benutzer</TableHead>
+                    <TableHead className="text-right text-brand-coral">
+                      Eingereicht
+                    </TableHead>
+                    <TableHead className="text-right text-brand-yellow">
+                      Bewertet
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {leaderBoardData.map((user, index) => (
+                    <TableRow key={user.username}>
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="bg-primary text-heading-md text-primary-foreground">
+                              {getShortUsername(user.username)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span>{user.username}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold ">
+                        {user.cases}
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        {user.reviews}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       </CardContent>
