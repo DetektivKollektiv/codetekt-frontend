@@ -751,6 +751,16 @@ export type Database = {
     };
     Functions: {
       get_project_url: { Args: never; Returns: string };
+      get_user_leaderboard: {
+        Args: { limit_count?: number };
+        Returns: {
+          cases_count: number;
+          reviews_count: number;
+          total_contributions: number;
+          user_id: string;
+          username: string;
+        }[];
+      };
       has_admin_resolution: {
         Args: { p_case_id: string; p_field_id: string };
         Returns: boolean;

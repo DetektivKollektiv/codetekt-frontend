@@ -5,6 +5,7 @@ import {
   AggregatedReviews,
   getAggregatedReviews,
 } from '@/lib/queries/getAggregatedReviews';
+import { getLeaderboard } from '@/lib/queries/getLeaderboard';
 import { getOpenCases } from '@/lib/queries/getOpenCases';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
 import { getUserReviews, UserReviews } from '@/lib/queries/getUserReviews';
@@ -18,15 +19,18 @@ export default async function Home() {
   const aggregatedReviewsPromise = getAggregatedReviews(supabase);
   const openCasesPromise = getOpenCases(supabase);
   const authPromise = getAuth(supabase);
+  const leaderboardPromise = getLeaderboard(supabase);
 
   const [
     { data: aggregatedReviewsData, error },
     { data: openCases, error: openCasesError },
     auth,
+    { data: leaderboardData },
   ] = await Promise.all([
     aggregatedReviewsPromise,
     openCasesPromise,
     authPromise,
+    leaderboardPromise,
   ]);
 
   const { user, profile, isAuthenticated } = auth;
@@ -138,6 +142,7 @@ export default async function Home() {
           userReviewsAndCases={userReviewsAndCases ?? []}
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
           openCases={filteredOpenCases ?? []}
+          leaderboard={leaderboardData ?? []}
         />
       ) : (
         <>

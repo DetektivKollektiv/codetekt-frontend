@@ -9,6 +9,7 @@ import { getShortUsername } from '@/lib/utils/get-short-username';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 
+import { Leaderboard } from '@/lib/queries/getLeaderboard';
 import { UserReviews } from '@/lib/queries/getUserReviews';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -17,6 +18,7 @@ import UserStatistics from './user-statistics';
 
 interface UserPageProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
+  leaderboard: Leaderboard;
   openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
   userCases: UserCases;
@@ -26,6 +28,7 @@ interface UserPageProps {
 
 const UserPage: FC<UserPageProps> = ({
   auth,
+  leaderboard,
   ownUserReviewsAndCases,
   userReviewsAndCases,
   userCases,
@@ -94,7 +97,11 @@ const UserPage: FC<UserPageProps> = ({
       </div>
       <div className="mt-24 z-10 relative page-max-w ">
         <div className="lg:w-2/3">
-          <UserStatistics userCases={userCases} userReviews={userReviews} />
+          <UserStatistics
+            userCases={userCases}
+            userReviews={userReviews}
+            leaderboard={leaderboard}
+          />
         </div>
       </div>
       {openCases && (

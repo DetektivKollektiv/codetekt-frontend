@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Leaderboard } from '@/lib/queries/getLeaderboard';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { UserReviews } from '@/lib/queries/getUserReviews';
 import { getShortUsername } from '@/lib/utils/get-short-username';
@@ -23,6 +24,7 @@ import { FC, useMemo } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
 interface UserStatisticsProps {
+  leaderboard: Leaderboard;
   userCases: UserCases;
   userReviews: UserReviews;
 }
@@ -47,20 +49,8 @@ const getNextMilestone = (
   return null;
 };
 
-const leaderBoardData = [
-  { username: 'Anna', cases: 20, reviews: 15 },
-  { username: 'Ben', cases: 15, reviews: 10 },
-  { username: 'Clara', cases: 10, reviews: 5 },
-  { username: 'David', cases: 5, reviews: 2 },
-  { username: 'Emma', cases: 12, reviews: 8 },
-  { username: 'Felix', cases: 8, reviews: 6 },
-  { username: 'Greta', cases: 7, reviews: 4 },
-  { username: 'Hannah', cases: 6, reviews: 3 },
-  { username: 'Igor', cases: 4, reviews: 1 },
-  { username: 'Jana', cases: 3, reviews: 2 },
-].sort((a, b) => b.cases + b.reviews - (a.cases + a.reviews));
-
 const UserStatistics: FC<UserStatisticsProps> = ({
+  leaderboard,
   userCases,
   userReviews,
 }) => {
@@ -322,8 +312,8 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody className="relative">
-                  {leaderBoardData.map((user, index) => (
-                    <TableRow key={user.username} className="first:mt-12">
+                  {leaderboard.map((user, index) => (
+                    <TableRow key={user.user_id} className="first:mt-12">
                       <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -336,10 +326,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                         </div>
                       </TableCell>
                       <TableCell className="text-right font-semibold ">
-                        {user.cases}
+                        {user.cases_count}
                       </TableCell>
                       <TableCell className="text-right font-semibold">
-                        {user.reviews}
+                        {user.reviews_count}
                       </TableCell>
                     </TableRow>
                   ))}
