@@ -10,7 +10,7 @@ import {
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { FC, useMemo } from 'react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
 interface UserStatisticsProps {
   ownUserAggregatedReviews: AggregatedReviews;
@@ -160,7 +160,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
         <div className="grid grid-cols-2">
           {chartData.length > 0 ? (
             <ChartContainer config={chartConfig} className="min-h-12">
-              <LineChart
+              <AreaChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
@@ -180,35 +180,49 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                 />
                 <ChartTooltip
                   cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
+                  content={<ChartTooltipContent />}
                 />
-                <Line
+                <defs>
+                  <linearGradient id="fillCases" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--color-cases)"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--color-cases)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                  <linearGradient id="fillReviews" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--color-reviews)"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--color-reviews)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                </defs>
+                <Area
                   dataKey="cases"
-                  type="monotone"
+                  type="natural"
+                  fill="url(#fillCases)"
+                  fillOpacity={0.4}
                   stroke="var(--color-cases)"
-                  strokeWidth={2}
-                  dot={{
-                    fill: 'var(--color-cases)',
-                    r: 4,
-                  }}
-                  activeDot={{
-                    r: 6,
-                  }}
                 />
-                <Line
+                <Area
                   dataKey="reviews"
-                  type="monotone"
+                  type="natural"
+                  fill="url(#fillReviews)"
+                  fillOpacity={0.4}
                   stroke="var(--color-reviews)"
-                  strokeWidth={2}
-                  dot={{
-                    fill: 'var(--color-reviews)',
-                    r: 4,
-                  }}
-                  activeDot={{
-                    r: 6,
-                  }}
                 />
-              </LineChart>
+              </AreaChart>
             </ChartContainer>
           ) : (
             <div className="flex items-center justify-center h-[200px] text-muted-foreground">
