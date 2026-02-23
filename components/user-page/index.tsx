@@ -8,8 +8,9 @@ import { getAuth } from '@/lib/supabase/getAuth';
 import { getShortUsername } from '@/lib/utils/get-short-username';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+
 import { FC } from 'react';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import UserSettings from './user-settings';
 
 interface UserPageProps {
