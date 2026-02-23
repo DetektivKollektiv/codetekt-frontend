@@ -187,10 +187,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       <div className="hidden lg:block" />
 
       {/* Cell 3 — Aktivitätsverlauf */}
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="flex flex-col">
+        <CardContent className="pt-6 flex flex-col flex-1">
           <h3 className="text-heading-md text-muted-foreground font-semibold mb-6">
-            Aktivitätsverlauf
+            Einreichungen & Bewertungen
           </h3>
           {chartData.length > 0 ? (
             <ChartContainer
@@ -280,8 +280,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               </AreaChart>
             </ChartContainer>
           ) : (
-            <div className="flex items-center justify-center text-muted-foreground">
-              Noch keine Aktivitäten vorhanden
+            <div className="h-full flex items-center justify-center flex-1">
+              <div className="text-muted-foreground">
+                Noch keine Aktivitäten vorhanden
+              </div>
             </div>
           )}
         </CardContent>
