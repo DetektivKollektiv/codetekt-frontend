@@ -5,9 +5,11 @@ import { OpenCases } from '@/lib/queries/getOpenCases';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
+import { getShortUsername } from '@/lib/utils/get-short-username';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { FC } from 'react';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import UserSettings from './user-settings';
 
 interface UserPageProps {
@@ -40,17 +42,6 @@ const UserPage: FC<UserPageProps> = ({
 
   return (
     <div className="overflow-x-hidden">
-      {/* <div className="page-max-w w-full mt-12 lg:mt-24">
-        <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
-          Hi {profile.username}!
-        </h1>
-        <p className="text-body-md max-w-xl xl:max-w-3xl mt-4">
-          Herzlich willkommen auf deinem Dashboard. Du kannst dir deine gelösten
-          und ungelösten Fälle ansehen und neue Fälle bearbeiten. Unten findest
-          du Vorschläge für Fälle, die deine Hilfe benötigen.
-        </p>
-      </div> */}
-
       <div className="bg-gradient-neutral-coral h-full pt-12 lg:pt-24">
         <div className="flex-col lg:flex-row justify-center flex lg:items-center relative">
           <div className="page-max-w w-full z-10 space-y-12 ">
@@ -58,7 +49,16 @@ const UserPage: FC<UserPageProps> = ({
               {/* <h2 className="text-display-eyebrow uppercase">
                       Trust-Checking von codetekt
                     </h2> */}
-              <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase">
+              <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase flex items-center gap-4">
+                {profile.username && (
+                  <Avatar className="size-14 ">
+                    <AvatarFallback className="bg-primary text-heading-md">
+                      <p className="text-primary-foreground">
+                        {getShortUsername(profile.username)}
+                      </p>
+                    </AvatarFallback>
+                  </Avatar>
+                )}
                 Hi {profile.username}!
               </h1>
               <p className="text-body-md max-w-xl xl:max-w-3xl mt-4">

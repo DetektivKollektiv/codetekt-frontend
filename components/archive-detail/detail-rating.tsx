@@ -1,5 +1,6 @@
 'use client';
 
+import { Avatar, AvatarFallback, AvatarGroup } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { HelpButton } from '@/components/ui/help-button';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
@@ -86,25 +87,33 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 dich jetzt!
               </p>
               {/* Reviewer avatars */}
-              <div className="flex -space-x-2">
+              <AvatarGroup>
                 {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
                     65 + (reviewerId.charCodeAt(0) % 26),
                   );
                   return (
-                    <div
+                    <Avatar
                       key={reviewerId}
-                      className="w-12 h-12 rounded-full flex items-center justify-center text-white text-heading-sm"
+                      className="size-12"
                       style={{
                         backgroundColor:
                           reviewerColors[index % reviewerColors.length],
                       }}
                     >
-                      {letter}
-                    </div>
+                      <AvatarFallback
+                        className="text-white text-heading-sm"
+                        style={{
+                          backgroundColor:
+                            reviewerColors[index % reviewerColors.length],
+                        }}
+                      >
+                        {letter}
+                      </AvatarFallback>
+                    </Avatar>
                   );
                 })}
-              </div>
+              </AvatarGroup>
             </div>
           ) : (
             <div className="space-y-4">
@@ -116,25 +125,33 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 bearbeitet.
               </p>
               {/* Reviewer avatars */}
-              <div className="flex -space-x-2">
+              <AvatarGroup>
                 {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
                   const letter = String.fromCharCode(
                     65 + (reviewerId.charCodeAt(0) % 26),
                   );
                   return (
-                    <div
+                    <Avatar
                       key={reviewerId}
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-body-sm"
+                      className="size-8"
                       style={{
                         backgroundColor:
                           reviewerColors[index % reviewerColors.length],
                       }}
                     >
-                      {letter}
-                    </div>
+                      <AvatarFallback
+                        className="text-white text-body-sm"
+                        style={{
+                          backgroundColor:
+                            reviewerColors[index % reviewerColors.length],
+                        }}
+                      >
+                        {letter}
+                      </AvatarFallback>
+                    </Avatar>
                   );
                 })}
-              </div>
+              </AvatarGroup>
             </div>
           )}
         </CardContent>
