@@ -10,7 +10,7 @@ import {
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { UserCases } from '@/lib/queries/getUserCases';
 import { FC, useMemo } from 'react';
-import { CartesianGrid, LabelList, Line, LineChart, XAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
 
 interface UserStatisticsProps {
   ownUserAggregatedReviews: AggregatedReviews;
@@ -21,8 +21,6 @@ interface UserStatisticsProps {
     >['data']
   >;
 }
-
-const MILESTONES = [5, 10, 25, 50, 100] as const;
 
 const getMilestoneName = (count: number): string | null => {
   if (count >= 100) return 'Meisterdetektiv';
@@ -69,13 +67,14 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       return [];
     }
 
-    // Group by month and calculate cumulative totals
+    // Group by month and calculate cumulative totals for each type
     const monthlyData: Record<
       string,
-      { month: string; total: number; displayMonth: string }
+      { month: string; cases: number; reviews: number; displayMonth: string }
     > = {};
 
-    let cumulativeTotal = 0;
+    let cumulativeCases = 0;
+    let cumulativeReviews = 0;
 
     activities.forEach((activity) => {
       const monthKey = `${activity.date.getFullYear()}-${String(activity.date.getMonth() + 1).padStart(2, '0')}`;
@@ -84,12 +83,17 @@ const UserStatistics: FC<UserStatisticsProps> = ({
         year: 'numeric',
       });
 
-      cumulativeTotal++;
+      if (activity.type === 'case') {
+        cumulativeCases++;
+      } else {
+        cumulativeReviews++;
+      }
 
       monthlyData[monthKey] = {
         month: monthKey,
         displayMonth,
-        total: cumulativeTotal,
+        cases: cumulativeCases,
+        reviews: cumulativeReviews,
       };
     });
 
@@ -103,37 +107,15 @@ const UserStatistics: FC<UserStatisticsProps> = ({
   const currentMilestone = getMilestoneName(totalActivities);
 
   const chartConfig = {
-    total: {
-      label: 'Aktivitäten',
-      color: 'hsl(var(--primary))',
+    cases: {
+      label: 'Eingereichte Fälle',
+      color: 'hsl(var(--brand-coral))',
+    },
+    reviews: {
+      label: 'Bewertete Fälle',
+      color: 'hsl(var(--brand-yellow))',
     },
   } satisfies ChartConfig;
-
-  // Custom label component to show only milestones
-  const CustomLabel = (props: any) => {
-    const { x, y, value } = props;
-
-    // Only show label if this value is a milestone
-    if (!MILESTONES.includes(value)) {
-      return null;
-    }
-
-    return (
-      <g>
-        <circle cx={x} cy={y} r={6} fill="hsl(var(--primary))" />
-        <text
-          x={x}
-          y={y - 12}
-          fill="hsl(var(--foreground))"
-          textAnchor="middle"
-          fontSize={12}
-          fontWeight="bold"
-        >
-          {value}
-        </text>
-      </g>
-    );
-  };
 
   return (
     <Card className="overflow-hidden w-2/3">
@@ -144,7 +126,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
             Aktuelle Stufe:{' '}
             <p className=" text-display-md">
               {currentMilestone ? (
-                <span className="font-bold text-primary">
+                <span className="font-bold text-foreground">
                   {currentMilestone}
                 </span>
               ) : (
@@ -159,7 +141,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               <div className="text-muted-foreground text-sm mb-1">
                 Eingereichte Fälle
               </div>
-              <div className="text-display-lg md:text-5xl font-bold tabular-nums">
+              <div className="text-display-lg md:text-5xl font-bold tabular-nums text-brand-coral">
                 {totalCases}
               </div>
             </div>
@@ -167,7 +149,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               <div className="text-muted-foreground text-sm mb-1">
                 Bewertete Fälle
               </div>
-              <div className="text-display-lg md:text-5xl font-bold tabular-nums">
+              <div className="text-display-lg md:text-5xl font-bold tabular-nums text-brand-yellow">
                 {totalReviews}
               </div>
             </div>
@@ -201,20 +183,31 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   content={<ChartTooltipContent indicator="line" />}
                 />
                 <Line
-                  dataKey="total"
+                  dataKey="cases"
                   type="monotone"
-                  stroke="var(--color-total)"
+                  stroke="var(--color-cases)"
                   strokeWidth={2}
                   dot={{
-                    fill: 'var(--color-total)',
+                    fill: 'var(--color-cases)',
                     r: 4,
                   }}
                   activeDot={{
                     r: 6,
                   }}
-                >
-                  <LabelList content={<CustomLabel />} />
-                </Line>
+                />
+                <Line
+                  dataKey="reviews"
+                  type="monotone"
+                  stroke="var(--color-reviews)"
+                  strokeWidth={2}
+                  dot={{
+                    fill: 'var(--color-reviews)',
+                    r: 4,
+                  }}
+                  activeDot={{
+                    r: 6,
+                  }}
+                />
               </LineChart>
             </ChartContainer>
           ) : (
