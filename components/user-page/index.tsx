@@ -96,13 +96,11 @@ const UserPage: FC<UserPageProps> = ({
         </div>
       </div>
       <div className="mt-24 z-10 relative page-max-w ">
-        <div className="lg:w-2/3">
-          <UserStatistics
-            userCases={userCases}
-            userReviews={userReviews}
-            leaderboard={leaderboard}
-          />
-        </div>
+        <UserStatistics
+          userCases={userCases}
+          userReviews={userReviews}
+          leaderboard={leaderboard}
+        />
       </div>
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">

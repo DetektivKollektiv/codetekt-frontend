@@ -388,4 +388,8 @@
   .embla {
     @apply cursor-grab;
   }
+
+  .recharts-surface {
+    overflow: visible;
+  }
 }
