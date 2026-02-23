@@ -12,11 +12,14 @@ import Image from 'next/image';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import UserSettings from './user-settings';
+import UserStatistics from './user-statistics';
 
 interface UserPageProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
   openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
+  ownUserAggregatedReviews: AggregatedReviews;
+  ownUserPendingCases: UserCases;
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
@@ -24,6 +27,8 @@ const UserPage: FC<UserPageProps> = ({
   auth,
   ownUserReviewsAndCases,
   userReviewsAndCases,
+  ownUserAggregatedReviews,
+  ownUserPendingCases,
   openCases,
 }) => {
   const supabase = createClient();
@@ -85,14 +90,13 @@ const UserPage: FC<UserPageProps> = ({
             />
           </div>
         </div>
-        {/* Fall einreichen Form */}
-        {/* <div className="page-max-w mt-12">
-                <div className="lg:max-w-xl xl:max-w-2xl">
-                  {user && <CreateCaseForm auth={auth} />}
-                </div>
-              </div> */}
       </div>
-
+      <div className="mt-24 z-10 relative page-max-w">
+        <UserStatistics
+          ownUserAggregatedReviews={ownUserAggregatedReviews}
+          ownUserPendingCases={ownUserPendingCases}
+        />
+      </div>
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">

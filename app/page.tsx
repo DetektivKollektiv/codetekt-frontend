@@ -41,6 +41,10 @@ export default async function Home() {
     | null
     | (UserCases[number] | AggregatedReviews[number])[] = null;
 
+  // Separate arrays for cases with and without aggregated reviews
+  let ownUserAggregatedReviews: AggregatedReviews | null = null;
+  let ownUserPendingCases: UserCases | null = null;
+
   // open cases filtered to exclude cases the user has already reviewed
   let filteredOpenCases = openCases ?? null;
 
@@ -64,6 +68,9 @@ export default async function Home() {
           (review) => review.case_id === userCase.id,
         ),
     );
+
+    ownUserAggregatedReviews = ownUserAggregatedReviewsData ?? null;
+    ownUserPendingCases = ownFilteredUserCases ?? null;
 
     ownUserReviewsAndCases = [
       ...(ownFilteredUserCases ?? []),
@@ -126,6 +133,8 @@ export default async function Home() {
       {isAuthenticated && user && profile ? (
         <UserPage
           auth={auth}
+          ownUserAggregatedReviews={ownUserAggregatedReviews ?? []}
+          ownUserPendingCases={ownUserPendingCases ?? []}
           userReviewsAndCases={userReviewsAndCases ?? []}
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
           openCases={filteredOpenCases ?? []}
