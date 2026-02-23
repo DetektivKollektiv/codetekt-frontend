@@ -70,7 +70,7 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
                 <span
                   className={cn(
                     'flex size-4 items-center justify-center rounded-full border-2 transition-all',
-                    isSelected && 'text-white',
+                    isSelected && 'text-neutral-0',
                   )}
                   style={{
                     borderColor: `${option.color}`,

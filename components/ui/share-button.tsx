@@ -9,7 +9,7 @@ const shareButtonVariants = cva('', {
   variants: {
     theme: {
       light: 'hover:bg-accent',
-      dark: 'text-white hover:bg-white/10 hover:text-white',
+      dark: 'text-neutral-0 hover:bg-white/10 hover:text-neutral-0',
     },
   },
   defaultVariants: {

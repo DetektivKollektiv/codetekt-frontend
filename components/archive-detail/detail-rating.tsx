@@ -40,7 +40,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
 
   return (
     <div className="page-max-w">
-      <Card className="border-none bg-brand-darkblue text-white ">
+      <Card className="border-none bg-brand-darkblue text-neutral-0 ">
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
           <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
           <HelpButton theme="dark" href="/help" />
@@ -55,7 +55,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 <button
                   key={level}
                   disabled
-                  className={`px-6 py-4 rounded-lg text-body-md font-bold text-white cursor-default transition-all ${
+                  className={`px-6 py-4 rounded-lg text-body-md font-bold text-neutral-0 cursor-default transition-all ${
                     isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
                   }`}
                   style={
@@ -75,13 +75,16 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
           {/* Reviewer info and CTA */}
           {!isAuthenticated ? (
             <div className="space-y-4">
-              <p className="text-white/90">
+              <p className="text-neutral-0/90">
                 Dieser Fall wurde von{' '}
                 <span className="font-semibold">
                   {reviewerCount} Detektiv*innen
                 </span>{' '}
                 bearbeitet. Mach mit und{' '}
-                <Link href="/register" className="underline hover:text-white">
+                <Link
+                  href="/register"
+                  className="underline hover:text-neutral-0"
+                >
                   registriere
                 </Link>{' '}
                 dich jetzt!
@@ -102,7 +105,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                       }}
                     >
                       <AvatarFallback
-                        className="text-white text-heading-sm"
+                        className="text-neutral-0 text-heading-sm"
                         style={{
                           backgroundColor:
                             reviewerColors[index % reviewerColors.length],
@@ -117,7 +120,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-white/90">
+              <p className="text-neutral-0/90">
                 Dieser Fall wurde von{' '}
                 <span className="font-semibold">
                   {reviewerCount} Detektiv*innen
@@ -140,7 +143,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                       }}
                     >
                       <AvatarFallback
-                        className="text-white text-body-sm"
+                        className="text-neutral-0 text-body-sm"
                         style={{
                           backgroundColor:
                             reviewerColors[index % reviewerColors.length],
