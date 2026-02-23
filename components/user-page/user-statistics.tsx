@@ -29,19 +29,17 @@ interface UserStatisticsProps {
   userReviews: UserReviews;
 }
 
-const getMilestoneName = (count: number): string | null => {
+const getMilestoneName = (count: number): string => {
   if (count >= 100) return 'Meisterdetektiv';
   if (count >= 50) return 'Experte';
   if (count >= 25) return 'Fortgeschritten';
   if (count >= 10) return 'Erfahren';
-  if (count >= 5) return 'Anfänger';
-  return null;
+  return 'Anfänger';
 };
 
 const getNextMilestone = (
   currentCount: number,
 ): { name: string; threshold: number } | null => {
-  if (currentCount < 5) return { name: 'Anfänger', threshold: 5 };
   if (currentCount < 10) return { name: 'Erfahren', threshold: 10 };
   if (currentCount < 25) return { name: 'Fortgeschritten', threshold: 25 };
   if (currentCount < 50) return { name: 'Experte', threshold: 50 };
@@ -156,13 +154,9 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               </div>
             )}
             <p className=" text-display-md">
-              {currentMilestone ? (
-                <span className="font-bold text-foreground">
-                  {currentMilestone}
-                </span>
-              ) : (
-                'Erreiche 5 Aktivitäten für deine erste Stufe'
-              )}
+              <span className="font-bold text-foreground">
+                {currentMilestone}
+              </span>
             </p>
           </div>
 
