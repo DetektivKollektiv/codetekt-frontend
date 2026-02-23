@@ -175,7 +175,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-12 relative h-96">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative lg:h-96">
           <div>
             <h3 className="text-heading-md text-muted-foreground font-semibold mb-6">
               Aktivitätsverlauf
@@ -183,7 +183,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
             {chartData.length > 0 ? (
               <ChartContainer
                 config={chartConfig}
-                className="min-h-80 w-full focus:outline-none"
+                className="min-h-40 lg:min-h-80 max-h-60 lg:max-h-96  w-full focus:outline-none"
               >
                 <AreaChart
                   className="focus:outline-none"
@@ -279,12 +279,12 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               </div>
             )}
           </div>
-          <div className="absolute w-px bg-border h-full left-1/2"></div>
+          <div className="absolute w-px bg-border h-full left-1/2 hidden lg:visible"></div>
           <div>
-            <h3 className="text-heading-md text-muted-foreground font-semibold mb-2">
+            <h3 className="text-heading-md text-muted-foreground font-semibold mb-5">
               Leaderboard
             </h3>
-            <div className="relative max-h-[22rem] h-full overflow-y-auto no-scrollbar ">
+            <div className="relative lg:max-h-[20rem] h-full overflow-y-auto no-scrollbar ">
               <Table>
                 <TableHeader className="sticky top-0 bg-muted z-10 [&_tr>th:first-child]:rounded-tl-md [&_tr>th:last-child]:rounded-tr-md">
                   <TableRow>
