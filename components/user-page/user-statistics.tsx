@@ -142,7 +142,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Cell 1 — Stage + Numbers */}
       <Card className="overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] lg:grid-cols-1 xl:grid-cols-[1fr_auto] items-start">
           {/* Left side - Title and current level */}
           <div className="p-4 border-b h-full">
             {nextMilestone && (
