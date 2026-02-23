@@ -47,12 +47,9 @@ const UserPage: FC<UserPageProps> = ({
         <div className="flex-col lg:flex-row justify-center flex lg:items-center relative">
           <div className="page-max-w w-full z-10 space-y-12 ">
             <div>
-              {/* <h2 className="text-display-eyebrow uppercase">
-                      Trust-Checking von codetekt
-                    </h2> */}
               <h1 className="text-display-sm sm:text-display-md 2xl:text-display-lg uppercase flex items-center gap-4">
                 {profile.username && (
-                  <Avatar className="size-14 ">
+                  <Avatar className="size-8 md:size-14">
                     <AvatarFallback className="bg-primary text-heading-md">
                       <p className="text-primary-foreground">
                         {getShortUsername(profile.username)}
