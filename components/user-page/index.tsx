@@ -9,6 +9,7 @@ import { getShortUsername } from '@/lib/utils/get-short-username';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 
+import { UserReviews } from '@/lib/queries/getUserReviews';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import UserSettings from './user-settings';
@@ -18,13 +19,8 @@ interface UserPageProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
   openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
-  ownUserAggregatedReviews: AggregatedReviews;
-  ownUserPendingCases: UserCases;
-  userReviews: NonNullable<
-    Awaited<
-      ReturnType<typeof import('@/lib/queries/getUserReviews').getUserReviews>
-    >['data']
-  >;
+  userCases: UserCases;
+  userReviews: UserReviews;
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
@@ -32,8 +28,7 @@ const UserPage: FC<UserPageProps> = ({
   auth,
   ownUserReviewsAndCases,
   userReviewsAndCases,
-  ownUserAggregatedReviews,
-  ownUserPendingCases,
+  userCases,
   userReviews,
   openCases,
 }) => {
@@ -97,12 +92,10 @@ const UserPage: FC<UserPageProps> = ({
           </div>
         </div>
       </div>
-      <div className="mt-24 z-10 relative page-max-w">
-        <UserStatistics
-          ownUserAggregatedReviews={ownUserAggregatedReviews}
-          ownUserPendingCases={ownUserPendingCases}
-          userReviews={userReviews}
-        />
+      <div className="mt-24 z-10 relative page-max-w ">
+        <div className="lg:w-2/3">
+          <UserStatistics userCases={userCases} userReviews={userReviews} />
+        </div>
       </div>
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">

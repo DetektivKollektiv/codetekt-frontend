@@ -7,7 +7,7 @@ import {
 } from '@/lib/queries/getAggregatedReviews';
 import { getOpenCases } from '@/lib/queries/getOpenCases';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
-import { getUserReviews } from '@/lib/queries/getUserReviews';
+import { getUserReviews, UserReviews } from '@/lib/queries/getUserReviews';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
@@ -42,9 +42,8 @@ export default async function Home() {
     | (UserCases[number] | AggregatedReviews[number])[] = null;
 
   // Separate arrays for cases with and without aggregated reviews
-  let ownUserAggregatedReviews: AggregatedReviews | null = null;
-  let ownUserPendingCases: UserCases | null = null;
-  let userReviews: Awaited<ReturnType<typeof getUserReviews>>['data'] = null;
+  let userCases: UserCases | null = null;
+  let userReviews: UserReviews | null = null;
 
   // open cases filtered to exclude cases the user has already reviewed
   let filteredOpenCases = openCases ?? null;
@@ -70,8 +69,7 @@ export default async function Home() {
         ),
     );
 
-    ownUserAggregatedReviews = ownUserAggregatedReviewsData ?? null;
-    ownUserPendingCases = ownFilteredUserCases ?? null;
+    userCases = userCasesData ?? null;
     userReviews = userReviewsData ?? null;
 
     ownUserReviewsAndCases = [
@@ -135,8 +133,7 @@ export default async function Home() {
       {isAuthenticated && user && profile ? (
         <UserPage
           auth={auth}
-          ownUserAggregatedReviews={ownUserAggregatedReviews ?? []}
-          ownUserPendingCases={ownUserPendingCases ?? []}
+          userCases={userCases ?? []}
           userReviews={userReviews ?? []}
           userReviewsAndCases={userReviewsAndCases ?? []}
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
