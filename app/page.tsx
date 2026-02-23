@@ -44,6 +44,7 @@ export default async function Home() {
   // Separate arrays for cases with and without aggregated reviews
   let ownUserAggregatedReviews: AggregatedReviews | null = null;
   let ownUserPendingCases: UserCases | null = null;
+  let userReviews: Awaited<ReturnType<typeof getUserReviews>>['data'] = null;
 
   // open cases filtered to exclude cases the user has already reviewed
   let filteredOpenCases = openCases ?? null;
@@ -71,6 +72,7 @@ export default async function Home() {
 
     ownUserAggregatedReviews = ownUserAggregatedReviewsData ?? null;
     ownUserPendingCases = ownFilteredUserCases ?? null;
+    userReviews = userReviewsData ?? null;
 
     ownUserReviewsAndCases = [
       ...(ownFilteredUserCases ?? []),
@@ -135,6 +137,7 @@ export default async function Home() {
           auth={auth}
           ownUserAggregatedReviews={ownUserAggregatedReviews ?? []}
           ownUserPendingCases={ownUserPendingCases ?? []}
+          userReviews={userReviews ?? []}
           userReviewsAndCases={userReviewsAndCases ?? []}
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
           openCases={filteredOpenCases ?? []}

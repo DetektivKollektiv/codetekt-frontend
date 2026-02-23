@@ -20,6 +20,11 @@ interface UserPageProps {
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
   ownUserAggregatedReviews: AggregatedReviews;
   ownUserPendingCases: UserCases;
+  userReviews: NonNullable<
+    Awaited<
+      ReturnType<typeof import('@/lib/queries/getUserReviews').getUserReviews>
+    >['data']
+  >;
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
@@ -29,6 +34,7 @@ const UserPage: FC<UserPageProps> = ({
   userReviewsAndCases,
   ownUserAggregatedReviews,
   ownUserPendingCases,
+  userReviews,
   openCases,
 }) => {
   const supabase = createClient();
@@ -95,6 +101,7 @@ const UserPage: FC<UserPageProps> = ({
         <UserStatistics
           ownUserAggregatedReviews={ownUserAggregatedReviews}
           ownUserPendingCases={ownUserPendingCases}
+          userReviews={userReviews}
         />
       </div>
       {openCases && (
