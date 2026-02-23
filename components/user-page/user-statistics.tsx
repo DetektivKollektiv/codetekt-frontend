@@ -114,7 +114,9 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       };
     });
 
-    return Object.values(monthlyData);
+    // Return only the last 4 months
+    const allMonths = Object.values(monthlyData);
+    return allMonths.slice(-4);
   }, [userCases, userReviews]);
 
   const totalCases = userCases.length;
@@ -154,7 +156,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
           {/* Right side - Big numbers */}
           <div className="grid grid-cols-2 bg-muted">
             <div className="text-left border-l border-b p-5">
-              <div className="text-muted-foreground text-sm mb-1">
+              <div className="text-muted-foreground text-sm mb-1 whitespace-nowrap">
                 Eingereichte Fälle
               </div>
               <div className="text-display-lg md:text-5xl font-bold tabular-nums text-brand-coral">
@@ -173,7 +175,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-12 relative">
+        <div className="grid grid-cols-2 gap-12 relative h-96">
           <div>
             <h3 className="text-heading-md text-muted-foreground font-semibold mb-6">
               Aktivitätsverlauf
@@ -181,7 +183,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
             {chartData.length > 0 ? (
               <ChartContainer
                 config={chartConfig}
-                className="min-h-12 focus:outline-none"
+                className="min-h-80 w-full focus:outline-none"
               >
                 <AreaChart
                   className="focus:outline-none"
@@ -282,23 +284,23 @@ const UserStatistics: FC<UserStatisticsProps> = ({
             <h3 className="text-heading-md text-muted-foreground font-semibold mb-2">
               Leaderboard
             </h3>
-            <div className="relative max-h-[400px] overflow-y-auto">
+            <div className="relative max-h-[22rem] h-full overflow-y-auto no-scrollbar ">
               <Table>
-                <TableHeader className="sticky top-0 bg-background z-10">
+                <TableHeader className="sticky top-0 bg-muted z-10 [&_tr>th:first-child]:rounded-tl-md [&_tr>th:last-child]:rounded-tr-md">
                   <TableRow>
-                    <TableHead className="w-[40px]"></TableHead>
-                    <TableHead>Benutzer</TableHead>
-                    <TableHead className="text-right text-brand-coral">
+                    <TableHead className="w-[40px] bg-muted"></TableHead>
+                    <TableHead className="bg-muted">Benutzer</TableHead>
+                    <TableHead className="text-right text-brand-coral bg-muted">
                       Eingereicht
                     </TableHead>
-                    <TableHead className="text-right text-brand-yellow">
+                    <TableHead className="text-right text-brand-yellow bg-muted">
                       Bewertet
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className="relative">
                   {leaderBoardData.map((user, index) => (
-                    <TableRow key={user.username}>
+                    <TableRow key={user.username} className="first:mt-12">
                       <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -320,6 +322,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   ))}
                 </TableBody>
               </Table>
+              <div className="h-6 bg-gradient-to-t from-neutral-0 to-neutral-0/0 sticky left-0 right-0 bottom-0 w-full"></div>
             </div>
           </div>
         </div>
