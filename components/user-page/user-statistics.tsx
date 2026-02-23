@@ -36,6 +36,17 @@ const getMilestoneName = (count: number): string | null => {
   return null;
 };
 
+const getNextMilestone = (
+  currentCount: number,
+): { name: string; threshold: number } | null => {
+  if (currentCount < 5) return { name: 'Anfänger', threshold: 5 };
+  if (currentCount < 10) return { name: 'Erfahren', threshold: 10 };
+  if (currentCount < 25) return { name: 'Fortgeschritten', threshold: 25 };
+  if (currentCount < 50) return { name: 'Experte', threshold: 50 };
+  if (currentCount < 100) return { name: 'Meisterdetektiv', threshold: 100 };
+  return null;
+};
+
 const leaderBoardData = [
   { username: 'Anna', cases: 20, reviews: 15 },
   { username: 'Ben', cases: 15, reviews: 10 },
@@ -123,6 +134,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
   const totalReviews = userReviews.length;
   const totalActivities = totalCases + totalReviews;
   const currentMilestone = getMilestoneName(totalActivities);
+  const nextMilestone = getNextMilestone(totalActivities);
+  const activitiesUntilNext = nextMilestone
+    ? nextMilestone.threshold - totalActivities
+    : 0;
 
   const chartConfig = {
     cases: {
@@ -140,8 +155,16 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       <CardHeader className="pt-0 px-0 ">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start">
           {/* Left side - Title and current level */}
-          <div className="p-4 border-b h-full text-muted-foreground text-body-sm">
-            Aktuelle Stufe
+          <div className="p-4 border-b h-full ">
+            {nextMilestone && (
+              <div className="flex space-x-1">
+                <p className="text-muted-foreground text-body-sm">
+                  Noch <b className="text-foreground">{activitiesUntilNext}</b>{' '}
+                  Fälle für{' '}
+                  <b className="text-foreground">{nextMilestone.name}</b>
+                </p>
+              </div>
+            )}
             <p className=" text-display-md">
               {currentMilestone ? (
                 <span className="font-bold text-foreground">
@@ -154,8 +177,8 @@ const UserStatistics: FC<UserStatisticsProps> = ({
           </div>
 
           {/* Right side - Big numbers */}
-          <div className="grid grid-cols-2 bg-muted">
-            <div className="text-left border-l border-b p-5">
+          <div className="grid grid-cols-2 bg-muted h-full">
+            <div className="text-left border-l border-b p-5 ">
               <div className="text-muted-foreground text-sm mb-1 whitespace-nowrap">
                 Eingereichte Fälle
               </div>
@@ -163,7 +186,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                 {totalCases}
               </div>
             </div>
-            <div className="text-left border-l border-b p-5">
+            <div className="text-left border-l border-b p-5 ">
               <div className="text-muted-foreground text-sm mb-1">
                 Bewertete Fälle
               </div>
