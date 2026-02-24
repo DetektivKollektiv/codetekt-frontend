@@ -10,7 +10,7 @@ export default async function Page() {
   if (error) {
     throw error;
   }
-  console.log('Aggregated reviews data:', aggregatedReviews);
+
   return (
     <>
       <div className="w-full pt-12 lg:pt-24 bg-gradient-neutral-coral">
