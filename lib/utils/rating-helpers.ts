@@ -203,7 +203,7 @@ export const getPreviewRating = (template: NonNullable<ReviewTemplate>) => {
   const trafficLightFields = fields
     .filter((f) => f.type === 'traffic-light')
     .filter((f) => typeof f.answer_value === 'number' && f.answer_value <= 3);
-  console.log('Traffic light fields for preview rating:', trafficLightFields);
+
   const highestAnswerValue =
     trafficLightFields.length > 0
       ? Math.max(...trafficLightFields.map((f) => f.answer_value as number))
