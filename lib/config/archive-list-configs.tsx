@@ -57,7 +57,8 @@ export const aggregatedReviewsListConfig = {
   fuseOptions: {
     keys: [
       { name: 'cases.case_number', weight: 4 },
-      { name: 'cases.open_graph_data.og_title', weight: 3 },
+      { name: 'cases.open_graph_data.og_title', weight: 4 },
+      { name: 'data.metadata.keyword_type', weight: 4 },
       { name: 'cases.content', weight: 2 },
       { name: 'cases.content_type', weight: 2 },
       { name: 'cases.open_graph_data.og_description', weight: 1 },
@@ -99,6 +100,7 @@ export const reviewsAndCasesListConfig = {
     keys: [
       { name: 'case_number', weight: 4 },
       { name: 'cases.case_number', weight: 4 },
+      { name: 'data.metadata.keyword_type', weight: 4 },
       { name: 'open_graph_data.og_title', weight: 3 },
       { name: 'cases.open_graph_data.og_title', weight: 3 },
       { name: 'content', weight: 2 },
