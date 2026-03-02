@@ -170,7 +170,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const { mutate: saveInProgress, isPending: isSavingPending } = useMutation({
     ...saveReviewAnswersInProgressMutation(supabase),
     onSuccess: () => {
-      toast.success('Entwurf gespeichert');
+      toast.success('Zwischenstand gespeichert');
       markAsSaved();
     },
     onError: (error: Error) => {
