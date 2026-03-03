@@ -39,11 +39,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
 
       {/* Accordion with categories */}
       {reviewData.questions.length > 0 ? (
-        <Accordion
-          type="single"
-          className="space-y-4"
-          defaultValue={reviewData.questions[0]?.id}
-        >
+        <Accordion type="multiple" className="space-y-4">
           {reviewData.questions.map((question) => {
             const hasFields = question.fields && question.fields.length > 0;
             if (!hasFields) return null;
