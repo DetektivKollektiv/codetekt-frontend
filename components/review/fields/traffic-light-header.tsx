@@ -27,10 +27,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
                 strokeWidth={2.5}
               />
             </TooltipTrigger>
-            <TooltipContent>
-              <p className="font-medium text-body-md">Stimme voll zu</p>
+            <TooltipContent className="max-w-48 text-center">
               <p className="text-body-sm opacity-80">
-                Die Aussage trifft vollständig zu.
+                Trifft zu bzw. hat keinen negativen Einfluss auf die
+                Vertrauenswürdigkeit des Falls
               </p>
             </TooltipContent>
           </Tooltip>
@@ -43,10 +43,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
                 strokeWidth={2.5}
               />
             </TooltipTrigger>
-            <TooltipContent>
-              <p className="font-medium text-body-md">Stimme eher zu</p>
+            <TooltipContent className="max-w-48 text-center">
               <p className="text-body-sm opacity-80">
-                Die Aussage trifft überwiegend zu.
+                Trifft nicht zu, aber hat einen geringen Einfluss auf die
+                Vertrauenswürdigkeit des Falls
               </p>
             </TooltipContent>
           </Tooltip>
@@ -59,10 +59,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
                 strokeWidth={2.5}
               />
             </TooltipTrigger>
-            <TooltipContent>
-              <p className="font-medium text-body-md">Stimme eher nicht zu</p>
+            <TooltipContent className="max-w-48 text-center">
               <p className="text-body-sm opacity-80">
-                Die Aussage trifft eher nicht zu.
+                Trifft nicht zu und hat erheblichen Einfluss auf die
+                Vertrauenswürdigkeit des Falls
               </p>
             </TooltipContent>
           </Tooltip>
@@ -75,10 +75,10 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
                 strokeWidth={2.5}
               />
             </TooltipTrigger>
-            <TooltipContent>
-              <p className="font-medium text-body-md">Stimme nicht zu</p>
+            <TooltipContent className="max-w-48 text-center">
               <p className="text-body-sm opacity-80">
-                Die Aussage trifft nicht zu.
+                Trifft nicht zu und lässt den ganzen Fall nicht vertrauenswürdig
+                wirken.
               </p>
             </TooltipContent>
           </Tooltip>
@@ -87,11 +87,8 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
             <TooltipTrigger asChild>
               <CircleMinus className="size-6 md:size-5 text-muted-foreground" />
             </TooltipTrigger>
-            <TooltipContent>
-              <p className="font-medium text-body-md">Keine Antwort</p>
-              <p className="text-body-sm opacity-80">
-                Es wurde keine Antwort gegeben.
-              </p>
+            <TooltipContent className="max-w-48 text-center">
+              <p className="text-body-sm opacity-80">Frage nicht anwendbar</p>
             </TooltipContent>
           </Tooltip>
         </div>
