@@ -37,7 +37,7 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
 
   const [email, setEmail] = useState(user?.email || '');
   const [getNotifications, setGetNotifications] = useState(
-    profile?.get_notifications ?? false
+    profile?.get_notifications ?? false,
   );
 
   useEffect(() => {
@@ -57,13 +57,13 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
     ...updateUserEmailMutation(supabase),
     onSuccess: () => {
       toast.success(
-        'E-Mail-Adresse erfolgreich aktualisiert. Bitte überprüfe dein Postfach zur Bestätigung.'
+        'E-Mail-Adresse erfolgreich aktualisiert. Bitte überprüfe dein Postfach zur Bestätigung.',
       );
       queryClient.invalidateQueries({ queryKey: ['current-user'] });
     },
     onError: (err: Error) => {
       toast.error(
-        err.message || 'Fehler beim Aktualisieren der E-Mail-Adresse'
+        err.message || 'Fehler beim Aktualisieren der E-Mail-Adresse',
       );
     },
   });
@@ -142,8 +142,8 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
                   Benachrichtigungen erhalten
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Erhalte E-Mail-Benachrichtigungen über Updates und Updates
-                  deiner Fälle
+                  Erhalte E-Mail-Benachrichtigungen sobald es Updates zu einem
+                  deiner Fälle gibt
                 </p>
               </div>
               <Switch
