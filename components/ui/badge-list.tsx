@@ -21,7 +21,7 @@ export function BadgeList({
                 {capitalizeFirstLetter(contentType[0])}
               </div>
             </Badge>
-            <div>•</div>
+            {keywordType.length > 0 && <div>•</div>}
           </>
         )}
         {keywordType.map((keyword, idx) => (
