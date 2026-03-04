@@ -63,15 +63,10 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center gap-3">
                     <NewIcon
-                      style={{
-                        color: getRatingStyle(question.score).backgroundColor,
-                      }}
+                      className={`${getRatingStyle(question.score).textClass}`}
                     />
                     <span
-                      className="font-semibold"
-                      style={{
-                        color: getRatingStyle(question.score).backgroundColor,
-                      }}
+                      className={`font-semibold ${getRatingStyle(question.score).textClass}`}
                     >
                       {question.metadata.title}
                     </span>

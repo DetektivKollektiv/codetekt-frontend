@@ -62,7 +62,7 @@ export function DetailTrafficLightEvaluation({
               </>
             )}
           </div>
-          <p className="font-medium leading-relaxed line-clamp-3 h-20 text-ellipsis">
+          <p className="font-medium leading-relaxed line-clamp-3 h-20 text-ellipsis text-foreground">
             {field.question}
           </p>
         </div>
