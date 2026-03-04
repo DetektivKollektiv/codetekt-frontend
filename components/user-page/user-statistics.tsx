@@ -175,7 +175,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               <div className="text-muted-foreground text-sm mb-1">
                 Bewertete Fälle
               </div>
-              <div className="text-display-lg md:text-5xl font-bold tabular-nums text-brand-yellow">
+              <div className="text-display-lg md:text-5xl font-bold tabular-nums text-brand-yellow-dark">
                 {totalReviews}
               </div>
             </div>
@@ -304,7 +304,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   <TableHead className="text-right text-brand-coral bg-muted">
                     Eingereicht
                   </TableHead>
-                  <TableHead className="text-right text-brand-yellow bg-muted">
+                  <TableHead className="text-right text-brand-yellow-dark bg-muted">
                     Bewertet
                   </TableHead>
                 </TableRow>
