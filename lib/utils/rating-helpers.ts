@@ -48,7 +48,7 @@ export function getRatingStyle(score: number): RatingStyle {
       backgroundColor: 'hsl(var(--brand-yellow))',
       foregroundColor: 'hsl(var(--neutral-800))',
       backgroundClass: 'bg-brand-yellow',
-      textClass: 'text-brand-yellow',
+      textClass: 'text-brand-yellow-dark',
       textForegroundClass: 'text-neutral-800',
     };
   } else if (s < 3) {

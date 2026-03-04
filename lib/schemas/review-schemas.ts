@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import {
   chipAnswerSchema,
-  likertScaleAnswerSchema,
   multiLineTextAnswerSchema,
   textAnswerSchema,
   textAreaAnswerSchema,
@@ -31,7 +30,6 @@ export const submittedReviewAnswerSchema = z
     // Bilder/Videos
     media_objectivity: trafficLightAnswerSchema.optional(),
     media_no_ai_or_staging_doubts: trafficLightAnswerSchema.optional(),
-    media_no_obvious_editing: trafficLightAnswerSchema.optional(),
     media_visualizations_not_distorted: trafficLightAnswerSchema.optional(),
     media_visualization_data_traceable: trafficLightAnswerSchema.optional(),
 
@@ -46,8 +44,6 @@ export const submittedReviewAnswerSchema = z
     quotes_identifiable_persons: trafficLightAnswerSchema.optional(),
     quotes_context_accurate: trafficLightAnswerSchema.optional(),
 
-    additional_rating: likertScaleAnswerSchema,
-    additional_comment: z.string().min(10).nullable().optional(),
     comment: z
       .union([z.literal(''), z.string().min(10)])
       .nullable()
@@ -420,34 +416,6 @@ export const submittedReviewAnswerSchema = z
         )
       ) {
         return (
-          data.media_no_obvious_editing !== null &&
-          data.media_no_obvious_editing !== undefined
-        );
-      }
-      return true;
-    },
-    {
-      message:
-        'media_no_obvious_editing is required when content_type is neutral, opinion or text_message',
-      path: ['media_no_obvious_editing'],
-      when(payload) {
-        const hasRelevantIssues = payload.issues.some(
-          (iss) =>
-            iss.path?.[0] === 'content_type' ||
-            iss.path?.[0] === 'media_no_obvious_editing',
-        );
-        return !hasRelevantIssues;
-      },
-    },
-  )
-  .refine(
-    (data) => {
-      if (
-        data.content_type?.some((t) =>
-          ['neutral', 'opinion', 'text_message'].includes(t),
-        )
-      ) {
-        return (
           data.media_visualizations_not_distorted !== null &&
           data.media_visualizations_not_distorted !== undefined
         );
@@ -698,34 +666,6 @@ export const submittedReviewAnswerSchema = z
         return !hasRelevantIssues;
       },
     },
-  )
-  // -------------------------
-  // Additional
-  // -------------------------
-  .refine(
-    (data) => {
-      // Conditional: additional_comment required wenn additional_rating < 3
-      if (data.additional_rating !== null && data.additional_rating < 3) {
-        return (
-          data.additional_comment !== null &&
-          data.additional_comment !== undefined &&
-          data.additional_comment.trim().length > 0
-        );
-      }
-      return true;
-    },
-    {
-      message: 'additional_comment is required when additional_rating < 3',
-      path: ['additional_comment'],
-      when(payload) {
-        const hasRelevantIssues = payload.issues.some(
-          (iss) =>
-            iss.path?.[0] === 'additional_rating' ||
-            iss.path?.[0] === 'additional_comment',
-        );
-        return !hasRelevantIssues;
-      },
-    },
   );
 
 // In-progress schema - all optional (autosave/draft)
@@ -751,7 +691,6 @@ export const inProgressReviewAnswerSchema = z
     // Bilder/Videos
     media_objectivity: trafficLightAnswerSchema.optional(),
     media_no_ai_or_staging_doubts: trafficLightAnswerSchema.optional(),
-    media_no_obvious_editing: trafficLightAnswerSchema.optional(),
     media_visualizations_not_distorted: trafficLightAnswerSchema.optional(),
     media_visualization_data_traceable: trafficLightAnswerSchema.optional(),
 
@@ -766,8 +705,6 @@ export const inProgressReviewAnswerSchema = z
     quotes_identifiable_persons: trafficLightAnswerSchema.optional(),
     quotes_context_accurate: trafficLightAnswerSchema.optional(),
 
-    additional_rating: likertScaleAnswerSchema.optional(),
-    additional_comment: textAreaAnswerSchema.optional(),
     comment: textAreaAnswerSchema.optional(),
   })
   .strict();

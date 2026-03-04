@@ -1,15 +1,14 @@
 import {
+  CheckCircle2,
   FileText,
   Heading,
-  ListTree,
-  Scale,
-  Users,
-  Link2,
-  CheckCircle2,
-  Radio,
-  UserCheck,
   Image,
-  Star,
+  Link2,
+  ListTree,
+  Radio,
+  Scale,
+  UserCheck,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -23,8 +22,7 @@ export type FieldId =
   | 'claims_match_sources'
   | 'public_media_match'
   | 'author_credentials'
-  | 'images_quality'
-  | 'additional_rating';
+  | 'images_quality';
 
 export type CategoryId =
   | 'content_quality'
@@ -121,13 +119,6 @@ export const fieldDefinitions: Record<FieldId, FieldDefinition> = {
     icon: Image,
     categoryId: 'media_quality',
   },
-  additional_rating: {
-    id: 'additional_rating',
-    title: 'Zusätzliche Bewertung',
-    question: 'Wie würden Sie den Artikel insgesamt bewerten?',
-    icon: Star,
-    categoryId: 'additional',
-  },
 };
 
 export const categoryDefinitions: Record<CategoryId, CategoryDefinition> = {
@@ -159,12 +150,6 @@ export const categoryDefinitions: Record<CategoryId, CategoryDefinition> = {
     title: 'Medienqualität',
     icon: Image,
     fieldIds: ['images_quality'],
-  },
-  additional: {
-    id: 'additional',
-    title: 'Zusätzlich',
-    icon: Star,
-    fieldIds: ['additional_rating'],
   },
 };
 
