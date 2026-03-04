@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { FC } from 'react';
 import ImagePlaceholder from '../image-placeholder';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import {
   Card,
   CardContent,
@@ -60,15 +61,20 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData, ratingStyle }) => {
             </CardHeader>
 
             <CardContent className="space-y-4">
-              <Badge
-                className={cn(
-                  ratingStyle.backgroundClass,
-                  ratingStyle.textForegroundClass,
-                  'w-full justify-center pointer-events-none h-9',
-                )}
-              >
-                {ratingStyle.label}
-              </Badge>
+              <div className="space-y-2">
+                <Badge
+                  className={cn(
+                    ratingStyle.backgroundClass,
+                    ratingStyle.textForegroundClass,
+                    'w-full justify-center pointer-events-none h-9',
+                  )}
+                >
+                  {ratingStyle.label}
+                </Badge>
+                <Button variant="outline" size="sm" className="w-full" disabled>
+                  Hilfe zur Bewertung
+                </Button>
+              </div>
               {caseData.content_type === 'url' ? (
                 <Link
                   href={caseData.content}
