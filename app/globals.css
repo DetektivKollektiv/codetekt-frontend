@@ -59,17 +59,21 @@
     --brand-purple-light: 252 95% 64%; /* #6E4BFA */
     --brand-purple-dark: 252 64% 43%; /* #4428B2 */
 
-    --brand-yellow: 48 100% 49%; /* #FAC800 */
-    --brand-yellow-light: 48 95% 59%; /* #FAD232 */
-    --brand-yellow-dark: 43 73% 52%; /* #DE9B28 */
+    --brand-yellow: 52 100% 70%; /* #FFEB66 */
+    --brand-yellow-light: 52 100% 80%; /* #FFF199 */
+    --brand-yellow-dark: 52 100% 60%; /* #FFE433 */
 
-    --brand-orange: 24 100% 50%; /* #FF8C00 */
-    --brand-orange-light: 24 100% 57%; /* #FFA733 */
-    --brand-orange-dark: 24 74% 43%; /* #CC7300 */
+    --brand-orange: 29 100% 60%; /* #FF9533 */
+    --brand-orange-light: 29 100% 70%; /* #FFB066 */
+    --brand-orange-dark: 29 100% 50%; /* #FF7B00 */
 
-    --brand-green: 162 72% 41%; /* #00C897 */
-    --brand-green-light: 162 72% 48%; /* #33D0 */
-    --brand-green-dark: 162 52% 34%; /* #009E6A */
+    --brand-green: 130 50% 60%; /* #66CC77 */
+    --brand-green-light: 130 50% 70%; /* #8CD999 */
+    --brand-green-dark: 130 50% 50%; /* #40BF55 */
+
+    --brand-red: 0 100% 65%; /* #FF4D4D */
+    --brand-red-light: 0 100% 75%; /* #FF8080 */
+    --brand-red-dark: 0 100% 55%; /* #FF1A1A */
 
     --brand-coral: 4 100% 70%; /* #FF7268 */
     --brand-coral-light: 4 100% 76%; /* #FF8880 */
@@ -110,7 +114,7 @@
     --accent-foreground: var(--neutral-800); /* #140735 */
 
     /* Destructive */
-    --destructive: 360 100% 65%; /* #FF4D4D */
+    --destructive: 0 100% 65%; /* #FF4D4D */
     --destructive-foreground: var(--neutral-0); /* #FFFFFF */
 
     /* Structure / Focus */

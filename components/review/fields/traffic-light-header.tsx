@@ -71,7 +71,7 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <HelpCircle
-                className="size-6 md:size-5 text-brand-coral"
+                className="size-6 md:size-5 text-destructive"
                 strokeWidth={2.5}
               />
             </TooltipTrigger>
