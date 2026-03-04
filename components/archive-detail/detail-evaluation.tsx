@@ -85,29 +85,40 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                       dragFree: false,
                     }}
                   >
-                    {question.fields.map((field) => {
-                      const fieldsWithHighestIndex = getFieldsWithHighestIndex(
-                        question.fields,
-                      );
+                    {[...question.fields]
+                      .sort((a, b) => {
+                        const aAvg = 'average' in a ? a.average : -Infinity;
+                        const bAvg = 'average' in b ? b.average : -Infinity;
+                        return bAvg - aAvg;
+                      })
+                      .map((field) => {
+                        const fieldsWithHighestIndex =
+                          getFieldsWithHighestIndex(question.fields);
 
-                      if (field.type === 'traffic-light') {
-                        return (
-                          <DetailTrafficLightEvaluation
-                            field={field}
-                            key={field.id}
-                            highlightHeader={fieldsWithHighestIndex.has(
-                              field.id,
-                            )}
-                          />
-                        );
-                      }
+                        if (field.type === 'traffic-light') {
+                          return (
+                            <DetailTrafficLightEvaluation
+                              field={field}
+                              key={field.id}
+                              highlightHeader={fieldsWithHighestIndex.has(
+                                field.id,
+                              )}
+                            />
+                          );
+                        }
 
-                      if (field.type === 'text' || field.type === 'text-area') {
-                        return (
-                          <DetailTextEvaluation field={field} key={field.id} />
-                        );
-                      }
-                    })}
+                        if (
+                          field.type === 'text' ||
+                          field.type === 'text-area'
+                        ) {
+                          return (
+                            <DetailTextEvaluation
+                              field={field}
+                              key={field.id}
+                            />
+                          );
+                        }
+                      })}
                   </DetailEvaluationCarousel>
                 </AccordionContent>
               </AccordionItem>
