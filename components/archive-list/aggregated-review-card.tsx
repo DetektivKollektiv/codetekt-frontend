@@ -8,7 +8,6 @@ import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
 import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
-import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
 import ImagePlaceholder from '../image-placeholder';
@@ -44,24 +43,12 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Left: Image */}
           <div className="aspect-video lg:aspect-[4/3] flex-shrink-0">
-            {ogData?.og_image && !imageError ? (
-              <Image
-                src={ogData.og_image}
-                alt={ogData.og_title || 'Case thumbnail'}
-                width={424}
-                height={238}
-                className="w-full h-full object-cover rounded-lg aspect-video lg:aspect-[4/3]"
-                unoptimized={true}
-                onError={() => setImageError(true)}
-              />
-            ) : (
-              <ImagePlaceholder
-                width={317}
-                height={238}
-                className="rounded-lg w-full h-full object-cover aspect-video lg:aspect-[4/3]"
-                seed={caseItem.cases.case_number!}
-              />
-            )}
+            <ImagePlaceholder
+              width={317}
+              height={238}
+              className="rounded-lg w-full h-full object-cover aspect-video lg:aspect-[4/3]"
+              seed={caseItem.cases.case_number!}
+            />
           </div>
 
           {/* Middle: Content */}

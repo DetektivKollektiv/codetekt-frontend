@@ -7,7 +7,6 @@ import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
 import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import ImagePlaceholder from '../image-placeholder';
 import { HelpButton } from '../ui/help-button';
@@ -102,12 +101,10 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               {/* Image or placeholder */}
               {imageUrl ? (
                 <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                  <Image
-                    src={imageUrl}
-                    alt={ogData?.og_image_alt || title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                  <ImagePlaceholder
+                    width={640}
+                    height={360}
+                    seed={caseData.case_number}
                   />
                 </div>
               ) : (
