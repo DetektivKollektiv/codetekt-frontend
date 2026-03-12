@@ -41,7 +41,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             {/* Badges */}
             <div className="opacity-40">
               <BadgeList
-                contentType={['Bewertungen unveröffentlicht']}
+                category={'Bewertungen unveröffentlicht'}
                 keywordType={[]}
               />
             </div>
