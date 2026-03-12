@@ -9,8 +9,9 @@ export function getCase(client: SupabaseClient<Database>, caseId: string) {
       *,
       open_graph_data (
         *
-      )
-    `
+      ),
+      case_titles (*)
+    `,
     )
     .eq('id', caseId)
     .maybeSingle();
