@@ -6,8 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ShareButton } from '@/components/ui/share-button';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
+import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
-import { getCategoryName } from '@/lib/utils/get-category-name';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -33,6 +33,8 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const category = caseItem.cases.case_categories?.value;
   const keywordType = reviewData.metadata?.keyword_type || [];
 
+  console.log('AggregatedReviewCard', caseItem);
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
       <CardContent className="p-4 lg:p-6 w-full">
@@ -51,7 +53,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           <div className="flex-1 space-y-4 flex flex-col">
             {/* Badges */}
             <BadgeList
-              category={category && getCategoryName(category)}
+              category={category && getCaseCategoryName(category)}
               keywordType={keywordType}
             />
 

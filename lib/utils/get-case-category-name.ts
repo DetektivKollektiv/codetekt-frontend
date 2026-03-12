@@ -1,4 +1,4 @@
-export const getCategoryName = (category: string) => {
+export const getCaseCategoryName = (category: string) => {
   switch (category) {
     case 'satire':
       return 'Satire';
