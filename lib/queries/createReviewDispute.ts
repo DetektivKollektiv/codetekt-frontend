@@ -10,10 +10,10 @@ export async function createReviewDispute(
   reason: string,
 ) {
   return client
-    .from('review_disputes')
+    .from('cases_metadata_disputes')
     .insert({
       case_id: caseId,
-      field_id: fieldId,
+      metadata_field: fieldId,
       disputed_by: userId,
       original_value: originalValue,
       reason: reason,
