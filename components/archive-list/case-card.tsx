@@ -7,7 +7,7 @@ import { UserCases } from '@/lib/queries/getUserCases';
 import { getLocalDate } from '@/lib/utils';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
 import Link from 'next/link';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import ImagePlaceholder from '../image-placeholder';
 import { BadgeList } from '../ui/badge-list';
 import CardText from './card-text';
@@ -18,8 +18,6 @@ interface CaseCardProps {
 }
 
 export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
-  const [imageError, setImageError] = useState(false);
-
   // Type assertion for data field (Json type from Supabase)
   const ogData =
     'open_graph_data' in caseItem ? caseItem.open_graph_data : undefined;
