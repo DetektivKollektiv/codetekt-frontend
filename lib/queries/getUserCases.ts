@@ -6,17 +6,21 @@ export function getUserCases(client: SupabaseClient<Database>, userId: string) {
     .from('cases_without_open_disputes')
     .select(
       `
-    *,
-    open_graph_data (*),
-    review_answers_in_progress (*)
-    `
+      *,
+      open_graph_data (*),
+      review_answers_in_progress (*),
+      case_titles (*),
+      case_categories (*),
+      case_keywords (*),
+      review_aggregations (*)
+    `,
     )
     .eq('submitted_by', userId);
 }
 
 export const userCasesQuery = (
   client: SupabaseClient<Database>,
-  userId: string
+  userId: string,
 ) => ({
   queryKey: ['user-cases'],
   queryFn: async () => {
