@@ -25,12 +25,9 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
 }) => {
   const ratingStyle = getRatingStyle(caseItem.result_score || 0);
 
-  // Type assertion for data field (Json type from Supabase)
   const reviewData = caseItem.data;
   if (!reviewData) return null;
   const ogData = caseItem.cases.open_graph_data;
-
-  console.log('AggregatedReviewCard', caseItem);
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
