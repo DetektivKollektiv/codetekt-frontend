@@ -6,11 +6,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ShareButton } from '@/components/ui/share-button';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
-import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
+import { getCategoryName } from '@/lib/utils/get-category-name';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import ImagePlaceholder from '../image-placeholder';
 import CardText from './card-text';
 import Evaluation from './evaluation';
@@ -22,7 +22,6 @@ interface AggregatedReviewCardProps {
 export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   caseItem,
 }) => {
-  const [imageError, setImageError] = useState(false);
   const ratingStyle = getRatingStyle(caseItem.result_score || 0);
 
   // Type assertion for data field (Json type from Supabase)
@@ -31,11 +30,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const ogData = caseItem.cases.open_graph_data;
 
   // Safely access metadata with fallbacks
-  const contentType =
-    reviewData.metadata?.content_type?.map((item: string) =>
-      capitalizeFirstLetter(item),
-    ) || [];
-
+  const category = caseItem.cases.case_categories?.value;
   const keywordType = reviewData.metadata?.keyword_type || [];
 
   return (
@@ -55,7 +50,10 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           {/* Middle: Content */}
           <div className="flex-1 space-y-4 flex flex-col">
             {/* Badges */}
-            <BadgeList contentType={contentType} keywordType={keywordType} />
+            <BadgeList
+              category={category && getCategoryName(category)}
+              keywordType={keywordType}
+            />
 
             {/* Title & Description */}
             <CardText
