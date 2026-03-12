@@ -10,7 +10,7 @@ const CardText: FC<CardTextProps> = ({ date, title, description }) => {
   return (
     <div className="h-36">
       <h2 className="text-body-sm text-muted-foreground">
-        Eingereicht am {date}
+        Eingereicht am: {date}
       </h2>
       <h3 className="text-lg font-semibold line-clamp-2 leading-tight mt-2">
         {title || 'Titel nicht verfügbar'}
