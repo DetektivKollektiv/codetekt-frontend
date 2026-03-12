@@ -7,6 +7,7 @@ import { ShareButton } from '@/components/ui/share-button';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
 import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
+import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
 import { FC, useState } from 'react';
@@ -59,11 +60,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
             {/* Title & Description */}
             <CardText
               date={getLocalDate(caseItem.calculated_at!)}
-              title={
-                'Fall ' +
-                caseItem.cases.case_number +
-                (ogData?.og_title ? ': ' + ogData?.og_title : '')
-              }
+              title={getCaseTitle(caseItem)}
               description={ogData?.og_description ?? caseItem.cases.content}
             />
 

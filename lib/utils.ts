@@ -1,9 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Case } from './queries/getCase';
-import { OpenCases } from './queries/getOpenCases';
-import { UserCases } from './queries/getUserCases';
 import { Tables } from './types/database.types';
 
 export function cn(...inputs: ClassValue[]) {
@@ -29,12 +26,4 @@ export const getLocalDate = (dateString: string) => {
     month: 'long',
     day: 'numeric',
   });
-};
-
-export const getCaseTitle = (
-  caseData: NonNullable<Case> | UserCases[number] | OpenCases[number],
-) => {
-  return caseData.open_graph_data?.og_title
-    ? `Fall ${caseData.case_number}: ${caseData.open_graph_data.og_title}`
-    : `Fall ${caseData.case_number}`;
 };

@@ -6,7 +6,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Case } from '@/lib/queries/getCase';
-import { cn, getCaseTitle, getLocalDate } from '@/lib/utils';
+import { cn, getLocalDate } from '@/lib/utils';
+import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { RatingStyle } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
 import { FC } from 'react';
