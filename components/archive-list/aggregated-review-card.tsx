@@ -7,6 +7,7 @@ import { ShareButton } from '@/components/ui/share-button';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { getLocalDate } from '@/lib/utils';
 import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
+import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
@@ -29,10 +30,6 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   if (!reviewData) return null;
   const ogData = caseItem.cases.open_graph_data;
 
-  // Safely access metadata with fallbacks
-  const category = caseItem.cases.case_categories?.value;
-  const keywordType = reviewData.metadata?.keyword_type || [];
-
   console.log('AggregatedReviewCard', caseItem);
 
   return (
@@ -53,8 +50,8 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           <div className="flex-1 space-y-4 flex flex-col">
             {/* Badges */}
             <BadgeList
-              category={category && getCaseCategoryName(category)}
-              keywordType={keywordType}
+              category={getCaseCategoryName(caseItem)}
+              keywords={getCaseKeywords(caseItem)}
             />
 
             {/* Title & Description */}

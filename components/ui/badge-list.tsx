@@ -6,10 +6,10 @@ import { Badge } from './badge';
 
 export function BadgeList({
   category,
-  keywordType,
+  keywords,
 }: {
   category?: string;
-  keywordType: string[];
+  keywords: string[];
 }) {
   return (
     <div className="overflow-hidden relative pb-px flex-shrink-0">
@@ -21,14 +21,12 @@ export function BadgeList({
                 {capitalizeFirstLetter(category)}
               </div>
             </Badge>
-            {keywordType.length > 0 && <div>•</div>}
+            {keywords.length > 0 && <div>•</div>}
           </>
         )}
-        {keywordType.map((keyword, idx) => (
+        {keywords.map((keyword, idx) => (
           <Badge key={idx} variant="outline">
-            <div className="text-body-sm whitespace-nowrap">
-              {capitalizeFirstLetter(keyword)}
-            </div>
+            <div className="text-body-sm whitespace-nowrap">{keyword}</div>
           </Badge>
         ))}
       </div>

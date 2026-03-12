@@ -1,4 +1,7 @@
-export const getCaseCategoryName = (category: string) => {
+import { AggregatedReviews } from '../queries/getAggregatedReviews';
+
+export const getCaseCategoryName = (caseItem: AggregatedReviews[number]) => {
+  const category = caseItem.cases.case_categories?.value;
   switch (category) {
     case 'satire':
       return 'Satire';
