@@ -1,7 +1,17 @@
+import { AggregatedReview } from '../queries/getAggregatedReview';
 import { AggregatedReviews } from '../queries/getAggregatedReviews';
 
-export const getCaseCategoryName = (caseItem: AggregatedReviews[number]) => {
-  const category = caseItem.cases.case_categories?.value;
+type CaseDataWithCategory =
+  | AggregatedReviews[number]['cases']
+  | NonNullable<AggregatedReview>['cases'];
+
+type CaseCategoryInput = AggregatedReviews[number] | CaseDataWithCategory;
+
+export const getCaseCategoryName = (caseItem: CaseCategoryInput) => {
+  const caseData = 'cases' in caseItem ? caseItem.cases : caseItem;
+  const category =
+    'case_categories' in caseData ? caseData.case_categories?.value : undefined;
+
   switch (category) {
     case 'satire':
       return 'Satire';

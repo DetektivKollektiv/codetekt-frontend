@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
-import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
+import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
 import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
@@ -30,7 +30,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
 
   const imageUrl = ogData?.og_image;
 
-  const contentType = reviewData?.metadata?.content_type || [];
+  const category = getCaseCategoryName(caseData);
 
   return (
     <div className="space-y-6 page-max-w">
@@ -122,11 +122,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               <div className="space-y-2">
                 <p className="text-body-sm font-medium">Tags zum Inhalt</p>
                 <div className="flex flex-wrap gap-2">
-                  {contentType.map((type) => (
-                    <Badge key={type} variant="secondary">
-                      {capitalizeFirstLetter(type)}
-                    </Badge>
-                  ))}
+                  <Badge variant="secondary">{category}</Badge>
                   {getCaseKeywords(aggregatedReview).map((keyword) => (
                     <Badge key={keyword} variant="outline">
                       {keyword}
