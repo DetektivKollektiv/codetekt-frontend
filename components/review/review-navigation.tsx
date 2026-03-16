@@ -24,6 +24,10 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
   disabled = false,
   touchedQuestionsIds,
 }) => {
+  console.log(
+    'ReviewNavigation - reviewTemplateQuestions:',
+    reviewTemplateQuestions,
+  );
   return (
     <nav>
       <div className="flex-col gap-2 hidden lg:flex">

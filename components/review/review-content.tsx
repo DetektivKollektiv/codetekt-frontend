@@ -6,6 +6,7 @@ import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAns
 import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
 import { Field } from '@/lib/schemas';
 import { createClient } from '@/lib/supabase/client';
+
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import {
@@ -67,6 +68,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
     new Set(),
   );
 
+  /* if (caseData) {
+    hasTitle = !!caseData.case_titles;
+    hasKeywords = !!caseData.case_keywords?.length;
+    hasCategories = !!caseData.case_categories;
+  } */
+
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
     useReviewState(reviewTemplate);
@@ -77,10 +84,22 @@ const ReviewContent: FC<ReviewContentProps> = ({
       : reviewTemplate[0].id,
   );
 
+  const caseCategory = caseData.case_categories?.value;
+
   // Resolve all conditions to booleans
   const resolvedReviewTemplate = useMemo(
-    () => resolveReviewTemplateConditions(reviewTemplateWithAnswersValues),
-    [reviewTemplateWithAnswersValues],
+    () =>
+      resolveReviewTemplateConditions(
+        reviewTemplateWithAnswersValues,
+        caseCategory,
+      ),
+    [caseCategory, reviewTemplateWithAnswersValues],
+  );
+
+  console.log('Resolved Review Template:', resolvedReviewTemplate);
+  console.log(
+    'Resolved reviewTemplateWithAnswersValues:',
+    reviewTemplateWithAnswersValues,
   );
 
   // Automatically build InProgressReviewAnswer object whenever answers change

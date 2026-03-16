@@ -23,6 +23,7 @@ export {
   type CreateCaseFormData,
 } from './case-schemas';
 export {
+  categoryInConditionSchema,
   comparisonConditionSchema,
   conditionSchema,
   equalsConditionSchema,
