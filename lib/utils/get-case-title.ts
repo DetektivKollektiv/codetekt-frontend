@@ -1,3 +1,4 @@
+import { AggregatedReview } from '../queries/getAggregatedReview';
 import { AggregatedReviews } from '../queries/getAggregatedReviews';
 import { Case } from '../queries/getCase';
 import { OpenCases } from '../queries/getOpenCases';
@@ -15,7 +16,10 @@ const buildTitle = (
 };
 
 export const getCaseTitle = (
-  caseData: DirectCaseData | AggregatedReviews[number],
+  caseData:
+    | DirectCaseData
+    | AggregatedReviews[number]
+    | NonNullable<AggregatedReview>,
 ) => {
   if ('cases' in caseData && caseData.cases) {
     const { case_number, open_graph_data, case_titles } = caseData.cases;
