@@ -10,7 +10,9 @@ export function getCase(client: SupabaseClient<Database>, caseId: string) {
       open_graph_data (
         *
       ),
-      case_titles (*)
+        case_titles (*),
+        case_keywords (*),
+        case_categories (*)
     `,
     )
     .eq('id', caseId)
