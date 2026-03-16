@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
 import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
+import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
+import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import ImagePlaceholder from '../image-placeholder';
@@ -21,12 +23,6 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
   const ogData = caseData.open_graph_data;
   const reviewData = aggregatedReview.data;
 
-  const title =
-    aggregatedReview.data?.metadata.title ||
-    ogData?.og_title ||
-    caseData.content ||
-    'Titel nicht verfügbar';
-
   const description =
     ogData?.og_description ||
     caseData.content ||
@@ -35,7 +31,6 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
   const imageUrl = ogData?.og_image;
 
   const contentType = reviewData?.metadata?.content_type || [];
-  const keywordType = reviewData?.metadata?.keyword_type || [];
 
   return (
     <div className="space-y-6 page-max-w">
@@ -75,7 +70,9 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               </p>
 
               <div>
-                <h2 className="text-heading-xl leading-tight">{title}</h2>
+                <h2 className="text-heading-xl leading-tight">
+                  {getCaseTitle(aggregatedReview)}
+                </h2>
               </div>
 
               {aggregatedReview.cases.content_type === 'url' ? (
@@ -130,7 +127,7 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
                       {capitalizeFirstLetter(type)}
                     </Badge>
                   ))}
-                  {keywordType.map((keyword) => (
+                  {getCaseKeywords(aggregatedReview).map((keyword) => (
                     <Badge key={keyword} variant="outline">
                       {keyword}
                     </Badge>

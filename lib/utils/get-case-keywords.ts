@@ -1,7 +1,15 @@
+import { AggregatedReview } from '../queries/getAggregatedReview';
 import { AggregatedReviews } from '../queries/getAggregatedReviews';
 
-export const getCaseKeywords = (caseItem: AggregatedReviews[number]) => {
-  return (
-    caseItem.cases.case_keywords?.map((keyword) => keyword.values).flat() || []
-  );
+type CaseItemWithKeywords =
+  | AggregatedReviews[number]
+  | NonNullable<AggregatedReview>;
+
+export const getCaseKeywords = (caseItem: CaseItemWithKeywords) => {
+  const caseKeywords =
+    'case_keywords' in caseItem.cases
+      ? caseItem.cases.case_keywords
+      : undefined;
+
+  return caseKeywords?.flatMap((keyword) => keyword.values) || [];
 };
