@@ -21,14 +21,11 @@ interface DetailHeaderProps {
 export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
   const caseData = aggregatedReview.cases;
   const ogData = caseData.open_graph_data;
-  const reviewData = aggregatedReview.data;
 
   const description =
     ogData?.og_description ||
     caseData.content ||
     'Keine Beschreibung verfügbar';
-
-  const imageUrl = ogData?.og_image;
 
   const category = getCaseCategoryName(caseData);
 
@@ -96,35 +93,22 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
             {/* Right: Image and metadata */}
             <div className="space-y-4">
               {/* Image or placeholder */}
-              {imageUrl ? (
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                  <ImagePlaceholder
-                    width={640}
-                    height={360}
-                    seed={caseData.case_number}
-                  />
-                </div>
-              ) : (
-                <div className="aspect-video rounded-lg bg-muted flex items-center justify-center relative">
-                  <ImagePlaceholder
-                    width={640}
-                    height={360}
-                    seed={caseData.case_number!}
-                    className="rounded-lg aspect-video max-w-full opacity-20 absolute inset-0 z-0"
-                  />
-                  <p className="text-body-md text-foreground font-bold z-10">
-                    Kein Bild verfügbar
-                  </p>
-                </div>
-              )}
+
+              <div className="aspect-video rounded-lg bg-muted flex items-center justify-center relative overflow-hidden">
+                <ImagePlaceholder
+                  seed={caseData.case_number!}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
               {/* Tags zum Inhalt */}
               <div className="space-y-2">
                 <p className="text-body-sm font-medium">Tags zum Inhalt</p>
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">{category}</Badge>
-                  {getCaseKeywords(aggregatedReview).map((keyword) => (
-                    <Badge key={keyword} variant="outline">
+                  <p>•</p>
+                  {getCaseKeywords(aggregatedReview).map((keyword, index) => (
+                    <Badge key={index} variant="outline">
                       {keyword}
                     </Badge>
                   ))}

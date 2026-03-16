@@ -13,7 +13,9 @@ export function getAggregatedReview(
       cases!inner (
         *,
         open_graph_data (*),
-        case_titles (*)
+        case_titles (*),
+        case_keywords (*),
+        case_categories (*)
       )
     `,
     )

@@ -11,5 +11,5 @@ export const getCaseKeywords = (caseItem: CaseItemWithKeywords) => {
       ? caseItem.cases.case_keywords
       : undefined;
 
-  return caseKeywords?.flatMap((keyword) => keyword.values) || [];
+  return [...new Set(caseKeywords?.flatMap((keyword) => keyword.values) || [])];
 };
