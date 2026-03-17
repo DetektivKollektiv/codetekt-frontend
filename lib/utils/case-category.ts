@@ -1,16 +1,7 @@
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
+import { CASE_CATEGORY_LABELS, CASE_CATEGORY_OPTIONS } from '@/lib/constants';
 
-export const CASE_CATEGORY_LABELS: Record<CaseCategoryValue, string> = {
-  satire: 'Satire',
-  report: 'Bericht',
-  text_message: 'Textnachricht',
-  opinion: 'Meinung',
-};
-
-export const CASE_CATEGORY_OPTIONS: { id: CaseCategoryValue; text: string }[] =
-  (Object.entries(CASE_CATEGORY_LABELS) as [CaseCategoryValue, string][]).map(
-    ([id, text]) => ({ id, text }),
-  );
+export { CASE_CATEGORY_LABELS, CASE_CATEGORY_OPTIONS };
 
 export const getCaseCategoryLabel = (category?: string | null) => {
   if (!category) return category;
