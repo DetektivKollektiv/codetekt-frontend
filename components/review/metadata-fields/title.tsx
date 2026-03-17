@@ -1,4 +1,3 @@
-
 'use client';
 
 import { FieldContainer } from '@/components/review/fields/field-container';
@@ -56,9 +55,7 @@ const Title: FC<TitleProps> = ({
           disabled={isSaving}
         />
         <div className="flex justify-between items-start">
-          {issue && (
-            <Label className="text-destructive">{issue.message}</Label>
-          )}
+          {issue && <Label className="text-destructive">{issue.message}</Label>}
           <div className="text-right text-sm ml-auto text-muted-foreground">
             {inputValue.length} / 500
           </div>

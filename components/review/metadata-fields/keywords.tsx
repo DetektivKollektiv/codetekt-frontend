@@ -71,9 +71,7 @@ const Keywords: FC<KeywordsProps> = ({
           placeholder="Stichwörter kommagetrennt eingeben (max. 5)"
           disabled={isSaving}
         />
-        {issue && (
-          <Label className="text-destructive">{issue.message}</Label>
-        )}
+        {issue && <Label className="text-destructive">{issue.message}</Label>}
         <Button
           className="w-full"
           onClick={handleSave}

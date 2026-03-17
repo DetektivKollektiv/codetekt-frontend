@@ -2,8 +2,8 @@
 
 import { FieldContainer } from '@/components/review/fields/field-container';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
+import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
@@ -88,9 +88,7 @@ const Category: FC<CategoryProps> = ({
             );
           })}
         </div>
-        {issue && (
-          <p className="text-sm text-destructive">{issue.message}</p>
-        )}
+        {issue && <p className="text-sm text-destructive">{issue.message}</p>}
         <Button
           className="w-full"
           onClick={() => selected && onSave(selected)}

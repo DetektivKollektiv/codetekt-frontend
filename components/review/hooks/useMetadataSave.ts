@@ -1,18 +1,12 @@
+import { setCaseCategoryMutation } from '@/lib/queries/setCaseCategory';
+import { setCaseKeywordsMutation } from '@/lib/queries/setCaseKeywords';
+import { setCaseTitleMutation } from '@/lib/queries/setCaseTitle';
 import {
   caseCategorySchema,
+  CaseCategoryValue,
   caseKeywordsSchema,
   caseTitleSchema,
-  CaseCategoryValue,
 } from '@/lib/schemas/case-metadata-schemas';
-import {
-  setCaseCategoryMutation,
-} from '@/lib/queries/setCaseCategory';
-import {
-  setCaseKeywordsMutation,
-} from '@/lib/queries/setCaseKeywords';
-import {
-  setCaseTitleMutation,
-} from '@/lib/queries/setCaseTitle';
 import { Database } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

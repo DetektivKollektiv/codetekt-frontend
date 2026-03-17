@@ -45,30 +45,31 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           />
         ))}
         {allMetadataComplete && (
-        <>
-        {reviewTemplateQuestions.map((reviewTemplateQuestion) => {
-          const isActive = reviewTemplateQuestion.id === currentQuestion.id;
-          const indentLevel = reviewTemplateQuestion.metadata.indent_level ?? 0;
-          const isIndented = indentLevel > 0;
-          const isTouched = touchedQuestionsIds.includes(
-            reviewTemplateQuestion.id,
-          );
-          const validationState = isTouched
-            ? questionsValidationState.get(reviewTemplateQuestion.id)
-            : undefined;
-          return (
-            <ReviewNavigationItem
-              key={reviewTemplateQuestion.id}
-              reviewTemplateQuestion={reviewTemplateQuestion}
-              onItemClick={onItemClick}
-              isActive={isActive}
-              isIndented={isIndented}
-              validationState={validationState}
-              disabled={disabled}
-            />
-          );
-        })}
-        </>
+          <>
+            {reviewTemplateQuestions.map((reviewTemplateQuestion) => {
+              const isActive = reviewTemplateQuestion.id === currentQuestion.id;
+              const indentLevel =
+                reviewTemplateQuestion.metadata.indent_level ?? 0;
+              const isIndented = indentLevel > 0;
+              const isTouched = touchedQuestionsIds.includes(
+                reviewTemplateQuestion.id,
+              );
+              const validationState = isTouched
+                ? questionsValidationState.get(reviewTemplateQuestion.id)
+                : undefined;
+              return (
+                <ReviewNavigationItem
+                  key={reviewTemplateQuestion.id}
+                  reviewTemplateQuestion={reviewTemplateQuestion}
+                  onItemClick={onItemClick}
+                  isActive={isActive}
+                  isIndented={isIndented}
+                  validationState={validationState}
+                  disabled={disabled}
+                />
+              );
+            })}
+          </>
         )}
       </div>
       <div className="flex gap-2 lg:hidden">
@@ -82,7 +83,9 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
               : metadataItems[0]?.id === currentStepId) || disabled
           }
           onClick={() => {
-            const metaIndex = metadataItems.findIndex((m) => m.id === currentStepId);
+            const metaIndex = metadataItems.findIndex(
+              (m) => m.id === currentStepId,
+            );
             if (metaIndex > 0) {
               onItemClick(metadataItems[metaIndex - 1].id);
             } else if (metaIndex === -1) {
@@ -126,14 +129,19 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
             (allMetadataComplete
               ? currentQuestion ===
                 reviewTemplateQuestions[reviewTemplateQuestions.length - 1]
-              : metadataItems[metadataItems.length - 1]?.id === currentStepId) ||
-            disabled
+              : metadataItems[metadataItems.length - 1]?.id ===
+                currentStepId) || disabled
           }
           onClick={() => {
-            const metaIndex = metadataItems.findIndex((m) => m.id === currentStepId);
+            const metaIndex = metadataItems.findIndex(
+              (m) => m.id === currentStepId,
+            );
             if (metaIndex !== -1 && metaIndex < metadataItems.length - 1) {
               onItemClick(metadataItems[metaIndex + 1].id);
-            } else if (metaIndex === metadataItems.length - 1 && allMetadataComplete) {
+            } else if (
+              metaIndex === metadataItems.length - 1 &&
+              allMetadataComplete
+            ) {
               onItemClick(reviewTemplateQuestions[0].id);
             } else if (metaIndex === -1) {
               const currentIndex = reviewTemplateQuestions.findIndex(
