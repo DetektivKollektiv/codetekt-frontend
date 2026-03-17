@@ -32,29 +32,17 @@ const Category: FC<CategoryProps> = ({
   onCreateDispute,
   issues,
 }) => {
-  const [selected, setSelected] = useState<CaseCategoryValue | null>(null);
+  const [selected, setSelected] = useState<CaseCategoryValue | null>(
+    (value as CaseCategoryValue | null) ?? null,
+  );
   const issue = issues[0] ?? null;
-
-  const displayLabel =
-    CATEGORY_OPTIONS.find((o) => o.id === value)?.text ?? value;
-
-  if (isComplete && value) {
-    return (
-      <FieldContainer
-        title="Welche Kategorie trifft auf diesen Fall zu?"
-        isDisputable={true}
-        onCreateReviewDispute={() => onCreateDispute?.()}
-      >
-        <p className="text-body-md text-foreground">{displayLabel}</p>
-      </FieldContainer>
-    );
-  }
+  const isDisabled = isSaving || (isComplete && !!value);
 
   return (
     <FieldContainer
       title="Welche Kategorie trifft auf diesen Fall zu?"
-      isDisputable={false}
-      onCreateReviewDispute={() => {}}
+      isDisputable={isComplete && !!value}
+      onCreateReviewDispute={() => onCreateDispute?.()}
     >
       <div className="space-y-4">
         <div className="flex flex-wrap gap-2">
@@ -64,7 +52,7 @@ const Category: FC<CategoryProps> = ({
               <button
                 key={option.id}
                 type="button"
-                disabled={isSaving}
+                disabled={isDisabled}
                 onClick={() => setSelected(option.id)}
                 className={cn(
                   'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-body-md md:text-body-sm font-medium transition-all h-9',
@@ -72,7 +60,7 @@ const Category: FC<CategoryProps> = ({
                   isSelected
                     ? 'border-primary bg-primary/5 text-primary'
                     : 'border-border bg-background text-foreground hover:bg-accent',
-                  isSaving && 'cursor-not-allowed opacity-60',
+                  isDisabled && 'cursor-not-allowed opacity-60',
                   issue && !isSelected && 'border-destructive',
                 )}
               >
@@ -92,7 +80,7 @@ const Category: FC<CategoryProps> = ({
         <Button
           className="w-full"
           onClick={() => selected && onSave(selected)}
-          disabled={isSaving || !selected}
+          disabled={isDisabled || !selected}
         >
           {isSaving ? 'Wird gespeichert...' : 'Bestätigen'}
         </Button>

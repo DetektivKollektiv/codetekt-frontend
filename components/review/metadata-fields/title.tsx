@@ -24,26 +24,15 @@ const Title: FC<TitleProps> = ({
   onCreateDispute,
   issues,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(value ?? '');
   const issue = issues[0] ?? null;
-
-  if (isComplete && value) {
-    return (
-      <FieldContainer
-        title="Wie lautet der Titel dieses Falls?"
-        isDisputable={true}
-        onCreateReviewDispute={() => onCreateDispute?.()}
-      >
-        <p className="text-body-md text-foreground">{value}</p>
-      </FieldContainer>
-    );
-  }
+  const isDisabled = isSaving || (isComplete && !!value);
 
   return (
     <FieldContainer
       title="Wie lautet der Titel dieses Falls?"
-      isDisputable={false}
-      onCreateReviewDispute={() => {}}
+      isDisputable={isComplete && !!value}
+      onCreateReviewDispute={() => onCreateDispute?.()}
     >
       <div className="space-y-2">
         <Input
@@ -52,7 +41,7 @@ const Title: FC<TitleProps> = ({
           placeholder="Titel für den Fall"
           maxLength={500}
           className="w-full"
-          disabled={isSaving}
+          disabled={isDisabled}
         />
         <div className="flex justify-between items-start">
           {issue && <Label className="text-destructive">{issue.message}</Label>}
@@ -63,7 +52,7 @@ const Title: FC<TitleProps> = ({
         <Button
           className="w-full"
           onClick={() => onSave(inputValue)}
-          disabled={isSaving || inputValue.trim().length === 0}
+          disabled={isDisabled || inputValue.trim().length === 0}
         >
           {isSaving ? 'Wird gespeichert...' : 'Bestätigen'}
         </Button>
