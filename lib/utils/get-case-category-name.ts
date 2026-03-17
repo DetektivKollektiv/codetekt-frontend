@@ -1,5 +1,6 @@
 import { AggregatedReview } from '../queries/getAggregatedReview';
 import { AggregatedReviews } from '../queries/getAggregatedReviews';
+import { getCaseCategoryLabel } from './case-category';
 
 type CaseDataWithCategory =
   | AggregatedReviews[number]['cases']
@@ -12,16 +13,5 @@ export const getCaseCategoryName = (caseItem: CaseCategoryInput) => {
   const category =
     'case_categories' in caseData ? caseData.case_categories?.value : undefined;
 
-  switch (category) {
-    case 'satire':
-      return 'Satire';
-    case 'report':
-      return 'Bericht';
-    case 'text_message':
-      return 'Textnachricht';
-    case 'opinion':
-      return 'Meinung';
-    default:
-      return category;
-  }
+  return getCaseCategoryLabel(category);
 };

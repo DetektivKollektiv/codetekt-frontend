@@ -4,16 +4,10 @@ import { FieldContainer } from '@/components/review/fields/field-container';
 import { Button } from '@/components/ui/button';
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 import { cn } from '@/lib/utils';
+import { CASE_CATEGORY_OPTIONS } from '@/lib/utils/case-category';
 import { Check } from 'lucide-react';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
-
-const CATEGORY_OPTIONS: { id: CaseCategoryValue; text: string }[] = [
-  { id: 'satire', text: 'Satire' },
-  { id: 'report', text: 'Bericht' },
-  { id: 'text_message', text: 'Textnachricht' },
-  { id: 'opinion', text: 'Meinung' },
-];
 
 interface CategoryProps {
   value?: string | null;
@@ -46,7 +40,7 @@ const Category: FC<CategoryProps> = ({
     >
       <div className="space-y-4">
         <div className="flex flex-wrap gap-2">
-          {CATEGORY_OPTIONS.map((option) => {
+          {CASE_CATEGORY_OPTIONS.map((option) => {
             const isSelected = selected === option.id;
             return (
               <button
