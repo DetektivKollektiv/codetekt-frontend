@@ -2,9 +2,9 @@
 
 import { FieldContainer } from '@/components/review/fields/field-container';
 import { Button } from '@/components/ui/button';
+import { CASE_CATEGORY_OPTIONS } from '@/lib/constants';
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 import { cn } from '@/lib/utils';
-import { CASE_CATEGORY_OPTIONS } from '@/lib/constants';
 import { Check } from 'lucide-react';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';

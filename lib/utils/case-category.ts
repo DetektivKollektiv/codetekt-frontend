@@ -1,5 +1,5 @@
-import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 import { CASE_CATEGORY_LABELS, CASE_CATEGORY_OPTIONS } from '@/lib/constants';
+import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 
 export { CASE_CATEGORY_LABELS, CASE_CATEGORY_OPTIONS };
 
