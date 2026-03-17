@@ -1,5 +1,4 @@
 'use client';
-import { createReviewDisputeMutation } from '@/lib/queries/createReviewDispute';
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
@@ -22,22 +21,12 @@ import { useRouter } from 'next/navigation';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
 import { HelpButton } from '../ui/help-button';
-import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import CaseCard from './case-card';
 import { useReviewState } from './hooks/useReviewState';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import QuestionCard from './question-card';
+import ReviewDisputeDialog from './review-dispute-dialog';
 import ReviewNavigation from './review-navigation';
 import SuccesCard from './success-card';
 import { RenderFieldsWithHeaders } from './utils/render-fields';
@@ -59,10 +48,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const queryClient = useQueryClient();
   const router = useRouter();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
-  const [isDisputeSubmitting, setIsDisputeSubmitting] = useState(false);
   const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
   const [disputingField, setDisputingField] = useState<Field | null>(null);
-  const [disputeReason, setDisputeReason] = useState('');
   const [touchedQuestionIds, setTouchedFieldIds] = useState<Set<string>>(
     new Set(),
   );
@@ -283,37 +270,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     );
   };
 
-  // Mutation for creating review dispute
-  const { mutate: createDispute } = useMutation({
-    ...createReviewDisputeMutation(supabase, userId || ''),
-    onMutate: () => {
-      setIsDisputeSubmitting(true);
-    },
-    onSuccess: async () => {
-      toast.success(
-        'Korrektur erfolgreich beantragt. Unser Team wird die Bewertung überprüfen.',
-      );
-      setIsDisputeSubmitting(false);
-      setIsDisputeDialogOpen(false);
-      setDisputeReason('');
-      setDisputingField(null);
-
-      queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] });
-      queryClient.invalidateQueries({
-        queryKey: ['review-template', caseData?.id],
-      });
-      markAsSaved();
-      router.push('/');
-    },
-    onError: (error: Error) => {
-      toast.error(
-        error.message ||
-          'Fehler beim Beantragen der Korrektur. Bitte versuche es erneut.',
-      );
-      setIsDisputeSubmitting(false);
-    },
-  });
-
   const openDisputeDialog = (field: Field) => {
     if (!userId) {
       toast.error('Du musst angemeldet sein, um eine Korrektur zu beantragen');
@@ -323,63 +279,28 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setIsDisputeDialogOpen(true);
   };
 
-  const handleDisputeSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!disputingField || !disputeReason.trim()) return;
-
-    const currentValue = String(disputingField.answer_value || '');
-
-    createDispute({
-      caseId: caseData.id,
-      fieldId: disputingField.id,
-      originalValue: currentValue,
-      reason: disputeReason,
-    });
+  const handleDisputeSuccess = async () => {
+    setDisputingField(null);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] }),
+      queryClient.invalidateQueries({
+        queryKey: ['review-template', caseData?.id],
+      }),
+    ]);
+    markAsSaved();
+    router.push('/');
   };
 
   return (
     <>
-      <Dialog open={isDisputeDialogOpen} onOpenChange={setIsDisputeDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={handleDisputeSubmit}>
-            <DialogHeader>
-              <DialogTitle>Korrektur beantragen</DialogTitle>
-              <DialogDescription>
-                Bitte gib den Grund für die Korrektur an. Unser Team wird die
-                Bewertung überprüfen.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-3">
-                <Label htmlFor="dispute-reason">Grund der Korrektur</Label>
-                <Textarea
-                  id="dispute-reason"
-                  placeholder="Beschreibe, warum diese Bewertung korrigiert werden sollte..."
-                  value={disputeReason}
-                  onChange={(e) => setDisputeReason(e.target.value)}
-                  required
-                  rows={4}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Abbrechen
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                disabled={!disputeReason.trim() || isDisputeSubmitting}
-              >
-                {isDisputeSubmitting
-                  ? 'Wird gesendet...'
-                  : 'Korrektur beantragen'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <ReviewDisputeDialog
+        isOpen={isDisputeDialogOpen}
+        onOpenChange={setIsDisputeDialogOpen}
+        disputingField={disputingField}
+        caseId={caseData.id}
+        userId={userId}
+        onSuccess={handleDisputeSuccess}
+      />
 
       <div
         className="page-max-w lg:grid lg:gap-6"
