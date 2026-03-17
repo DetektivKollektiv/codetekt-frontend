@@ -60,7 +60,11 @@ const ReviewNavigationItem: FC<ReviewNavigationItemProps> = ({
           !isActive && isError && 'border-destructive',
           !isActive && isSuccess && 'border-brand-green',
           !isActive && isIncomplete && 'border-brand-yellow',
-          !isActive && !isError && !isSuccess && !isIncomplete && 'border-primary',
+          !isActive &&
+            !isError &&
+            !isSuccess &&
+            !isIncomplete &&
+            'border-primary',
         )}
       >
         {showCheckIcon && (

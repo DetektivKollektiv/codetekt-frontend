@@ -34,9 +34,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
       id: item.id,
       label: item.label,
       isIndented: false,
-      status: item.isComplete
-        ? ('success' as const)
-        : ('incomplete' as const),
+      status: item.isComplete ? ('success' as const) : ('incomplete' as const),
     })),
     ...(allMetadataComplete
       ? reviewTemplateQuestions.map((question) => {
