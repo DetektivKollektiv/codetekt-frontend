@@ -236,7 +236,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
               reviewTemplateQuestions={shownReviewTemplateQuestions}
               onItemClick={handleNavClick}
               questionsValidationState={questionsValidationState}
-              currentQuestion={currentQuestion}
               disabled={isLocked}
               metadataItems={metadataItems}
               currentStepId={currentStepId}
