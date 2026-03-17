@@ -16,7 +16,7 @@ import {
   validateSubmittedReviewAnswer,
 } from '@/lib/utils/review-validation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Edit, Loader2, SaveAll } from 'lucide-react';
+import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
@@ -58,8 +58,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const supabase = createClient();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
-  const [isEditable, setIsEditable] = useState(!initialIsSubmitted);
+  const [isLocked, setIsLocked] = useState(initialIsSubmitted);
   const [isDisputeSubmitting, setIsDisputeSubmitting] = useState(false);
   const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
   const [disputingField, setDisputingField] = useState<Field | null>(null);
@@ -79,9 +78,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     useReviewState(reviewTemplate);
 
   const [currentQuestionId, setCurrentQuestionId] = useState(
-    isSubmitted
-      ? reviewTemplate[reviewTemplate.length - 1].id
-      : reviewTemplate[0].id,
+    reviewTemplate[0].id,
   );
 
   const caseCategory = caseData.case_categories?.value;
@@ -128,8 +125,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
   });
 
   useEffect(() => {
-    setUnsavedChangesWarningActive(isEditable);
-  }, [isEditable, setUnsavedChangesWarningActive]);
+    setUnsavedChangesWarningActive(!isLocked);
+  }, [isLocked, setUnsavedChangesWarningActive]);
 
   // Filter out questions where all fields are not shown
   const shownReviewTemplateQuestions = useMemo(
@@ -225,8 +222,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     ...submitReviewAnswersMutation(supabase),
     onSuccess: async () => {
       toast.success('Fall erfolgreich abgeschlossen');
-      setIsSubmitted(true);
-      setIsEditable(false);
+      setIsLocked(true);
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] }),
         queryClient.invalidateQueries({
@@ -403,25 +399,13 @@ const ReviewContent: FC<ReviewContentProps> = ({
               onItemClick={setCurrentQuestionId}
               questionsValidationState={questionsValidationState}
               currentQuestion={currentQuestion}
-              disabled={!isEditable}
+              disabled={isLocked}
             />
           </div>
         </div>
-        {isSubmitted && !isEditable ? (
+        {isLocked ? (
           <SuccesCard>
-            <Button
-              variant={'outline'}
-              size={'default'}
-              className="w-full"
-              onClick={() => {
-                setIsEditable(true);
-                setCurrentQuestionId(shownReviewTemplateQuestions[0].id);
-              }}
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Fall bearbeiten
-            </Button>
-            <Link href={`/#open-cases`} className="w-full mt-2">
+            <Link href={`/#open-cases`} className="w-full">
               <Button variant={'default'} size={'default'} className="w-full">
                 Weitere Fälle bearbeiten
               </Button>
