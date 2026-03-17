@@ -39,11 +39,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const supabase = createClient();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
 
-  /* if (caseData) {
-    hasTitle = !!caseData.case_titles;
-    hasKeywords = !!caseData.case_keywords?.length;
-    hasCategories = !!caseData.case_categories;
-  } */
+  if (caseData) {
+    let hasTitle = !!caseData.case_titles;
+    let hasKeywords = !!caseData.case_keywords?.length;
+    let hasCategories = !!caseData.case_categories;
+  }
 
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
