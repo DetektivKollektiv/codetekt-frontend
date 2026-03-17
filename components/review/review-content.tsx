@@ -22,6 +22,19 @@ import ReviewDisputeDialog from './review-dispute-dialog';
 import ReviewNavigation from './review-navigation';
 import SuccesCard from './success-card';
 import { RenderFieldsWithHeaders } from './utils/render-fields';
+import Category from './metadata-fields/category';
+import Keywords from './metadata-fields/keywords';
+import Title from './metadata-fields/title';
+import { useMetadataSave } from './hooks/useMetadataSave';
+import { MetadataNavItem } from '@/lib/types/navigation';
+import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '../ui/card';
 
 interface ReviewContentProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
@@ -29,6 +42,10 @@ interface ReviewContentProps {
   isSubmitted: boolean;
   userId?: string;
 }
+
+const METADATA_STEP_TITLE = 'meta_title';
+const METADATA_STEP_KEYWORDS = 'meta_keywords';
+const METADATA_STEP_CATEGORY = 'meta_category';
 
 const ReviewContent: FC<ReviewContentProps> = ({
   reviewTemplate,
@@ -39,11 +56,28 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const supabase = createClient();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
 
-  if (caseData) {
-    let hasTitle = !!caseData.case_titles;
-    let hasKeywords = !!caseData.case_keywords?.length;
-    let hasCategories = !!caseData.case_categories;
-  }
+  const hasTitle = !!caseData.case_titles;
+  const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
+  const hasCategory = !!caseData.case_categories;
+  const hasAllMetadata = hasTitle && hasKeywords && hasCategory;
+
+  const metadataItems: MetadataNavItem[] = [
+    { id: METADATA_STEP_TITLE, label: 'Titel', isComplete: hasTitle, isMetadataStep: true },
+    { id: METADATA_STEP_KEYWORDS, label: 'Stichwörter', isComplete: hasKeywords, isMetadataStep: true },
+    { id: METADATA_STEP_CATEGORY, label: 'Kategorie', isComplete: hasCategory, isMetadataStep: true },
+  ];
+
+  const firstIncompleteMetaId =
+    metadataItems.find((m) => !m.isComplete)?.id ?? null;
+
+  const [currentStepId, setCurrentStepId] = useState<string>(
+    firstIncompleteMetaId ?? reviewTemplate[0].id,
+  );
+
+  const currentNavItem = [
+    ...metadataItems,
+  ].find((m) => m.id === currentStepId);
+  const isMetadataStep = currentNavItem?.isMetadataStep === true;
 
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
@@ -69,11 +103,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setNextQuestion,
   } = useReviewNavigation({
     shownReviewTemplateQuestions,
-    initialQuestionId: reviewTemplate[0].id,
+    initialQuestionId: hasAllMetadata ? reviewTemplate[0].id : reviewTemplate[0].id,
   });
 
   const { touchedQuestionIds } = useTouchedQuestions({
-    currentQuestionId,
+    currentQuestionId: isMetadataStep ? '' : currentStepId,
   });
 
   // Unsaved changes warning
@@ -115,6 +149,43 @@ const ReviewContent: FC<ReviewContentProps> = ({
     markAsSaved,
   });
 
+  const advanceToNextStep = () => {
+    const nextIncompleteId = metadataItems.find((m) => !m.isComplete && m.id !== currentStepId)?.id;
+    if (nextIncompleteId) {
+      setCurrentStepId(nextIncompleteId);
+    } else if (hasAllMetadata || metadataItems.every((m) =>
+      m.id === currentStepId ? true : m.isComplete,
+    )) {
+      setCurrentStepId(reviewTemplate[0].id);
+    }
+  };
+
+  const {
+    setTitle,
+    setKeywords,
+    setCategory,
+    isTitlePending,
+    isKeywordsPending,
+    isCategoryPending,
+    titleIssues,
+    keywordsIssues,
+    categoryIssues,
+  } = useMetadataSave({
+    supabase,
+    caseId: caseData.id,
+    userId,
+    onStepComplete: advanceToNextStep,
+  });
+
+  const handleNavClick = (id: string) => {
+    setCurrentStepId(id);
+    if (!metadataItems.some((m) => m.id === id)) {
+      setCurrentQuestionId(id);
+    }
+  };
+
+  const existingKeywords = getCaseKeywords(caseData);
+
   if (!currentQuestion) {
     return null;
   }
@@ -145,10 +216,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
             <ReviewNavigation
               touchedQuestionsIds={Array.from(touchedQuestionIds)}
               reviewTemplateQuestions={shownReviewTemplateQuestions}
-              onItemClick={setCurrentQuestionId}
+              onItemClick={handleNavClick}
               questionsValidationState={questionsValidationState}
               currentQuestion={currentQuestion}
               disabled={isLocked}
+              metadataItems={metadataItems}
+              currentStepId={currentStepId}
             />
           </div>
         </div>
@@ -160,6 +233,68 @@ const ReviewContent: FC<ReviewContentProps> = ({
               </Button>
             </Link>
           </SuccesCard>
+        ) : isMetadataStep ? (
+          <Card className="pt-6 flex flex-col">
+            <CardHeader>
+              <CardTitle className="text-display-sm">Falldetails</CardTitle>
+              <CardDescription className="max-w-xl">
+                Bitte ergänze die fehlenden Informationen zu diesem Fall, bevor du mit der Bewertung beginnst.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1">
+              {currentStepId === METADATA_STEP_TITLE && (
+                <Title
+                  value={caseData.case_titles?.value}
+                  isComplete={hasTitle}
+                  onSave={setTitle}
+                  isSaving={isTitlePending}
+                  onCreateDispute={() => openDisputeDialog({
+                    id: 'title',
+                    type: 'text',
+                    question: 'Titel',
+                    options: [{ id: 'title', placeholder: '', max_length: 500, min_length: 10 }],
+                    answer_value: caseData.case_titles?.value ?? '',
+                    initial_answer_value: caseData.case_titles?.value ?? '',
+                  })}
+                  issues={titleIssues}
+                />
+              )}
+              {currentStepId === METADATA_STEP_KEYWORDS && (
+                <Keywords
+                  existingKeywords={existingKeywords}
+                  isComplete={hasKeywords}
+                  onSave={setKeywords}
+                  isSaving={isKeywordsPending}
+                  onCreateDispute={() => openDisputeDialog({
+                    id: 'keywords',
+                    type: 'text',
+                    question: 'Stichwörter',
+                    options: [{ id: 'keywords', placeholder: '', max_length: 500, min_length: 1 }],
+                    answer_value: existingKeywords.join(', '),
+                    initial_answer_value: existingKeywords.join(', '),
+                  })}
+                  issues={keywordsIssues}
+                />
+              )}
+              {currentStepId === METADATA_STEP_CATEGORY && (
+                <Category
+                  value={caseData.case_categories?.value}
+                  isComplete={hasCategory}
+                  onSave={setCategory}
+                  isSaving={isCategoryPending}
+                  onCreateDispute={() => openDisputeDialog({
+                    id: 'category',
+                    type: 'text',
+                    question: 'Kategorie',
+                    options: [{ id: 'category', placeholder: '', max_length: 100, min_length: 1 }],
+                    answer_value: caseData.case_categories?.value ?? '',
+                    initial_answer_value: caseData.case_categories?.value ?? '',
+                  })}
+                  issues={categoryIssues}
+                />
+              )}
+            </CardContent>
+          </Card>
         ) : (
           <QuestionCard
             question={currentQuestion}

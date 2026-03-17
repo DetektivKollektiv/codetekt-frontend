@@ -1,4 +1,3 @@
-
 'use client';
 
 import { FieldContainer } from '@/components/review/fields/field-container';
@@ -8,64 +7,76 @@ import { Label } from '@/components/ui/label';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
-interface TitleProps {
-  value?: string | null;
+interface KeywordsProps {
+  existingKeywords: string[];
   isComplete: boolean;
-  onSave: (val: string) => void;
+  onSave: (values: string[]) => void;
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
 }
 
-const Title: FC<TitleProps> = ({
-  value,
+const Keywords: FC<KeywordsProps> = ({
+  existingKeywords,
   isComplete,
   onSave,
   isSaving,
   onCreateDispute,
   issues,
 }) => {
+  // TODO: custom keyword input UI
   const [inputValue, setInputValue] = useState('');
   const issue = issues[0] ?? null;
 
-  if (isComplete && value) {
+  if (isComplete && existingKeywords.length > 0) {
     return (
       <FieldContainer
-        title="Wie lautet der Titel dieses Falls?"
+        title="Welche Stichwörter beschreiben diesen Fall?"
         isDisputable={true}
         onCreateReviewDispute={() => onCreateDispute?.()}
       >
-        <p className="text-body-md text-foreground">{value}</p>
+        <div className="flex flex-wrap gap-2">
+          {existingKeywords.map((kw) => (
+            <span
+              key={kw}
+              className="inline-flex items-center rounded-lg border border-border bg-muted px-3 py-1 text-body-sm font-medium text-foreground"
+            >
+              {kw}
+            </span>
+          ))}
+        </div>
       </FieldContainer>
     );
   }
 
+  const handleSave = () => {
+    const values = inputValue
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    onSave(values);
+  };
+
   return (
     <FieldContainer
-      title="Wie lautet der Titel dieses Falls?"
+      title="Welche Stichwörter beschreiben diesen Fall?"
       isDisputable={false}
       onCreateReviewDispute={() => {}}
     >
       <div className="space-y-2">
+        {/* TODO: custom keyword input UI */}
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Titel für den Fall"
-          maxLength={500}
-          className="w-full"
+          placeholder="Stichwörter kommagetrennt eingeben (max. 5)"
           disabled={isSaving}
         />
-        <div className="flex justify-between items-start">
-          {issue && (
-            <Label className="text-destructive">{issue.message}</Label>
-          )}
-          <div className="text-right text-sm ml-auto text-muted-foreground">
-            {inputValue.length} / 500
-          </div>
-        </div>
+        {issue && (
+          <Label className="text-destructive">{issue.message}</Label>
+        )}
         <Button
           className="w-full"
-          onClick={() => onSave(inputValue)}
+          onClick={handleSave}
           disabled={isSaving || inputValue.trim().length === 0}
         >
           {isSaving ? 'Wird gespeichert...' : 'Bestätigen'}
@@ -75,4 +86,4 @@ const Title: FC<TitleProps> = ({
   );
 };
 
-export default Title;
+export default Keywords;
