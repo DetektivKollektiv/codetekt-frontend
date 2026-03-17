@@ -4,6 +4,7 @@ import { FieldContainer } from '@/components/review/fields/field-container';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { caseTitleSchema } from '@/lib/schemas/case-metadata-schemas';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
@@ -39,20 +40,22 @@ const Title: FC<TitleProps> = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Titel für den Fall"
-          maxLength={500}
+          maxLength={caseTitleSchema.maxLength!}
           className="w-full"
           disabled={isDisabled}
         />
         <div className="flex justify-between items-start">
           {issue && <Label className="text-destructive">{issue.message}</Label>}
           <div className="text-right text-sm ml-auto text-muted-foreground">
-            {inputValue.length} / 500
+            {inputValue.length} / {caseTitleSchema.maxLength!}
           </div>
         </div>
         <Button
           className="w-full"
           onClick={() => onSave(inputValue)}
-          disabled={isDisabled || inputValue.trim().length === 0}
+          disabled={
+            isDisabled || inputValue.trim().length < caseTitleSchema.maxLength!
+          }
         >
           {isSaving ? 'Wird gespeichert...' : 'Bestätigen'}
         </Button>
