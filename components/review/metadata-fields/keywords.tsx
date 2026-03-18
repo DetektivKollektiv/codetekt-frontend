@@ -119,56 +119,55 @@ const Keywords: FC<KeywordsProps> = ({
           <Label className="text-body-sm font-medium text-foreground">
             Neues Stichwort erstellen
           </Label>
-          <div className="space-y-2">
-            <div className="flex flex-col gap-2 md:flex-row md:items-center">
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Stichwort eingeben (max. 50 Zeichen)"
-                disabled={
-                  isSaving ||
-                  newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords
-                }
-                maxLength={CASE_KEYWORDS_LIMITS.maxKeywordLength}
-                className="w-full"
-              />
-              <Button
-                onClick={handleAddKeyword}
-                disabled={!canAddKeyword() || isSaving}
-                variant="secondary"
-                className="w-full md:w-auto"
-              >
-                Hinzufügen
-              </Button>
-            </div>
-            {issue && (
-              <Label className="text-destructive text-body-sm">
-                {issue.message}
-              </Label>
-            )}
-            {newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords && (
-              <Label className="text-muted-foreground text-body-sm">
-                Maximale Anzahl von {CASE_KEYWORDS_LIMITS.maxKeywords}{' '}
-                Stichwörtern erreicht
-              </Label>
-            )}
-            {inputValue.trim().length >
-              CASE_KEYWORDS_LIMITS.maxKeywordLength && (
-              <Label className="text-destructive text-body-sm">
-                Stichwort darf maximal {CASE_KEYWORDS_LIMITS.maxKeywordLength}{' '}
-                Zeichen lang sein
-              </Label>
-            )}
-            {inputValue.trim() &&
-              newKeywords.some(
-                (kw) => kw.toLowerCase() === inputValue.trim().toLowerCase(),
-              ) && (
-                <Label className="text-destructive text-body-sm">
-                  Dieses Stichwort existiert bereits
-                </Label>
-              )}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={`Stichwort eingeben (max. ${CASE_KEYWORDS_LIMITS.maxKeywordLength} Zeichen)`}
+              disabled={
+                isSaving ||
+                newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords
+              }
+              maxLength={CASE_KEYWORDS_LIMITS.maxKeywordLength}
+              className="w-full"
+            />
+
+            <Button
+              onClick={handleAddKeyword}
+              disabled={!canAddKeyword() || isSaving}
+              variant="secondary"
+              className="w-full sm:w-auto"
+            >
+              Hinzufügen
+            </Button>
           </div>
+
+          {issue && (
+            <Label className="text-destructive text-body-sm">
+              {issue.message}
+            </Label>
+          )}
+          {newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords && (
+            <Label className="text-muted-foreground text-body-sm">
+              Maximale Anzahl von {CASE_KEYWORDS_LIMITS.maxKeywords}{' '}
+              Stichwörtern erreicht
+            </Label>
+          )}
+          {inputValue.trim().length > CASE_KEYWORDS_LIMITS.maxKeywordLength && (
+            <Label className="text-destructive text-body-sm">
+              Stichwort darf maximal {CASE_KEYWORDS_LIMITS.maxKeywordLength}{' '}
+              Zeichen lang sein
+            </Label>
+          )}
+          {inputValue.trim() &&
+            newKeywords.some(
+              (kw) => kw.toLowerCase() === inputValue.trim().toLowerCase(),
+            ) && (
+              <Label className="text-destructive text-body-sm">
+                Dieses Stichwort existiert bereits
+              </Label>
+            )}
         </div>
       </div>
     </FieldContainer>
