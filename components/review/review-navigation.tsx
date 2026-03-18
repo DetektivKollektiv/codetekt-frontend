@@ -25,15 +25,13 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
   disabled = false,
   currentStepId,
 }) => {
-  const navItems = items;
-
-  const currentIndex = navItems.findIndex((item) => item.id === currentStepId);
-  const currentItem = currentIndex >= 0 ? navItems[currentIndex] : null;
+  const currentIndex = items.findIndex((item) => item.id === currentStepId);
+  const currentItem = currentIndex >= 0 ? items[currentIndex] : null;
 
   return (
     <nav>
       <div className="flex-col gap-2 hidden lg:flex">
-        {navItems.map((item) => (
+        {items.map((item) => (
           <ReviewNavigationItem
             key={item.id}
             id={item.id}
@@ -51,10 +49,10 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           variant="secondary"
           size="icon"
           className="cursor-pointer"
-          disabled={currentIndex <= 0 || disabled || navItems.length === 0}
+          disabled={currentIndex <= 0 || disabled || items.length === 0}
           onClick={() => {
             if (currentIndex > 0) {
-              onItemClick(navItems[currentIndex - 1].id);
+              onItemClick(items[currentIndex - 1].id);
             }
           }}
         >
@@ -78,13 +76,13 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           className="cursor-pointer"
           disabled={
             currentIndex === -1 ||
-            currentIndex >= navItems.length - 1 ||
+            currentIndex >= items.length - 1 ||
             disabled ||
-            navItems.length === 0
+            items.length === 0
           }
           onClick={() => {
-            if (currentIndex >= 0 && currentIndex < navItems.length - 1) {
-              onItemClick(navItems[currentIndex + 1].id);
+            if (currentIndex >= 0 && currentIndex < items.length - 1) {
+              onItemClick(items[currentIndex + 1].id);
             }
           }}
         >

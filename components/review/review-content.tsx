@@ -23,7 +23,9 @@ import Keywords from './metadata-fields/keywords';
 import Title from './metadata-fields/title';
 import QuestionCard from './question-card';
 import ReviewDisputeDialog from './review-dispute-dialog';
-import ReviewNavigation, { ReviewNavigationItemData } from './review-navigation';
+import ReviewNavigation, {
+  ReviewNavigationItemData,
+} from './review-navigation';
 import SuccesCard from './success-card';
 import { RenderFieldsWithHeaders } from './utils/render-fields';
 
@@ -39,15 +41,19 @@ const METADATA_STEP_KEYWORDS = 'meta_keywords';
 const METADATA_STEP_CATEGORY = 'meta_category';
 
 type MetadataStep = {
-  id: string;
-  label: string;
+  id: ReviewNavigationItemData['id'];
+  label: ReviewNavigationItemData['label'];
+  isIndented: ReviewNavigationItemData['isIndented'];
+  status: ReviewNavigationItemData['status'];
   kind: 'metadata';
   isComplete: boolean;
 };
 
 type QuestionStep = {
-  id: string;
-  label: string;
+  id: ReviewNavigationItemData['id'];
+  label: ReviewNavigationItemData['label'];
+  isIndented: ReviewNavigationItemData['isIndented'];
+  status: ReviewNavigationItemData['status'];
   kind: 'question';
   isComplete: boolean;
   question: NonNullable<ReviewTemplate>[number];
@@ -63,6 +69,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
 }) => {
   const supabase = createClient();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
+  const [currentStepId, setCurrentStepId] = useState('');
+
+  const { touchedQuestionIds } = useTouchedQuestions({
+    currentQuestionId: currentStepId,
+  });
 
   const hasTitle = !!caseData.case_titles;
   const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
@@ -89,36 +100,56 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {
         id: METADATA_STEP_TITLE,
         label: 'Titel',
+        isIndented: false,
+        status: hasTitle ? 'success' : 'incomplete',
         kind: 'metadata',
         isComplete: hasTitle,
       },
       {
         id: METADATA_STEP_KEYWORDS,
         label: 'Stichwörter',
+        isIndented: false,
+        status: hasKeywords ? 'success' : 'incomplete',
         kind: 'metadata',
         isComplete: hasKeywords,
       },
       {
         id: METADATA_STEP_CATEGORY,
         label: 'Kategorie',
+        isIndented: false,
+        status: hasCategory ? 'success' : 'incomplete',
         kind: 'metadata',
         isComplete: hasCategory,
       },
-      ...shownReviewTemplateQuestions.map((question) => ({
-        id: question.id,
-        label: question.metadata.title,
-        kind: 'question' as const,
-        isComplete: false,
-        question,
-      })),
+      ...shownReviewTemplateQuestions.map((question) => {
+        const isTouched = touchedQuestionIds.has(question.id);
+        const validationState = isTouched
+          ? questionsValidationState.get(question.id)
+          : undefined;
+
+        return {
+          id: question.id,
+          label: question.metadata.title,
+          isIndented: (question.metadata.indent_level ?? 0) > 0,
+          status: validationState?.type as 'error' | 'success' | undefined,
+          kind: 'question' as const,
+          isComplete: false,
+          question,
+        };
+      }),
     ],
-    [hasCategory, hasKeywords, hasTitle, shownReviewTemplateQuestions],
+    [
+      hasCategory,
+      hasKeywords,
+      hasTitle,
+      shownReviewTemplateQuestions,
+      questionsValidationState,
+      touchedQuestionIds,
+    ],
   );
 
   const firstIncompleteStepId =
     steps.find((step) => !step.isComplete)?.id ?? steps[0]?.id ?? '';
-
-  const [currentStepId, setCurrentStepId] = useState(firstIncompleteStepId);
 
   useEffect(() => {
     if (steps.length === 0) return;
@@ -137,10 +168,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const isLastStep =
     currentStep !== null &&
     steps.findIndex((step) => step.id === currentStep.id) === steps.length - 1;
-
-  const { touchedQuestionIds } = useTouchedQuestions({
-    currentQuestionId: currentStepId,
-  });
 
   // Unsaved changes warning
   const {
@@ -182,7 +209,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
   });
 
   const setNextStep = () => {
-    const currentStepIndex = steps.findIndex((step) => step.id === currentStepId);
+    const currentStepIndex = steps.findIndex(
+      (step) => step.id === currentStepId,
+    );
     if (currentStepIndex < 0 || currentStepIndex >= steps.length - 1) {
       return;
     }
@@ -231,33 +260,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setCurrentStepId(id);
   };
 
-  const navItems = useMemo<ReviewNavigationItemData[]>(
-    () =>
-      steps.map((step) => {
-        if (step.kind === 'metadata') {
-          return {
-            id: step.id,
-            label: step.label,
-            isIndented: false,
-            status: step.isComplete ? 'success' : 'incomplete',
-          };
-        }
-
-        const isTouched = touchedQuestionIds.has(step.id);
-        const validationState = isTouched
-          ? questionsValidationState.get(step.id)
-          : undefined;
-
-        return {
-          id: step.id,
-          label: step.label,
-          isIndented: (step.question.metadata.indent_level ?? 0) > 0,
-          status: validationState?.type as 'error' | 'success' | undefined,
-        };
-      }),
-    [questionsValidationState, steps, touchedQuestionIds],
-  );
-
   if (!currentStep) {
     return null;
   }
@@ -286,7 +288,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
           />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
-              items={navItems}
+              items={steps}
               onItemClick={handleNavClick}
               disabled={isLocked}
               currentStepId={currentStepId}
