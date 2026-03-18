@@ -87,7 +87,7 @@ const Keywords: FC<KeywordsProps> = ({
   };
 
   const handleSave = () => {
-    if (hasUserKeywords) return;
+    if (hasUserKeywords && !isReviewMode) return;
     onSave();
   };
 
@@ -117,7 +117,7 @@ const Keywords: FC<KeywordsProps> = ({
       isDisputable={isComplete && existingKeywords.length > 0}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={handleSave}
-      isSaveDisabled={!canSave() || hasUserKeywords}
+      isSaveDisabled={!canSave() || (hasUserKeywords && !isReviewMode)}
       saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
       disputeLabel={disputeLabel}
     >
