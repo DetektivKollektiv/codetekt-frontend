@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tag } from '@/components/ui/tag';
+import { CASE_KEYWORDS_LIMITS } from '@/lib/schemas/case-metadata-schemas';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
@@ -29,18 +30,15 @@ const Keywords: FC<KeywordsProps> = ({
   const [newKeywords, setNewKeywords] = useState<string[]>([]);
   const issue = issues[0] ?? null;
 
-  const MAX_KEYWORDS = 5;
-  const MAX_KEYWORD_LENGTH = 50;
-
   const handleAddKeyword = () => {
     const trimmed = inputValue.trim();
 
     // Validierungen
     if (!trimmed) return;
-    if (trimmed.length > MAX_KEYWORD_LENGTH) return;
+    if (trimmed.length > CASE_KEYWORDS_LIMITS.maxKeywordLength) return;
     if (newKeywords.some((kw) => kw.toLowerCase() === trimmed.toLowerCase()))
       return;
-    if (newKeywords.length >= MAX_KEYWORDS) return;
+    if (newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords) return;
 
     setNewKeywords([...newKeywords, trimmed]);
     setInputValue('');
@@ -64,10 +62,10 @@ const Keywords: FC<KeywordsProps> = ({
   const canAddKeyword = () => {
     const trimmed = inputValue.trim();
     if (!trimmed) return false;
-    if (trimmed.length > MAX_KEYWORD_LENGTH) return false;
+    if (trimmed.length > CASE_KEYWORDS_LIMITS.maxKeywordLength) return false;
     if (newKeywords.some((kw) => kw.toLowerCase() === trimmed.toLowerCase()))
       return false;
-    if (newKeywords.length >= MAX_KEYWORDS) return false;
+    if (newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords) return false;
     return true;
   };
 
@@ -128,8 +126,11 @@ const Keywords: FC<KeywordsProps> = ({
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Stichwort eingeben (max. 50 Zeichen)"
-                disabled={isSaving || newKeywords.length >= MAX_KEYWORDS}
-                maxLength={MAX_KEYWORD_LENGTH}
+                disabled={
+                  isSaving ||
+                  newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords
+                }
+                maxLength={CASE_KEYWORDS_LIMITS.maxKeywordLength}
                 className="w-full"
               />
               <Button
@@ -146,14 +147,17 @@ const Keywords: FC<KeywordsProps> = ({
                 {issue.message}
               </Label>
             )}
-            {newKeywords.length >= MAX_KEYWORDS && (
+            {newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords && (
               <Label className="text-muted-foreground text-body-sm">
-                Maximale Anzahl von {MAX_KEYWORDS} Stichwörtern erreicht
+                Maximale Anzahl von {CASE_KEYWORDS_LIMITS.maxKeywords}{' '}
+                Stichwörtern erreicht
               </Label>
             )}
-            {inputValue.trim().length > MAX_KEYWORD_LENGTH && (
+            {inputValue.trim().length >
+              CASE_KEYWORDS_LIMITS.maxKeywordLength && (
               <Label className="text-destructive text-body-sm">
-                Stichwort darf maximal {MAX_KEYWORD_LENGTH} Zeichen lang sein
+                Stichwort darf maximal {CASE_KEYWORDS_LIMITS.maxKeywordLength}{' '}
+                Zeichen lang sein
               </Label>
             )}
             {inputValue.trim() &&
