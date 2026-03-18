@@ -9,13 +9,6 @@ import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
 import { Button } from '../ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../ui/card';
 import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
 import { useMetadataDraftState } from './hooks/useMetadataDraftState';
@@ -266,105 +259,100 @@ const ReviewContent: FC<ReviewContentProps> = ({
             </Link>
           </SuccesCard>
         ) : isMetadataStep ? (
-          <Card className="pt-6 flex flex-col">
-            <CardHeader>
-              <CardTitle className="text-display-sm">Falldetails</CardTitle>
-              <CardDescription className="max-w-xl">
-                Bitte ergänze die fehlenden Informationen zu diesem Fall, bevor
-                du mit der Bewertung beginnst.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              {currentStepId === METADATA_STEP_TITLE && (
-                <Title
-                  value={metadataDraft.title}
-                  isComplete={hasTitle}
-                  onChange={handleTitleChange}
-                  onSave={handleSaveTitle}
-                  isSaving={isTitlePending}
-                  onCreateDispute={() =>
-                    openDisputeDialog({
-                      id: 'title',
-                      type: 'text',
-                      question: 'Titel',
-                      options: [
-                        {
-                          id: 'title',
-                          placeholder: '',
-                          max_length: 500,
-                          min_length: 10,
-                        },
-                      ],
-                      answer_value: caseData.case_titles?.value ?? '',
-                      initial_answer_value: caseData.case_titles?.value ?? '',
-                    })
-                  }
-                  issues={titleIssues}
-                />
-              )}
-              {currentStepId === METADATA_STEP_KEYWORDS && (
-                <Keywords
-                  existingKeywords={existingKeywords}
-                  caseKeywords={caseData.case_keywords ?? []}
-                  userId={userId}
-                  newKeywords={metadataDraft.keywords}
-                  onChangeKeywords={handleKeywordsChange}
-                  isComplete={hasKeywords}
-                  onSave={handleSaveKeywords}
-                  isSaving={isKeywordsPending}
-                  onCreateDispute={() =>
-                    openDisputeDialog({
-                      id: 'keywords',
-                      type: 'text',
-                      question: 'Stichwörter',
-                      options: [
-                        {
-                          id: 'keywords',
-                          placeholder: '',
-                          max_length: 500,
-                          min_length: 1,
-                        },
-                      ],
-                      answer_value: existingKeywords.join(', '),
-                      initial_answer_value: existingKeywords.join(', '),
-                    })
-                  }
-                  issues={keywordsIssues}
-                />
-              )}
-              {currentStepId === METADATA_STEP_CATEGORY && (
-                <Category
-                  value={metadataDraft.category}
-                  isComplete={hasCategory}
-                  onChange={handleCategoryChange}
-                  onSave={handleSaveCategory}
-                  isSaving={isCategoryPending}
-                  onCreateDispute={() =>
-                    openDisputeDialog({
-                      id: 'category',
-                      type: 'text',
-                      question: 'Kategorie',
-                      options: [
-                        {
-                          id: 'category',
-                          placeholder: '',
-                          max_length: 100,
-                          min_length: 1,
-                        },
-                      ],
-                      answer_value: caseData.case_categories?.value ?? '',
-                      initial_answer_value:
-                        caseData.case_categories?.value ?? '',
-                    })
-                  }
-                  issues={categoryIssues}
-                />
-              )}
-            </CardContent>
-          </Card>
+          <QuestionCard
+            title="Falldetails"
+            description="Bitte ergänze die fehlenden Informationen zu diesem Fall, bevor du mit der Bewertung beginnst."
+            contentClassName="flex-1"
+          >
+            {currentStepId === METADATA_STEP_TITLE && (
+              <Title
+                value={metadataDraft.title}
+                isComplete={hasTitle}
+                onChange={handleTitleChange}
+                onSave={handleSaveTitle}
+                isSaving={isTitlePending}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'title',
+                    type: 'text',
+                    question: 'Titel',
+                    options: [
+                      {
+                        id: 'title',
+                        placeholder: '',
+                        max_length: 500,
+                        min_length: 10,
+                      },
+                    ],
+                    answer_value: caseData.case_titles?.value ?? '',
+                    initial_answer_value: caseData.case_titles?.value ?? '',
+                  })
+                }
+                issues={titleIssues}
+              />
+            )}
+            {currentStepId === METADATA_STEP_KEYWORDS && (
+              <Keywords
+                existingKeywords={existingKeywords}
+                caseKeywords={caseData.case_keywords ?? []}
+                userId={userId}
+                newKeywords={metadataDraft.keywords}
+                onChangeKeywords={handleKeywordsChange}
+                isComplete={hasKeywords}
+                onSave={handleSaveKeywords}
+                isSaving={isKeywordsPending}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'keywords',
+                    type: 'text',
+                    question: 'Stichwörter',
+                    options: [
+                      {
+                        id: 'keywords',
+                        placeholder: '',
+                        max_length: 500,
+                        min_length: 1,
+                      },
+                    ],
+                    answer_value: existingKeywords.join(', '),
+                    initial_answer_value: existingKeywords.join(', '),
+                  })
+                }
+                issues={keywordsIssues}
+              />
+            )}
+            {currentStepId === METADATA_STEP_CATEGORY && (
+              <Category
+                value={metadataDraft.category}
+                isComplete={hasCategory}
+                onChange={handleCategoryChange}
+                onSave={handleSaveCategory}
+                isSaving={isCategoryPending}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'category',
+                    type: 'text',
+                    question: 'Kategorie',
+                    options: [
+                      {
+                        id: 'category',
+                        placeholder: '',
+                        max_length: 100,
+                        min_length: 1,
+                      },
+                    ],
+                    answer_value: caseData.case_categories?.value ?? '',
+                    initial_answer_value: caseData.case_categories?.value ?? '',
+                  })
+                }
+                issues={categoryIssues}
+              />
+            )}
+          </QuestionCard>
         ) : (
           <QuestionCard
-            question={currentQuestion}
+            title={currentQuestion.metadata.title}
+            description={currentQuestion.metadata.text}
             headerActions={
               <>
                 <HelpButton />
