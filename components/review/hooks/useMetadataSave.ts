@@ -39,6 +39,28 @@ export const useMetadataSave = ({
     ]);
   };
 
+  const getKeywordsSaveErrorMessage = (error: unknown) => {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      (error as { code?: string }).code === '23505'
+    ) {
+      return 'Du hast bereits Stichwörter für diesen Fall erstellt';
+    }
+
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'message' in error &&
+      typeof (error as { message?: unknown }).message === 'string'
+    ) {
+      return (error as { message: string }).message;
+    }
+
+    return 'Fehler beim Speichern der Stichwörter';
+  };
+
   const { mutate: mutateTitle, isPending: isTitlePending } = useMutation({
     ...setCaseTitleMutation(supabase),
     onSuccess: async () => {
@@ -58,8 +80,8 @@ export const useMetadataSave = ({
       await invalidateCase();
       onStepComplete();
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Fehler beim Speichern der Stichwörter');
+    onError: (error: unknown) => {
+      toast.error(getKeywordsSaveErrorMessage(error));
     },
   });
 

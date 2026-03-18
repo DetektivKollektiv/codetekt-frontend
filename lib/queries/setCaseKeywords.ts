@@ -13,14 +13,11 @@ export async function setCaseKeywords(
 ) {
   return client
     .from('case_keywords')
-    .upsert(
-      {
-        case_id: data.caseId,
-        values: data.values,
-        created_by: data.userId,
-      },
-      { onConflict: 'case_id,created_by' },
-    )
+    .insert({
+      case_id: data.caseId,
+      values: data.values,
+      created_by: data.userId,
+    })
     .select()
     .single();
 }

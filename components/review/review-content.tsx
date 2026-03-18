@@ -289,6 +289,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
               {currentStepId === METADATA_STEP_KEYWORDS && (
                 <Keywords
                   existingKeywords={existingKeywords}
+                  caseKeywords={caseData.case_keywords ?? []}
+                  userId={userId}
                   isComplete={hasKeywords}
                   onSave={setKeywords}
                   isSaving={isKeywordsPending}

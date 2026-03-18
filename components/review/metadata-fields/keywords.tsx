@@ -6,11 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tag } from '@/components/ui/tag';
 import { CASE_KEYWORDS_LIMITS } from '@/lib/schemas/case-metadata-schemas';
-import { FC, useState } from 'react';
+import { Tables } from '@/lib/types/database.types';
+import { FC, useEffect, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
 interface KeywordsProps {
   existingKeywords: string[];
+  caseKeywords: Tables<'case_keywords'>[];
+  userId?: string;
   isComplete: boolean;
   onSave: (values: string[]) => void;
   isSaving: boolean;
@@ -20,6 +23,8 @@ interface KeywordsProps {
 
 const Keywords: FC<KeywordsProps> = ({
   existingKeywords,
+  caseKeywords,
+  userId,
   isComplete,
   onSave,
   isSaving,
@@ -29,6 +34,18 @@ const Keywords: FC<KeywordsProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [newKeywords, setNewKeywords] = useState<string[]>([]);
   const issue = issues[0] ?? null;
+  const userExistingKeywords = userId
+    ? (caseKeywords.find((keywordSet) => keywordSet.created_by === userId)
+        ?.values ?? [])
+    : [];
+  const hasUserKeywords = userExistingKeywords.length > 0;
+
+  useEffect(() => {
+    if (hasUserKeywords) {
+      setInputValue('');
+      setNewKeywords([]);
+    }
+  }, [hasUserKeywords]);
 
   const handleAddKeyword = () => {
     const trimmed = inputValue.trim();
@@ -56,10 +73,12 @@ const Keywords: FC<KeywordsProps> = ({
   };
 
   const handleSave = () => {
+    if (hasUserKeywords) return;
     onSave(newKeywords);
   };
 
   const canAddKeyword = () => {
+    if (hasUserKeywords) return false;
     const trimmed = inputValue.trim();
     if (!trimmed) return false;
     if (trimmed.length > CASE_KEYWORDS_LIMITS.maxKeywordLength) return false;
@@ -70,6 +89,7 @@ const Keywords: FC<KeywordsProps> = ({
   };
 
   const canSave = () => {
+    if (hasUserKeywords) return false;
     return newKeywords.length > 0 && !isSaving;
   };
 
@@ -79,7 +99,7 @@ const Keywords: FC<KeywordsProps> = ({
       isDisputable={isComplete && existingKeywords.length > 0}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={handleSave}
-      isSaveDisabled={!canSave()}
+      isSaveDisabled={!canSave() || hasUserKeywords}
       saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
     >
       <div className="space-y-6">
@@ -106,12 +126,19 @@ const Keywords: FC<KeywordsProps> = ({
                   label={kw}
                   removable={true}
                   onRemove={() => handleRemoveKeyword(index)}
-                  disabled={isSaving}
+                  disabled={isSaving || hasUserKeywords}
                   variant="primary"
                 />
               ))}
             </div>
           </div>
+        )}
+
+        {hasUserKeywords && (
+          <Label className="text-muted-foreground text-body-sm">
+            Du hast bereits Stichwörter für diesen Fall erstellt. Eine erneute
+            Eingabe ist nicht möglich.
+          </Label>
         )}
 
         {/* Neues Stichwort erstellen */}
@@ -126,6 +153,7 @@ const Keywords: FC<KeywordsProps> = ({
               onKeyDown={handleKeyDown}
               placeholder={`Stichwort eingeben (max. ${CASE_KEYWORDS_LIMITS.maxKeywordLength} Zeichen)`}
               disabled={
+                hasUserKeywords ||
                 isSaving ||
                 newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords
               }
@@ -135,7 +163,7 @@ const Keywords: FC<KeywordsProps> = ({
 
             <Button
               onClick={handleAddKeyword}
-              disabled={!canAddKeyword() || isSaving}
+              disabled={!canAddKeyword() || isSaving || hasUserKeywords}
               variant="secondary"
               className="w-full sm:w-auto"
             >
