@@ -134,13 +134,6 @@ const Keywords: FC<KeywordsProps> = ({
           </div>
         )}
 
-        {hasUserKeywords && (
-          <Label className="text-muted-foreground text-body-sm">
-            Du hast bereits Stichwörter für diesen Fall erstellt. Eine erneute
-            Eingabe ist nicht möglich.
-          </Label>
-        )}
-
         {/* Neues Stichwort erstellen */}
         <div className="space-y-2">
           <Label className="text-body-sm font-medium text-foreground">
@@ -196,6 +189,14 @@ const Keywords: FC<KeywordsProps> = ({
                 Dieses Stichwort existiert bereits
               </Label>
             )}
+        </div>
+
+        <div>
+          {hasUserKeywords && (
+            <p className="text-body-sm text-muted-foreground">
+              Du hast bereits Stichwörter für diesen Fall erstellt.
+            </p>
+          )}
         </div>
       </div>
     </FieldContainer>
