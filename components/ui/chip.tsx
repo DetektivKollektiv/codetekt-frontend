@@ -29,11 +29,11 @@ const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
         {...props}
       >
         {isSelected ? (
-          <span className="flex size-4 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground">
+          <span className="flex size-4 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground -ml-1">
             <Check className="size-3" strokeWidth={3} />
           </span>
         ) : (
-          <span className="flex size-5 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
+          <span className="flex size-5 items-center justify-center rounded-full border-2 border-muted-foreground/30 -ml-1" />
         )}
         {text}
       </button>

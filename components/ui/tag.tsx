@@ -20,12 +20,12 @@ const Tag: FC<TagProps> = ({
   variant = 'primary',
 }) => {
   const baseStyles =
-    'inline-flex items-center gap-2 px-3 py-1 rounded-lg text-body-sm font-medium whitespace-nowrap';
+    'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-body-md md:text-body-sm font-medium transition-all h-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60';
 
   const variantStyles: Record<string, string> = {
-    primary: 'border border-primary/40 bg-primary/10 text-primary',
-    'primary-muted': 'border border-primary/30 bg-primary/5 text-primary/80',
-    subtle: 'border border-border/60 bg-transparent text-muted-foreground',
+    primary: 'border border-primary bg-primary/5 text-primary',
+    'primary-muted': 'border border-primary/40 bg-primary/5 text-primary/80',
+    subtle: 'border border-border bg-background text-foreground',
     destructive: 'border border-destructive bg-destructive/5 text-destructive',
   };
 
@@ -36,7 +36,7 @@ const Tag: FC<TagProps> = ({
         <button
           onClick={onRemove}
           disabled={disabled}
-          className="ml-1 inline-flex items-center justify-center rounded p-0.5 hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:hover:bg-white/10"
+          className="ml-1 -mr-1 inline-flex items-center justify-center rounded p-0.5 hover:bg-black/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:hover:bg-white/10"
           aria-label={`Remove ${label}`}
         >
           <X size={16} />
