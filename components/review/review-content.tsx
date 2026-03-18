@@ -114,6 +114,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
       : reviewTemplate[0].id,
   });
 
+  useEffect(() => {
+    const isMetadataItem = metadataItems.some(
+      (m) => m.id === currentQuestionId,
+    );
+    if (!isMetadataItem && currentQuestionId) {
+      setCurrentStepId(currentQuestionId);
+    }
+  }, [currentQuestionId, metadataItems]);
+
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: isMetadataStep ? '' : currentStepId,
   });
