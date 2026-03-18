@@ -1,9 +1,8 @@
 'use client';
 
+import { Chip } from '@/components/ui/chip';
 import { Label } from '@/components/ui/label';
 import { chipFieldSchema, Field } from '@/lib/schemas/field-schemas';
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
@@ -65,32 +64,16 @@ export const ChipField: FC<ChipFieldProps> = ({
         <div className="flex flex-wrap gap-2 mb-2">
           {field.options.map((option) => {
             const isSelected = selectedValues.includes(option.id);
+
             return (
-              <button
+              <Chip
                 key={option.id}
-                type="button"
+                text={option.text}
+                isSelected={isSelected}
                 disabled={isDisabled}
+                hasError={issue !== null}
                 onClick={() => handleToggle(option.id)}
-                className={cn(
-                  'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-body-md md:text-body-sm font-medium transition-all h-9',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isSelected
-                    ? 'border-primary bg-primary/5 text-primary'
-                    : 'border-border bg-background text-foreground hover:bg-accent',
-                  isDisabled && 'cursor-not-allowed opacity-60',
-                  issue && 'border-destructive',
-                )}
-              >
-                {isSelected && (
-                  <span className="flex size-4 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground">
-                    <Check className="size-3" strokeWidth={3} />
-                  </span>
-                )}
-                {!isSelected && (
-                  <span className="flex size-5 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
-                )}
-                {option.text}
-              </button>
+              />
             );
           })}
         </div>

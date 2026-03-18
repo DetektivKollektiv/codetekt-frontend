@@ -2,10 +2,10 @@
 
 import { FieldContainer } from '@/components/review/fields/field-container';
 import { Button } from '@/components/ui/button';
+import { Chip } from '@/components/ui/chip';
+import { Label } from '@/components/ui/label';
 import { CASE_CATEGORY_OPTIONS } from '@/lib/constants';
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
 import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
@@ -32,45 +32,37 @@ const Category: FC<CategoryProps> = ({
   const issue = issues[0] ?? null;
   const isDisabled = isSaving || (isComplete && !!value);
 
+  const handleToggle = (optionId: string) => {
+    if (isDisabled) return;
+
+    const nextValue = optionId as CaseCategoryValue;
+    setSelected((current) => (current === nextValue ? null : nextValue));
+  };
+
   return (
     <FieldContainer
       title="Welche Kategorie trifft auf diesen Fall zu?"
       isDisputable={isComplete && !!value}
       onCreateReviewDispute={() => onCreateDispute?.()}
     >
-      <div className="space-y-4">
-        <div className="flex flex-wrap gap-2">
+      <div className="space-y-2">
+        <div className="flex flex-wrap gap-2 mb-2">
           {CASE_CATEGORY_OPTIONS.map((option) => {
             const isSelected = selected === option.id;
+
             return (
-              <button
+              <Chip
                 key={option.id}
-                type="button"
+                text={option.text}
+                isSelected={isSelected}
                 disabled={isDisabled}
-                onClick={() => setSelected(option.id)}
-                className={cn(
-                  'inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-body-md md:text-body-sm font-medium transition-all h-9',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isSelected
-                    ? 'border-primary bg-primary/5 text-primary'
-                    : 'border-border bg-background text-foreground hover:bg-accent',
-                  isDisabled && 'cursor-not-allowed opacity-60',
-                  issue && !isSelected && 'border-destructive',
-                )}
-              >
-                {isSelected ? (
-                  <span className="flex size-4 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground">
-                    <Check className="size-3" strokeWidth={3} />
-                  </span>
-                ) : (
-                  <span className="flex size-5 items-center justify-center rounded-full border-2 border-muted-foreground/30" />
-                )}
-                {option.text}
-              </button>
+                hasError={issue !== null}
+                onClick={() => handleToggle(option.id)}
+              />
             );
           })}
         </div>
-        {issue && <p className="text-sm text-destructive">{issue.message}</p>}
+        {issue && <Label className="text-destructive">{issue.message}</Label>}
         <Button
           className="w-full"
           onClick={() => selected && onSave(selected)}
