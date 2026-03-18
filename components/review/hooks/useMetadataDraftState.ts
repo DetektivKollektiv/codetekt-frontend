@@ -28,6 +28,20 @@ const hasSameKeywords = (left: string[], right: string[]) => {
   return left.every((keyword, index) => keyword === right[index]);
 };
 
+const getInitialTitle = (caseData: NonNullable<Case>) => {
+  const caseTitle = caseData.case_titles?.value?.trim();
+  if (caseTitle) {
+    return caseData.case_titles?.value ?? '';
+  }
+
+  const openGraphTitle = caseData.open_graph_data?.og_title?.trim();
+  if (openGraphTitle) {
+    return caseData.open_graph_data?.og_title ?? '';
+  }
+
+  return '';
+};
+
 export const useMetadataDraftState = ({
   caseData,
   userId,
@@ -49,7 +63,7 @@ export const useMetadataDraftState = ({
 
   const [metadataDraft, setMetadataDraft] = useState<MetadataDraftState>(
     () => ({
-      title: caseData.case_titles?.value ?? '',
+      title: getInitialTitle(caseData),
       keywords: userExistingKeywords,
       category:
         (caseData.case_categories?.value as CaseCategoryValue | null) ?? null,
@@ -63,7 +77,7 @@ export const useMetadataDraftState = ({
   });
 
   useEffect(() => {
-    const nextTitle = caseData.case_titles?.value ?? '';
+    const nextTitle = getInitialTitle(caseData);
     const nextCategory =
       (caseData.case_categories?.value as CaseCategoryValue | null) ?? null;
 
@@ -74,6 +88,7 @@ export const useMetadataDraftState = ({
     }));
   }, [
     caseData.case_titles?.value,
+    caseData.open_graph_data?.og_title,
     caseData.case_categories?.value,
     metadataDirty.title,
     metadataDirty.keywords,
