@@ -88,10 +88,14 @@ const ReviewContent: FC<ReviewContentProps> = ({
     () => [
       {
         id: METADATA_STEP_TITLE,
-        label: 'Titel',
-        description:
-          'Vergib einen klaren und prägnanten Titel, damit der Fall später schnell verstanden und wiedergefunden werden kann.',
+        label: 'Titel des Falls',
+        description: hasTitle
+          ? 'Bitte prüfe den Titel, der für diesen Fall vergeben wurde. Wenn der Titel den Fall gut beschreibt, klicke auf "Der Titel passt". Falls nicht, klicke auf "Titel beanstanden", damit der Titel von unserer Moderation geprüft werden kann.'
+          : 'Vergib einen klaren und prägnanten Titel, damit der Fall später schnell verstanden und wiedergefunden werden kann.',
         helpUrl: '/help/title',
+        fieldTitle: 'Titel des Falls',
+        primaryActionLabel: hasTitle ? 'Der Titel passt' : 'Speichern',
+        disputeActionLabel: 'Titel beanstanden',
         isIndented: false,
         status: hasTitle ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -287,8 +291,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 value={metadataDraft.title}
                 isComplete={hasTitle}
                 onChange={handleTitleChange}
-                onSave={handleSaveTitle}
+                onSave={hasTitle ? setNextStep : handleSaveTitle}
                 isSaving={isTitlePending}
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
                   openDisputeDialog({
                     id: 'title',
@@ -319,6 +326,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 isComplete={hasKeywords}
                 onSave={handleSaveKeywords}
                 isSaving={isKeywordsPending}
+                saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
                   openDisputeDialog({
                     id: 'keywords',
@@ -346,6 +355,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 onChange={handleCategoryChange}
                 onSave={handleSaveCategory}
                 isSaving={isCategoryPending}
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
                   openDisputeDialog({
                     id: 'category',

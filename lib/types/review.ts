@@ -7,6 +7,9 @@ export type MetadataStep = {
   label: string;
   description: string;
   helpUrl?: string;
+  fieldTitle?: string;
+  primaryActionLabel?: string;
+  disputeActionLabel?: string;
   isIndented: boolean;
   status: ReviewStepStatus;
   kind: 'metadata';

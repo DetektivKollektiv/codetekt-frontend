@@ -16,6 +16,9 @@ interface CategoryProps {
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
+  fieldTitle?: string;
+  saveLabel?: string;
+  disputeLabel?: string;
 }
 
 const Category: FC<CategoryProps> = ({
@@ -26,6 +29,9 @@ const Category: FC<CategoryProps> = ({
   isSaving,
   onCreateDispute,
   issues,
+  fieldTitle,
+  saveLabel,
+  disputeLabel,
 }) => {
   const selected = value ?? null;
   const issue = issues[0] ?? null;
@@ -40,12 +46,13 @@ const Category: FC<CategoryProps> = ({
 
   return (
     <FieldContainer
-      title="Welche Kategorie trifft auf diesen Fall zu?"
+      title={fieldTitle ?? 'Welche Kategorie trifft auf diesen Fall zu?'}
       isDisputable={isComplete && !!value}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
       isSaveDisabled={isDisabled || !selected}
-      saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
+      saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
+      disputeLabel={disputeLabel}
     >
       <div className="space-y-2">
         <div className="flex flex-wrap gap-2 mb-2">

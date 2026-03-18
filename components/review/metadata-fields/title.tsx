@@ -15,6 +15,9 @@ interface TitleProps {
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
+  fieldTitle?: string;
+  saveLabel?: string;
+  disputeLabel?: string;
 }
 
 const Title: FC<TitleProps> = ({
@@ -25,20 +28,27 @@ const Title: FC<TitleProps> = ({
   isSaving,
   onCreateDispute,
   issues,
+  fieldTitle,
+  saveLabel,
+  disputeLabel,
 }) => {
   const issue = issues[0] ?? null;
   const inputValue = value ?? '';
   const isTitleValid = caseTitleSchema.safeParse(inputValue).success;
-  const isDisabled = isSaving || (isComplete && !!inputValue);
+  const isInputDisabled = isSaving || (isComplete && !!inputValue);
+  const isSaveDisabled = isComplete
+    ? isSaving
+    : isSaving || !isTitleValid;
 
   return (
     <FieldContainer
-      title="Wie lautet der Titel dieses Falls?"
+      title={fieldTitle ?? 'Wie lautet der Titel dieses Falls?'}
       isDisputable={isComplete && !!inputValue}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
-      isSaveDisabled={isDisabled || !isTitleValid}
-      saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
+      isSaveDisabled={isSaveDisabled}
+      saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
+      disputeLabel={disputeLabel}
     >
       <div className="space-y-2">
         <Input
@@ -47,7 +57,7 @@ const Title: FC<TitleProps> = ({
           placeholder="Titel für den Fall"
           maxLength={caseTitleSchema.maxLength!}
           className="w-full"
-          disabled={isDisabled}
+          disabled={isInputDisabled}
         />
         <div className="flex justify-between items-start">
           {issue && <Label className="text-destructive">{issue.message}</Label>}

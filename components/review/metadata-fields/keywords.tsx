@@ -21,6 +21,8 @@ interface KeywordsProps {
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
+  saveLabel?: string;
+  disputeLabel?: string;
 }
 
 const Keywords: FC<KeywordsProps> = ({
@@ -34,6 +36,8 @@ const Keywords: FC<KeywordsProps> = ({
   isSaving,
   onCreateDispute,
   issues,
+  saveLabel,
+  disputeLabel,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const issue = issues[0] ?? null;
@@ -109,7 +113,8 @@ const Keywords: FC<KeywordsProps> = ({
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={handleSave}
       isSaveDisabled={!canSave() || hasUserKeywords}
-      saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
+      saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
+      disputeLabel={disputeLabel}
     >
       <div className="space-y-6">
         {/* Erstellte Stichwörter (bestehend + neu) */}

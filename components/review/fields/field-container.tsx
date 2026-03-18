@@ -11,6 +11,7 @@ interface FieldContainerProps {
   onSave?: () => void;
   isSaveDisabled?: boolean;
   saveLabel?: string;
+  disputeLabel?: string;
 }
 
 export const FieldContainer: FC<FieldContainerProps> = ({
@@ -23,6 +24,7 @@ export const FieldContainer: FC<FieldContainerProps> = ({
   onSave,
   isSaveDisabled = false,
   saveLabel = 'Bestätigen',
+  disputeLabel = 'Korrektur beantragen',
 }) => {
   return (
     <div className="space-y-3 flex flex-col h-full">
@@ -53,7 +55,7 @@ export const FieldContainer: FC<FieldContainerProps> = ({
               className="w-full"
               onClick={onCreateReviewDispute}
             >
-              Korrektur beantragen
+              {disputeLabel}
             </Button>
           )}
         </div>
