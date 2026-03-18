@@ -3,6 +3,12 @@ import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 
+import {
+  METADATA_STEP_CATEGORY,
+  METADATA_STEP_KEYWORDS,
+  METADATA_STEP_TITLE,
+} from '@/lib/constants';
+import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
@@ -24,9 +30,7 @@ import Keywords from './metadata-fields/keywords';
 import Title from './metadata-fields/title';
 import QuestionCard from './question-card';
 import ReviewDisputeDialog from './review-dispute-dialog';
-import ReviewNavigation, {
-  ReviewNavigationItemData,
-} from './review-navigation';
+import ReviewNavigation from './review-navigation';
 import SuccesCard from './success-card';
 import { RenderFieldsWithHeaders } from './utils/render-fields';
 
@@ -36,31 +40,6 @@ interface ReviewContentProps {
   isSubmitted: boolean;
   userId?: string;
 }
-
-const METADATA_STEP_TITLE = 'meta_title';
-const METADATA_STEP_KEYWORDS = 'meta_keywords';
-const METADATA_STEP_CATEGORY = 'meta_category';
-
-type MetadataStep = {
-  id: ReviewNavigationItemData['id'];
-  label: ReviewNavigationItemData['label'];
-  isIndented: ReviewNavigationItemData['isIndented'];
-  status: ReviewNavigationItemData['status'];
-  kind: 'metadata';
-  isComplete: boolean;
-};
-
-type QuestionStep = {
-  id: ReviewNavigationItemData['id'];
-  label: ReviewNavigationItemData['label'];
-  isIndented: ReviewNavigationItemData['isIndented'];
-  status: ReviewNavigationItemData['status'];
-  kind: 'question';
-  isComplete: boolean;
-  question: NonNullable<ReviewTemplate>[number];
-};
-
-type ReviewStep = MetadataStep | QuestionStep;
 
 const ReviewContent: FC<ReviewContentProps> = ({
   reviewTemplate,

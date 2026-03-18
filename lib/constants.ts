@@ -15,3 +15,7 @@ export const CASE_CATEGORY_OPTIONS: { id: CaseCategoryValue; text: string }[] =
   (Object.entries(CASE_CATEGORY_LABELS) as [CaseCategoryValue, string][]).map(
     ([id, text]) => ({ id, text }),
   );
+
+export const METADATA_STEP_TITLE = 'meta_title';
+export const METADATA_STEP_KEYWORDS = 'meta_keywords';
+export const METADATA_STEP_CATEGORY = 'meta_category';
