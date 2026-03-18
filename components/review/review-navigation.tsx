@@ -1,57 +1,31 @@
 'use client';
 
-import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
-import { MetadataNavItem } from '@/lib/types/navigation';
-import { QuestionValidationState } from '@/lib/utils/review-validation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { FC } from 'react';
 import { Button } from '../ui/button';
 import ReviewNavigationItem from './review-navigation-item';
 
+export interface ReviewNavigationItemData {
+  id: string;
+  label: string;
+  isIndented: boolean;
+  status: 'error' | 'success' | 'incomplete' | undefined;
+}
+
 interface ReviewNavigationProps {
-  reviewTemplateQuestions: NonNullable<ReviewTemplate>;
+  items: ReviewNavigationItemData[];
   onItemClick: (id: string) => void;
-  questionsValidationState?: Map<string, QuestionValidationState>;
   disabled?: boolean;
-  touchedQuestionsIds: string[];
-  metadataItems: MetadataNavItem[];
   currentStepId: string;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
-  reviewTemplateQuestions,
+  items,
   onItemClick,
-  questionsValidationState = new Map(),
   disabled = false,
-  touchedQuestionsIds,
-  metadataItems,
   currentStepId,
 }) => {
-  const allMetadataComplete = metadataItems.every((m) => m.isComplete);
-
-  const navItems = [
-    ...metadataItems.map((item) => ({
-      id: item.id,
-      label: item.label,
-      isIndented: false,
-      status: item.isComplete ? ('success' as const) : ('incomplete' as const),
-    })),
-    ...(allMetadataComplete
-      ? reviewTemplateQuestions.map((question) => {
-          const isTouched = touchedQuestionsIds.includes(question.id);
-          const validationState = isTouched
-            ? questionsValidationState.get(question.id)
-            : undefined;
-
-          return {
-            id: question.id,
-            label: question.metadata.title,
-            isIndented: (question.metadata.indent_level ?? 0) > 0,
-            status: validationState?.type as 'error' | 'success' | undefined,
-          };
-        })
-      : []),
-  ];
+  const navItems = items;
 
   const currentIndex = navItems.findIndex((item) => item.id === currentStepId);
   const currentItem = currentIndex >= 0 ? navItems[currentIndex] : null;

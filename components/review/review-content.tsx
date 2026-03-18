@@ -3,18 +3,16 @@ import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 
-import { MetadataNavItem } from '@/lib/types/navigation';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
 import { useMetadataDraftState } from './hooks/useMetadataDraftState';
 import { useMetadataSave } from './hooks/useMetadataSave';
 import { useReviewDispute } from './hooks/useReviewDispute';
-import { useReviewNavigation } from './hooks/useReviewNavigation';
 import { useReviewState } from './hooks/useReviewState';
 import { useReviewSubmission } from './hooks/useReviewSubmission';
 import { useReviewValidation } from './hooks/useReviewValidation';
@@ -25,7 +23,7 @@ import Keywords from './metadata-fields/keywords';
 import Title from './metadata-fields/title';
 import QuestionCard from './question-card';
 import ReviewDisputeDialog from './review-dispute-dialog';
-import ReviewNavigation from './review-navigation';
+import ReviewNavigation, { ReviewNavigationItemData } from './review-navigation';
 import SuccesCard from './success-card';
 import { RenderFieldsWithHeaders } from './utils/render-fields';
 
@@ -40,6 +38,23 @@ const METADATA_STEP_TITLE = 'meta_title';
 const METADATA_STEP_KEYWORDS = 'meta_keywords';
 const METADATA_STEP_CATEGORY = 'meta_category';
 
+type MetadataStep = {
+  id: string;
+  label: string;
+  kind: 'metadata';
+  isComplete: boolean;
+};
+
+type QuestionStep = {
+  id: string;
+  label: string;
+  kind: 'question';
+  isComplete: boolean;
+  question: NonNullable<ReviewTemplate>[number];
+};
+
+type ReviewStep = MetadataStep | QuestionStep;
+
 const ReviewContent: FC<ReviewContentProps> = ({
   reviewTemplate,
   caseData,
@@ -52,38 +67,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const hasTitle = !!caseData.case_titles;
   const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
   const hasCategory = !!caseData.case_categories;
-  const hasAllMetadata = hasTitle && hasKeywords && hasCategory;
-
-  const metadataItems: MetadataNavItem[] = [
-    {
-      id: METADATA_STEP_TITLE,
-      label: 'Titel',
-      isComplete: hasTitle,
-      isMetadataStep: true,
-    },
-    {
-      id: METADATA_STEP_KEYWORDS,
-      label: 'Stichwörter',
-      isComplete: hasKeywords,
-      isMetadataStep: true,
-    },
-    {
-      id: METADATA_STEP_CATEGORY,
-      label: 'Kategorie',
-      isComplete: hasCategory,
-      isMetadataStep: true,
-    },
-  ];
-
-  const firstIncompleteMetaId =
-    metadataItems.find((m) => !m.isComplete)?.id ?? null;
-
-  const [currentStepId, setCurrentStepId] = useState<string>(
-    firstIncompleteMetaId ?? reviewTemplate[0].id,
-  );
-
-  const currentNavItem = [...metadataItems].find((m) => m.id === currentStepId);
-  const isMetadataStep = currentNavItem?.isMetadataStep === true;
 
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
@@ -101,30 +84,62 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseCategory,
   });
 
-  const {
-    currentQuestion,
-    currentQuestionId,
-    setCurrentQuestionId,
-    isLastQuestion,
-    setNextQuestion,
-  } = useReviewNavigation({
-    shownReviewTemplateQuestions,
-    initialQuestionId: hasAllMetadata
-      ? reviewTemplate[0].id
-      : reviewTemplate[0].id,
-  });
+  const steps = useMemo<ReviewStep[]>(
+    () => [
+      {
+        id: METADATA_STEP_TITLE,
+        label: 'Titel',
+        kind: 'metadata',
+        isComplete: hasTitle,
+      },
+      {
+        id: METADATA_STEP_KEYWORDS,
+        label: 'Stichwörter',
+        kind: 'metadata',
+        isComplete: hasKeywords,
+      },
+      {
+        id: METADATA_STEP_CATEGORY,
+        label: 'Kategorie',
+        kind: 'metadata',
+        isComplete: hasCategory,
+      },
+      ...shownReviewTemplateQuestions.map((question) => ({
+        id: question.id,
+        label: question.metadata.title,
+        kind: 'question' as const,
+        isComplete: false,
+        question,
+      })),
+    ],
+    [hasCategory, hasKeywords, hasTitle, shownReviewTemplateQuestions],
+  );
+
+  const firstIncompleteStepId =
+    steps.find((step) => !step.isComplete)?.id ?? steps[0]?.id ?? '';
+
+  const [currentStepId, setCurrentStepId] = useState(firstIncompleteStepId);
 
   useEffect(() => {
-    const isMetadataItem = metadataItems.some(
-      (m) => m.id === currentQuestionId,
-    );
-    if (!isMetadataItem && currentQuestionId) {
-      setCurrentStepId(currentQuestionId);
+    if (steps.length === 0) return;
+
+    const hasCurrentStep = steps.some((step) => step.id === currentStepId);
+    if (!hasCurrentStep) {
+      setCurrentStepId(firstIncompleteStepId);
     }
-  }, [currentQuestionId, metadataItems]);
+  }, [currentStepId, firstIncompleteStepId, steps]);
+
+  const currentStep =
+    steps.find((step) => step.id === currentStepId) ?? steps[0] ?? null;
+  const isMetadataStep = currentStep?.kind === 'metadata';
+  const currentQuestion =
+    currentStep?.kind === 'question' ? currentStep.question : null;
+  const isLastStep =
+    currentStep !== null &&
+    steps.findIndex((step) => step.id === currentStep.id) === steps.length - 1;
 
   const { touchedQuestionIds } = useTouchedQuestions({
-    currentQuestionId: isMetadataStep ? '' : currentStepId,
+    currentQuestionId: currentStepId,
   });
 
   // Unsaved changes warning
@@ -166,17 +181,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
     markAsSaved,
   });
 
-  const advanceToNextStep = () => {
-    const nextIncompleteId = metadataItems.find(
-      (m) => !m.isComplete && m.id !== currentStepId,
-    )?.id;
-    if (nextIncompleteId) {
-      setCurrentStepId(nextIncompleteId);
-    } else if (
-      hasAllMetadata ||
-      metadataItems.every((m) => (m.id === currentStepId ? true : m.isComplete))
-    ) {
-      setCurrentStepId(reviewTemplate[0].id);
+  const setNextStep = () => {
+    const currentStepIndex = steps.findIndex((step) => step.id === currentStepId);
+    if (currentStepIndex < 0 || currentStepIndex >= steps.length - 1) {
+      return;
+    }
+
+    const nextStep = steps[currentStepIndex + 1];
+    if (nextStep) {
+      setCurrentStepId(nextStep.id);
     }
   };
 
@@ -194,7 +207,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     supabase,
     caseId: caseData.id,
     userId,
-    onStepComplete: advanceToNextStep,
+    onStepComplete: setNextStep,
   });
 
   const {
@@ -216,12 +229,36 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
   const handleNavClick = (id: string) => {
     setCurrentStepId(id);
-    if (!metadataItems.some((m) => m.id === id)) {
-      setCurrentQuestionId(id);
-    }
   };
 
-  if (!currentQuestion) {
+  const navItems = useMemo<ReviewNavigationItemData[]>(
+    () =>
+      steps.map((step) => {
+        if (step.kind === 'metadata') {
+          return {
+            id: step.id,
+            label: step.label,
+            isIndented: false,
+            status: step.isComplete ? 'success' : 'incomplete',
+          };
+        }
+
+        const isTouched = touchedQuestionIds.has(step.id);
+        const validationState = isTouched
+          ? questionsValidationState.get(step.id)
+          : undefined;
+
+        return {
+          id: step.id,
+          label: step.label,
+          isIndented: (step.question.metadata.indent_level ?? 0) > 0,
+          status: validationState?.type as 'error' | 'success' | undefined,
+        };
+      }),
+    [questionsValidationState, steps, touchedQuestionIds],
+  );
+
+  if (!currentStep) {
     return null;
   }
 
@@ -249,12 +286,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
           />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
-              touchedQuestionsIds={Array.from(touchedQuestionIds)}
-              reviewTemplateQuestions={shownReviewTemplateQuestions}
+              items={navItems}
               onItemClick={handleNavClick}
-              questionsValidationState={questionsValidationState}
               disabled={isLocked}
-              metadataItems={metadataItems}
               currentStepId={currentStepId}
             />
           </div>
@@ -358,7 +392,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
               />
             )}
           </QuestionCard>
-        ) : (
+        ) : currentQuestion ? (
           <QuestionCard
             title={currentQuestion.metadata.title}
             description={currentQuestion.metadata.text}
@@ -382,7 +416,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
             }
             footer={
               <div className="flex flex-col w-full gap-2">
-                {isLastQuestion ? (
+                {isLastStep ? (
                   <Button
                     variant="default"
                     className="w-full"
@@ -397,7 +431,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   <Button
                     variant="default"
                     className="w-full"
-                    onClick={setNextQuestion}
+                    onClick={setNextStep}
                   >
                     Nächste Frage
                   </Button>
@@ -413,7 +447,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
               touchedQuestions={Array.from(touchedQuestionIds)}
             />
           </QuestionCard>
-        )}
+        ) : null}
       </div>
     </>
   );
