@@ -14,8 +14,10 @@ interface KeywordsProps {
   existingKeywords: string[];
   caseKeywords: Tables<'case_keywords'>[];
   userId?: string;
+  newKeywords: string[];
+  onChangeKeywords: (values: string[]) => void;
   isComplete: boolean;
-  onSave: (values: string[]) => void;
+  onSave: () => void;
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
@@ -25,6 +27,8 @@ const Keywords: FC<KeywordsProps> = ({
   existingKeywords,
   caseKeywords,
   userId,
+  newKeywords,
+  onChangeKeywords,
   isComplete,
   onSave,
   isSaving,
@@ -32,7 +36,6 @@ const Keywords: FC<KeywordsProps> = ({
   issues,
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [newKeywords, setNewKeywords] = useState<string[]>([]);
   const issue = issues[0] ?? null;
   const userExistingKeywords = userId
     ? (caseKeywords.find((keywordSet) => keywordSet.created_by === userId)
@@ -46,9 +49,9 @@ const Keywords: FC<KeywordsProps> = ({
   useEffect(() => {
     if (hasUserKeywords) {
       setInputValue('');
-      setNewKeywords([]);
+      onChangeKeywords([]);
     }
-  }, [hasUserKeywords]);
+  }, [hasUserKeywords, onChangeKeywords]);
 
   const handleAddKeyword = () => {
     const trimmed = inputValue.trim();
@@ -61,12 +64,12 @@ const Keywords: FC<KeywordsProps> = ({
     if (newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords) return;
     if (totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords) return;
 
-    setNewKeywords([...newKeywords, trimmed]);
+    onChangeKeywords([...newKeywords, trimmed]);
     setInputValue('');
   };
 
   const handleRemoveKeyword = (index: number) => {
-    setNewKeywords(newKeywords.filter((_, i) => i !== index));
+    onChangeKeywords(newKeywords.filter((_, i) => i !== index));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -78,7 +81,7 @@ const Keywords: FC<KeywordsProps> = ({
 
   const handleSave = () => {
     if (hasUserKeywords) return;
-    onSave(newKeywords);
+    onSave();
   };
 
   const canAddKeyword = () => {

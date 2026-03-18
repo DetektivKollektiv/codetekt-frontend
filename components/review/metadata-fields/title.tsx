@@ -4,13 +4,14 @@ import { FieldContainer } from '@/components/review/fields/field-container';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { caseTitleSchema } from '@/lib/schemas/case-metadata-schemas';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
 interface TitleProps {
-  value?: string | null;
+  value: string;
   isComplete: boolean;
-  onSave: (val: string) => void;
+  onChange: (val: string) => void;
+  onSave: () => void;
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
@@ -19,21 +20,22 @@ interface TitleProps {
 const Title: FC<TitleProps> = ({
   value,
   isComplete,
+  onChange,
   onSave,
   isSaving,
   onCreateDispute,
   issues,
 }) => {
-  const [inputValue, setInputValue] = useState(value ?? '');
   const issue = issues[0] ?? null;
-  const isDisabled = isSaving || (isComplete && !!value);
+  const inputValue = value ?? '';
+  const isDisabled = isSaving || (isComplete && !!inputValue);
 
   return (
     <FieldContainer
       title="Wie lautet der Titel dieses Falls?"
-      isDisputable={isComplete && !!value}
+      isDisputable={isComplete && !!inputValue}
       onCreateReviewDispute={() => onCreateDispute?.()}
-      onSave={() => onSave(inputValue)}
+      onSave={onSave}
       isSaveDisabled={
         isDisabled || inputValue.trim().length < caseTitleSchema.maxLength!
       }
@@ -42,7 +44,7 @@ const Title: FC<TitleProps> = ({
       <div className="space-y-2">
         <Input
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="Titel für den Fall"
           maxLength={caseTitleSchema.maxLength!}
           className="w-full"

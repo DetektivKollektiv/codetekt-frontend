@@ -5,13 +5,14 @@ import { Chip } from '@/components/ui/chip';
 import { Label } from '@/components/ui/label';
 import { CASE_CATEGORY_OPTIONS } from '@/lib/constants';
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
 interface CategoryProps {
-  value?: string | null;
+  value?: CaseCategoryValue | null;
   isComplete: boolean;
-  onSave: (val: CaseCategoryValue) => void;
+  onChange: (val: CaseCategoryValue | null) => void;
+  onSave: () => void;
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
@@ -20,14 +21,13 @@ interface CategoryProps {
 const Category: FC<CategoryProps> = ({
   value,
   isComplete,
+  onChange,
   onSave,
   isSaving,
   onCreateDispute,
   issues,
 }) => {
-  const [selected, setSelected] = useState<CaseCategoryValue | null>(
-    (value as CaseCategoryValue | null) ?? null,
-  );
+  const selected = value ?? null;
   const issue = issues[0] ?? null;
   const isDisabled = isSaving || (isComplete && !!value);
 
@@ -35,7 +35,7 @@ const Category: FC<CategoryProps> = ({
     if (isDisabled) return;
 
     const nextValue = optionId as CaseCategoryValue;
-    setSelected((current) => (current === nextValue ? null : nextValue));
+    onChange(selected === nextValue ? null : nextValue);
   };
 
   return (
@@ -43,7 +43,7 @@ const Category: FC<CategoryProps> = ({
       title="Welche Kategorie trifft auf diesen Fall zu?"
       isDisputable={isComplete && !!value}
       onCreateReviewDispute={() => onCreateDispute?.()}
-      onSave={() => selected && onSave(selected)}
+      onSave={onSave}
       isSaveDisabled={isDisabled || !selected}
       saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
     >

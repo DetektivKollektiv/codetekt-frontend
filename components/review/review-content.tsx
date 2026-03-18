@@ -4,7 +4,6 @@ import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 
 import { MetadataNavItem } from '@/lib/types/navigation';
-import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
@@ -19,6 +18,7 @@ import {
 } from '../ui/card';
 import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
+import { useMetadataDraftState } from './hooks/useMetadataDraftState';
 import { useMetadataSave } from './hooks/useMetadataSave';
 import { useReviewDispute } from './hooks/useReviewDispute';
 import { useReviewNavigation } from './hooks/useReviewNavigation';
@@ -195,14 +195,29 @@ const ReviewContent: FC<ReviewContentProps> = ({
     onStepComplete: advanceToNextStep,
   });
 
+  const {
+    metadataDraft,
+    existingKeywords,
+    handleTitleChange,
+    handleKeywordsChange,
+    handleCategoryChange,
+    handleSaveTitle,
+    handleSaveKeywords,
+    handleSaveCategory,
+  } = useMetadataDraftState({
+    caseData,
+    userId,
+    setTitle,
+    setKeywords,
+    setCategory,
+  });
+
   const handleNavClick = (id: string) => {
     setCurrentStepId(id);
     if (!metadataItems.some((m) => m.id === id)) {
       setCurrentQuestionId(id);
     }
   };
-
-  const existingKeywords = getCaseKeywords(caseData);
 
   if (!currentQuestion) {
     return null;
@@ -262,9 +277,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
             <CardContent className="flex-1">
               {currentStepId === METADATA_STEP_TITLE && (
                 <Title
-                  value={caseData.case_titles?.value}
+                  value={metadataDraft.title}
                   isComplete={hasTitle}
-                  onSave={setTitle}
+                  onChange={handleTitleChange}
+                  onSave={handleSaveTitle}
                   isSaving={isTitlePending}
                   onCreateDispute={() =>
                     openDisputeDialog({
@@ -291,8 +307,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   existingKeywords={existingKeywords}
                   caseKeywords={caseData.case_keywords ?? []}
                   userId={userId}
+                  newKeywords={metadataDraft.keywords}
+                  onChangeKeywords={handleKeywordsChange}
                   isComplete={hasKeywords}
-                  onSave={setKeywords}
+                  onSave={handleSaveKeywords}
                   isSaving={isKeywordsPending}
                   onCreateDispute={() =>
                     openDisputeDialog({
@@ -316,9 +334,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
               )}
               {currentStepId === METADATA_STEP_CATEGORY && (
                 <Category
-                  value={caseData.case_categories?.value}
+                  value={metadataDraft.category}
                   isComplete={hasCategory}
-                  onSave={setCategory}
+                  onChange={handleCategoryChange}
+                  onSave={handleSaveCategory}
                   isSaving={isCategoryPending}
                   onCreateDispute={() =>
                     openDisputeDialog({
