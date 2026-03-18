@@ -62,9 +62,17 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData, ratingStyle }) => {
                 >
                   {ratingStyle.label}
                 </Badge>
-                <Button variant="outline" size="sm" className="w-full" disabled>
-                  Hilfe zur Bewertung
-                </Button>
+                <a
+                  href="https://codetekt.org/informationen/die-codetekt-trust-checking-plattform-erklart/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Button variant="outline" size="sm" className="w-full">
+                    Hilfe zur Bewertung
+                  </Button>
+                </a>
               </div>
               {caseData.content_type === 'url' ? (
                 <Link
