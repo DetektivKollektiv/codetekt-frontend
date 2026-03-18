@@ -1,5 +1,6 @@
 import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
 import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
+import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 import { InProgressReviewAnswer } from '@/lib/schemas/review-schemas';
 import { Database } from '@/lib/types/database.types';
 import {
@@ -14,6 +15,7 @@ interface UseReviewSubmissionOptions {
   supabase: SupabaseClient<Database>;
   caseId: string;
   userId?: string;
+  caseCategory?: CaseCategoryValue | null;
   inProgressReviewAnswerData: InProgressReviewAnswer;
   markAsSaved: () => void;
   onSubmitSuccess: () => void;
@@ -23,6 +25,7 @@ export const useReviewSubmission = ({
   supabase,
   caseId,
   userId,
+  caseCategory,
   inProgressReviewAnswerData,
   markAsSaved,
   onSubmitSuccess,
@@ -88,8 +91,14 @@ export const useReviewSubmission = ({
       return;
     }
 
+    if (!caseCategory) {
+      toast.error('Bitte wähle zuerst eine Kategorie aus');
+      return;
+    }
+
     const validationResult = validateSubmittedReviewAnswer(
       inProgressReviewAnswerData,
+      caseCategory,
     );
 
     if (!validationResult.success) {

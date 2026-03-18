@@ -8,6 +8,10 @@ import {
   METADATA_STEP_KEYWORDS,
   METADATA_STEP_TITLE,
 } from '@/lib/constants';
+import {
+  caseCategorySchema,
+  CaseCategoryValue,
+} from '@/lib/schemas/case-metadata-schemas';
 import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import { Loader2, SaveAll } from 'lucide-react';
@@ -63,7 +67,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
     useReviewState(reviewTemplate);
 
-  const caseCategory = caseData.case_categories?.value;
+  const parsedCaseCategory = caseCategorySchema.safeParse(
+    caseData.case_categories?.value,
+  );
+  const caseCategory: CaseCategoryValue | null = parsedCaseCategory.success
+    ? parsedCaseCategory.data
+    : null;
 
   const {
     inProgressReviewAnswerData,
@@ -171,6 +180,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     supabase,
     caseId: caseData.id,
     userId,
+    caseCategory,
     inProgressReviewAnswerData,
     markAsSaved,
     onSubmitSuccess: () => setIsLocked(true),

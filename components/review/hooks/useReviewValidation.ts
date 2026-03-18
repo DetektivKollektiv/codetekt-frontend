@@ -1,4 +1,5 @@
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import { filterShownQuestions } from '@/lib/utils/review-question-navigation';
 import {
@@ -10,7 +11,7 @@ import { useMemo } from 'react';
 
 interface UseReviewValidationOptions {
   reviewTemplateWithAnswersValues: NonNullable<ReviewTemplate>;
-  caseCategory?: string | null;
+  caseCategory?: CaseCategoryValue | null;
 }
 
 export const useReviewValidation = ({
@@ -34,9 +35,10 @@ export const useReviewValidation = ({
   const isValidForSubmission = useMemo(() => {
     const validationResult = validateSubmittedReviewAnswer(
       inProgressReviewAnswerData,
+      caseCategory,
     );
     return validationResult.success;
-  }, [inProgressReviewAnswerData]);
+  }, [caseCategory, inProgressReviewAnswerData]);
 
   const shownReviewTemplateQuestions = useMemo(
     () => filterShownQuestions(resolvedReviewTemplate),
@@ -47,8 +49,9 @@ export const useReviewValidation = ({
     return getQuestionsValidationState(
       resolvedReviewTemplate,
       inProgressReviewAnswerData,
+      caseCategory,
     );
-  }, [resolvedReviewTemplate, inProgressReviewAnswerData]);
+  }, [caseCategory, resolvedReviewTemplate, inProgressReviewAnswerData]);
 
   return {
     resolvedReviewTemplate,

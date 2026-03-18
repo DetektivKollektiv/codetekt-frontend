@@ -1,4 +1,4 @@
-import { ZodIssue } from 'zod';
+import { z, ZodIssue } from 'zod';
 import { ReviewTemplate } from '../queries/getReviewTemplate';
 import {
   chipAnswerSchema,
@@ -10,10 +10,15 @@ import {
 } from '../schemas/answer-schemas';
 import { Field } from '../schemas/field-schemas';
 import {
+  Category,
   InProgressReviewAnswer,
   inProgressReviewAnswerSchema,
-  submittedReviewAnswerSchema,
+  submittedReviewAnswerSchemaMap,
 } from '../schemas/review-schemas';
+
+const isKnownCategory = (category: string): category is Category => {
+  return category in submittedReviewAnswerSchemaMap;
+};
 
 /**
  * Get the appropriate Zod schema for a field based on its type
@@ -97,8 +102,15 @@ export const validateInProgressReviewAnswer = (
  * Validate the complete review answer as a submitted review
  * Returns validation result with any errors based on stricter requirements
  */
-export const validateSubmittedReviewAnswer = (data: InProgressReviewAnswer) => {
-  return submittedReviewAnswerSchema.safeParse(data);
+export const validateSubmittedReviewAnswer = (
+  data: InProgressReviewAnswer,
+  category?: string | null,
+) => {
+  if (!category || !isKnownCategory(category)) {
+    return z.never().safeParse(data);
+  }
+
+  return submittedReviewAnswerSchemaMap[category].safeParse(data);
 };
 
 /**
@@ -142,11 +154,11 @@ export type QuestionValidationState = {
 export const getQuestionsValidationState = (
   reviewTemplate: NonNullable<ReviewTemplate>,
   data: InProgressReviewAnswer,
+  category?: string | null,
 ): Map<string, QuestionValidationState> => {
   const validationStates = new Map<string, QuestionValidationState>();
 
-  // Validate the complete data against submitted schema
-  const validationResult = submittedReviewAnswerSchema.safeParse(data);
+  const validationResult = validateSubmittedReviewAnswer(data, category);
 
   // Get field IDs with errors
   const errorFieldIds = new Set<string>();
