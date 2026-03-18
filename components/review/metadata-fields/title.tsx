@@ -28,6 +28,7 @@ const Title: FC<TitleProps> = ({
 }) => {
   const issue = issues[0] ?? null;
   const inputValue = value ?? '';
+  const isTitleValid = caseTitleSchema.safeParse(inputValue).success;
   const isDisabled = isSaving || (isComplete && !!inputValue);
 
   return (
@@ -36,9 +37,7 @@ const Title: FC<TitleProps> = ({
       isDisputable={isComplete && !!inputValue}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
-      isSaveDisabled={
-        isDisabled || inputValue.trim().length < caseTitleSchema.maxLength!
-      }
+      isSaveDisabled={isDisabled || !isTitleValid}
       saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
     >
       <div className="space-y-2">
