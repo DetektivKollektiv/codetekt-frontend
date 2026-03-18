@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -26,17 +27,37 @@ export interface HelpButtonProps
 }
 
 const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
-  ({ className, theme, size = 'sm', ...props }, ref) => {
-    const buttonContent = (
+  ({ className, theme, size = 'sm', href, ...props }, ref) => {
+    const isExternalLink = href ? /^https?:\/\//.test(href) : false;
+    const sharedClassName = cn(
+      helpButtonVariants({ theme }),
+      className,
+      'text-body-sm hover:opacity-40',
+    );
+
+    const buttonContent = href ? (
+      <Button
+        asChild
+        variant="ghost"
+        size={size}
+        className={sharedClassName}
+        {...props}
+      >
+        <Link
+          href={href}
+          target={isExternalLink ? '_blank' : undefined}
+          rel={isExternalLink ? 'noopener noreferrer' : undefined}
+        >
+          <HelpCircle className="w-4 h-4 mr-2" />
+          Hilfe
+        </Link>
+      </Button>
+    ) : (
       <Button
         ref={ref}
         variant="ghost"
         size={size}
-        className={cn(
-          helpButtonVariants({ theme }),
-          className,
-          'text-body-sm hover:opacity-40',
-        )}
+        className={sharedClassName}
         {...props}
       >
         <HelpCircle className="w-4 h-4 mr-2" />
@@ -52,10 +73,6 @@ const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
         </TooltipContent>
       </Tooltip>
     );
-
-    /* if (href) {
-      return <Link href={href} >{tooltipWrappedButton}</Link>;
-    } */
 
     return tooltipWrappedButton;
   },

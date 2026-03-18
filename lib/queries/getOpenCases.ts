@@ -2,15 +2,14 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '../types/database.types';
 
 export function getOpenCases(client: SupabaseClient<Database>) {
-  return client
-    .from('cases_without_open_disputes')
-    .select(
-      `
+  return client.from('cases_without_open_disputes').select(
+    `
       *,
       open_graph_data (*),
+      case_titles (*),
       review_aggregations (case_id)
-    `
-    );
+    `,
+  );
 }
 
 export const openCasesQuery = (client: SupabaseClient) => ({

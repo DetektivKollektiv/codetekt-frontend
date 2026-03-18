@@ -5,30 +5,28 @@ import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
 import { Badge } from './badge';
 
 export function BadgeList({
-  contentType,
-  keywordType,
+  category,
+  keywords,
 }: {
-  contentType: string[];
-  keywordType: string[];
+  category?: string;
+  keywords: string[];
 }) {
   return (
     <div className="overflow-hidden relative pb-px flex-shrink-0">
       <div className="flex flex-wrap gap-2 h-7">
-        {contentType[0] && (
+        {category && (
           <>
             <Badge variant="default">
               <div className="text-body-sm whitespace-normal font-bold">
-                {capitalizeFirstLetter(contentType[0])}
+                {capitalizeFirstLetter(category)}
               </div>
             </Badge>
-            {keywordType.length > 0 && <div>•</div>}
+            {keywords.length > 0 && <div>•</div>}
           </>
         )}
-        {keywordType.map((keyword, idx) => (
+        {keywords.map((keyword, idx) => (
           <Badge key={idx} variant="outline">
-            <div className="text-body-sm whitespace-nowrap">
-              {capitalizeFirstLetter(keyword)}
-            </div>
+            <div className="text-body-sm whitespace-nowrap">{keyword}</div>
           </Badge>
         ))}
       </div>

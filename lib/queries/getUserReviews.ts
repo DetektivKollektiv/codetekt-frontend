@@ -13,7 +13,11 @@ export function getUserReviews(
     cases (
       *,
       open_graph_data (*),
-      review_answers_in_progress (*)
+      review_answers_in_progress (*),
+      case_titles (*),
+      case_categories (*),
+      case_keywords (*),
+      review_aggregations (*)
     )
     `,
     )

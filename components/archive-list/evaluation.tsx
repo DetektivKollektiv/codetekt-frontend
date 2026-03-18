@@ -11,7 +11,7 @@ interface EvaluationProps {
 
 const Evaluation: FC<EvaluationProps> = ({ ratingStyle, warningTags }) => {
   return (
-    <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-48 lg:h-auto relative">
+    <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-56 lg:h-auto relative">
       <div>
         <div className="flex justify-between items-center mb-2">
           <h4 className="text-body-sm font-semibold">Bewertung</h4>

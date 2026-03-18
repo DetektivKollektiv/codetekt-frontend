@@ -23,6 +23,7 @@ export {
   type CreateCaseFormData,
 } from './case-schemas';
 export {
+  categoryInConditionSchema,
   comparisonConditionSchema,
   conditionSchema,
   equalsConditionSchema,
@@ -61,6 +62,8 @@ export {
   type SubmittedReviewAnswer,
 } from './review-schemas';
 export {
+  reviewTemplateMetadataSchema,
   reviewTemplateSchema,
   type ReviewTemplateData,
+  type ReviewTemplateMetadataData,
 } from './template-schemas';

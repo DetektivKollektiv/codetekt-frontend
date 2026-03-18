@@ -6,7 +6,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Case } from '@/lib/queries/getCase';
-import { cn, getCaseTitle, getLocalDate } from '@/lib/utils';
+import { cn, getLocalDate } from '@/lib/utils';
+import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { RatingStyle } from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -61,9 +62,17 @@ const CaseCard: FC<CaseCardProps> = ({ case: caseData, ratingStyle }) => {
                 >
                   {ratingStyle.label}
                 </Badge>
-                <Button variant="outline" size="sm" className="w-full" disabled>
-                  Hilfe zur Bewertung
-                </Button>
+                <a
+                  href="https://codetekt.org/informationen/die-codetekt-trust-checking-plattform-erklart/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Button variant="outline" size="sm" className="w-full">
+                    Hilfe zur Bewertung
+                  </Button>
+                </a>
               </div>
               {caseData.content_type === 'url' ? (
                 <Link

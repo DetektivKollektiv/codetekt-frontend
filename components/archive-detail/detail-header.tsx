@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
-import { capitalizeFirstLetter } from '@/lib/utils/capitalize-first-letter';
+import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
+import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
+import { getCaseTitle } from '@/lib/utils/get-case-title';
 import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import ImagePlaceholder from '../image-placeholder';
@@ -19,23 +21,13 @@ interface DetailHeaderProps {
 export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
   const caseData = aggregatedReview.cases;
   const ogData = caseData.open_graph_data;
-  const reviewData = aggregatedReview.data;
-
-  const title =
-    aggregatedReview.data?.metadata.title ||
-    ogData?.og_title ||
-    caseData.content ||
-    'Titel nicht verfügbar';
 
   const description =
     ogData?.og_description ||
     caseData.content ||
     'Keine Beschreibung verfügbar';
 
-  const imageUrl = ogData?.og_image;
-
-  const contentType = reviewData?.metadata?.content_type || [];
-  const keywordType = reviewData?.metadata?.keyword_type || [];
+  const category = getCaseCategoryName(caseData);
 
   return (
     <div className="space-y-6 page-max-w">
@@ -75,7 +67,9 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
               </p>
 
               <div>
-                <h2 className="text-heading-xl leading-tight">{title}</h2>
+                <h2 className="text-heading-xl leading-tight">
+                  {getCaseTitle(aggregatedReview)}
+                </h2>
               </div>
 
               {aggregatedReview.cases.content_type === 'url' ? (
@@ -99,39 +93,22 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
             {/* Right: Image and metadata */}
             <div className="space-y-4">
               {/* Image or placeholder */}
-              {imageUrl ? (
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
-                  <ImagePlaceholder
-                    width={640}
-                    height={360}
-                    seed={caseData.case_number}
-                  />
-                </div>
-              ) : (
-                <div className="aspect-video rounded-lg bg-muted flex items-center justify-center relative">
-                  <ImagePlaceholder
-                    width={640}
-                    height={360}
-                    seed={caseData.case_number!}
-                    className="rounded-lg aspect-video max-w-full opacity-20 absolute inset-0 z-0"
-                  />
-                  <p className="text-body-md text-foreground font-bold z-10">
-                    Kein Bild verfügbar
-                  </p>
-                </div>
-              )}
+
+              <div className="aspect-video rounded-lg bg-muted flex items-center justify-center relative overflow-hidden">
+                <ImagePlaceholder
+                  seed={caseData.case_number!}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
               {/* Tags zum Inhalt */}
               <div className="space-y-2">
                 <p className="text-body-sm font-medium">Tags zum Inhalt</p>
                 <div className="flex flex-wrap gap-2">
-                  {contentType.map((type) => (
-                    <Badge key={type} variant="secondary">
-                      {capitalizeFirstLetter(type)}
-                    </Badge>
-                  ))}
-                  {keywordType.map((keyword) => (
-                    <Badge key={keyword} variant="outline">
+                  <Badge variant="secondary">{category}</Badge>
+                  <p>•</p>
+                  {getCaseKeywords(aggregatedReview).map((keyword, index) => (
+                    <Badge key={index} variant="outline">
                       {keyword}
                     </Badge>
                   ))}

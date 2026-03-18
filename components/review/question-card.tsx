@@ -1,5 +1,4 @@
 'use client';
-import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { FC, ReactNode } from 'react';
 import {
   Card,
@@ -11,39 +10,43 @@ import {
 } from '../ui/card';
 
 interface QuestionCardProps {
-  question: NonNullable<ReviewTemplate>[number];
+  title: ReactNode;
+  description: ReactNode;
   children: ReactNode;
-  footer: ReactNode;
+  footer?: ReactNode;
   headerActions?: ReactNode;
+  contentClassName?: string;
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
-  question,
+  title,
+  description,
   children,
   footer,
   headerActions,
+  contentClassName,
 }) => {
   return (
     <Card className="pt-6 flex flex-col">
       <CardHeader className="relative">
-        <CardTitle className=" text-display-sm">
-          {question.metadata.title}
-        </CardTitle>
-        <CardDescription className="max-w-xl">
-          {question.metadata.text}
-        </CardDescription>
+        <CardTitle className=" text-display-sm">{title}</CardTitle>
+        <CardDescription className="max-w-xl">{description}</CardDescription>
         {headerActions && (
           <div className="absolute top-6 right-6 space-x-4">
             {headerActions}
           </div>
         )}
       </CardHeader>
-      <CardContent className="space-y-12 md:space-y-8 flex-1">
+      <CardContent
+        className={contentClassName ?? 'space-y-12 md:space-y-8 flex-1'}
+      >
         {children}
       </CardContent>
-      <CardFooter className="mt-auto flex flex-col justify-end">
-        {footer}
-      </CardFooter>
+      {footer && (
+        <CardFooter className="mt-auto flex flex-col justify-end">
+          {footer}
+        </CardFooter>
+      )}
     </Card>
   );
 };

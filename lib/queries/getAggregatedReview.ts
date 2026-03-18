@@ -3,7 +3,7 @@ import { Database } from '../types/database.types';
 
 export function getAggregatedReview(
   client: SupabaseClient<Database>,
-  caseId: string
+  caseId: string,
 ) {
   return client
     .from('review_aggregations')
@@ -12,9 +12,12 @@ export function getAggregatedReview(
       *,
       cases!inner (
         *,
-        open_graph_data (*)
+        open_graph_data (*),
+        case_titles (*),
+        case_keywords (*),
+        case_categories (*)
       )
-    `
+    `,
     )
     .eq('case_id', caseId)
     .maybeSingle();
@@ -22,7 +25,7 @@ export function getAggregatedReview(
 
 export const aggregatedReviewQuery = (
   client: SupabaseClient<Database>,
-  caseId: string
+  caseId: string,
 ) => ({
   queryKey: ['aggregated-case', caseId],
   queryFn: async () => {

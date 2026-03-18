@@ -1,42 +1,39 @@
 'use client';
-import { createReviewDisputeMutation } from '@/lib/queries/createReviewDispute';
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
-import { saveReviewAnswersInProgressMutation } from '@/lib/queries/saveReviewAnswersInProgress';
-import { submitReviewAnswersMutation } from '@/lib/queries/submitReviewAnswers';
-import { Field } from '@/lib/schemas';
 import { createClient } from '@/lib/supabase/client';
-import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
+
+import {
+  METADATA_STEP_CATEGORY,
+  METADATA_STEP_KEYWORDS,
+  METADATA_STEP_TITLE,
+} from '@/lib/constants';
+import {
+  caseCategorySchema,
+  CaseCategoryValue,
+} from '@/lib/schemas/case-metadata-schemas';
+import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
-import {
-  buildInProgressReviewAnswerData,
-  getQuestionsValidationState,
-  validateInProgressReviewAnswer,
-  validateSubmittedReviewAnswer,
-} from '@/lib/utils/review-validation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Edit, Loader2, SaveAll } from 'lucide-react';
+import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
 import { HelpButton } from '../ui/help-button';
-import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import CaseCard from './case-card';
+import { useMetadataDraftState } from './hooks/useMetadataDraftState';
+import { useMetadataSave } from './hooks/useMetadataSave';
+import { useReviewDispute } from './hooks/useReviewDispute';
+import { useReviewNavigation } from './hooks/useReviewNavigation';
 import { useReviewState } from './hooks/useReviewState';
+import { useReviewSubmission } from './hooks/useReviewSubmission';
+import { useReviewValidation } from './hooks/useReviewValidation';
+import { useTouchedQuestions } from './hooks/useTouchedQuestions';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
+import Category from './metadata-fields/category';
+import Keywords from './metadata-fields/keywords';
+import Title from './metadata-fields/title';
 import QuestionCard from './question-card';
+import ReviewDisputeDialog from './review-dispute-dialog';
 import ReviewNavigation from './review-navigation';
 import SuccesCard from './success-card';
 import { RenderFieldsWithHeaders } from './utils/render-fields';
@@ -55,49 +52,125 @@ const ReviewContent: FC<ReviewContentProps> = ({
   userId,
 }) => {
   const supabase = createClient();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const [isSubmitted, setIsSubmitted] = useState(initialIsSubmitted);
-  const [isEditable, setIsEditable] = useState(!initialIsSubmitted);
-  const [isDisputeSubmitting, setIsDisputeSubmitting] = useState(false);
-  const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false);
-  const [disputingField, setDisputingField] = useState<Field | null>(null);
-  const [disputeReason, setDisputeReason] = useState('');
-  const [touchedQuestionIds, setTouchedFieldIds] = useState<Set<string>>(
-    new Set(),
-  );
+  const [isLocked, setIsLocked] = useState(initialIsSubmitted);
+  const [currentStepId, setCurrentStepId] = useState('');
+
+  const { touchedQuestionIds } = useTouchedQuestions({
+    currentQuestionId: currentStepId,
+  });
+
+  const hasTitle = !!caseData.case_titles;
+  const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
+  const hasCategory = !!caseData.case_categories;
 
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
     useReviewState(reviewTemplate);
 
-  const [currentQuestionId, setCurrentQuestionId] = useState(
-    isSubmitted
-      ? reviewTemplate[reviewTemplate.length - 1].id
-      : reviewTemplate[0].id,
+  const parsedCaseCategory = caseCategorySchema.safeParse(
+    caseData.case_categories?.value,
+  );
+  const caseCategory: CaseCategoryValue | null = parsedCaseCategory.success
+    ? parsedCaseCategory.data
+    : null;
+
+  const {
+    inProgressReviewAnswerData,
+    isValidForSubmission,
+    shownReviewTemplateQuestions,
+    questionsValidationState,
+  } = useReviewValidation({
+    reviewTemplateWithAnswersValues,
+    caseCategory,
+  });
+
+  const steps = useMemo<ReviewStep[]>(
+    () => [
+      {
+        id: METADATA_STEP_TITLE,
+        label: 'Titel des Falls',
+        description: hasTitle
+          ? 'Bitte prüfe den Titel, der für diesen Fall vergeben wurde. Wenn der Titel den Fall gut beschreibt, klicke auf "Der Titel passt". Falls nicht, klicke auf "Titel beanstanden", damit der Titel von unserer Moderation geprüft werden kann.'
+          : 'Vergib einen klaren und prägnanten Titel, damit der Fall später schnell verstanden und wiedergefunden werden kann.',
+        helpUrl: '/help/title',
+        fieldTitle: 'Titel des Falls',
+        primaryActionLabel: hasTitle ? 'Der Titel passt' : 'Speichern',
+        disputeActionLabel: 'Titel beanstanden',
+        isIndented: false,
+        status: hasTitle ? 'success' : 'incomplete',
+        kind: 'metadata',
+        isComplete: hasTitle,
+      },
+      {
+        id: METADATA_STEP_KEYWORDS,
+        label: 'Stichwörter',
+        description: hasKeywords
+          ? 'Bitte prüfe die Stichwörter, die für diesen Fall bereits vergeben wurden. Wenn die Stichwörter den Fall gut beschreiben, klicke auf "Die Stichwörter passen". Falls nicht, klicke auf "Stichwörter beanstanden", damit die Stichwörter von unserer Moderation geprüft werden können.'
+          : 'Ergänze passende Stichwörter, die den Inhalt des Falls treffend beschreiben und die Einordnung erleichtern.',
+        helpUrl: '/help/keywords',
+
+        primaryActionLabel: hasKeywords
+          ? 'Die Stichwörter passen'
+          : 'Speichern',
+        disputeActionLabel: 'Stichwörter beanstanden',
+        isIndented: false,
+        status: hasKeywords ? 'success' : 'incomplete',
+        kind: 'metadata',
+        isComplete: hasKeywords,
+      },
+      {
+        id: METADATA_STEP_CATEGORY,
+        label: 'Kategorie',
+        description: hasCategory
+          ? 'Bitte prüfe die Kategorie, die für diesen Fall vergeben wurde. Wenn die Kategorie den Fall gut einordnet, klicke auf "Die Kategorie passt". Falls nicht, klicke auf "Kategorie beanstanden", damit die Kategorie von unserer Moderation geprüft werden kann.'
+          : 'Wähle die passende Kategorie für den Fall. So werden die richtigen Bewertungskriterien für alle Reviewer angezeigt.',
+        helpUrl: '/help/category',
+        fieldTitle: 'Kategorie des Falls',
+        primaryActionLabel: hasCategory ? 'Die Kategorie passt' : 'Speichern',
+        disputeActionLabel: 'Kategorie beanstanden',
+        isIndented: false,
+        status: hasCategory ? 'success' : 'incomplete',
+        kind: 'metadata',
+        isComplete: hasCategory,
+      },
+      ...shownReviewTemplateQuestions.map((question) => {
+        const isTouched = touchedQuestionIds.has(question.id);
+        const validationState = isTouched
+          ? questionsValidationState.get(question.id)
+          : undefined;
+
+        return {
+          id: question.id,
+          label: question.metadata.title,
+          helpUrl: question.metadata.help_url.trim() || undefined,
+          isIndented: (question.metadata.indent_level ?? 0) > 0,
+          status: validationState?.type as 'error' | 'success' | undefined,
+          kind: 'question' as const,
+          isComplete: false,
+          question,
+        };
+      }),
+    ],
+    [
+      hasCategory,
+      hasKeywords,
+      hasTitle,
+      shownReviewTemplateQuestions,
+      questionsValidationState,
+      touchedQuestionIds,
+    ],
   );
 
-  // Resolve all conditions to booleans
-  const resolvedReviewTemplate = useMemo(
-    () => resolveReviewTemplateConditions(reviewTemplateWithAnswersValues),
-    [reviewTemplateWithAnswersValues],
-  );
+  const { currentStep, isLastStep, setNextStep, handleNavClick } =
+    useReviewNavigation({
+      steps,
+      currentStepId,
+      setCurrentStepId,
+    });
 
-  // Automatically build InProgressReviewAnswer object whenever answers change
-  const inProgressReviewAnswerData = useMemo(() => {
-    const data = buildInProgressReviewAnswerData(
-      reviewTemplateWithAnswersValues,
-    );
-    return data;
-  }, [reviewTemplateWithAnswersValues]);
-
-  // Check if data is valid for final submission
-  const isValidForSubmission = useMemo(() => {
-    const validationResult = validateSubmittedReviewAnswer(
-      inProgressReviewAnswerData,
-    );
-    return validationResult.success;
-  }, [inProgressReviewAnswerData]);
+  const isMetadataStep = currentStep?.kind === 'metadata';
+  const currentQuestion =
+    currentStep?.kind === 'question' ? currentStep.question : null;
 
   // Unsaved changes warning
   const {
@@ -109,262 +182,84 @@ const ReviewContent: FC<ReviewContentProps> = ({
   });
 
   useEffect(() => {
-    setUnsavedChangesWarningActive(isEditable);
-  }, [isEditable, setUnsavedChangesWarningActive]);
+    setUnsavedChangesWarningActive(!isLocked);
+  }, [isLocked, setUnsavedChangesWarningActive]);
 
-  // Filter out questions where all fields are not shown
-  const shownReviewTemplateQuestions = useMemo(
-    () =>
-      resolvedReviewTemplate.filter((question) =>
-        question.fields.some(
-          (field) => field.is_shown === true || field.is_shown === undefined,
-        ),
-      ),
-    [resolvedReviewTemplate],
-  );
-
-  const isLastQuestion = useMemo(() => {
-    const currentIndex = shownReviewTemplateQuestions.findIndex(
-      (q) => q.id === currentQuestionId,
-    );
-    return currentIndex === shownReviewTemplateQuestions.length - 1;
-  }, [currentQuestionId, shownReviewTemplateQuestions]);
-
-  const currentQuestion = useMemo(
-    () =>
-      shownReviewTemplateQuestions.find(
-        (item) => item.id === currentQuestionId,
-      ) || shownReviewTemplateQuestions[0],
-    [currentQuestionId, shownReviewTemplateQuestions],
-  );
-
-  const previousQuestionRef = useRef(currentQuestion);
-
-  useEffect(() => {
-    const previousId = previousQuestionRef.current?.id;
-    if (previousId && previousId !== currentQuestion.id) {
-      setTouchedFieldIds((prev) => new Set([...prev, previousId]));
-    }
-    previousQuestionRef.current = currentQuestion;
-  }, [currentQuestion]);
-
-  // Get validation state for all questions
-  const questionsValidationState = useMemo(() => {
-    return getQuestionsValidationState(
-      resolvedReviewTemplate,
-      inProgressReviewAnswerData,
-    );
-  }, [resolvedReviewTemplate, inProgressReviewAnswerData]);
-
-  const setNextQuestion = () => {
-    const currentIndex = shownReviewTemplateQuestions.findIndex(
-      (q) => q.id === currentQuestionId,
-    );
-    if (currentIndex < shownReviewTemplateQuestions.length - 1) {
-      const nextQuestionId = shownReviewTemplateQuestions[currentIndex + 1].id;
-      setCurrentQuestionId(nextQuestionId);
-    }
-  };
-
-  // Handler to save in-progress review
-  const { mutate: saveInProgress, isPending: isSavingPending } = useMutation({
-    ...saveReviewAnswersInProgressMutation(supabase),
-    onSuccess: () => {
-      toast.success('Zwischenstand gespeichert');
-      markAsSaved();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Fehler beim Speichern');
-      console.error('✗ Save failed:', error);
-    },
+  const {
+    handleSaveInProgress,
+    handleSubmitReview,
+    isSavingPending,
+    isSubmitting,
+  } = useReviewSubmission({
+    supabase,
+    caseId: caseData.id,
+    userId,
+    caseCategory,
+    inProgressReviewAnswerData,
+    markAsSaved,
+    onSubmitSuccess: () => setIsLocked(true),
   });
 
-  const handleSaveInProgress = () => {
-    const validationResult = validateInProgressReviewAnswer(
-      inProgressReviewAnswerData,
-    );
-
-    if (!validationResult.success) {
-      console.error('✗ Validation failed:', validationResult.error);
-      toast.error('Validierungsfehler beim Speichern');
-      return;
-    }
-
-    if (!userId) {
-      toast.error('Du musst angemeldet sein, um zu speichern');
-      return;
-    }
-
-    saveInProgress({
-      case_id: caseData.id,
-      data: validationResult.data,
-    });
-  };
-
-  // Handler to submit review (final submission)
-  const { mutate: submitReview, isPending: isSubmitting } = useMutation({
-    ...submitReviewAnswersMutation(supabase),
-    onSuccess: async () => {
-      toast.success('Fall erfolgreich abgeschlossen');
-      setIsSubmitted(true);
-      setIsEditable(false);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] }),
-        queryClient.invalidateQueries({
-          queryKey: ['review-template', caseData?.id],
-        }),
-      ]);
-      markAsSaved();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Fehler beim Abschließen des Falls');
-      console.error('✗ Submit failed:', error);
-    },
+  const {
+    isDisputeDialogOpen,
+    setIsDisputeDialogOpen,
+    disputingField,
+    openDisputeDialog,
+    handleDisputeSuccess,
+  } = useReviewDispute({
+    caseId: caseData.id,
+    userId,
+    markAsSaved,
   });
 
-  const handleSubmitReview = async () => {
-    if (!userId) {
-      toast.error('Du musst angemeldet sein, um einen Fall abzuschließen');
-      return;
-    }
-
-    const validationResult = validateSubmittedReviewAnswer(
-      inProgressReviewAnswerData,
-    );
-
-    if (!validationResult.success) {
-      console.error('✗ Validation failed:', validationResult.error);
-      toast.error('Bitte fülle alle erforderlichen Felder aus');
-      return;
-    }
-
-    const inProgressValidation = validateInProgressReviewAnswer(
-      inProgressReviewAnswerData,
-    );
-
-    if (!inProgressValidation.success) {
-      console.error(
-        '✗ In-progress validation failed:',
-        inProgressValidation.error,
-      );
-      toast.error('Validierungsfehler');
-      return;
-    }
-
-    saveInProgress(
-      {
-        case_id: caseData.id,
-        data: inProgressValidation.data,
-      },
-      {
-        onSuccess: (saveResult) => {
-          if (saveResult?.in_progress_id) {
-            submitReview({
-              in_progress_id: saveResult.in_progress_id,
-            });
-          }
-        },
-      },
-    );
-  };
-
-  // Mutation for creating review dispute
-  const { mutate: createDispute } = useMutation({
-    ...createReviewDisputeMutation(supabase, userId || ''),
-    onMutate: () => {
-      setIsDisputeSubmitting(true);
-    },
-    onSuccess: async () => {
-      toast.success(
-        'Korrektur erfolgreich beantragt. Unser Team wird die Bewertung überprüfen.',
-      );
-      setIsDisputeSubmitting(false);
-      setIsDisputeDialogOpen(false);
-      setDisputeReason('');
-      setDisputingField(null);
-
-      queryClient.invalidateQueries({ queryKey: ['case', caseData?.id] });
-      queryClient.invalidateQueries({
-        queryKey: ['review-template', caseData?.id],
-      });
-      markAsSaved();
-      router.push('/');
-    },
-    onError: (error: Error) => {
-      toast.error(
-        error.message ||
-          'Fehler beim Beantragen der Korrektur. Bitte versuche es erneut.',
-      );
-      setIsDisputeSubmitting(false);
-    },
+  const {
+    setTitle,
+    setKeywords,
+    setCategory,
+    isTitlePending,
+    isKeywordsPending,
+    isCategoryPending,
+    titleIssues,
+    keywordsIssues,
+    categoryIssues,
+  } = useMetadataSave({
+    supabase,
+    caseId: caseData.id,
+    userId,
+    onStepComplete: setNextStep,
   });
 
-  const openDisputeDialog = (field: Field) => {
-    if (!userId) {
-      toast.error('Du musst angemeldet sein, um eine Korrektur zu beantragen');
-      return;
-    }
-    setDisputingField(field);
-    setIsDisputeDialogOpen(true);
-  };
+  const {
+    metadataDraft,
+    existingKeywords,
+    handleTitleChange,
+    handleKeywordsChange,
+    handleCategoryChange,
+    handleSaveTitle,
+    handleSaveKeywords,
+    handleSaveCategory,
+  } = useMetadataDraftState({
+    caseData,
+    userId,
+    setTitle,
+    setKeywords,
+    setCategory,
+  });
 
-  const handleDisputeSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!disputingField || !disputeReason.trim()) return;
-
-    const currentValue = String(disputingField.answer_value || '');
-
-    createDispute({
-      caseId: caseData.id,
-      fieldId: disputingField.id,
-      originalValue: currentValue,
-      reason: disputeReason,
-    });
-  };
+  if (!currentStep) {
+    return null;
+  }
 
   return (
     <>
-      <Dialog open={isDisputeDialogOpen} onOpenChange={setIsDisputeDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={handleDisputeSubmit}>
-            <DialogHeader>
-              <DialogTitle>Korrektur beantragen</DialogTitle>
-              <DialogDescription>
-                Bitte gib den Grund für die Korrektur an. Unser Team wird die
-                Bewertung überprüfen.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-3">
-                <Label htmlFor="dispute-reason">Grund der Korrektur</Label>
-                <Textarea
-                  id="dispute-reason"
-                  placeholder="Beschreibe, warum diese Bewertung korrigiert werden sollte..."
-                  value={disputeReason}
-                  onChange={(e) => setDisputeReason(e.target.value)}
-                  required
-                  rows={4}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Abbrechen
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                disabled={!disputeReason.trim() || isDisputeSubmitting}
-              >
-                {isDisputeSubmitting
-                  ? 'Wird gesendet...'
-                  : 'Korrektur beantragen'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <ReviewDisputeDialog
+        isOpen={isDisputeDialogOpen}
+        onOpenChange={setIsDisputeDialogOpen}
+        disputingField={disputingField}
+        caseId={caseData.id}
+        userId={userId}
+        onSuccess={handleDisputeSuccess}
+      />
 
       <div
         className="page-max-w lg:grid lg:gap-6"
@@ -379,41 +274,129 @@ const ReviewContent: FC<ReviewContentProps> = ({
           />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
-              touchedQuestionsIds={Array.from(touchedQuestionIds)}
-              reviewTemplateQuestions={shownReviewTemplateQuestions}
-              onItemClick={setCurrentQuestionId}
-              questionsValidationState={questionsValidationState}
-              currentQuestion={currentQuestion}
-              disabled={!isEditable}
+              items={steps}
+              onItemClick={handleNavClick}
+              disabled={isLocked}
+              currentStepId={currentStepId}
             />
           </div>
         </div>
-        {isSubmitted && !isEditable ? (
+        {isLocked ? (
           <SuccesCard>
-            <Button
-              variant={'outline'}
-              size={'default'}
-              className="w-full"
-              onClick={() => {
-                setIsEditable(true);
-                setCurrentQuestionId(shownReviewTemplateQuestions[0].id);
-              }}
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Fall bearbeiten
-            </Button>
-            <Link href={`/#open-cases`} className="w-full mt-2">
+            <Link href={`/#open-cases`} className="w-full">
               <Button variant={'default'} size={'default'} className="w-full">
                 Weitere Fälle bearbeiten
               </Button>
             </Link>
           </SuccesCard>
-        ) : (
+        ) : isMetadataStep ? (
           <QuestionCard
-            question={currentQuestion}
+            title={currentStep.label}
+            description={currentStep.description}
+            headerActions={<HelpButton href={currentStep.helpUrl} />}
+            contentClassName="flex-1"
+          >
+            {currentStepId === METADATA_STEP_TITLE && (
+              <Title
+                value={metadataDraft.title}
+                isComplete={hasTitle}
+                onChange={handleTitleChange}
+                onSave={hasTitle ? setNextStep : handleSaveTitle}
+                isSaving={isTitlePending}
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'title',
+                    type: 'text',
+                    question: 'Titel',
+                    options: [
+                      {
+                        id: 'title',
+                        placeholder: '',
+                        max_length: 500,
+                        min_length: 10,
+                      },
+                    ],
+                    answer_value: caseData.case_titles?.value ?? '',
+                    initial_answer_value: caseData.case_titles?.value ?? '',
+                  })
+                }
+                issues={titleIssues}
+              />
+            )}
+            {currentStepId === METADATA_STEP_KEYWORDS && (
+              <Keywords
+                existingKeywords={existingKeywords}
+                caseKeywords={caseData.case_keywords ?? []}
+                userId={userId}
+                newKeywords={metadataDraft.keywords}
+                onChangeKeywords={handleKeywordsChange}
+                isComplete={hasKeywords}
+                onSave={hasKeywords ? setNextStep : handleSaveKeywords}
+                isSaving={isKeywordsPending}
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'keywords',
+                    type: 'text',
+                    question: 'Stichwörter',
+                    options: [
+                      {
+                        id: 'keywords',
+                        placeholder: '',
+                        max_length: 500,
+                        min_length: 1,
+                      },
+                    ],
+                    answer_value: existingKeywords.join(', '),
+                    initial_answer_value: existingKeywords.join(', '),
+                  })
+                }
+                issues={keywordsIssues}
+              />
+            )}
+            {currentStepId === METADATA_STEP_CATEGORY && (
+              <Category
+                value={metadataDraft.category}
+                isComplete={hasCategory}
+                onChange={handleCategoryChange}
+                onSave={hasCategory ? setNextStep : handleSaveCategory}
+                isSaving={isCategoryPending}
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'category',
+                    type: 'text',
+                    question: 'Kategorie',
+                    options: [
+                      {
+                        id: 'category',
+                        placeholder: '',
+                        max_length: 100,
+                        min_length: 1,
+                      },
+                    ],
+                    answer_value: caseData.case_categories?.value ?? '',
+                    initial_answer_value: caseData.case_categories?.value ?? '',
+                  })
+                }
+                issues={categoryIssues}
+              />
+            )}
+          </QuestionCard>
+        ) : currentQuestion ? (
+          <QuestionCard
+            title={currentQuestion.metadata.title}
+            description={currentQuestion.metadata.text}
             headerActions={
               <>
-                <HelpButton />
+                <HelpButton href={currentStep.helpUrl} />
                 <Button
                   variant={hasUnsavedChanges ? 'destructive' : 'outline'}
                   size={'default'}
@@ -431,7 +414,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
             }
             footer={
               <div className="flex flex-col w-full gap-2">
-                {isLastQuestion ? (
+                {isLastStep ? (
                   <Button
                     variant="default"
                     className="w-full"
@@ -446,7 +429,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   <Button
                     variant="default"
                     className="w-full"
-                    onClick={setNextQuestion}
+                    onClick={setNextStep}
                   >
                     Nächste Frage
                   </Button>
@@ -462,7 +445,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
               touchedQuestions={Array.from(touchedQuestionIds)}
             />
           </QuestionCard>
-        )}
+        ) : null}
       </div>
     </>
   );
