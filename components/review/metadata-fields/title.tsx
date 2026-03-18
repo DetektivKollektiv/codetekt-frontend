@@ -1,7 +1,6 @@
 'use client';
 
 import { FieldContainer } from '@/components/review/fields/field-container';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { caseTitleSchema } from '@/lib/schemas/case-metadata-schemas';
@@ -34,6 +33,11 @@ const Title: FC<TitleProps> = ({
       title="Wie lautet der Titel dieses Falls?"
       isDisputable={isComplete && !!value}
       onCreateReviewDispute={() => onCreateDispute?.()}
+      onSave={() => onSave(inputValue)}
+      isSaveDisabled={
+        isDisabled || inputValue.trim().length < caseTitleSchema.maxLength!
+      }
+      saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
     >
       <div className="space-y-2">
         <Input
@@ -50,15 +54,6 @@ const Title: FC<TitleProps> = ({
             {inputValue.length} / {caseTitleSchema.maxLength!}
           </div>
         </div>
-        <Button
-          className="w-full"
-          onClick={() => onSave(inputValue)}
-          disabled={
-            isDisabled || inputValue.trim().length < caseTitleSchema.maxLength!
-          }
-        >
-          {isSaving ? 'Wird gespeichert...' : 'Bestätigen'}
-        </Button>
       </div>
     </FieldContainer>
   );

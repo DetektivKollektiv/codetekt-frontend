@@ -1,7 +1,6 @@
 'use client';
 
 import { FieldContainer } from '@/components/review/fields/field-container';
-import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/ui/chip';
 import { Label } from '@/components/ui/label';
 import { CASE_CATEGORY_OPTIONS } from '@/lib/constants';
@@ -44,6 +43,9 @@ const Category: FC<CategoryProps> = ({
       title="Welche Kategorie trifft auf diesen Fall zu?"
       isDisputable={isComplete && !!value}
       onCreateReviewDispute={() => onCreateDispute?.()}
+      onSave={() => selected && onSave(selected)}
+      isSaveDisabled={isDisabled || !selected}
+      saveLabel={isSaving ? 'Wird gespeichert...' : 'Speichern'}
     >
       <div className="space-y-2">
         <div className="flex flex-wrap gap-2 mb-2">
@@ -63,13 +65,6 @@ const Category: FC<CategoryProps> = ({
           })}
         </div>
         {issue && <Label className="text-destructive">{issue.message}</Label>}
-        <Button
-          className="w-full"
-          onClick={() => selected && onSave(selected)}
-          disabled={isDisabled || !selected}
-        >
-          {isSaving ? 'Wird gespeichert...' : 'Bestätigen'}
-        </Button>
       </div>
     </FieldContainer>
   );
