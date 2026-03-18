@@ -13,6 +13,7 @@ import CaseCard from './case-card';
 import { useMetadataDraftState } from './hooks/useMetadataDraftState';
 import { useMetadataSave } from './hooks/useMetadataSave';
 import { useReviewDispute } from './hooks/useReviewDispute';
+import { useReviewNavigation } from './hooks/useReviewNavigation';
 import { useReviewState } from './hooks/useReviewState';
 import { useReviewSubmission } from './hooks/useReviewSubmission';
 import { useReviewValidation } from './hooks/useReviewValidation';
@@ -148,26 +149,16 @@ const ReviewContent: FC<ReviewContentProps> = ({
     ],
   );
 
-  const firstIncompleteStepId =
-    steps.find((step) => !step.isComplete)?.id ?? steps[0]?.id ?? '';
+  const { currentStep, isLastStep, setNextStep, handleNavClick } =
+    useReviewNavigation({
+      steps,
+      currentStepId,
+      setCurrentStepId,
+    });
 
-  useEffect(() => {
-    if (steps.length === 0) return;
-
-    const hasCurrentStep = steps.some((step) => step.id === currentStepId);
-    if (!hasCurrentStep) {
-      setCurrentStepId(firstIncompleteStepId);
-    }
-  }, [currentStepId, firstIncompleteStepId, steps]);
-
-  const currentStep =
-    steps.find((step) => step.id === currentStepId) ?? steps[0] ?? null;
   const isMetadataStep = currentStep?.kind === 'metadata';
   const currentQuestion =
     currentStep?.kind === 'question' ? currentStep.question : null;
-  const isLastStep =
-    currentStep !== null &&
-    steps.findIndex((step) => step.id === currentStep.id) === steps.length - 1;
 
   // Unsaved changes warning
   const {
@@ -208,20 +199,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     markAsSaved,
   });
 
-  const setNextStep = () => {
-    const currentStepIndex = steps.findIndex(
-      (step) => step.id === currentStepId,
-    );
-    if (currentStepIndex < 0 || currentStepIndex >= steps.length - 1) {
-      return;
-    }
-
-    const nextStep = steps[currentStepIndex + 1];
-    if (nextStep) {
-      setCurrentStepId(nextStep.id);
-    }
-  };
-
   const {
     setTitle,
     setKeywords,
@@ -255,10 +232,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setKeywords,
     setCategory,
   });
-
-  const handleNavClick = (id: string) => {
-    setCurrentStepId(id);
-  };
 
   if (!currentStep) {
     return null;
