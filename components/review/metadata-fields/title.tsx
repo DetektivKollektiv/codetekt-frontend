@@ -36,9 +36,7 @@ const Title: FC<TitleProps> = ({
   const inputValue = value ?? '';
   const isTitleValid = caseTitleSchema.safeParse(inputValue).success;
   const isInputDisabled = isSaving || (isComplete && !!inputValue);
-  const isSaveDisabled = isComplete
-    ? isSaving
-    : isSaving || !isTitleValid;
+  const isSaveDisabled = isComplete ? isSaving : isSaving || !isTitleValid;
 
   return (
     <FieldContainer

@@ -35,10 +35,11 @@ const Category: FC<CategoryProps> = ({
 }) => {
   const selected = value ?? null;
   const issue = issues[0] ?? null;
-  const isDisabled = isSaving || (isComplete && !!value);
+  const isInputDisabled = isSaving || (isComplete && !!value);
+  const isSaveDisabled = isComplete ? isSaving : isSaving || !selected;
 
   const handleToggle = (optionId: string) => {
-    if (isDisabled) return;
+    if (isInputDisabled) return;
 
     const nextValue = optionId as CaseCategoryValue;
     onChange(selected === nextValue ? null : nextValue);
@@ -50,7 +51,7 @@ const Category: FC<CategoryProps> = ({
       isDisputable={isComplete && !!value}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
-      isSaveDisabled={isDisabled || !selected}
+      isSaveDisabled={isSaveDisabled}
       saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
       disputeLabel={disputeLabel}
     >
@@ -64,7 +65,7 @@ const Category: FC<CategoryProps> = ({
                 key={option.id}
                 text={option.text}
                 isSelected={isSelected}
-                disabled={isDisabled}
+                disabled={isInputDisabled}
                 hasError={issue !== null}
                 onClick={() => handleToggle(option.id)}
               />

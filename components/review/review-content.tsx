@@ -104,9 +104,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {
         id: METADATA_STEP_KEYWORDS,
         label: 'Stichwörter',
-        description:
-          'Ergänze passende Stichwörter, die den Inhalt des Falls treffend beschreiben und die Einordnung erleichtern.',
+        description: hasKeywords
+          ? 'Bitte prüfe die Stichwörter, die für diesen Fall bereits vergeben wurden. Wenn die Stichwörter den Fall gut beschreiben, klicke auf "Die Stichwörter passen". Falls nicht, klicke auf "Stichwörter beanstanden", damit die Stichwörter von unserer Moderation geprüft werden können.'
+          : 'Ergänze passende Stichwörter, die den Inhalt des Falls treffend beschreiben und die Einordnung erleichtern.',
         helpUrl: '/help/keywords',
+
+        primaryActionLabel: hasKeywords
+          ? 'Die Stichwörter passen'
+          : 'Speichern',
+        disputeActionLabel: 'Stichwörter beanstanden',
         isIndented: false,
         status: hasKeywords ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -115,9 +121,13 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {
         id: METADATA_STEP_CATEGORY,
         label: 'Kategorie',
-        description:
-          'Wähle die passende Kategorie für den Fall. So werden die richtigen Bewertungskriterien für alle Reviewer angezeigt.',
+        description: hasCategory
+          ? 'Bitte prüfe die Kategorie, die für diesen Fall vergeben wurde. Wenn die Kategorie den Fall gut einordnet, klicke auf "Die Kategorie passt". Falls nicht, klicke auf "Kategorie beanstanden", damit die Kategorie von unserer Moderation geprüft werden kann.'
+          : 'Wähle die passende Kategorie für den Fall. So werden die richtigen Bewertungskriterien für alle Reviewer angezeigt.',
         helpUrl: '/help/category',
+        fieldTitle: 'Kategorie des Falls',
+        primaryActionLabel: hasCategory ? 'Die Kategorie passt' : 'Speichern',
+        disputeActionLabel: 'Kategorie beanstanden',
         isIndented: false,
         status: hasCategory ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -324,8 +334,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 newKeywords={metadataDraft.keywords}
                 onChangeKeywords={handleKeywordsChange}
                 isComplete={hasKeywords}
-                onSave={handleSaveKeywords}
+                onSave={hasKeywords ? setNextStep : handleSaveKeywords}
                 isSaving={isKeywordsPending}
+                fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
@@ -353,7 +364,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 value={metadataDraft.category}
                 isComplete={hasCategory}
                 onChange={handleCategoryChange}
-                onSave={handleSaveCategory}
+                onSave={hasCategory ? setNextStep : handleSaveCategory}
                 isSaving={isCategoryPending}
                 fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}

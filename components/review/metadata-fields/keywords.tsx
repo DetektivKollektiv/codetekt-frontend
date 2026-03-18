@@ -21,6 +21,7 @@ interface KeywordsProps {
   isSaving: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
+  fieldTitle?: string;
   saveLabel?: string;
   disputeLabel?: string;
 }
@@ -36,6 +37,7 @@ const Keywords: FC<KeywordsProps> = ({
   isSaving,
   onCreateDispute,
   issues,
+  fieldTitle,
   saveLabel,
   disputeLabel,
 }) => {
@@ -49,6 +51,7 @@ const Keywords: FC<KeywordsProps> = ({
   const totalCaseKeywords = existingKeywords.length + newKeywords.length;
   const hasReachedCaseKeywordsLimit =
     totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords;
+  const isReviewMode = isComplete && existingKeywords.length > 0;
 
   useEffect(() => {
     if (hasUserKeywords) {
@@ -89,6 +92,7 @@ const Keywords: FC<KeywordsProps> = ({
   };
 
   const canAddKeyword = () => {
+    if (isReviewMode) return false;
     if (hasUserKeywords) return false;
     if (totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords) return false;
     const trimmed = inputValue.trim();
@@ -101,6 +105,7 @@ const Keywords: FC<KeywordsProps> = ({
   };
 
   const canSave = () => {
+    if (isReviewMode) return !isSaving;
     if (hasUserKeywords) return false;
     if (totalCaseKeywords > CASE_KEYWORDS_LIMITS.maxCaseKeywords) return false;
     return newKeywords.length > 0 && !isSaving;
@@ -108,7 +113,7 @@ const Keywords: FC<KeywordsProps> = ({
 
   return (
     <FieldContainer
-      title=""
+      title={fieldTitle ?? ''}
       isDisputable={isComplete && existingKeywords.length > 0}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={handleSave}
@@ -143,7 +148,7 @@ const Keywords: FC<KeywordsProps> = ({
                   label={kw}
                   removable={true}
                   onRemove={() => handleRemoveKeyword(index)}
-                  disabled={isSaving || hasUserKeywords}
+                  disabled={isSaving || hasUserKeywords || isReviewMode}
                   variant="primary"
                 />
               ))}
@@ -164,6 +169,7 @@ const Keywords: FC<KeywordsProps> = ({
               onKeyDown={handleKeyDown}
               placeholder={`Stichwort eingeben (max. ${CASE_KEYWORDS_LIMITS.maxKeywordLength} Zeichen)`}
               disabled={
+                isReviewMode ||
                 hasUserKeywords ||
                 hasReachedCaseKeywordsLimit ||
                 isSaving ||
@@ -179,6 +185,7 @@ const Keywords: FC<KeywordsProps> = ({
                 !canAddKeyword() ||
                 isSaving ||
                 hasUserKeywords ||
+                isReviewMode ||
                 hasReachedCaseKeywordsLimit
               }
               variant="secondary"
