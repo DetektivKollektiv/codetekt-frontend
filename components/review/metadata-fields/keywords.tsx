@@ -39,6 +39,9 @@ const Keywords: FC<KeywordsProps> = ({
         ?.values ?? [])
     : [];
   const hasUserKeywords = userExistingKeywords.length > 0;
+  const totalCaseKeywords = existingKeywords.length + newKeywords.length;
+  const hasReachedCaseKeywordsLimit =
+    totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords;
 
   useEffect(() => {
     if (hasUserKeywords) {
@@ -56,6 +59,7 @@ const Keywords: FC<KeywordsProps> = ({
     if (newKeywords.some((kw) => kw.toLowerCase() === trimmed.toLowerCase()))
       return;
     if (newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords) return;
+    if (totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords) return;
 
     setNewKeywords([...newKeywords, trimmed]);
     setInputValue('');
@@ -79,6 +83,7 @@ const Keywords: FC<KeywordsProps> = ({
 
   const canAddKeyword = () => {
     if (hasUserKeywords) return false;
+    if (totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords) return false;
     const trimmed = inputValue.trim();
     if (!trimmed) return false;
     if (trimmed.length > CASE_KEYWORDS_LIMITS.maxKeywordLength) return false;
@@ -90,6 +95,7 @@ const Keywords: FC<KeywordsProps> = ({
 
   const canSave = () => {
     if (hasUserKeywords) return false;
+    if (totalCaseKeywords > CASE_KEYWORDS_LIMITS.maxCaseKeywords) return false;
     return newKeywords.length > 0 && !isSaving;
   };
 
@@ -107,7 +113,10 @@ const Keywords: FC<KeywordsProps> = ({
         {(existingKeywords.length > 0 || newKeywords.length > 0) && (
           <div className="space-y-2">
             <Label className="text-body-sm font-medium text-foreground">
-              Erstellte Stichwörter
+              Erstellte Stichwörter{' '}
+              <span className="text-muted-foreground text-body-sm ml-1">
+                {totalCaseKeywords}/{CASE_KEYWORDS_LIMITS.maxCaseKeywords}
+              </span>
             </Label>
             <div className="flex flex-wrap gap-2">
               {/* Bestehende Keywords (read-only) */}
@@ -135,11 +144,12 @@ const Keywords: FC<KeywordsProps> = ({
         )}
 
         {/* Neues Stichwort erstellen */}
-        <div className="space-y-2">
+        <div>
           <Label className="text-body-sm font-medium text-foreground">
             Neues Stichwort erstellen
           </Label>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start mt-2">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -147,6 +157,7 @@ const Keywords: FC<KeywordsProps> = ({
               placeholder={`Stichwort eingeben (max. ${CASE_KEYWORDS_LIMITS.maxKeywordLength} Zeichen)`}
               disabled={
                 hasUserKeywords ||
+                hasReachedCaseKeywordsLimit ||
                 isSaving ||
                 newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords
               }
@@ -156,47 +167,57 @@ const Keywords: FC<KeywordsProps> = ({
 
             <Button
               onClick={handleAddKeyword}
-              disabled={!canAddKeyword() || isSaving || hasUserKeywords}
+              disabled={
+                !canAddKeyword() ||
+                isSaving ||
+                hasUserKeywords ||
+                hasReachedCaseKeywordsLimit
+              }
               variant="secondary"
               className="w-full sm:w-auto"
             >
               Hinzufügen
             </Button>
           </div>
-
-          {issue && (
-            <Label className="text-destructive text-body-sm">
-              {issue.message}
-            </Label>
-          )}
-          {newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords && (
-            <Label className="text-muted-foreground text-body-sm">
-              Maximale Anzahl von {CASE_KEYWORDS_LIMITS.maxKeywords}{' '}
-              Stichwörtern erreicht
-            </Label>
-          )}
-          {inputValue.trim().length > CASE_KEYWORDS_LIMITS.maxKeywordLength && (
-            <Label className="text-destructive text-body-sm">
-              Stichwort darf maximal {CASE_KEYWORDS_LIMITS.maxKeywordLength}{' '}
-              Zeichen lang sein
-            </Label>
-          )}
-          {inputValue.trim() &&
-            newKeywords.some(
-              (kw) => kw.toLowerCase() === inputValue.trim().toLowerCase(),
-            ) && (
+          <div className="mt-1">
+            {issue && (
               <Label className="text-destructive text-body-sm">
-                Dieses Stichwort existiert bereits
+                {issue.message}
               </Label>
             )}
-        </div>
-
-        <div>
-          {hasUserKeywords && (
-            <p className="text-body-sm text-muted-foreground">
-              Du hast bereits Stichwörter für diesen Fall erstellt.
-            </p>
-          )}
+            {newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords && (
+              <Label className="text-muted-foreground text-body-sm">
+                Du hast die Maximale Anzahl von{' '}
+                {CASE_KEYWORDS_LIMITS.maxKeywords} Stichwörtern erreicht
+              </Label>
+            )}
+            {inputValue.trim().length >
+              CASE_KEYWORDS_LIMITS.maxKeywordLength && (
+              <Label className="text-destructive text-body-sm">
+                Stichwort darf maximal {CASE_KEYWORDS_LIMITS.maxKeywordLength}{' '}
+                Zeichen lang sein
+              </Label>
+            )}
+            {inputValue.trim() &&
+              newKeywords.some(
+                (kw) => kw.toLowerCase() === inputValue.trim().toLowerCase(),
+              ) && (
+                <Label className="text-destructive text-body-sm">
+                  Dieses Stichwort existiert bereits
+                </Label>
+              )}
+            {hasUserKeywords && (
+              <Label className="text-destructive text-body-sm">
+                Du hast bereits Stichwörter für diesen Fall erstellt.
+              </Label>
+            )}
+            {hasReachedCaseKeywordsLimit && (
+              <Label className="text-destructive text-body-sm">
+                Es können maximal {CASE_KEYWORDS_LIMITS.maxCaseKeywords}{' '}
+                Stichwörter pro Fall erstellt werden.
+              </Label>
+            )}
+          </div>
         </div>
       </div>
     </FieldContainer>
