@@ -80,6 +80,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {
         id: METADATA_STEP_TITLE,
         label: 'Titel',
+        description:
+          'Vergib einen klaren und prägnanten Titel, damit der Fall später schnell verstanden und wiedergefunden werden kann.',
+        helpUrl: '/help/title',
         isIndented: false,
         status: hasTitle ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -88,6 +91,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {
         id: METADATA_STEP_KEYWORDS,
         label: 'Stichwörter',
+        description:
+          'Ergänze passende Stichwörter, die den Inhalt des Falls treffend beschreiben und die Einordnung erleichtern.',
+        helpUrl: '/help/keywords',
         isIndented: false,
         status: hasKeywords ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -96,6 +102,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {
         id: METADATA_STEP_CATEGORY,
         label: 'Kategorie',
+        description:
+          'Wähle die passende Kategorie für den Fall. So werden die richtigen Bewertungskriterien für alle Reviewer angezeigt.',
+        helpUrl: '/help/category',
         isIndented: false,
         status: hasCategory ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -110,6 +119,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
         return {
           id: question.id,
           label: question.metadata.title,
+          helpUrl: question.metadata.help_url.trim() || undefined,
           isIndented: (question.metadata.indent_level ?? 0) > 0,
           status: validationState?.type as 'error' | 'success' | undefined,
           kind: 'question' as const,
@@ -257,8 +267,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
           </SuccesCard>
         ) : isMetadataStep ? (
           <QuestionCard
-            title="Falldetails"
-            description="Bitte ergänze die fehlenden Informationen zu diesem Fall, bevor du mit der Bewertung beginnst."
+            title={currentStep.label}
+            description={currentStep.description}
+            headerActions={<HelpButton href={currentStep.helpUrl} />}
             contentClassName="flex-1"
           >
             {currentStepId === METADATA_STEP_TITLE && (
@@ -352,7 +363,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
             description={currentQuestion.metadata.text}
             headerActions={
               <>
-                <HelpButton />
+                <HelpButton href={currentStep.helpUrl} />
                 <Button
                   variant={hasUnsavedChanges ? 'destructive' : 'outline'}
                   size={'default'}

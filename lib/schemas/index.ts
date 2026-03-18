@@ -62,6 +62,8 @@ export {
   type SubmittedReviewAnswer,
 } from './review-schemas';
 export {
+  reviewTemplateMetadataSchema,
   reviewTemplateSchema,
   type ReviewTemplateData,
+  type ReviewTemplateMetadataData,
 } from './template-schemas';
