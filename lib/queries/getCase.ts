@@ -12,7 +12,11 @@ export function getCase(client: SupabaseClient<Database>, caseId: string) {
       ),
         case_titles (*),
         case_keywords (*),
-        case_categories (*)
+        case_categories (*),
+        case_comments (
+          id,
+          author_id
+        )
     `,
     )
     .eq('id', caseId)

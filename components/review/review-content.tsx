@@ -4,10 +4,11 @@ import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 
 import {
-  FINAL_COMMENT_STEP,
+  COMMENT_STEP,
   METADATA_STEP_CATEGORY,
   METADATA_STEP_KEYWORDS,
   METADATA_STEP_TITLE,
+  SUBMIT_STEP,
 } from '@/lib/constants';
 import {
   caseCategorySchema,
@@ -26,10 +27,10 @@ import { useMetadataDraftState } from './hooks/useMetadataDraftState';
 import { useMetadataSave } from './hooks/useMetadataSave';
 import { useReviewDispute } from './hooks/useReviewDispute';
 import { useReviewNavigation } from './hooks/useReviewNavigation';
-import { useSaveFinalComment } from './hooks/useSaveFinalComment';
 import { useReviewState } from './hooks/useReviewState';
 import { useReviewSubmission } from './hooks/useReviewSubmission';
 import { useReviewValidation } from './hooks/useReviewValidation';
+import { useSaveFinalComment } from './hooks/useSaveFinalComment';
 import { useTouchedQuestions } from './hooks/useTouchedQuestions';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import Category from './metadata-fields/category';
@@ -68,6 +69,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
   const hasCategory = !!caseData.case_categories;
   const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
+  const hasUserComment =
+    (caseData.case_comments?.some((comment) => comment.author_id === userId) ??
+      false) && !!userId;
 
   const isTemplateSchemaValid = useMemo(
     () => reviewTemplateSchema.array().safeParse(reviewTemplate),
@@ -164,18 +168,33 @@ const ReviewContent: FC<ReviewContentProps> = ({
           question,
         };
       }),
+      ...(!hasUserComment
+        ? [
+            {
+              id: COMMENT_STEP,
+              label: 'Kommentar hinzufügen',
+              description:
+                'Optional: Wenn du möchtest, kannst du noch einen zusammenfassenden Kommentar zu deiner Einschätzung hinzufügen.',
+              isIndented: false,
+              status: undefined,
+              kind: 'comment' as const,
+              isComplete: false,
+            },
+          ]
+        : []),
       {
-        id: FINAL_COMMENT_STEP,
+        id: SUBMIT_STEP,
         label: 'Fall abschließen',
         description:
-          'Wenn du willst, kannst du deine Einschätzung in einem zusammenfassenden Kommentar schildern oder schreiben, was dir sonst noch aufgefallen ist.',
+          'Prüfe deine Angaben und schließe den Fall ab. Danach ist deine Bewertung eingereicht.',
         isIndented: false,
         status: isFinalStepEnabled ? undefined : 'incomplete',
-        kind: 'final-comment',
+        kind: 'submit' as const,
         isComplete: false,
       },
     ],
     [
+      hasUserComment,
       isFinalStepEnabled,
       hasCategory,
       hasKeywords,
@@ -193,7 +212,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
   });
 
   const isMetadataStep = currentStep?.kind === 'metadata';
-  const isFinalCommentStep = currentStep?.kind === 'final-comment';
+  const isCommentStep = currentStep?.kind === 'comment';
+  const isSubmitStep = currentStep?.kind === 'submit';
   const currentQuestion =
     currentStep?.kind === 'question' ? currentStep.question : null;
 
@@ -271,15 +291,13 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setCategory,
   });
 
-  const { handleSaveFinalComment, isSavingFinalComment } = useSaveFinalComment(
-    {
-      supabase,
-      caseId: caseData.id,
-      userId,
-      isFinalStepEnabled,
-      onSuccess: () => setFinalComment(''),
-    },
-  );
+  const { handleSaveFinalComment, isSavingFinalComment } = useSaveFinalComment({
+    supabase,
+    caseId: caseData.id,
+    userId,
+    isFinalStepEnabled,
+    onSuccess: () => setFinalComment(''),
+  });
 
   if (!currentStep) {
     return null;
@@ -467,7 +485,34 @@ const ReviewContent: FC<ReviewContentProps> = ({
               touchedQuestions={Array.from(touchedQuestionIds)}
             />
           </QuestionCard>
-        ) : isFinalCommentStep ? (
+        ) : isCommentStep ? (
+          <QuestionCard
+            title={currentStep.label}
+            description={currentStep.description}
+            contentClassName="flex-1"
+            footer={
+              <div className="flex flex-col w-full gap-2">
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={setNextStep}
+                >
+                  Weiter zum Abschließen
+                </Button>
+              </div>
+            }
+          >
+            <FinalComment
+              value={finalComment}
+              onChange={setFinalComment}
+              onSave={() => handleSaveFinalComment(finalComment)}
+              isSaving={isSavingFinalComment}
+              isDisabled={!isFinalStepEnabled}
+              fieldTitle="Was ist dir noch aufgefallen?"
+              saveLabel="Kommentar speichern"
+            />
+          </QuestionCard>
+        ) : isSubmitStep ? (
           <QuestionCard
             title={currentStep.label}
             description={currentStep.description}
@@ -487,15 +532,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
               </div>
             }
           >
-            <FinalComment
-              value={finalComment}
-              onChange={setFinalComment}
-              onSave={() => handleSaveFinalComment(finalComment)}
-              isSaving={isSavingFinalComment}
-              isDisabled={!isFinalStepEnabled}
-              fieldTitle="Was ist dir noch aufgefallen?"
-              saveLabel="Kommentar speichern"
-            />
+            <p className="text-sm text-muted-foreground">
+              Mit dem Klick auf „Fall abschließen“ reichst du deine Bewertung
+              verbindlich ein.
+            </p>
           </QuestionCard>
         ) : null}
       </div>
