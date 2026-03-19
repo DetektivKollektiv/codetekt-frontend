@@ -103,8 +103,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseCategory,
   });
 
-  const steps = useMemo<ReviewStep[]>(
-    () => [
+  const steps = useMemo<ReviewStep[]>(() => {
+    const allSteps: ReviewStep[] = [
       {
         id: METADATA_STEP_TITLE,
         label: 'Titel des Falls',
@@ -153,19 +153,18 @@ const ReviewContent: FC<ReviewContentProps> = ({
         isComplete: hasCategory,
       },
       ...shownReviewTemplateQuestions.map((question) => {
+        const fullValidationState = questionsValidationState.get(question.id);
         const isTouched = touchedQuestionIds.has(question.id);
-        const validationState = isTouched
-          ? questionsValidationState.get(question.id)
-          : undefined;
+        const validationState = isTouched ? fullValidationState : undefined;
 
         return {
           id: question.id,
           label: question.metadata.title,
           helpUrl: question.metadata.help_url.trim() || undefined,
           isIndented: (question.metadata.indent_level ?? 0) > 0,
-          status: validationState?.type as 'error' | 'success' | undefined,
+          status: validationState?.type,
           kind: 'question' as const,
-          isComplete: false,
+          isComplete: fullValidationState?.type === 'success',
           question,
         };
       }),
@@ -179,7 +178,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
               isIndented: false,
               status: undefined,
               kind: 'comment' as const,
-              isComplete: false,
+              isComplete: true,
             },
           ]
         : []),
@@ -191,20 +190,27 @@ const ReviewContent: FC<ReviewContentProps> = ({
         isIndented: false,
         status: isFinalStepEnabled ? undefined : 'incomplete',
         kind: 'submit' as const,
-        isComplete: false,
+        isComplete: isFinalStepEnabled && isValidForSubmission,
       },
-    ],
-    [
-      hasUserComment,
-      isFinalStepEnabled,
-      hasCategory,
-      hasKeywords,
-      hasTitle,
-      shownReviewTemplateQuestions,
-      questionsValidationState,
-      touchedQuestionIds,
-    ],
-  );
+    ];
+
+    const firstBlockingIndex = allSteps.findIndex((step) => !step.isComplete);
+    if (firstBlockingIndex === -1) {
+      return allSteps;
+    }
+
+    return allSteps.slice(0, firstBlockingIndex + 1);
+  }, [
+    hasUserComment,
+    isFinalStepEnabled,
+    isValidForSubmission,
+    hasCategory,
+    hasKeywords,
+    hasTitle,
+    shownReviewTemplateQuestions,
+    questionsValidationState,
+    touchedQuestionIds,
+  ]);
 
   const { currentStep, setNextStep, handleNavClick } = useReviewNavigation({
     steps,
