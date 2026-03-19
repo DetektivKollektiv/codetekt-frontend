@@ -71,7 +71,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
   const hasUserComment =
     (caseData.case_comments?.some((comment) => comment.author_id === userId) ??
-      false) && !!userId;
+      false) &&
+    !!userId;
 
   const isTemplateSchemaValid = useMemo(
     () => reviewTemplateSchema.array().safeParse(reviewTemplate),
