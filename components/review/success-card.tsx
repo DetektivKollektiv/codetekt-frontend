@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import Confetti from 'react-confetti';
 import {
   Card,
   CardContent,
@@ -14,8 +15,26 @@ interface SuccesCardProps {
 }
 
 const SuccesCard: FC<SuccesCardProps> = ({ children }) => {
+  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setDimensions({
+        width: document.documentElement.clientWidth,
+        height: window.innerHeight,
+      });
+    }
+  }, []);
+
   return (
     <Card className="pt-6 flex flex-col">
+      <Confetti
+        width={dimensions.width}
+        height={dimensions.height}
+        numberOfPieces={250}
+        recycle={false}
+      />
+
       <CardHeader className="relative">
         <CardTitle className=" text-display-sm">
           Danke für deine Unterstützung!
