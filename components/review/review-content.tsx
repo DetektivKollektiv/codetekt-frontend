@@ -155,9 +155,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
         isComplete: hasCategory,
       },
       ...shownReviewTemplateQuestions.map((question) => {
-        const fullValidationState = questionsValidationState.get(question.id);
-        const isTouched = touchedQuestionIds.has(question.id);
-        const validationState = isTouched ? fullValidationState : undefined;
+        const validationState = questionsValidationState.get(question.id);
 
         return {
           id: question.id,
@@ -166,7 +164,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
           isIndented: (question.metadata.indent_level ?? 0) > 0,
           status: validationState?.type,
           kind: 'question' as const,
-          isComplete: fullValidationState?.type === 'success',
+          isComplete: validationState?.type === 'success',
           question,
         };
       }),
@@ -211,7 +209,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     hasTitle,
     shownReviewTemplateQuestions,
     questionsValidationState,
-    touchedQuestionIds,
   ]);
 
   const { currentStep, setNextStep, handleNavClick } = useReviewNavigation({
