@@ -1,9 +1,10 @@
 import { Database } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { CaseCategoryValue } from '../schemas/case-metadata-schemas';
 
 export interface SetCaseCategoryData {
   caseId: string;
-  value: 'satire' | 'report' | 'text_message' | 'opinion';
+  value: CaseCategoryValue;
   userId: string;
 }
 
