@@ -18,6 +18,7 @@ import { reviewTemplateSchema } from '@/lib/schemas/template-schemas';
 import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import { Loader2, SaveAll } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
@@ -548,10 +549,14 @@ const ReviewContent: FC<ReviewContentProps> = ({
               </div>
             }
           >
-            <p className="text-sm text-muted-foreground">
-              Mit dem Klick auf „Fall abschließen“ reichst du deine Bewertung
-              verbindlich ein.
-            </p>
+            <div className="flex items-center justify-center h-full">
+              <Image
+                src={'/images/projekte.svg'}
+                alt="Success"
+                width={400 * 1.2}
+                height={300 * 1.2}
+              />
+            </div>
           </QuestionCard>
         ) : null}
       </div>

@@ -48,8 +48,8 @@ const SuccesCard: FC<SuccesCardProps> = ({ children }) => {
         <Image
           src={'/images/unterstuetzen.svg'}
           alt="Success"
-          width={400}
-          height={300}
+          width={400 * 1.5}
+          height={300 * 1.5}
         />
       </CardContent>
       <CardFooter className="mt-auto flex flex-col justify-end">
