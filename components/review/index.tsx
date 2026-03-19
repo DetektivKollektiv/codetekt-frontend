@@ -42,9 +42,15 @@ const Review: FC<ReviewProps> = ({
     initialData: initialCaseData,
   });
 
+  const metadataComplete =
+    !!caseData?.case_titles &&
+    (caseData?.case_keywords?.length ?? 0) > 0 &&
+    !!caseData?.case_categories;
+
   // Review template with useQuery
   const { data: reviewTemplate } = useQuery({
     queryKey: ['review-template', initialCaseData.id],
+    enabled: metadataComplete,
     queryFn: async () => {
       const { data, error } = await getReviewTemplate(
         supabase,

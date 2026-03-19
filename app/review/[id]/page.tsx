@@ -18,13 +18,8 @@ export default async function Page({
   const supabase = await createClient();
 
   // Run these queries in parallel
-  const [
-    auth,
-    { data: reviewTemplate, error },
-    { data: caseData, error: caseError },
-  ] = await Promise.all([
+  const [auth, { data: caseData, error: caseError }] = await Promise.all([
     getAuth(supabase),
-    getReviewTemplate(supabase, id),
     getCase(supabase, id),
   ]);
 
@@ -53,6 +48,18 @@ export default async function Page({
     (caseData.case_keywords?.length ?? 0) === 0 ||
     !caseData.case_categories;
 
+  let reviewTemplate: Awaited<ReturnType<typeof getReviewTemplate>>['data'] =
+    null;
+  let reviewTemplateError: Awaited<
+    ReturnType<typeof getReviewTemplate>
+  >['error'] = null;
+
+  if (!metadataIncomplete) {
+    const { data, error } = await getReviewTemplate(supabase, id);
+    reviewTemplate = data;
+    reviewTemplateError = error;
+  }
+
   if (reviewTemplate) {
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
 
@@ -61,7 +68,7 @@ export default async function Page({
     }
   }
 
-  if (error && !metadataIncomplete) {
+  if (reviewTemplateError && !metadataIncomplete) {
     notFound();
   }
 
