@@ -54,6 +54,9 @@ export const useReviewSubmission = ({
         queryClient.invalidateQueries({
           queryKey: ['review-template', caseId],
         }),
+        queryClient.invalidateQueries({
+          queryKey: ['aggregated-case', caseId],
+        }),
       ]);
       markAsSaved();
     },

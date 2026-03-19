@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import { FC, useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { aggregatedReviewQuery } from '@/lib/queries/getAggregatedReview';
+import { createClient } from '@/lib/supabase/client';
 import {
   Card,
   CardContent,
@@ -9,13 +13,28 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
+import { Button } from '../ui/button';
 
 interface SuccesCardProps {
-  children?: React.ReactNode;
+  caseId: string;
+  openCasesHref?: string;
 }
 
-const SuccesCard: FC<SuccesCardProps> = ({ children }) => {
+const SuccesCard: FC<SuccesCardProps> = ({
+  caseId,
+  openCasesHref = '/#open-cases',
+}) => {
+  const supabase = createClient();
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+
+  const { data: aggregatedCase } = useQuery({
+    ...aggregatedReviewQuery(supabase, caseId),
+    enabled: Boolean(caseId),
+    refetchInterval: (query) => (query.state.data ? false : 2000),
+    refetchIntervalInBackground: true,
+  });
+
+  const hasAggregatedReview = Boolean(aggregatedCase);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -31,13 +50,14 @@ const SuccesCard: FC<SuccesCardProps> = ({ children }) => {
       <Confetti
         width={dimensions.width}
         height={dimensions.height}
-        numberOfPieces={250}
+        numberOfPieces={1600}
         recycle={false}
+        colors={['#6E4BFA', '#FFEB66', '#FF7268', '#140735']}
       />
 
       <CardHeader className="relative">
         <CardTitle className=" text-display-sm">
-          Danke für deine Unterstützung!
+          Danke für dein Engagement!
         </CardTitle>
         <CardDescription className="max-w-xl">
           Der Fall wurde erfolgreich abgeschlossen und alle Änderungen wurden
@@ -52,8 +72,20 @@ const SuccesCard: FC<SuccesCardProps> = ({ children }) => {
           height={300 * 1.5}
         />
       </CardContent>
-      <CardFooter className="mt-auto flex flex-col justify-end">
-        {children}
+      <CardFooter className="mt-auto flex flex-col justify-end gap-2">
+        {hasAggregatedReview && (
+          <Link href={`/archive/${caseId}`} className="w-full">
+            <Button variant={'default'} size={'default'} className="w-full">
+              Zum Archivfall
+            </Button>
+          </Link>
+        )}
+
+        <Link href={openCasesHref} className="w-full">
+          <Button variant={'outline'} size={'default'} className="w-full">
+            Weitere Fälle bearbeiten
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );

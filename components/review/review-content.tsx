@@ -19,7 +19,6 @@ import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
 import { Loader2, SaveAll } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import { HelpButton } from '../ui/help-button';
@@ -352,13 +351,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
           </div>
         </div>
         {isLocked ? (
-          <SuccesCard>
-            <Link href={`/#open-cases`} className="w-full">
-              <Button variant={'default'} size={'default'} className="w-full">
-                Weitere Fälle bearbeiten
-              </Button>
-            </Link>
-          </SuccesCard>
+          <SuccesCard caseId={caseData.id} />
         ) : isMetadataStep ? (
           <QuestionCard
             title={currentStep.label}
