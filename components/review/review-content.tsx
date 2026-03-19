@@ -103,6 +103,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseCategory,
   });
 
+  const isStepBlocking = (step: ReviewStep): boolean => !step.isComplete;
+
   const steps = useMemo<ReviewStep[]>(() => {
     const allSteps: ReviewStep[] = [
       {
@@ -194,7 +196,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
       },
     ];
 
-    const firstBlockingIndex = allSteps.findIndex((step) => !step.isComplete);
+    const firstBlockingIndex = allSteps.findIndex(isStepBlocking);
     if (firstBlockingIndex === -1) {
       return allSteps;
     }
