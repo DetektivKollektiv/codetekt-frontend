@@ -280,7 +280,17 @@ const ReviewContent: FC<ReviewContentProps> = ({
     supabase,
     caseId: caseData.id,
     userId,
-    onStepComplete: setNextStep,
+    onStepComplete: (step) => {
+      const nextStepIdByStep = {
+        title: METADATA_STEP_KEYWORDS,
+        keywords: METADATA_STEP_CATEGORY,
+        category:
+          shownReviewTemplateQuestions[0]?.id ??
+          (hasUserComment ? SUBMIT_STEP : COMMENT_STEP),
+      } as const;
+
+      setCurrentStepId(nextStepIdByStep[step]);
+    },
   });
 
   const {

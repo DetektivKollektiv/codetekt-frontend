@@ -18,7 +18,7 @@ interface UseMetadataSaveOptions {
   supabase: SupabaseClient<Database>;
   caseId: string;
   userId?: string;
-  onStepComplete: () => void;
+  onStepComplete: (step: 'title' | 'keywords' | 'category') => void;
 }
 
 export const useMetadataSave = ({
@@ -66,7 +66,7 @@ export const useMetadataSave = ({
     onSuccess: async () => {
       setTitleIssues([]);
       await invalidateCase();
-      onStepComplete();
+      onStepComplete('title');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Speichern des Titels');
@@ -78,7 +78,7 @@ export const useMetadataSave = ({
     onSuccess: async () => {
       setKeywordsIssues([]);
       await invalidateCase();
-      onStepComplete();
+      onStepComplete('keywords');
     },
     onError: (error: unknown) => {
       toast.error(getKeywordsSaveErrorMessage(error));
@@ -90,7 +90,7 @@ export const useMetadataSave = ({
     onSuccess: async () => {
       setCategoryIssues([]);
       await invalidateCase();
-      onStepComplete();
+      onStepComplete('category');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Speichern der Kategorie');
