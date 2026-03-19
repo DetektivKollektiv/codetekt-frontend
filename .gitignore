@@ -44,3 +44,5 @@ next-env.d.ts
 demo
 
 template.json
+.claude
+.agents
