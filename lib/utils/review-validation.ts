@@ -63,11 +63,14 @@ export const buildInProgressReviewAnswerData = (
   reviewTemplate: NonNullable<ReviewTemplate>,
 ): InProgressReviewAnswer => {
   const data: Record<string, unknown> = {};
-
+  console.log(
+    'Building in-progress review answer data from template:',
+    reviewTemplate,
+  );
   reviewTemplate.forEach((question) => {
     question.fields.forEach((field) => {
-      // Only include fields that have an answer_value (even if null)
-      if ('answer_value' in field) {
+      // Only include fields that have a concrete answer_value (null is valid, undefined is omitted)
+      if ('answer_value' in field && field.answer_value !== undefined) {
         data[field.id] = field.answer_value;
       }
     });
@@ -110,7 +113,11 @@ export const validateSubmittedReviewAnswer = (
     return z.never().safeParse(data);
   }
 
-  return submittedReviewAnswerSchemaMap[category].safeParse(data);
+  const sanitizedData = Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined),
+  );
+
+  return submittedReviewAnswerSchemaMap[category].safeParse(sanitizedData);
 };
 
 /**
