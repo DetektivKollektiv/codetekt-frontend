@@ -11,7 +11,7 @@ import { FC } from 'react';
 import ReviewContent from './review-content';
 
 interface ReviewProps {
-  reviewTemplate: NonNullable<ReviewTemplate>;
+  reviewTemplate?: ReviewTemplate | null;
   caseData: NonNullable<Case>;
   isSubmitted: boolean;
 }
@@ -51,13 +51,13 @@ const Review: FC<ReviewProps> = ({
         initialCaseData.id,
       );
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
-    initialData: initialReviewTemplate,
+    initialData: initialReviewTemplate ?? [],
   });
 
   // Early return if data is null (shouldn't happen with initialData)
-  if (!caseData || !reviewTemplate) {
+  if (!caseData) {
     return null;
   }
 

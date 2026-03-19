@@ -40,6 +40,19 @@ export default async function Page({
     isSubmitted = !!submittedReview;
   }
 
+  if (caseError) {
+    notFound();
+  }
+
+  if (!caseData) {
+    notFound();
+  }
+
+  const metadataIncomplete =
+    !caseData.case_titles ||
+    (caseData.case_keywords?.length ?? 0) === 0 ||
+    !caseData.case_categories;
+
   if (reviewTemplate) {
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
 
@@ -48,15 +61,7 @@ export default async function Page({
     }
   }
 
-  if (error) {
-    notFound();
-  }
-
-  if (caseError) {
-    notFound();
-  }
-
-  if (!reviewTemplate || !caseData) {
+  if (error && !metadataIncomplete) {
     notFound();
   }
 
