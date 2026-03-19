@@ -27,4 +27,15 @@ export type QuestionStep = {
   question: NonNullable<ReviewTemplate>[number];
 };
 
-export type ReviewStep = MetadataStep | QuestionStep;
+export type FinalCommentStep = {
+  id: string;
+  label: string;
+  description: string;
+  helpUrl?: string;
+  isIndented: boolean;
+  status: ReviewStepStatus;
+  kind: 'final-comment';
+  isComplete: boolean;
+};
+
+export type ReviewStep = MetadataStep | QuestionStep | FinalCommentStep;

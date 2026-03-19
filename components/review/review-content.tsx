@@ -4,19 +4,24 @@ import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 
 import {
+  FINAL_COMMENT_STEP,
   METADATA_STEP_CATEGORY,
   METADATA_STEP_KEYWORDS,
   METADATA_STEP_TITLE,
 } from '@/lib/constants';
+import { createCommentMutation } from '@/lib/queries/createComment';
 import {
   caseCategorySchema,
   CaseCategoryValue,
 } from '@/lib/schemas/case-metadata-schemas';
+import { reviewTemplateSchema } from '@/lib/schemas/template-schemas';
 import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
+import { useMutation } from '@tanstack/react-query';
 import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
 import { FC, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
@@ -30,6 +35,7 @@ import { useReviewValidation } from './hooks/useReviewValidation';
 import { useTouchedQuestions } from './hooks/useTouchedQuestions';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import Category from './metadata-fields/category';
+import FinalComment from './metadata-fields/final-comment';
 import Keywords from './metadata-fields/keywords';
 import Title from './metadata-fields/title';
 import QuestionCard from './question-card';
@@ -54,6 +60,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const supabase = createClient();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
   const [currentStepId, setCurrentStepId] = useState('');
+  const [finalComment, setFinalComment] = useState('');
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
@@ -62,6 +69,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const hasTitle = !!caseData.case_titles;
   const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
   const hasCategory = !!caseData.case_categories;
+  const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
+
+  const isTemplateSchemaValid = useMemo(
+    () => reviewTemplateSchema.array().safeParse(reviewTemplate),
+    [reviewTemplate],
+  );
+
+  const isFinalStepEnabled =
+    isMetadataComplete && isTemplateSchemaValid.success;
 
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
@@ -150,8 +166,19 @@ const ReviewContent: FC<ReviewContentProps> = ({
           question,
         };
       }),
+      {
+        id: FINAL_COMMENT_STEP,
+        label: 'Fall abschließen',
+        description:
+          'Wenn du willst, kannst du deine Einschätzung in einem zusammenfassenden Kommentar schildern oder schreiben, was dir sonst noch aufgefallen ist.',
+        isIndented: false,
+        status: isFinalStepEnabled ? undefined : 'incomplete',
+        kind: 'final-comment',
+        isComplete: false,
+      },
     ],
     [
+      isFinalStepEnabled,
       hasCategory,
       hasKeywords,
       hasTitle,
@@ -161,14 +188,14 @@ const ReviewContent: FC<ReviewContentProps> = ({
     ],
   );
 
-  const { currentStep, isLastStep, setNextStep, handleNavClick } =
-    useReviewNavigation({
-      steps,
-      currentStepId,
-      setCurrentStepId,
-    });
+  const { currentStep, setNextStep, handleNavClick } = useReviewNavigation({
+    steps,
+    currentStepId,
+    setCurrentStepId,
+  });
 
   const isMetadataStep = currentStep?.kind === 'metadata';
+  const isFinalCommentStep = currentStep?.kind === 'final-comment';
   const currentQuestion =
     currentStep?.kind === 'question' ? currentStep.question : null;
 
@@ -245,6 +272,37 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setKeywords,
     setCategory,
   });
+
+  const { mutate: saveFinalComment, isPending: isSavingFinalComment } =
+    useMutation({
+      ...createCommentMutation(supabase),
+      onSuccess: () => {
+        toast.success('Kommentar gespeichert');
+        setFinalComment('');
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || 'Fehler beim Speichern des Kommentars');
+      },
+    });
+
+  const handleSaveFinalComment = () => {
+    const trimmedComment = finalComment.trim();
+
+    if (!isFinalStepEnabled || trimmedComment.length === 0) {
+      return;
+    }
+
+    if (!userId) {
+      toast.error('Du musst angemeldet sein, um zu kommentieren');
+      return;
+    }
+
+    saveFinalComment({
+      case_id: caseData.id,
+      author_id: userId,
+      content: trimmedComment,
+    });
+  };
 
   if (!currentStep) {
     return null;
@@ -414,26 +472,13 @@ const ReviewContent: FC<ReviewContentProps> = ({
             }
             footer={
               <div className="flex flex-col w-full gap-2">
-                {isLastStep ? (
-                  <Button
-                    variant="default"
-                    className="w-full"
-                    onClick={handleSubmitReview}
-                    disabled={!isValidForSubmission || isSubmitting}
-                  >
-                    {isSubmitting
-                      ? 'Wird abgeschlossen...'
-                      : 'Fall abschließen'}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="default"
-                    className="w-full"
-                    onClick={setNextStep}
-                  >
-                    Nächste Frage
-                  </Button>
-                )}
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={setNextStep}
+                >
+                  Nächste Frage
+                </Button>
               </div>
             }
           >
@@ -443,6 +488,36 @@ const ReviewContent: FC<ReviewContentProps> = ({
               onFieldChange={updateFieldValue}
               onCreateReviewDispute={openDisputeDialog}
               touchedQuestions={Array.from(touchedQuestionIds)}
+            />
+          </QuestionCard>
+        ) : isFinalCommentStep ? (
+          <QuestionCard
+            title={currentStep.label}
+            description={currentStep.description}
+            contentClassName="flex-1"
+            footer={
+              <div className="flex flex-col w-full gap-2">
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={handleSubmitReview}
+                  disabled={
+                    !isFinalStepEnabled || !isValidForSubmission || isSubmitting
+                  }
+                >
+                  {isSubmitting ? 'Wird abgeschlossen...' : 'Fall abschließen'}
+                </Button>
+              </div>
+            }
+          >
+            <FinalComment
+              value={finalComment}
+              onChange={setFinalComment}
+              onSave={handleSaveFinalComment}
+              isSaving={isSavingFinalComment}
+              isDisabled={!isFinalStepEnabled}
+              fieldTitle="Was ist dir noch aufgefallen?"
+              saveLabel="Kommentar speichern"
             />
           </QuestionCard>
         ) : null}
