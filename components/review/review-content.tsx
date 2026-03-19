@@ -9,7 +9,6 @@ import {
   METADATA_STEP_KEYWORDS,
   METADATA_STEP_TITLE,
 } from '@/lib/constants';
-import { createCommentMutation } from '@/lib/queries/createComment';
 import {
   caseCategorySchema,
   CaseCategoryValue,
@@ -17,11 +16,9 @@ import {
 import { reviewTemplateSchema } from '@/lib/schemas/template-schemas';
 import { ReviewStep } from '@/lib/types';
 import { getPreviewRatingStyle } from '@/lib/utils/rating-helpers';
-import { useMutation } from '@tanstack/react-query';
 import { Loader2, SaveAll } from 'lucide-react';
 import Link from 'next/link';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
@@ -29,6 +26,7 @@ import { useMetadataDraftState } from './hooks/useMetadataDraftState';
 import { useMetadataSave } from './hooks/useMetadataSave';
 import { useReviewDispute } from './hooks/useReviewDispute';
 import { useReviewNavigation } from './hooks/useReviewNavigation';
+import { useSaveFinalComment } from './hooks/useSaveFinalComment';
 import { useReviewState } from './hooks/useReviewState';
 import { useReviewSubmission } from './hooks/useReviewSubmission';
 import { useReviewValidation } from './hooks/useReviewValidation';
@@ -273,36 +271,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setCategory,
   });
 
-  const { mutate: saveFinalComment, isPending: isSavingFinalComment } =
-    useMutation({
-      ...createCommentMutation(supabase),
-      onSuccess: () => {
-        toast.success('Kommentar gespeichert');
-        setFinalComment('');
-      },
-      onError: (error: Error) => {
-        toast.error(error.message || 'Fehler beim Speichern des Kommentars');
-      },
-    });
-
-  const handleSaveFinalComment = () => {
-    const trimmedComment = finalComment.trim();
-
-    if (!isFinalStepEnabled || trimmedComment.length === 0) {
-      return;
-    }
-
-    if (!userId) {
-      toast.error('Du musst angemeldet sein, um zu kommentieren');
-      return;
-    }
-
-    saveFinalComment({
-      case_id: caseData.id,
-      author_id: userId,
-      content: trimmedComment,
-    });
-  };
+  const { handleSaveFinalComment, isSavingFinalComment } = useSaveFinalComment(
+    {
+      supabase,
+      caseId: caseData.id,
+      userId,
+      isFinalStepEnabled,
+      onSuccess: () => setFinalComment(''),
+    },
+  );
 
   if (!currentStep) {
     return null;
@@ -513,7 +490,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
             <FinalComment
               value={finalComment}
               onChange={setFinalComment}
-              onSave={handleSaveFinalComment}
+              onSave={() => handleSaveFinalComment(finalComment)}
               isSaving={isSavingFinalComment}
               isDisabled={!isFinalStepEnabled}
               fieldTitle="Was ist dir noch aufgefallen?"
