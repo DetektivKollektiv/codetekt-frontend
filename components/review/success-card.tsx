@@ -20,6 +20,12 @@ interface SuccesCardProps {
   openCasesHref?: string;
 }
 
+const gifPaths = [
+  { path: '/gifs/Danke.gif', width: 512, height: 512 },
+  { path: '/gifs/Herz.gif', width: 512, height: 804 },
+  { path: '/gifs/Trump.gif', width: 512, height: 512 },
+];
+
 const SuccesCard: FC<SuccesCardProps> = ({
   caseId,
   openCasesHref = '/#open-cases',
@@ -33,6 +39,8 @@ const SuccesCard: FC<SuccesCardProps> = ({
     refetchInterval: (query) => (query.state.data ? false : 2000),
     refetchIntervalInBackground: true,
   });
+
+  const randomGif = gifPaths[Math.floor(Math.random() * gifPaths.length)];
 
   const hasAggregatedReview = Boolean(aggregatedCase);
 
@@ -66,10 +74,11 @@ const SuccesCard: FC<SuccesCardProps> = ({
       </CardHeader>
       <CardContent className="space-y-12 md:space-y-8 flex-1 flex items-center justify-center">
         <Image
-          src={'/images/unterstuetzen.svg'}
+          src={randomGif.path}
           alt="Success"
-          width={400 * 1.5}
-          height={300 * 1.5}
+          width={randomGif.width}
+          height={randomGif.height}
+          className="h-auto w-auto max-h-96 max-w-96 object-contain"
         />
       </CardContent>
       <CardFooter className="mt-auto flex flex-col justify-end gap-2">
