@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { trafficLightAnswerSchema } from './answer-schemas';
+import {
+  textAreaAnswerSchema,
+  trafficLightAnswerSchema,
+} from './answer-schemas';
 
 const submittedReviewCommentSchema = z
   .union([z.literal(''), z.string().min(10)])
@@ -23,6 +26,7 @@ export const submittedReviewAnswerReportSchema = z
     media_no_ai_or_staging_doubts: trafficLightAnswerSchema,
     media_visualizations_not_distorted: trafficLightAnswerSchema,
     media_addtional_points: trafficLightAnswerSchema,
+    media_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Medium
     medium_independent_no_conflicts: trafficLightAnswerSchema,
@@ -57,6 +61,7 @@ export const submittedReviewAnswerOpinionSchema = z
     media_no_ai_or_staging_doubts: trafficLightAnswerSchema,
     media_visualizations_not_distorted: trafficLightAnswerSchema,
     media_addtional_points: trafficLightAnswerSchema,
+    media_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Medium
     medium_independent_no_conflicts: trafficLightAnswerSchema,
@@ -90,6 +95,7 @@ export const submittedReviewAnswerTextMessageSchema = z
     media_no_ai_or_staging_doubts: trafficLightAnswerSchema,
     media_visualizations_not_distorted: trafficLightAnswerSchema,
     media_addtional_points: trafficLightAnswerSchema,
+    media_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Quelle
     source_text_message_author_expertise: trafficLightAnswerSchema,
@@ -139,6 +145,7 @@ export const inProgressReviewAnswerSchema = z
     media_no_ai_or_staging_doubts: trafficLightAnswerSchema.optional(),
     media_visualizations_not_distorted: trafficLightAnswerSchema.optional(),
     media_addtional_points: trafficLightAnswerSchema.optional(),
+    media_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Medium
     medium_independent_no_conflicts: trafficLightAnswerSchema.optional(),

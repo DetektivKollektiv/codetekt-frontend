@@ -20,8 +20,9 @@ export const useFinalCommentState = ({
     }
 
     const userComments =
-      caseData.case_comments?.filter((comment) => comment.author_id === userId) ??
-      [];
+      caseData.case_comments?.filter(
+        (comment) => comment.author_id === userId,
+      ) ?? [];
 
     if (userComments.length === 0) {
       return null;
@@ -35,7 +36,9 @@ export const useFinalCommentState = ({
         ? new Date(currentComment.created_at).getTime()
         : 0;
 
-      return currentTimestamp > latestTimestamp ? currentComment : latestComment;
+      return currentTimestamp > latestTimestamp
+        ? currentComment
+        : latestComment;
     });
   }, [caseData.case_comments, userId]);
 
