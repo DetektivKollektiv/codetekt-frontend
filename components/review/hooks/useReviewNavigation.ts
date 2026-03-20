@@ -23,7 +23,10 @@ export const useReviewNavigation = <TStep extends NavigableStep>({
   setCurrentStepId,
 }: UseReviewNavigationOptions<TStep>) => {
   const firstIncompleteStepId = useMemo(
-    () => steps.find((step) => !step.isComplete)?.id ?? steps[0]?.id ?? '',
+    () =>
+      steps.find((step) => !step.isComplete)?.id ??
+      steps[steps.length - 1]?.id ??
+      '',
     [steps],
   );
 

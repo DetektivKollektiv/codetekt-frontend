@@ -26,6 +26,16 @@ const gifPaths = [
   { path: '/gifs/Trump.gif', width: 512, height: 512 },
 ];
 
+const getDeterministicGif = (id: string) => {
+  let hash = 0;
+
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  }
+
+  return gifPaths[hash % gifPaths.length];
+};
+
 const SuccesCard: FC<SuccesCardProps> = ({
   caseId,
   openCasesHref = '/#open-cases',
@@ -40,7 +50,7 @@ const SuccesCard: FC<SuccesCardProps> = ({
     refetchIntervalInBackground: true,
   });
 
-  const randomGif = gifPaths[Math.floor(Math.random() * gifPaths.length)];
+  const randomGif = getDeterministicGif(caseId);
 
   const hasAggregatedReview = Boolean(aggregatedCase);
 
