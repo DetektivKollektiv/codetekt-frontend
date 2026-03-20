@@ -47,6 +47,16 @@ const getNextMilestone = (
   return null;
 };
 
+const toDayKey = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const startOfDay = (date: Date): Date =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
 const UserStatistics: FC<UserStatisticsProps> = ({
   leaderboard,
   userCases,
@@ -83,39 +93,69 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       return [];
     }
 
-    // Group by month and calculate cumulative totals for each type
-    const monthlyData: Record<
+    // Group by day and calculate cumulative totals for each type
+    const dailyData: Record<
       string,
-      { month: string; cases: number; reviews: number; displayMonth: string }
+      {
+        day: string;
+        cases: number;
+        reviews: number;
+        displayDay: string;
+        hasCaseEvent: boolean;
+        hasReviewEvent: boolean;
+      }
     > = {};
+
+    const dailyIncrements: Record<string, { cases: number; reviews: number }> =
+      {};
+
+    activities.forEach((activity) => {
+      const dayKey = toDayKey(activity.date);
+      if (!dailyIncrements[dayKey]) {
+        dailyIncrements[dayKey] = { cases: 0, reviews: 0 };
+      }
+
+      if (activity.type === 'case') {
+        dailyIncrements[dayKey].cases += 1;
+      } else {
+        dailyIncrements[dayKey].reviews += 1;
+      }
+    });
 
     let cumulativeCases = 0;
     let cumulativeReviews = 0;
 
-    activities.forEach((activity) => {
-      const monthKey = `${activity.date.getFullYear()}-${String(activity.date.getMonth() + 1).padStart(2, '0')}`;
-      const displayMonth = activity.date.toLocaleDateString('de-DE', {
-        month: 'short',
-        year: 'numeric',
+    const firstDate = startOfDay(activities[0].date);
+    const lastDate = startOfDay(activities[activities.length - 1].date);
+
+    for (
+      let currentDate = new Date(firstDate);
+      currentDate <= lastDate;
+      currentDate.setDate(currentDate.getDate() + 1)
+    ) {
+      const dayDate = new Date(currentDate);
+      const dayKey = toDayKey(dayDate);
+      const displayDay = dayDate.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
       });
 
-      if (activity.type === 'case') {
-        cumulativeCases++;
-      } else {
-        cumulativeReviews++;
-      }
+      cumulativeCases += dailyIncrements[dayKey]?.cases ?? 0;
+      cumulativeReviews += dailyIncrements[dayKey]?.reviews ?? 0;
 
-      monthlyData[monthKey] = {
-        month: monthKey,
-        displayMonth,
+      dailyData[dayKey] = {
+        day: dayKey,
+        displayDay,
         cases: cumulativeCases,
         reviews: cumulativeReviews,
+        hasCaseEvent: (dailyIncrements[dayKey]?.cases ?? 0) > 0,
+        hasReviewEvent: (dailyIncrements[dayKey]?.reviews ?? 0) > 0,
       };
-    });
+    }
 
-    // Return only the last 4 months
-    const allMonths = Object.values(monthlyData);
-    return allMonths.slice(-4);
+    // Return all days between first and last activity, limited to last 30 days
+    const allDays = Object.values(dailyData);
+    return allDays.slice(-30);
   }, [userCases, userReviews]);
 
   const totalCases = userCases.length;
@@ -205,33 +245,16 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               >
                 <CartesianGrid vertical={false} />
                 <XAxis
-                  dataKey="displayMonth"
+                  dataKey="displayDay"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
                   angle={0}
                   interval={0}
-                  tick={(props) => {
-                    const { x, y, payload, index, visibleTicksCount } = props;
-                    let textAnchor: 'start' | 'middle' | 'end' = 'middle';
-                    if (index === 0) {
-                      textAnchor = 'start';
-                    } else if (index === visibleTicksCount - 1) {
-                      textAnchor = 'end';
-                    }
-                    return (
-                      <text
-                        x={x}
-                        y={y}
-                        dy={16}
-                        textAnchor={textAnchor}
-                        fill="currentColor"
-                        className="text-xs fill-muted-foreground"
-                      >
-                        {payload.value}
-                      </text>
-                    );
-                  }}
+                  tick={{ className: 'text-xs fill-muted-foreground' }}
+                  tickFormatter={(value, index) =>
+                    index === 0 || index === chartData.length - 1 ? value : ''
+                  }
                 />
                 <ChartTooltip
                   cursor={false}
@@ -265,17 +288,42 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                 </defs>
                 <Area
                   dataKey="cases"
-                  type="natural"
+                  type="monotoneX"
                   fill="url(#fillCases)"
                   fillOpacity={0.4}
                   stroke="var(--color-cases)"
+                  dot={(props) => {
+                    const { cx, cy, payload } = props;
+                    if (!payload?.hasCaseEvent) {
+                      return <g />;
+                    }
+
+                    return (
+                      <circle cx={cx} cy={cy} r={3} fill="var(--color-cases)" />
+                    );
+                  }}
                 />
                 <Area
                   dataKey="reviews"
-                  type="natural"
+                  type="monotoneX"
                   fill="url(#fillReviews)"
                   fillOpacity={0.4}
                   stroke="var(--color-reviews)"
+                  dot={(props) => {
+                    const { cx, cy, payload } = props;
+                    if (!payload?.hasReviewEvent) {
+                      return <g />;
+                    }
+
+                    return (
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={3}
+                        fill="var(--color-reviews)"
+                      />
+                    );
+                  }}
                 />
               </AreaChart>
             </ChartContainer>
