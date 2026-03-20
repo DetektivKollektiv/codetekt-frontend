@@ -5,10 +5,10 @@ import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
 export const CURRENT_TEMPLATE_VERSION = 1;
 
 export const CASE_CATEGORY_LABELS: Record<CaseCategoryValue, string> = {
-  satire: 'Satire',
-  report: 'Bericht',
   text_message: 'Textnachricht',
   opinion: 'Meinung',
+  report: 'Bericht',
+  satire: 'Satire',
 };
 
 export const CASE_CATEGORY_OPTIONS: { id: CaseCategoryValue; text: string }[] =
