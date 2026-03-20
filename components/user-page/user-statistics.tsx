@@ -175,7 +175,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               <div className="text-muted-foreground text-sm mb-1">
                 Bewertete Fälle
               </div>
-              <div className="text-display-lg md:text-5xl font-bold tabular-nums text-brand-yellow-dark">
+              <div className="text-display-lg md:text-5xl font-bold tabular-nums">
                 {totalReviews}
               </div>
             </div>
@@ -300,11 +300,8 @@ const UserStatistics: FC<UserStatisticsProps> = ({
               <TableHeader className="sticky top-0 bg-muted z-10 [&_tr>th:first-child]:rounded-tl-md [&_tr>th:last-child]:rounded-tr-md">
                 <TableRow>
                   <TableHead className="w-[40px] bg-muted"></TableHead>
-                  <TableHead className="bg-muted">Benutzer</TableHead>
-                  <TableHead className="text-right text-brand-coral bg-muted">
-                    Eingereicht
-                  </TableHead>
-                  <TableHead className="text-right text-brand-yellow-dark bg-muted">
+                  <TableHead className="bg-muted">co:detectives</TableHead>
+                  <TableHead className="text-right bg-muted">
                     Bewertet
                   </TableHead>
                 </TableRow>
@@ -323,9 +320,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                         <span>{user.username}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right font-semibold">
-                      {user.cases_count}
-                    </TableCell>
+
                     <TableCell className="text-right font-semibold">
                       {user.reviews_count}
                     </TableCell>
