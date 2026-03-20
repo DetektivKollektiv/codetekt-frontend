@@ -42,35 +42,44 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
   const questionText = field.question || '';
 
   return (
-    <div className="flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 md:gap-12 md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
-      <Label
-        className={`flex-1 text-body-md md:text-body-sm font-medium cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
-      >
-        {questionText}
-      </Label>
-      <RadioGroup
-        value={value?.toString() ?? ''}
-        onValueChange={handleChange}
-        disabled={isDisabled}
-        className="flex justify-between md:justify-end w-full md:w-auto md:items-center gap-2"
-      >
-        {field.options.map((option) => {
-          return (
-            <RadioGroupItem
-              value={option.value.toString()}
-              className="size-6 md:size-5 border-2"
-              style={{
-                borderColor: option.color,
-              }}
-              key={option.value}
-              iconClassName="size-3 stroke-0"
-              iconStyle={{
-                fill: option.color,
-              }}
-            />
-          );
-        })}
-      </RadioGroup>
+    <div className="md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
+      <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4 md:gap-12 ">
+        <div className="flex-1 ">
+          <Label
+            className={`text-body-md md:text-body-sm font-medium cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
+          >
+            {questionText}
+          </Label>
+          <Label
+            className={`block mt-1 font-normal text-body-md md:text-body-sm italic cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''}`}
+          >
+            {field.shortTip}
+          </Label>
+        </div>
+        <RadioGroup
+          value={value?.toString() ?? ''}
+          onValueChange={handleChange}
+          disabled={isDisabled}
+          className="flex justify-between md:justify-end w-full md:w-auto md:items-center gap-2 mt-1"
+        >
+          {field.options.map((option) => {
+            return (
+              <RadioGroupItem
+                value={option.value.toString()}
+                className="size-6 md:size-5 border-2"
+                style={{
+                  borderColor: option.color,
+                }}
+                key={option.value}
+                iconClassName="size-3 stroke-0"
+                iconStyle={{
+                  fill: option.color,
+                }}
+              />
+            );
+          })}
+        </RadioGroup>
+      </div>
     </div>
   );
 };
