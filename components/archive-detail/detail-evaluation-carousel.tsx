@@ -48,10 +48,7 @@ export function DetailEvaluationCarousel({
   return (
     <div className="overflow-visible">
       {/* Carousel */}
-      <div className="embla" ref={emblaRef}>
-        <div className="embla__container flex gap-4">{children}</div>
-      </div>
-      <div className="flex justify-between mt-4 w-full">
+      <div className="flex justify-between w-full">
         <div>
           <Button
             variant="outline"
@@ -80,6 +77,9 @@ export function DetailEvaluationCarousel({
             <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
+      </div>
+      <div className="embla mt-4 " ref={emblaRef}>
+        <div className="embla__container flex gap-4">{children}</div>
       </div>
     </div>
   );

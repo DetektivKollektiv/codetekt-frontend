@@ -22,6 +22,11 @@ interface DetailEvaluationProps {
   reviewData: ReviewAggregationData;
 }
 
+type TextEvaluationField = Extract<
+  ReviewAggregationData['questions'][number]['fields'][number],
+  { type: 'text' | 'text-area' }
+>;
+
 export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
   return (
     <section className="space-y-6 page-max-w">
@@ -72,7 +77,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                     </span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="pt-4 pb-6">
+                <AccordionContent className="pt-0 pb-6">
                   <DetailEvaluationCarousel
                     options={{
                       align: 'start',
@@ -101,20 +106,21 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                             />
                           );
                         }
-
-                        if (
-                          field.type === 'text' ||
-                          field.type === 'text-area'
-                        ) {
-                          return (
-                            <DetailTextEvaluation
-                              field={field}
-                              key={field.id}
-                            />
-                          );
-                        }
                       })}
                   </DetailEvaluationCarousel>
+                  <div className="mt-4">
+                    {[...question.fields]
+                      .filter(
+                        (field): field is TextEvaluationField =>
+                          field.type === 'text' || field.type === 'text-area',
+                      )
+
+                      .map((field) => {
+                        return (
+                          <DetailTextEvaluation field={field} key={field.id} />
+                        );
+                      })}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             );
