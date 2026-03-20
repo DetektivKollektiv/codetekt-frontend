@@ -16,22 +16,11 @@ export const textContentSchema = z
   .max(5000, 'Text darf maximal 5000 Zeichen lang sein')
   .trim();
 
-// Legal acceptance checkboxes (both required)
-export const legalAcceptanceSchema = z.object({
-  privacy: z.boolean().refine((val) => val === true, {
-    message: 'Du musst die Datenschutzerklärung akzeptieren',
-  }),
-  terms: z.boolean().refine((val) => val === true, {
-    message: 'Du musst die Nutzungsbedingungen akzeptieren',
-  }),
-});
-
 // Main form schema with conditional validation
 export const createCaseFormSchema = z
   .object({
     content_type: contentTypeSchema,
     content: z.string().min(1, 'Inhalt ist erforderlich'),
-    legal: legalAcceptanceSchema,
   })
   .superRefine((data, ctx) => {
     // Conditional validation based on content_type

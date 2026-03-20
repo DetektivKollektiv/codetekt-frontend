@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createClient } from '@/lib/supabase/client';
@@ -29,6 +30,12 @@ export function SignUpForm({
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [legalErrors, setLegalErrors] = useState<{
+    privacy?: string;
+    terms?: string;
+  }>({});
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -38,9 +45,23 @@ export function SignUpForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+    setLegalErrors({});
 
     if (password !== repeatPassword) {
       setError('Passwörter stimmen nicht überein');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!privacyAccepted || !termsAccepted) {
+      setLegalErrors({
+        privacy: !privacyAccepted
+          ? 'Du musst die Datenschutzerklärung akzeptieren'
+          : undefined,
+        terms: !termsAccepted
+          ? 'Du musst die Nutzungsbedingungen akzeptieren'
+          : undefined,
+      });
       setIsLoading(false);
       return;
     }
@@ -52,6 +73,10 @@ export function SignUpForm({
           email,
           password,
           username,
+          legal: {
+            privacy: privacyAccepted,
+            terms: termsAccepted,
+          },
         },
       },
     );
@@ -151,8 +176,81 @@ export function SignUpForm({
                   onChange={(e) => setRepeatPassword(e.target.value)}
                 />
               </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Checkbox
+                    id="privacy"
+                    checked={privacyAccepted}
+                    onCheckedChange={(checked) =>
+                      setPrivacyAccepted(checked === true)
+                    }
+                    className={cn(
+                      'bg-background',
+                      legalErrors.privacy && 'border-red-500',
+                    )}
+                    disabled={isLoading}
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <label htmlFor="privacy" className="text-sm cursor-pointer">
+                      Ich stimme den Bedingungen der{' '}
+                      <Link
+                        href="https://codetekt.org/datenschutz/"
+                        className="underline underline-offset-4 hover:text-primary"
+                        target="_blank"
+                      >
+                        Datenschutzerklärung
+                      </Link>{' '}
+                      zu
+                    </label>
+                    {legalErrors.privacy && (
+                      <p className="text-sm text-red-500" role="alert">
+                        {legalErrors.privacy}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <Checkbox
+                    id="terms"
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) =>
+                      setTermsAccepted(checked === true)
+                    }
+                    className={cn(
+                      'bg-background',
+                      legalErrors.terms && 'border-red-500',
+                    )}
+                    disabled={isLoading}
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <label htmlFor="terms" className="text-sm cursor-pointer">
+                      Ich stimme den{' '}
+                      <Link
+                        href="/nutzungsbedingungen"
+                        className="underline underline-offset-4 hover:text-primary"
+                        target="_blank"
+                      >
+                        Nutzungsbedingungen
+                      </Link>{' '}
+                      zu
+                    </label>
+                    {legalErrors.terms && (
+                      <p className="text-sm text-red-500" role="alert">
+                        {legalErrors.terms}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading || !privacyAccepted || !termsAccepted}
+              >
                 {isLoading ? 'Konto wird erstellt...' : 'Registrieren'}
               </Button>
             </div>
