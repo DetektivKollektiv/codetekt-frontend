@@ -12,11 +12,13 @@ import { useMemo } from 'react';
 interface UseReviewValidationOptions {
   reviewTemplateWithAnswersValues: NonNullable<ReviewTemplate>;
   caseCategory?: CaseCategoryValue | null;
+  touchedQuestionIds?: Set<string>;
 }
 
 export const useReviewValidation = ({
   reviewTemplateWithAnswersValues,
   caseCategory,
+  touchedQuestionIds,
 }: UseReviewValidationOptions) => {
   const resolvedReviewTemplate = useMemo(
     () =>
@@ -50,8 +52,14 @@ export const useReviewValidation = ({
       resolvedReviewTemplate,
       inProgressReviewAnswerData,
       caseCategory,
+      touchedQuestionIds,
     );
-  }, [caseCategory, resolvedReviewTemplate, inProgressReviewAnswerData]);
+  }, [
+    caseCategory,
+    resolvedReviewTemplate,
+    inProgressReviewAnswerData,
+    touchedQuestionIds,
+  ]);
 
   return {
     resolvedReviewTemplate,

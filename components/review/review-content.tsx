@@ -101,6 +101,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   } = useReviewValidation({
     reviewTemplateWithAnswersValues,
     caseCategory,
+    touchedQuestionIds,
   });
 
   const isStepBlocking = (step: ReviewStep): boolean => !step.isComplete;
@@ -211,11 +212,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
     questionsValidationState,
   ]);
 
-  const { currentStep, setNextStep, handleNavClick } = useReviewNavigation({
+  const { currentStep, isLastStep, setNextStep, handleNavClick } =
+    useReviewNavigation({
     steps,
     currentStepId,
     setCurrentStepId,
-  });
+    });
 
   const isMetadataStep = currentStep?.kind === 'metadata';
   const isCommentStep = currentStep?.kind === 'comment';
@@ -481,6 +483,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   variant="default"
                   className="w-full"
                   onClick={setNextStep}
+                  disabled={isLastStep}
                 >
                   Nächste Frage
                 </Button>
@@ -506,6 +509,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   variant="default"
                   className="w-full"
                   onClick={setNextStep}
+                  disabled={isLastStep}
                 >
                   Weiter zum Abschließen
                 </Button>

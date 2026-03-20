@@ -159,6 +159,7 @@ export const getQuestionsValidationState = (
   reviewTemplate: NonNullable<ReviewTemplate>,
   data: InProgressReviewAnswer,
   category?: string | null,
+  touchedQuestionIds?: Set<string>,
 ): Map<string, QuestionValidationState> => {
   const validationStates = new Map<string, QuestionValidationState>();
 
@@ -189,9 +190,16 @@ export const getQuestionsValidationState = (
     const hasError = visibleFields.some((field) => errorFieldIds.has(field.id));
 
     if (hasError) {
+      const shouldShowError = touchedQuestionIds
+        ? touchedQuestionIds.has(question.id)
+        : true;
+
       validationStates.set(question.id, {
-        type: 'error',
-        issues: validationResult.success ? [] : validationResult.error.issues,
+        type: shouldShowError ? 'error' : 'incomplete',
+        issues:
+          shouldShowError && !validationResult.success
+            ? validationResult.error.issues
+            : [],
       });
       return;
     }
