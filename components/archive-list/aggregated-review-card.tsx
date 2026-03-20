@@ -30,7 +30,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const ogData = caseItem.cases.open_graph_data;
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-[22rem] w-full flex">
       <CardContent className="p-4 lg:p-6 w-full">
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Left: Image */}
@@ -47,7 +47,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           <div className="flex-1 space-y-4 flex flex-col">
             {/* Badges */}
             <BadgeList
-              category={getCaseCategoryName(caseItem)}
+              category={getCaseCategoryName(caseItem) || undefined}
               keywords={getCaseKeywords(caseItem)}
             />
 
@@ -68,10 +68,13 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           </div>
 
           {/* Right: Evaluation */}
-          <Evaluation
-            ratingStyle={ratingStyle}
-            warningTags={getWarningTags(reviewData)}
-          />
+          {caseItem.case_id && (
+            <Evaluation
+              caseId={caseItem.case_id}
+              ratingStyle={ratingStyle}
+              warningTags={getWarningTags(reviewData)}
+            />
+          )}
         </div>
       </CardContent>
     </Card>

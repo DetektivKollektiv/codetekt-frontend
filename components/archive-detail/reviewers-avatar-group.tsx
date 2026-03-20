@@ -114,7 +114,9 @@ export function ReviewersAvatarGroup({
             className="bg-neutral-100 text-neutral-800 border border-neutral-300 shadow-sm"
             arrowClassName="bg-neutral-100 fill-neutral-100"
           >
-            <p>Es haben weniger als 5 Reviewer den Fall bewertet.</p>
+            <p className="text-center">
+              Es haben weniger als <br /> 5 Reviewer den Fall bewertet.
+            </p>
           </TooltipContent>
         </Tooltip>
       ) : null}
