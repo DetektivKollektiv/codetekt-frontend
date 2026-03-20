@@ -54,6 +54,11 @@ const toDayKey = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
+const fromDayKey = (dayKey: string): Date => {
+  const [year, month, day] = dayKey.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
 const startOfDay = (date: Date): Date =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -155,7 +160,29 @@ const UserStatistics: FC<UserStatisticsProps> = ({
 
     // Return all days between first and last activity, limited to last 30 days
     const allDays = Object.values(dailyData);
-    return allDays.slice(-30);
+    const visibleDays = allDays.slice(-30);
+
+    const firstVisibleDay = visibleDays[0];
+    if (!firstVisibleDay) {
+      return visibleDays;
+    }
+
+    const baselineDate = fromDayKey(firstVisibleDay.day);
+    baselineDate.setDate(baselineDate.getDate() - 1);
+
+    const baselineDay = {
+      day: toDayKey(baselineDate),
+      displayDay: baselineDate.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+      }),
+      cases: 0,
+      reviews: 0,
+      hasCaseEvent: false,
+      hasReviewEvent: false,
+    };
+
+    return [baselineDay, ...visibleDays];
   }, [userCases, userReviews]);
 
   const totalCases = userCases.length;
