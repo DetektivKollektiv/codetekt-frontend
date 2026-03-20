@@ -57,6 +57,18 @@ export type Database = MergeDeep<
           };
         };
       };
+      Functions: {
+        get_aggregation_reviewers: {
+          Args: {
+            case_ids?: string[] | null;
+          };
+          Returns: {
+            case_id: string;
+            reviewer_id: string;
+            username: string | null;
+          }[];
+        };
+      };
       Views: {
         review_answers_in_progress_without_open_disputes: {
           Row: {

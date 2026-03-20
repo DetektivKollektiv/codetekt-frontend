@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarGroup } from '@/components/ui/avatar';
+import { ReviewersAvatarGroup } from '@/components/archive-detail/reviewers-avatar-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { HelpButton } from '@/components/ui/help-button';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
@@ -17,12 +17,6 @@ interface DetailRatingProps {
 
 // Define rating levels and reviewer avatars
 const ratingLevels = [0, 1, 2, 3] as const;
-const reviewerColors = [
-  'hsl(var(--brand-coral))',
-  'hsl(var(--brand-coral-dark))',
-  'hsl(var(--brand-orange))',
-  'hsl(var(--brand-yellow))',
-];
 
 export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
   const supabase = createClient();
@@ -90,33 +84,11 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 dich jetzt!
               </p>
               {/* Reviewer avatars */}
-              <AvatarGroup>
-                {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
-                  const letter = String.fromCharCode(
-                    65 + (reviewerId.charCodeAt(0) % 26),
-                  );
-                  return (
-                    <Avatar
-                      key={reviewerId}
-                      className="size-12"
-                      style={{
-                        backgroundColor:
-                          reviewerColors[index % reviewerColors.length],
-                      }}
-                    >
-                      <AvatarFallback
-                        className="text-neutral-0 text-heading-sm"
-                        style={{
-                          backgroundColor:
-                            reviewerColors[index % reviewerColors.length],
-                        }}
-                      >
-                        {letter}
-                      </AvatarFallback>
-                    </Avatar>
-                  );
-                })}
-              </AvatarGroup>
+              <ReviewersAvatarGroup
+                caseId={aggregatedReview.case_id}
+                avatarSizeClassName="size-12"
+                fallbackTextClassName="text-heading-sm"
+              />
             </div>
           ) : (
             <div className="space-y-4">
@@ -128,33 +100,11 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 bearbeitet.
               </p>
               {/* Reviewer avatars */}
-              <AvatarGroup>
-                {aggregatedReview.reviewer_ids.map((reviewerId, index) => {
-                  const letter = String.fromCharCode(
-                    65 + (reviewerId.charCodeAt(0) % 26),
-                  );
-                  return (
-                    <Avatar
-                      key={reviewerId}
-                      className="size-8"
-                      style={{
-                        backgroundColor:
-                          reviewerColors[index % reviewerColors.length],
-                      }}
-                    >
-                      <AvatarFallback
-                        className="text-neutral-0 text-body-sm"
-                        style={{
-                          backgroundColor:
-                            reviewerColors[index % reviewerColors.length],
-                        }}
-                      >
-                        {letter}
-                      </AvatarFallback>
-                    </Avatar>
-                  );
-                })}
-              </AvatarGroup>
+              <ReviewersAvatarGroup
+                caseId={aggregatedReview.case_id}
+                avatarSizeClassName="size-8"
+                fallbackTextClassName="text-body-sm"
+              />
             </div>
           )}
         </CardContent>
