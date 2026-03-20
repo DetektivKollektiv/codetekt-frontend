@@ -1,6 +1,5 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { trafficLightAnswerSchema } from '@/lib/schemas';
 import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
@@ -45,16 +44,19 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
     <div className="md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
       <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4 md:gap-12 ">
         <div className="flex-1 ">
-          <Label
-            className={`text-body-md md:text-body-sm font-medium cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
+          <p
+            className={`text-body-md md:text-body-sm font-bold cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
+            style={{
+              fontWeight: 500,
+            }}
           >
             {questionText}
-          </Label>
-          <Label
-            className={`block mt-1 font-normal text-body-md md:text-body-sm italic cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''}`}
+          </p>
+          <p
+            className={`block mt-1 font-normal text-body-md md:text-body-sm italic cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground ' : ''}`}
           >
             {field.shortTip}
-          </Label>
+          </p>
         </div>
         <RadioGroup
           value={value?.toString() ?? ''}
