@@ -214,9 +214,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
   const { currentStep, isLastStep, setNextStep, handleNavClick } =
     useReviewNavigation({
-    steps,
-    currentStepId,
-    setCurrentStepId,
+      steps,
+      currentStepId,
+      setCurrentStepId,
     });
 
   const isMetadataStep = currentStep?.kind === 'metadata';

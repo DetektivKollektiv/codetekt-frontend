@@ -75,11 +75,14 @@ const SuccesCard: FC<SuccesCardProps> = ({
 
       <CardHeader className="relative">
         <CardTitle className=" text-display-sm">
-          Danke für dein Engagement!
+          Geschafft! Danke für deine Bewertung! 🎉
         </CardTitle>
         <CardDescription className="max-w-xl">
-          Der Fall wurde erfolgreich abgeschlossen und alle Änderungen wurden
-          gespeichert.
+          Dank deines Einsatzes wurde das Internet gerade ein kleines bisschen
+          vertrauenswürdiger! <br />
+          {hasAggregatedReview
+            ? 'Wenn du sehen willst, wie andere co:detektives den Fall bewertet haben, kannst du dir direkt die Details anschauen. Oder du machst einfach direkt mit dem nächsten Fall weiter!'
+            : 'Die Bewertungen anderer co:detektives werden gerade noch zusammengetragen. Schau gerne später nochmal vorbei, um die Details zu sehen. Oder du machst einfach direkt mit dem nächsten Fall weiter!'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-12 md:space-y-8 flex-1 flex items-center justify-center">
@@ -95,7 +98,7 @@ const SuccesCard: FC<SuccesCardProps> = ({
         {hasAggregatedReview && (
           <Link href={`/archive/${caseId}`} className="w-full">
             <Button variant={'default'} size={'default'} className="w-full">
-              Zum Archivfall
+              Zum Fall
             </Button>
           </Link>
         )}
