@@ -23,6 +23,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import { HelpButton } from '../ui/help-button';
 import CaseCard from './case-card';
+import { useFinalCommentState } from './hooks/useFinalCommentState';
 import { useMetadataDraftState } from './hooks/useMetadataDraftState';
 import { useMetadataSave } from './hooks/useMetadataSave';
 import { useReviewDispute } from './hooks/useReviewDispute';
@@ -59,7 +60,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const supabase = createClient();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
   const [currentStepId, setCurrentStepId] = useState('');
-  const [finalComment, setFinalComment] = useState('');
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
@@ -69,10 +69,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
   const hasCategory = !!caseData.case_categories;
   const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
-  const hasUserComment =
-    (caseData.case_comments?.some((comment) => comment.author_id === userId) ??
-      false) &&
-    !!userId;
 
   const isTemplateSchemaValid = useMemo(
     () => reviewTemplateSchema.array().safeParse(reviewTemplate),
@@ -81,6 +77,18 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
   const isFinalStepEnabled =
     isMetadataComplete && isTemplateSchemaValid.success;
+
+  const {
+    finalComment,
+    setFinalComment,
+    hasUserComment,
+    displayedFinalComment,
+    isFinalCommentInputDisabled,
+  } = useFinalCommentState({
+    caseData,
+    userId,
+    isFinalStepEnabled,
+  });
 
   // Review state management
   const { reviewTemplateWithAnswersValues, updateFieldValue } =
@@ -169,20 +177,16 @@ const ReviewContent: FC<ReviewContentProps> = ({
           question,
         };
       }),
-      ...(!hasUserComment
-        ? [
-            {
-              id: COMMENT_STEP,
-              label: 'Kommentar hinzufügen',
-              description:
-                'Optional: Wenn du möchtest, kannst du noch einen zusammenfassenden Kommentar zu deiner Einschätzung hinzufügen.',
-              isIndented: false,
-              status: undefined,
-              kind: 'comment' as const,
-              isComplete: true,
-            },
-          ]
-        : []),
+      {
+        id: COMMENT_STEP,
+        label: 'Kommentar hinzufügen',
+        description:
+          'Optional: Wenn du möchtest, kannst du noch einen zusammenfassenden Kommentar zu deiner Einschätzung hinzufügen.',
+        isIndented: false,
+        status: undefined,
+        kind: 'comment' as const,
+        isComplete: true,
+      },
       {
         id: SUBMIT_STEP,
         label: 'Fall abschließen',
@@ -283,9 +287,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
       const nextStepIdByStep = {
         title: METADATA_STEP_KEYWORDS,
         keywords: METADATA_STEP_CATEGORY,
-        category:
-          shownReviewTemplateQuestions[0]?.id ??
-          (hasUserComment ? SUBMIT_STEP : COMMENT_STEP),
+        category: shownReviewTemplateQuestions[0]?.id ?? COMMENT_STEP,
       } as const;
 
       setCurrentStepId(nextStepIdByStep[step]);
@@ -517,11 +519,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
             }
           >
             <FinalComment
-              value={finalComment}
+              value={displayedFinalComment}
               onChange={setFinalComment}
               onSave={() => handleSaveFinalComment(finalComment)}
               isSaving={isSavingFinalComment}
-              isDisabled={!isFinalStepEnabled}
+              isDisabled={isFinalCommentInputDisabled}
               fieldTitle="Was ist dir noch aufgefallen?"
               saveLabel="Kommentar speichern"
             />

@@ -15,7 +15,9 @@ export function getCase(client: SupabaseClient<Database>, caseId: string) {
         case_categories (*),
         case_comments (
           id,
-          author_id
+          author_id,
+          content,
+          created_at
         )
     `,
     )

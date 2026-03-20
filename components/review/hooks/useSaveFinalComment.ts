@@ -1,7 +1,7 @@
 import { createCommentMutation } from '@/lib/queries/createComment';
 import { Database } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 interface UseSaveFinalCommentOptions {
@@ -19,10 +19,15 @@ export const useSaveFinalComment = ({
   isFinalStepEnabled,
   onSuccess,
 }: UseSaveFinalCommentOptions) => {
+  const queryClient = useQueryClient();
+
   const { mutate: saveFinalComment, isPending: isSavingFinalComment } =
     useMutation({
       ...createCommentMutation(supabase),
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ['case', caseId],
+        });
         toast.success('Kommentar gespeichert');
         onSuccess?.();
       },
