@@ -70,12 +70,12 @@ export const aggregatedReviewsListConfig = {
   sortOptions: [
     {
       key: 'newest_first',
-      label: 'Neuste zuerst',
+      label: 'Zuletzt eingereicht',
       sortFn: sortAggregatedReviewsByNewestFirst,
     },
     {
       key: 'last_updated',
-      label: 'Zuletzt geupdated',
+      label: 'Zuletzt bearbeitet',
       sortFn: sortAggregatedReviewsByLastUpdated,
     },
   ],
