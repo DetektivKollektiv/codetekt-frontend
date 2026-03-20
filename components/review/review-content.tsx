@@ -544,7 +544,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
           >
             <div className="flex items-center justify-center h-full">
               <Image
-                src={'/images/projekte.svg'}
+                src={'/images/unterstuetzen.svg'}
                 alt="Success"
                 width={400 * 1.2}
                 height={300 * 1.2}
