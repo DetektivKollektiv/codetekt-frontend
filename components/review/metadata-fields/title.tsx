@@ -40,7 +40,7 @@ const Title: FC<TitleProps> = ({
 
   return (
     <FieldContainer
-      title={fieldTitle ?? 'Wie lautet der Titel dieses Falls?'}
+      title={fieldTitle ?? 'Falltitel'}
       isDisputable={isComplete && !!inputValue}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
@@ -52,7 +52,7 @@ const Title: FC<TitleProps> = ({
         <Input
           value={inputValue}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Titel für den Fall"
+          placeholder=""
           maxLength={caseTitleSchema.maxLength!}
           className="w-full"
           disabled={isInputDisabled}

@@ -114,7 +114,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
           ? 'Bitte prüfe den Titel, der für diesen Fall vergeben wurde. Wenn der Titel den Fall gut beschreibt, klicke auf "Der Titel passt". Falls nicht, klicke auf "Titel beanstanden", damit der Titel von unserer Moderation geprüft werden kann.'
           : 'Vergib einen klaren und prägnanten Titel, damit der Fall später schnell verstanden und wiedergefunden werden kann.',
         helpUrl: '/help/title',
-        fieldTitle: 'Titel des Falls',
+        fieldTitle: 'Titel',
         primaryActionLabel: hasTitle ? 'Der Titel passt' : 'Speichern',
         disputeActionLabel: 'Titel beanstanden',
         isIndented: false,
