@@ -115,7 +115,7 @@ export function ReviewersAvatarGroup({
             arrowClassName="bg-neutral-100 fill-neutral-100"
           >
             <p className="text-center">
-              Es haben weniger als <br /> 5 Detektive den Fall bewertet.
+              Es haben weniger als <br /> 5 co:detectives den Fall bewertet.
             </p>
           </TooltipContent>
         </Tooltip>
