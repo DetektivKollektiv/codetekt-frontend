@@ -148,22 +148,20 @@ export default function Header({
               <SheetContent side="right">
                 <SheetHeader className="h-20 flex justify-center">
                   <SheetTitle className="text-heading-md">
-                    {isAuthenticated && user
-                      ? `Hi ${getDisplayName(profile, user)}!`
-                      : 'Menü'}
+                    <Link href="/" onClick={() => setMobileOpen(false)}>
+                      {isAuthenticated && user
+                        ? `Hi ${getDisplayName(profile, user)}!`
+                        : 'Zur Startseite'}
+                      {isAuthenticated && (
+                        <div className="block text-heading-sm font-medium text-primary">
+                          Zum Profil
+                        </div>
+                      )}
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="w-full bg-gradient-brand h-px -mt-4"></div>
                 <div className="grid flex-1 auto-rows-min gap-3 px-4">
-                  {isAuthenticated && (
-                    <Link
-                      href="#"
-                      onClick={() => setMobileOpen(false)}
-                      className="block text-heading-sm font-medium"
-                    >
-                      Profil
-                    </Link>
-                  )}
                   {navigation.map((item) => (
                     <div key={item.label} className="space-y-2">
                       <Link

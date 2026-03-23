@@ -13,11 +13,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Tables } from '@/lib/types/database.types-generated';
+import { getDisplayName } from '@/lib/utils';
 import { User } from '@supabase/supabase-js';
-
-function getDisplayName(profile: Tables<'profiles'> | null, user: User | null) {
-  return profile?.username || user?.email || 'Account';
-}
 
 export default function UserMenu({
   user,
@@ -42,10 +39,17 @@ export default function UserMenu({
 
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel>
-          <div className="text-body-md font-medium">{name}</div>
-          {user.email && (
-            <div className="text-meta text-muted-foreground">{user.email}</div>
-          )}
+          <Link href="/">
+            <div className="text-body-md font-medium">{name}</div>
+            {user.email && (
+              <div className="text-meta text-muted-foreground">
+                {user.email}
+              </div>
+            )}
+            <div className="text-body-md mt-2 text-primary font-medium">
+              Zum Profil
+            </div>
+          </Link>
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
