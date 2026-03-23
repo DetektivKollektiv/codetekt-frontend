@@ -1,6 +1,7 @@
 import { ArchiveDetail } from '@/components/archive-detail';
 import { getAggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getCaseComments } from '@/lib/queries/getCaseComments';
+import { getSubmittedReviewAnswer } from '@/lib/queries/getSubmittedReviewAnswer';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
@@ -35,12 +36,26 @@ export default async function Page({
     notFound();
   }
 
+  let hasSubmittedByCurrentUser = false;
+
+  if (auth.user?.id) {
+    const { data: submittedReview, error: submittedReviewError } =
+      await getSubmittedReviewAnswer(supabase, id, auth.user.id);
+
+    if (submittedReviewError) {
+      throw submittedReviewError;
+    }
+
+    hasSubmittedByCurrentUser = !!submittedReview;
+  }
+
   return (
     <div className=" w-full mt-10 lg:mt-12 mb-24 lg:mb-32">
       <ArchiveDetail
         auth={auth}
         aggregatedReview={aggregatedReview}
         caseComments={caseComments || []}
+        hasSubmittedByCurrentUser={hasSubmittedByCurrentUser}
       />
     </div>
   );

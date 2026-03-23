@@ -11,17 +11,22 @@ interface ArchiveDetailProps {
   aggregatedReview: NonNullable<AggregatedReview>;
   caseComments: CaseComments;
   auth: Awaited<ReturnType<typeof getAuth>>;
+  hasSubmittedByCurrentUser: boolean;
 }
 
 export function ArchiveDetail({
   aggregatedReview,
   caseComments,
   auth,
+  hasSubmittedByCurrentUser,
 }: ArchiveDetailProps) {
   return (
     <div className="space-y-12">
       {/* Header Section */}
-      <DetailHeader aggregatedReview={aggregatedReview} />
+      <DetailHeader
+        aggregatedReview={aggregatedReview}
+        hasSubmittedByCurrentUser={hasSubmittedByCurrentUser}
+      />
 
       {/* Rating Overview */}
       <DetailRating aggregatedReview={aggregatedReview} auth={auth} />

@@ -16,9 +16,13 @@ import { ShareButton } from '../ui/share-button';
 
 interface DetailHeaderProps {
   aggregatedReview: NonNullable<AggregatedReview>;
+  hasSubmittedByCurrentUser: boolean;
 }
 
-export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
+export function DetailHeader({
+  aggregatedReview,
+  hasSubmittedByCurrentUser,
+}: DetailHeaderProps) {
   const caseData = aggregatedReview.cases;
   const ogData = caseData.open_graph_data;
 
@@ -45,12 +49,14 @@ export function DetailHeader({ aggregatedReview }: DetailHeaderProps) {
           Fall {caseData.case_number}
         </h1>
         <div className="flex gap-2">
-          <Link href={`/review/${aggregatedReview.case_id}`}>
-            <Button variant={'outline'} size={'sm'}>
-              <Edit className="w-4 h-4 mr-2" />
-              Fall bearbeiten
-            </Button>
-          </Link>
+          {!hasSubmittedByCurrentUser && (
+            <Link href={`/review/${aggregatedReview.case_id}`}>
+              <Button variant={'outline'} size={'sm'}>
+                <Edit className="w-4 h-4 mr-2" />
+                Fall bearbeiten
+              </Button>
+            </Link>
+          )}
           <ShareButton caseId={aggregatedReview.case_id} size={'sm'} />
           <HelpButton />
         </div>
