@@ -11,8 +11,10 @@ import Image from 'next/image';
 
 import { Leaderboard } from '@/lib/queries/getLeaderboard';
 import { UserReviews } from '@/lib/queries/getUserReviews';
+import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Button } from '../ui/button';
 import UserSettings from './user-settings';
 import UserStatistics from './user-statistics';
 
@@ -74,6 +76,14 @@ const UserPage: FC<UserPageProps> = ({
                 Unten findest du Vorschläge für Fälle, die deine Hilfe
                 benötigen.
               </p>
+              <div className="mt-4 flex gap-2">
+                <Button asChild>
+                  <Link href="/submit">Fall einreichen</Link>
+                </Button>
+                <Button variant="secondary" asChild>
+                  <Link href="#open-cases">Fall bearbeiten</Link>
+                </Button>
+              </div>
             </div>
           </div>
           <div

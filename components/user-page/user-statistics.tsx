@@ -379,7 +379,9 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   <TableHead className="text-right bg-muted pr-2">
                     Bewertet
                   </TableHead>
-                  <TableHead className="text-right bg-muted pl-2">Level</TableHead>
+                  <TableHead className="text-right bg-muted pl-2">
+                    Level
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="relative">
