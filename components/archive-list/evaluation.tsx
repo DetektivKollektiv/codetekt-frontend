@@ -58,7 +58,7 @@ const Evaluation: FC<EvaluationProps> = ({
         </div>
       )}
       <div>
-        <h4 className="text-body-sm font-semibold mb-2">Detektive</h4>
+        <h4 className="text-body-sm font-semibold mb-2">co:detectives</h4>
         <ReviewersAvatarGroup
           caseId={caseId}
           avatarSizeClassName="size-8"
