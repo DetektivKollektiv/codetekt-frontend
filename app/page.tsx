@@ -130,12 +130,12 @@ export default async function Home() {
 
     // Filter open cases to exclude cases the user has already reviewed
     filteredOpenCases =
-      openCases?.filter(
-        (openCase) => !submittedCaseIds.has(openCase.id!),
-      ).map((openCase) => ({
-        ...openCase,
-        hasSubmittedByCurrentUser: false,
-      })) ?? null;
+      openCases
+        ?.filter((openCase) => !submittedCaseIds.has(openCase.id!))
+        .map((openCase) => ({
+          ...openCase,
+          hasSubmittedByCurrentUser: false,
+        })) ?? null;
 
     if (userReviewsError) {
       console.error('Error fetching user reviews:', userReviewsError);
