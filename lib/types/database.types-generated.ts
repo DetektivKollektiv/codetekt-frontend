@@ -99,18 +99,21 @@ export type Database = {
           created_at: string;
           id: string;
           user_id: string;
+          vote_type: 'up' | 'down';
         };
         Insert: {
           comment_id: string;
           created_at?: string;
           id?: string;
           user_id: string;
+          vote_type?: 'up' | 'down';
         };
         Update: {
           comment_id?: string;
           created_at?: string;
           id?: string;
           user_id?: string;
+          vote_type?: 'up' | 'down';
         };
         Relationships: [
           {

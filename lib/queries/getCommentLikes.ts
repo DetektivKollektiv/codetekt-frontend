@@ -1,28 +1,28 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '../types/database.types';
 
-export function getCommentLikes(
+export function getCommentVotes(
   client: SupabaseClient<Database>,
-  commentId: string
+  commentId: string,
 ) {
   return client
     .from('case_comment_likes')
-    .select('*')
+    .select('user_id, vote_type')
     .eq('comment_id', commentId);
 }
 
-export const commentLikesQuery = (
+export const commentVotesQuery = (
   client: SupabaseClient,
-  commentId: string
+  commentId: string,
 ) => ({
-  queryKey: ['comment-likes', commentId],
+  queryKey: ['comment-votes', commentId],
   queryFn: async () => {
-    const { data, error } = await getCommentLikes(client, commentId);
+    const { data, error } = await getCommentVotes(client, commentId);
     if (error) throw error;
     return data;
   },
 });
 
-export type CommentLikes = Awaited<
-  ReturnType<ReturnType<typeof commentLikesQuery>['queryFn']>
+export type CommentVotes = Awaited<
+  ReturnType<ReturnType<typeof commentVotesQuery>['queryFn']>
 >;

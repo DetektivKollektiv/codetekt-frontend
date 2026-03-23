@@ -16,16 +16,19 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { createCommentReportMutation } from '@/lib/queries/createCommentReport';
 import type { CaseComments } from '@/lib/queries/getCaseComments';
-import { commentLikesQuery } from '@/lib/queries/getCommentLikes';
+import { commentVotesQuery } from '@/lib/queries/getCommentLikes';
 import { commentModerationQuery } from '@/lib/queries/getCommentModeration';
 import { commentReportsQuery } from '@/lib/queries/getCommentReports';
-import { toggleCommentLikeMutation } from '@/lib/queries/toggleCommentLike';
+import {
+  toggleCommentVoteMutation,
+  type VoteDirection,
+} from '@/lib/queries/toggleCommentLike';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { Flag, ThumbsUp } from 'lucide-react';
+import { Flag, Triangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -45,47 +48,53 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
   });
 
   const userId = authData.user?.id;
-  const [isLiked, setIsLiked] = useState(false);
+  const [myVote, setMyVote] = useState<VoteDirection | null>(null);
   const [isReported, setIsReported] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reportReason, setReportReason] = useState('');
 
-  // Fetch likes for this comment
-  const { data: likes } = useQuery(commentLikesQuery(supabase, comment.id));
+  // Fetch votes for this comment
+  const { data: votes } = useQuery(commentVotesQuery(supabase, comment.id));
 
   // Fetch reports for this comment
   const { data: reports } = useQuery(commentReportsQuery(supabase, comment.id));
 
   // Fetch moderation for this comment
   const { data: moderation } = useQuery(
-    commentModerationQuery(supabase, comment.id)
+    commentModerationQuery(supabase, comment.id),
   );
 
-  // Check if current user has liked this comment
+  // Check current user vote for this comment
   useEffect(() => {
-    if (likes && userId) {
-      const userLike = likes.find((like) => like.user_id === userId);
-      setIsLiked(!!userLike);
+    if (votes && userId) {
+      const userVote = votes.find((vote) => vote.user_id === userId);
+      setMyVote((userVote?.vote_type as VoteDirection | undefined) ?? null);
+      return;
     }
-  }, [likes, userId]);
+
+    setMyVote(null);
+  }, [votes, userId]);
 
   // Check if current user has reported this comment
   useEffect(() => {
     if (reports && userId) {
       const userReport = reports.find(
-        (report) => report.reported_by === userId
+        (report) => report.reported_by === userId,
       );
       setIsReported(!!userReport);
     }
   }, [reports, userId]);
 
-  // Mutation for toggling like
-  const likeMutation = useMutation({
-    ...toggleCommentLikeMutation(supabase, userId || ''),
+  // Mutation for toggling vote
+  const voteMutation = useMutation({
+    ...toggleCommentVoteMutation(supabase, userId || ''),
     onSuccess: () => {
-      // Invalidate and refetch likes
+      // Invalidate and refetch votes and comments order
       queryClient.invalidateQueries({
-        queryKey: ['comment-likes', comment.id],
+        queryKey: ['comment-votes', comment.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['case-comments', comment.case_id],
       });
     },
   });
@@ -103,24 +112,24 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
       setReportReason('');
       // Show success toast
       toast.success(
-        'Kommentar erfolgreich gemeldet. Vielen Dank für deine Meldung.'
+        'Kommentar erfolgreich gemeldet. Vielen Dank für deine Meldung.',
       );
     },
     onError: (err: Error) => {
       // Show error toast
       toast.error(
         err.message ||
-          'Fehler beim Melden des Kommentars. Bitte versuche es erneut.'
+          'Fehler beim Melden des Kommentars. Bitte versuche es erneut.',
       );
     },
   });
 
-  const handleLikeClick = () => {
+  const handleVoteClick = (direction: VoteDirection) => {
     if (!userId || moderation) return; // User must be authenticated and comment not moderated
 
-    likeMutation.mutate({
+    voteMutation.mutate({
       commentId: comment.id,
-      isLiked,
+      direction,
     });
   };
 
@@ -147,7 +156,11 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
 
   const createdAt = new Date(comment.created_at);
   const isEdited = comment.edited_at !== null;
-  const likeCount = likes?.length || 0;
+  const upvoteCount =
+    votes?.filter((vote) => vote.vote_type === 'up').length || 0;
+  const downvoteCount =
+    votes?.filter((vote) => vote.vote_type === 'down').length || 0;
+  const score = upvoteCount - downvoteCount;
 
   return (
     <>
@@ -247,21 +260,37 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
               </p>
             </div>
 
-            {/* Like button */}
-            <div className="flex pt-2 mt-auto flex-1 justify-end items-end">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLikeClick}
-                disabled={!userId || likeMutation.isPending || !!moderation}
-                className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
-              >
-                <span className="text-sm font-medium">{likeCount}</span>
-                <ThumbsUp
-                  className="h-4 w-4"
-                  fill={isLiked ? 'currentColor' : 'none'}
-                />
-              </Button>
+            {/* Vote buttons */}
+            <div className="flex pt-2 mt-auto flex-1 justify-end items-end gap-1">
+              <div className="flex justify-end items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleVoteClick('up')}
+                  disabled={!userId || voteMutation.isPending || !!moderation}
+                  className="h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50 mt-px"
+                >
+                  <Triangle
+                    className="h-4 w-4"
+                    fill={myVote === 'up' ? 'currentColor' : 'none'}
+                  />
+                </Button>
+                <span className="text-sm font-medium  text-center">
+                  {score}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleVoteClick('down')}
+                  disabled={!userId || voteMutation.isPending || !!moderation}
+                  className="h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50 -mt-px"
+                >
+                  <Triangle
+                    className="h-4 w-4 rotate-180"
+                    fill={myVote === 'down' ? 'currentColor' : 'none'}
+                  />
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
