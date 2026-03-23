@@ -122,7 +122,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description: hasTitle
           ? 'Bitte prüfe den Titel, der für diesen Fall vergeben wurde. Wenn der Titel den Fall gut beschreibt, klicke auf "Der Titel passt". Falls nicht, klicke auf "Titel beanstanden", damit der Titel von unserer Moderation geprüft werden kann.'
           : 'Vergib einen klaren und prägnanten Titel, damit der Fall später schnell verstanden und wiedergefunden werden kann.',
-        helpUrl: '/help/title',
         fieldTitle: 'Titel',
         primaryActionLabel: hasTitle ? 'Der Titel passt' : 'Speichern',
         disputeActionLabel: 'Titel beanstanden',
@@ -137,7 +136,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description: hasKeywords
           ? 'Bitte prüfe die Stichwörter, die für diesen Fall bereits vergeben wurden. Wenn die Stichwörter den Fall gut beschreiben, klicke auf "Die Stichwörter passen". Falls nicht, klicke auf "Stichwörter beanstanden", damit die Stichwörter von unserer Moderation geprüft werden können.'
           : 'Ergänze passende Stichwörter, die den Inhalt des Falls treffend beschreiben und die Einordnung erleichtern.',
-        helpUrl: '/help/keywords',
 
         primaryActionLabel: hasKeywords
           ? 'Die Stichwörter passen'
@@ -154,7 +152,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description: hasCategory
           ? 'Bitte prüfe die Kategorie, die für diesen Fall vergeben wurde. Wenn die Kategorie den Fall gut einordnet, klicke auf "Die Kategorie passt". Falls nicht, klicke auf "Kategorie beanstanden", damit die Kategorie von unserer Moderation geprüft werden kann.'
           : 'Wähle die passende Kategorie für den Fall. So werden die richtigen Bewertungskriterien für alle Reviewer angezeigt.',
-        helpUrl: '/help/category',
         fieldTitle: 'Kategorie des Falls',
         primaryActionLabel: hasCategory ? 'Die Kategorie passt' : 'Speichern',
         disputeActionLabel: 'Kategorie beanstanden',
@@ -360,7 +357,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
           <QuestionCard
             title={currentStep.label}
             description={currentStep.description}
-            headerActions={<HelpButton href={currentStep.helpUrl} />}
             contentClassName="flex-1"
           >
             {currentStepId === METADATA_STEP_TITLE && (

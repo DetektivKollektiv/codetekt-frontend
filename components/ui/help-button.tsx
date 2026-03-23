@@ -32,7 +32,7 @@ const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
     const sharedClassName = cn(
       helpButtonVariants({ theme }),
       className,
-      'text-body-sm hover:opacity-40',
+      'text-body-sm',
     );
 
     const buttonContent = href ? (
@@ -65,7 +65,11 @@ const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
       </Button>
     );
 
-    const tooltipWrappedButton = (
+    if (href) {
+      return buttonContent;
+    }
+
+    return (
       <Tooltip>
         <TooltipTrigger asChild>{buttonContent}</TooltipTrigger>
         <TooltipContent>
@@ -73,8 +77,6 @@ const HelpButton = React.forwardRef<HTMLButtonElement, HelpButtonProps>(
         </TooltipContent>
       </Tooltip>
     );
-
-    return tooltipWrappedButton;
   },
 );
 HelpButton.displayName = 'HelpButton';
