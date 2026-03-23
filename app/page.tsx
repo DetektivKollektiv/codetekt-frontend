@@ -35,15 +35,19 @@ export default async function Home() {
 
   const { user, profile, isAuthenticated } = auth;
 
+  type CaseWithSubmissionState = UserCases[number] & {
+    hasSubmittedByCurrentUser: boolean;
+  };
+
   // cases the user has created (and their aggregated reviews)
   let ownUserReviewsAndCases:
     | null
-    | (UserCases[number] | AggregatedReviews[number])[] = null;
+    | (CaseWithSubmissionState | AggregatedReviews[number])[] = null;
 
   // cases the user has reviewed (and their aggregated reviews)
   let userReviewsAndCases:
     | null
-    | (UserCases[number] | AggregatedReviews[number])[] = null;
+    | (CaseWithSubmissionState | AggregatedReviews[number])[] = null;
 
   // Separate arrays for cases with and without aggregated reviews
   let userCases: UserCases | null = null;
@@ -61,6 +65,12 @@ export default async function Home() {
       getUserReviews(supabase, user.id),
     ]);
 
+    const submittedCaseIds = new Set(
+      (userReviewsData ?? [])
+        .filter((review) => review.submitted_review_answers_id !== null)
+        .map((review) => review.case_id),
+    );
+
     const ownUserAggregatedReviewsData = aggregatedReviewsData?.filter(
       (review) =>
         userCasesData?.some((userCase) => review.case_id === userCase.id),
@@ -77,7 +87,10 @@ export default async function Home() {
     userReviews = userReviewsData ?? null;
 
     ownUserReviewsAndCases = [
-      ...(ownFilteredUserCases ?? []),
+      ...((ownFilteredUserCases ?? []).map((userCase) => ({
+        ...userCase,
+        hasSubmittedByCurrentUser: submittedCaseIds.has(userCase.id!),
+      })) as CaseWithSubmissionState[]),
       ...(ownUserAggregatedReviewsData ?? []),
     ];
 
@@ -105,7 +118,12 @@ export default async function Home() {
 
     userReviewsAndCases = [
       ...(userReviewsDataFiltered?.map(
-        (userReviews) => userReviews.cases as UserCases[number],
+        (userReview) =>
+          ({
+            ...(userReview.cases as UserCases[number]),
+            hasSubmittedByCurrentUser:
+              userReview.submitted_review_answers_id !== null,
+          }) as CaseWithSubmissionState,
       ) ?? []),
       ...(userAggregatedReviewsData ?? []),
     ];
@@ -113,11 +131,11 @@ export default async function Home() {
     // Filter open cases to exclude cases the user has already reviewed
     filteredOpenCases =
       openCases?.filter(
-        (openCase) =>
-          !userReviewsData?.some(
-            (userReview) => userReview.case_id === openCase.id,
-          ),
-      ) ?? null;
+        (openCase) => !submittedCaseIds.has(openCase.id!),
+      ).map((openCase) => ({
+        ...openCase,
+        hasSubmittedByCurrentUser: false,
+      })) ?? null;
 
     if (userReviewsError) {
       console.error('Error fetching user reviews:', userReviewsError);

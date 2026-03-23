@@ -14,16 +14,19 @@ import CardText from './card-text';
 import NoEvaluation from './no-evaluation';
 
 interface CaseCardProps {
-  caseItem: UserCases[number] | OpenCases[number];
+  caseItem: (UserCases[number] | OpenCases[number]) & {
+    hasSubmittedByCurrentUser?: boolean;
+  };
 }
 
 export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
   // Type assertion for data field (Json type from Supabase)
   const ogData =
     'open_graph_data' in caseItem ? caseItem.open_graph_data : undefined;
+  const showEditButton = !caseItem.hasSubmittedByCurrentUser;
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-72 w-full flex">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow lg:h-[22rem] w-full flex">
       <CardContent className="p-4 lg:p-6 w-full">
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Left: Image */}
@@ -54,11 +57,13 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             />
 
             {/* Action Buttons */}
-            <div className="flex gap-3 flex-1 items-end">
-              <Link href={`/review/${caseItem.id}`}>
-                <Button variant={'default'}>Fall bearbeiten</Button>
-              </Link>
-            </div>
+            {showEditButton && (
+              <div className="flex gap-3 flex-1 items-end">
+                <Link href={`/review/${caseItem.id}`}>
+                  <Button variant={'default'}>Fall bearbeiten</Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Right: Evaluation */}
