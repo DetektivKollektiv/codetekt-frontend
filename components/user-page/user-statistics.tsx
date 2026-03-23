@@ -376,9 +376,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                 <TableRow>
                   <TableHead className="w-[40px] bg-muted"></TableHead>
                   <TableHead className="bg-muted">co:detectives</TableHead>
-                  <TableHead className="text-right bg-muted">
+                  <TableHead className="text-right bg-muted pr-2">
                     Bewertet
                   </TableHead>
+                  <TableHead className="text-right bg-muted pl-2">Level</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="relative">
@@ -396,8 +397,11 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                       </div>
                     </TableCell>
 
-                    <TableCell className="text-right font-semibold">
+                    <TableCell className="text-right font-semibold pr-2">
                       {user.reviews_count}
+                    </TableCell>
+                    <TableCell className="text-right pl-2">
+                      {getMilestoneName(user.reviews_count)}
                     </TableCell>
                   </TableRow>
                 ))}
