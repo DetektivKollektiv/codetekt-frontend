@@ -59,7 +59,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
 }) => {
   const supabase = createClient();
   const [isLocked, setIsLocked] = useState(initialIsSubmitted);
-  const [currentStepId, setCurrentStepId] = useState('');
+  const [currentStepId, setCurrentStepId] = useState(
+    initialIsSubmitted ? SUBMIT_STEP : METADATA_STEP_TITLE,
+  );
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
