@@ -6,7 +6,7 @@ import { HelpButton } from '@/components/ui/help-button';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
-import { getRatingStyle } from '@/lib/utils/rating-helpers';
+import { getRatingStyle, isSatireCategory } from '@/lib/utils/rating-helpers';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 
@@ -29,7 +29,9 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
 
   const { isAuthenticated } = authData;
   const score = Number(aggregatedReview.result_score);
-  const currentRating = getRatingStyle(score);
+  const caseCategory = aggregatedReview.cases.case_categories?.value;
+  const isSatire = isSatireCategory(caseCategory);
+  const currentRating = getRatingStyle(score, caseCategory);
   const reviewerCount = aggregatedReview.reviewer_ids.length;
 
   return (
@@ -41,11 +43,25 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Rating buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {ratingLevels.map((level) => {
-              const rating = getRatingStyle(level);
-              const isActive = rating.label === currentRating.label;
-              return (
+          {isSatire ? (
+            <div>
+              <button
+                disabled
+                className="w-full px-6 py-4 rounded-lg text-body-md font-bold cursor-default"
+                style={{
+                  backgroundColor: currentRating.backgroundColor,
+                  color: currentRating.foregroundColor,
+                }}
+              >
+                {currentRating.label}
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {ratingLevels.map((level) => {
+                const rating = getRatingStyle(level, caseCategory);
+                const isActive = rating.label === currentRating.label;
+                return (
                 <button
                   key={level}
                   disabled
@@ -63,9 +79,10 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 >
                   {rating.label}
                 </button>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
           {/* Reviewer info and CTA */}
           {!isAuthenticated ? (
             <div className="space-y-4">

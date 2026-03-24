@@ -14,6 +14,11 @@ export interface RatingStyle {
   textForegroundClass: string;
 }
 
+export const SATIRE_CATEGORY_VALUE = 'satire';
+
+export const isSatireCategory = (category?: string | null): boolean =>
+  category?.toLowerCase() === SATIRE_CATEGORY_VALUE;
+
 export const scoreToIndex = (score: number): RatingLevel => {
   return Math.ceil(score) as RatingLevel;
 };
@@ -22,7 +27,21 @@ export const scoreToIndex = (score: number): RatingLevel => {
  * @param score - The score from 0-3
  * @returns RatingStyle object with label, Tailwind color classes, and inline style colors
  */
-export function getRatingStyle(score: number): RatingStyle {
+export function getRatingStyle(
+  score: number,
+  category?: string | null,
+): RatingStyle {
+  if (isSatireCategory(category)) {
+    return {
+      label: 'Satire',
+      backgroundColor: 'hsl(var(--neutral-300))',
+      foregroundColor: 'hsl(var(--neutral-800))',
+      backgroundClass: 'bg-neutral-300',
+      textClass: 'text-neutral-700',
+      textForegroundClass: 'text-neutral-800',
+    };
+  }
+
   const s = scoreToIndex(score);
   if (s < 1) {
     return {
@@ -33,15 +52,6 @@ export function getRatingStyle(score: number): RatingStyle {
       textClass: 'text-brand-green',
       textForegroundClass: 'text-neutral-0',
     };
-
-    /* return {
-      label: 'Vertrauenswürdig',
-      background: 'hsl(var(--brand-green))',
-      foreground: 'hsl(var(--neutral-0))',
-      backgroundClass: 'bg-brand-green',
-      textClass: 'text-brand-green',
-      textForegroundClass: 'text-neutral-0',
-    }; */
   } else if (s < 2) {
     return {
       label: 'Eher vertrauenswürdig',

@@ -13,7 +13,6 @@ import {
 } from '@/lib/utils/rating-helpers';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 import dynamic from 'next/dynamic';
-import EmptyCard from '../archive-list/empty-card';
 import { DetailEvaluationCarousel } from './detail-evaluation-carousel';
 import { DetailTextEvaluation } from './detail-text-evaluation';
 import { DetailTrafficLightEvaluation } from './detail-traffic-light-evaluation';
@@ -127,7 +126,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
           })}
         </Accordion>
       ) : (
-        <EmptyCard message={'Keine Bewertung vorhanden'} />
+        null
       )}
     </section>
   );

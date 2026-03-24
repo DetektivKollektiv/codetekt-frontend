@@ -9,7 +9,11 @@ import { getLocalDate } from '@/lib/utils';
 import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
 import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
-import { getRatingStyle, getWarningTags } from '@/lib/utils/rating-helpers';
+import {
+  getRatingStyle,
+  getWarningTags,
+  isSatireCategory,
+} from '@/lib/utils/rating-helpers';
 import Link from 'next/link';
 import { FC } from 'react';
 import ImagePlaceholder from '../image-placeholder';
@@ -23,7 +27,9 @@ interface AggregatedReviewCardProps {
 export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   caseItem,
 }) => {
-  const ratingStyle = getRatingStyle(caseItem.result_score || 0);
+  const caseCategory = caseItem.cases.case_categories?.value;
+  const isSatire = isSatireCategory(caseCategory);
+  const ratingStyle = getRatingStyle(caseItem.result_score || 0, caseCategory);
 
   const reviewData = caseItem.data;
   if (!reviewData) return null;
@@ -72,6 +78,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
             <Evaluation
               caseId={caseItem.case_id}
               ratingStyle={ratingStyle}
+              isSatire={isSatire}
               warningTags={getWarningTags(reviewData)}
             />
           )}

@@ -9,12 +9,14 @@ interface EvaluationProps {
   ratingStyle: RatingStyle;
   warningTags: { [K in 0 | 1 | 2 | 3]?: string }[];
   caseId: string;
+  isSatire: boolean;
 }
 
 const Evaluation: FC<EvaluationProps> = ({
   ratingStyle,
   warningTags,
   caseId,
+  isSatire,
 }) => {
   return (
     <div className="w-full lg:w-72 flex-shrink-0 space-y-4 bg-secondary text-secondary-foreground p-4 rounded-lg h-72 lg:h-auto relative">
@@ -34,7 +36,7 @@ const Evaluation: FC<EvaluationProps> = ({
         </Badge>
       </div>
 
-      {warningTags.length > 0 && (
+      {!isSatire && warningTags.length > 0 && (
         <div>
           <h4 className="text-body-sm font-semibold mb-2">
             Tags zur Bewertung

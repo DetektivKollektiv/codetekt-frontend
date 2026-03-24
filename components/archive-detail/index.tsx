@@ -20,6 +20,11 @@ export function ArchiveDetail({
   auth,
   hasSubmittedByCurrentUser,
 }: ArchiveDetailProps) {
+  const evaluationData = aggregatedReview.data;
+  const hasEvaluationSection =
+    evaluationData?.questions?.some((question) => question.fields.length > 0) ??
+    false;
+
   return (
     <div className="space-y-12">
       {/* Header Section */}
@@ -32,8 +37,8 @@ export function ArchiveDetail({
       <DetailRating aggregatedReview={aggregatedReview} auth={auth} />
 
       {/* Evaluation Section */}
-      {aggregatedReview.data && (
-        <DetailEvaluation reviewData={aggregatedReview.data} />
+      {hasEvaluationSection && evaluationData && (
+        <DetailEvaluation reviewData={evaluationData} />
       )}
 
       {/* Comments Section */}
