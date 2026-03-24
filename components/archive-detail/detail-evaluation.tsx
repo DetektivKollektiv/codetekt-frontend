@@ -29,7 +29,6 @@ type TextEvaluationField = Extract<
 export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
   return (
     <section className="space-y-6 page-max-w">
-      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold">Fallbearbeitung</h2>
@@ -41,93 +40,88 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
         <HelpButton theme="light" />
       </div>
 
-      {/* Accordion with categories */}
-      {reviewData.questions.length > 0 ? (
-        <Accordion type="multiple" className="space-y-4">
-          {reviewData.questions.map((question) => {
-            const hasFields = question.fields && question.fields.length > 0;
-            if (!hasFields) return null;
-            const NewIcon = dynamic(
-              dynamicIconImports[
-                (question.metadata.icon as keyof typeof dynamicIconImports) ||
-                  'badge'
-              ],
-              {
-                ssr: false,
-              },
-            );
+      <Accordion type="multiple" className="space-y-4">
+        {reviewData.questions.map((question) => {
+          const hasFields = question.fields && question.fields.length > 0;
+          if (!hasFields) return null;
 
-            return (
-              <AccordionItem
-                value={question.id}
-                className="border rounded-lg px-4 relative overflow-hidden last:border-b"
-                key={question.id}
-                id={`accordion-content-${question.id}`}
-              >
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex items-center gap-3">
-                    <NewIcon
-                      className={`${getRatingStyle(question.score).textClass}`}
-                    />
-                    <span
-                      className={`font-semibold ${getRatingStyle(question.score).textClass}`}
-                    >
-                      {question.metadata.title}
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-0 pb-6">
-                  <DetailEvaluationCarousel
-                    options={{
-                      align: 'start',
-                      slidesToScroll: 1,
-                      dragFree: false,
-                    }}
+          const NewIcon = dynamic(
+            dynamicIconImports[
+              (question.metadata.icon as keyof typeof dynamicIconImports) ||
+                'badge'
+            ],
+            {
+              ssr: false,
+            },
+          );
+
+          return (
+            <AccordionItem
+              value={question.id}
+              className="border rounded-lg px-4 relative overflow-hidden last:border-b"
+              key={question.id}
+              id={`accordion-content-${question.id}`}
+            >
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-3">
+                  <NewIcon
+                    className={`${getRatingStyle(question.score).textClass}`}
+                  />
+                  <span
+                    className={`font-semibold ${getRatingStyle(question.score).textClass}`}
                   >
-                    {[...question.fields]
-                      .sort((a, b) => {
-                        const aAvg = 'average' in a ? a.average : -Infinity;
-                        const bAvg = 'average' in b ? b.average : -Infinity;
-                        return bAvg - aAvg;
-                      })
-                      .map((field) => {
-                        const fieldsWithHighestIndex =
-                          getFieldsWithHighestIndex(question.fields);
+                    {question.metadata.title}
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pt-0 pb-6">
+                <DetailEvaluationCarousel
+                  options={{
+                    align: 'start',
+                    slidesToScroll: 1,
+                    dragFree: false,
+                  }}
+                >
+                  {[...question.fields]
+                    .sort((a, b) => {
+                      const aAvg = 'average' in a ? a.average : -Infinity;
+                      const bAvg = 'average' in b ? b.average : -Infinity;
+                      return bAvg - aAvg;
+                    })
+                    .map((field) => {
+                      const fieldsWithHighestIndex =
+                        getFieldsWithHighestIndex(question.fields);
 
-                        if (field.type === 'traffic-light') {
-                          return (
-                            <DetailTrafficLightEvaluation
-                              field={field}
-                              key={field.id}
-                              highlightHeader={fieldsWithHighestIndex.has(
-                                field.id,
-                              )}
-                            />
-                          );
-                        }
-                      })}
-                  </DetailEvaluationCarousel>
-                  <div className="mt-4">
-                    {[...question.fields]
-                      .filter(
-                        (field): field is TextEvaluationField =>
-                          field.type === 'text' || field.type === 'text-area',
-                      )
-
-                      .map((field) => {
+                      if (field.type === 'traffic-light') {
                         return (
-                          <DetailTextEvaluation field={field} key={field.id} />
+                          <DetailTrafficLightEvaluation
+                            field={field}
+                            key={field.id}
+                            highlightHeader={fieldsWithHighestIndex.has(
+                              field.id,
+                            )}
+                          />
                         );
-                      })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      ) : (
-        null
-      )}
+                      }
+
+                      return null;
+                    })}
+                </DetailEvaluationCarousel>
+                <div className="mt-4">
+                  {[...question.fields]
+                    .filter(
+                      (field): field is TextEvaluationField =>
+                        field.type === 'text' || field.type === 'text-area',
+                    )
+                    .map((field) => {
+                      return <DetailTextEvaluation field={field} key={field.id} />;
+                    })}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
     </section>
   );
 }

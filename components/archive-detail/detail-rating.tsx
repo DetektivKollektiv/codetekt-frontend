@@ -62,23 +62,23 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
                 const rating = getRatingStyle(level, caseCategory);
                 const isActive = rating.label === currentRating.label;
                 return (
-                <button
-                  key={level}
-                  disabled
-                  className={`px-6 py-4 rounded-lg text-body-md font-bold text-neutral-0 cursor-default transition-all ${
-                    isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
-                  }`}
-                  style={
-                    isActive
-                      ? {
-                          backgroundColor: rating.backgroundColor,
-                          color: rating.foregroundColor,
-                        }
-                      : undefined
-                  }
-                >
-                  {rating.label}
-                </button>
+                  <button
+                    key={level}
+                    disabled
+                    className={`px-6 py-4 rounded-lg text-body-md font-bold text-neutral-0 cursor-default transition-all ${
+                      isActive ? 'opacity-100' : 'bg-white/20 opacity-70'
+                    }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: rating.backgroundColor,
+                            color: rating.foregroundColor,
+                          }
+                        : undefined
+                    }
+                  >
+                    {rating.label}
+                  </button>
                 );
               })}
             </div>
