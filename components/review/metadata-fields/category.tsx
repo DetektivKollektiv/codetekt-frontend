@@ -21,6 +21,17 @@ interface CategoryProps {
   disputeLabel?: string;
 }
 
+const CATEGORY_INFO_TEXTS: Record<CaseCategoryValue, string> = {
+  text_message:
+    'Mit einer Textnachricht meinen wir in der Regel Nachrichten aus Messenger-Diensten wie WhatsApp oder Telegram oder Inhalte und Posts aus sozialen Medien (z.B. auf Facebook oder X). Meistens sind das also keine Nachrichten, die in einem journalistischen Medium (Nachrichtenportalen, Websites von Zeitungen, Blogs) veröffentlicht wurden.',
+  opinion:
+    'Hierbei handelt es sich um einen Beitrag, der die Meinung des*r Autor*in widerspiegelt. Typische Formen für solche Beiträge sind Kommentare, Glossen oder Essays. Eine vollständige Liste findest du hier. Der deutsche Fachjournalisten-Verband fordert, dass Meinungsbeiträge klar als solche gekennzeichnet sein müssen. Beispiel:',
+  report:
+    'Alle Beiträge, die nicht klar als Meinungsbeitrag gekennzeichnet sind, fallen unter die Kategorie “Bericht”. Ein Bericht sollte objektiv und ausgewogen sein. Wir nutzen den Begriff “Bericht” umfassend und meinen damit alle informierenden journalistischen Darstellungsformen (Kurzmeldung, Nachricht, Bericht, Reportage, etc.).',
+  satire:
+    'Satire stellt eine Kunstform dar, bei der journalistische Qualitätskriterien bewusst missachtet werden. Dementsprechend lassen sich auch die Trust-Checking-Kriterien nicht sinnvoll anwenden. Wenn du einen Fall als Satire einordnest endet die Bewertung damit und dieser wird auch im Archiv als Satire gekennzeichnet',
+};
+
 const Category: FC<CategoryProps> = ({
   value,
   isComplete,
@@ -35,6 +46,7 @@ const Category: FC<CategoryProps> = ({
 }) => {
   const selected = value ?? null;
   const issue = issues[0] ?? null;
+  const selectedInfoText = selected ? CATEGORY_INFO_TEXTS[selected] : null;
   const isInputDisabled = isSaving || (isComplete && !!value);
   const isSaveDisabled = isComplete ? isSaving : isSaving || !selected;
 
@@ -72,6 +84,11 @@ const Category: FC<CategoryProps> = ({
             );
           })}
         </div>
+        {selectedInfoText && (
+          <Label className="text-muted-foreground text-body-sm block leading-normal pt-4">
+            {selectedInfoText}
+          </Label>
+        )}
         {issue && <Label className="text-destructive">{issue.message}</Label>}
       </div>
     </FieldContainer>
