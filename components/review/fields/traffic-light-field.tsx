@@ -39,9 +39,11 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
 
   // Get the question text from the first option
   const questionText = field.question || '';
-
+  console.log(field.question, field.show_bottom_border);
   return (
-    <div className="md:min-h-9 border-b pb-6 last:border-0 last:pb-0">
+    <div
+      className={`md:min-h-9  ${field.show_bottom_border !== false ? 'border-b last:border-0 pb-6 last:pb-0' : 'pb-2 last:pb-4'}`}
+    >
       <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4 md:gap-12 ">
         <div className="flex-1 ">
           <p
