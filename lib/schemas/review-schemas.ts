@@ -35,7 +35,6 @@ export const submittedReviewAnswerReportSchema = z
     medium_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Quelle
-    source_author_expertise: trafficLightAnswerSchema,
     source_claims_supported: trafficLightAnswerSchema,
     source_listed_and_verifiable: trafficLightAnswerSchema,
     source_additional_points: trafficLightAnswerSchema,
@@ -74,7 +73,6 @@ export const submittedReviewAnswerOpinionSchema = z
     medium_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Quelle
-    source_author_expertise: trafficLightAnswerSchema,
     source_claims_supported: trafficLightAnswerSchema,
     source_listed_and_verifiable: trafficLightAnswerSchema,
     source_additional_points: trafficLightAnswerSchema,
@@ -164,7 +162,6 @@ export const inProgressReviewAnswerSchema = z
     medium_additional_points_details: textAreaAnswerSchema.optional(),
 
     // Quelle
-    source_author_expertise: trafficLightAnswerSchema.optional(),
     source_text_message_author_expertise: trafficLightAnswerSchema.optional(),
     source_claims_supported: trafficLightAnswerSchema.optional(),
     source_listed_and_verifiable: trafficLightAnswerSchema.optional(),
