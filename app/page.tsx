@@ -6,7 +6,10 @@ import {
   getAggregatedReviews,
 } from '@/lib/queries/getAggregatedReviews';
 import { getLeaderboard } from '@/lib/queries/getLeaderboard';
-import { filterUnaggregatedOpenCases, getOpenCases } from '@/lib/queries/getOpenCases';
+import {
+  filterUnaggregatedOpenCases,
+  getOpenCases,
+} from '@/lib/queries/getOpenCases';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
 import { getUserReviews, UserReviews } from '@/lib/queries/getUserReviews';
 import { getAuth } from '@/lib/supabase/getAuth';

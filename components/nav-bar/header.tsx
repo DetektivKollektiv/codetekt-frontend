@@ -57,6 +57,7 @@ export default function Header({
       if (event === 'INITIAL_SESSION') {
         return;
       }
+      queryClient.clear();
       queryClient.invalidateQueries({ queryKey: ['auth'] });
       refetch();
     });
@@ -87,8 +88,10 @@ export default function Header({
 
   const handleLogout = async () => {
     await client.auth.signOut();
+    queryClient.clear();
     setMobileOpen(false);
     router.push('/auth/login');
+    router.refresh();
   };
 
   return (

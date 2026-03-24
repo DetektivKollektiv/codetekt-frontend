@@ -22,10 +22,16 @@ export const hasReviewAggregation = (openCase: {
   return openCase.review_aggregations !== null;
 };
 
-export const filterUnaggregatedOpenCases = <T extends {
-  review_aggregations: unknown;
-}>(openCases: T[] | null | undefined): T[] => {
-  return (openCases ?? []).filter((openCase) => !hasReviewAggregation(openCase));
+export const filterUnaggregatedOpenCases = <
+  T extends {
+    review_aggregations: unknown;
+  },
+>(
+  openCases: T[] | null | undefined,
+): T[] => {
+  return (openCases ?? []).filter(
+    (openCase) => !hasReviewAggregation(openCase),
+  );
 };
 
 export const openCasesQuery = (client: SupabaseClient) => ({
