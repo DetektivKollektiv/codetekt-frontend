@@ -6,7 +6,7 @@ import {
   getAggregatedReviews,
 } from '@/lib/queries/getAggregatedReviews';
 import { getLeaderboard } from '@/lib/queries/getLeaderboard';
-import { getOpenCases } from '@/lib/queries/getOpenCases';
+import { filterUnaggregatedOpenCases, getOpenCases } from '@/lib/queries/getOpenCases';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
 import { getUserReviews, UserReviews } from '@/lib/queries/getUserReviews';
 import { getAuth } from '@/lib/supabase/getAuth';
@@ -54,7 +54,7 @@ export default async function Home() {
   let userReviews: UserReviews | null = null;
 
   // open cases filtered to exclude cases the user has already reviewed
-  let filteredOpenCases = openCases ?? null;
+  let filteredOpenCases = filterUnaggregatedOpenCases(openCases);
 
   if (isAuthenticated && user) {
     const [
@@ -129,13 +129,12 @@ export default async function Home() {
     ];
 
     // Filter open cases to exclude cases the user has already reviewed
-    filteredOpenCases =
-      openCases
-        ?.filter((openCase) => !submittedCaseIds.has(openCase.id!))
-        .map((openCase) => ({
-          ...openCase,
-          hasSubmittedByCurrentUser: false,
-        })) ?? null;
+    filteredOpenCases = filterUnaggregatedOpenCases(openCases)
+      .filter((openCase) => !submittedCaseIds.has(openCase.id!))
+      .map((openCase) => ({
+        ...openCase,
+        hasSubmittedByCurrentUser: false,
+      }));
 
     if (userReviewsError) {
       console.error('Error fetching user reviews:', userReviewsError);

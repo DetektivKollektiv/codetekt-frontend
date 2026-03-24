@@ -12,12 +12,28 @@ export function getOpenCases(client: SupabaseClient<Database>) {
   );
 }
 
+export const hasReviewAggregation = (openCase: {
+  review_aggregations: unknown;
+}) => {
+  if (Array.isArray(openCase.review_aggregations)) {
+    return openCase.review_aggregations.length > 0;
+  }
+
+  return openCase.review_aggregations !== null;
+};
+
+export const filterUnaggregatedOpenCases = <T extends {
+  review_aggregations: unknown;
+}>(openCases: T[] | null | undefined): T[] => {
+  return (openCases ?? []).filter((openCase) => !hasReviewAggregation(openCase));
+};
+
 export const openCasesQuery = (client: SupabaseClient) => ({
   queryKey: ['open-cases'],
   queryFn: async () => {
     const { data, error } = await getOpenCases(client);
     if (error) throw error;
-    return data.filter((c) => !c.review_aggregations);
+    return filterUnaggregatedOpenCases(data);
   },
 });
 
