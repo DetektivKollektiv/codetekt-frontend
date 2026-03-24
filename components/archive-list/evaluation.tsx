@@ -40,7 +40,7 @@ const Evaluation: FC<EvaluationProps> = ({
             Tags zur Bewertung
           </h4>
 
-          <div className="break-words min-w-0 hyphens-auto text-destructive text-body-sm">
+          <div className="break-words min-w-0 hyphens-auto text-destructive text-body-sm line-clamp-3">
             {warningTags.slice(0, 4).map((tag, idx) => (
               <span
                 style={{
