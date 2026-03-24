@@ -89,8 +89,9 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                       return bAvg - aAvg;
                     })
                     .map((field) => {
-                      const fieldsWithHighestIndex =
-                        getFieldsWithHighestIndex(question.fields);
+                      const fieldsWithHighestIndex = getFieldsWithHighestIndex(
+                        question.fields,
+                      );
 
                       if (field.type === 'traffic-light') {
                         return (
@@ -114,7 +115,9 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
                         field.type === 'text' || field.type === 'text-area',
                     )
                     .map((field) => {
-                      return <DetailTextEvaluation field={field} key={field.id} />;
+                      return (
+                        <DetailTextEvaluation field={field} key={field.id} />
+                      );
                     })}
                 </div>
               </AccordionContent>
