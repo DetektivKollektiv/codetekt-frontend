@@ -5,7 +5,7 @@ import { Chip } from '@/components/ui/chip';
 import { Label } from '@/components/ui/label';
 import { CASE_CATEGORY_OPTIONS } from '@/lib/constants';
 import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
 interface CategoryProps {
@@ -21,13 +21,51 @@ interface CategoryProps {
   disputeLabel?: string;
 }
 
-const CATEGORY_INFO_TEXTS: Record<CaseCategoryValue, string> = {
+const CATEGORY_INFO_TEXTS: Record<CaseCategoryValue, ReactNode> = {
   text_message:
     'Mit einer Textnachricht meinen wir in der Regel Nachrichten aus Messenger-Diensten wie WhatsApp oder Telegram oder Inhalte und Posts aus sozialen Medien (z.B. auf Facebook oder X). Meistens sind das also keine Nachrichten, die in einem journalistischen Medium (Nachrichtenportalen, Websites von Zeitungen, Blogs) veröffentlicht wurden.',
-  opinion:
-    'Hierbei handelt es sich um einen Beitrag, der die Meinung des*r Autor*in widerspiegelt. Typische Formen für solche Beiträge sind Kommentare, Glossen oder Essays. Eine vollständige Liste findest du hier. Der deutsche Fachjournalisten-Verband fordert, dass Meinungsbeiträge klar als solche gekennzeichnet sein müssen. Beispiel:',
-  report:
-    'Alle Beiträge, die nicht klar als Meinungsbeitrag gekennzeichnet sind, fallen unter die Kategorie “Bericht”. Ein Bericht sollte objektiv und ausgewogen sein. Wir nutzen den Begriff “Bericht” umfassend und meinen damit alle informierenden journalistischen Darstellungsformen (Kurzmeldung, Nachricht, Bericht, Reportage, etc.).',
+  opinion: (
+    <>
+      Hierbei handelt es sich um einen Beitrag, der die Meinung des*r Autor*in
+      widerspiegelt. Typische Formen für solche Beiträge sind Kommentare,
+      Glossen oder Essays. Eine vollständige Liste findest du{' '}
+      <a
+        href="https://de.wikipedia.org/wiki/Journalistische_Darstellungsform#Meinungs%C3%A4u%C3%9Fernde_Darstellungsformen"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 hover:text-foreground"
+      >
+        hier
+      </a>
+      . Der deutsche Fachjournalisten-Verband fordert, dass Meinungsbeiträge{' '}
+      <a
+        href="https://www.fachjournalist.de/PDF-Dateien/2012/04/FJ_2_2002-Journalistisches-Schreiben-2_Meinungsbetonte-Darstellungsformen.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 hover:text-foreground"
+      >
+        klar als solche gekennzeichnet sein müssen
+      </a>
+      .
+    </>
+  ),
+  report: (
+    <>
+      Alle Beiträge, die nicht klar als Meinungsbeitrag gekennzeichnet sind,
+      fallen unter die Kategorie “Bericht”. Ein Bericht sollte objektiv und
+      ausgewogen sein. Wir nutzen den Begriff “Bericht” umfassend und meinen
+      damit alle{' '}
+      <a
+        href="https://de.wikipedia.org/wiki/Journalistische_Darstellungsform#Informierende_Darstellungsformen"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 hover:text-foreground"
+      >
+        informierenden journalistischen Darstellungsformen
+      </a>{' '}
+      (Kurzmeldung, Nachricht, Bericht, Reportage, etc.).
+    </>
+  ),
   satire:
     'Satire stellt eine Kunstform dar, bei der journalistische Qualitätskriterien bewusst missachtet werden. Dementsprechend lassen sich auch die Trust-Checking-Kriterien nicht sinnvoll anwenden. Wenn du einen Fall als Satire einordnest endet die Bewertung damit und dieser wird auch im Archiv als Satire gekennzeichnet',
 };
