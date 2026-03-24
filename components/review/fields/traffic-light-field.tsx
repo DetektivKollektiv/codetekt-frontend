@@ -62,7 +62,7 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
           value={value?.toString() ?? ''}
           onValueChange={handleChange}
           disabled={isDisabled}
-          className="flex justify-between md:justify-end w-full md:w-auto md:items-center gap-2 mt-1"
+          className="flex justify-between md:justify-start w-full md:w-auto md:items-center gap-2 mt-1 min-w-32"
         >
           {field.options.map((option) => {
             return (
