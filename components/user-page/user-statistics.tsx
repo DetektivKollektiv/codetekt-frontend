@@ -321,12 +321,20 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   stroke="var(--color-cases)"
                   dot={(props) => {
                     const { cx, cy, payload } = props;
+                    const pointKey = `case-dot-${payload?.day ?? `${cx}-${cy}`}`;
+
                     if (!payload?.hasCaseEvent) {
-                      return <g />;
+                      return <g key={pointKey} />;
                     }
 
                     return (
-                      <circle cx={cx} cy={cy} r={3} fill="var(--color-cases)" />
+                      <circle
+                        key={pointKey}
+                        cx={cx}
+                        cy={cy}
+                        r={3}
+                        fill="var(--color-cases)"
+                      />
                     );
                   }}
                 />
@@ -338,12 +346,15 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   stroke="var(--color-reviews)"
                   dot={(props) => {
                     const { cx, cy, payload } = props;
+                    const pointKey = `review-dot-${payload?.day ?? `${cx}-${cy}`}`;
+
                     if (!payload?.hasReviewEvent) {
-                      return <g />;
+                      return <g key={pointKey} />;
                     }
 
                     return (
                       <circle
+                        key={pointKey}
                         cx={cx}
                         cy={cy}
                         r={3}
