@@ -190,6 +190,8 @@ export const getWarningTags = (reviewData: ReviewAggregationData) => {
     .flatMap((question) =>
       question.fields.flatMap((field) => {
         if (!('tag' in field) || !('average' in field)) return [];
+        if (typeof field.tag !== 'string' || field.tag.trim().length === 0)
+          return [];
 
         const index = scoreToIndex(field.average);
         return [{ [index]: field.tag }];
