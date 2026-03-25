@@ -48,6 +48,7 @@ interface ReviewContentProps {
   reviewTemplate: NonNullable<ReviewTemplate>;
   caseData: NonNullable<Case>;
   isSubmitted: boolean;
+  isReviewTemplateFetching: boolean;
   userId?: string;
 }
 
@@ -55,6 +56,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   reviewTemplate,
   caseData,
   isSubmitted: initialIsSubmitted,
+  isReviewTemplateFetching,
   userId,
 }) => {
   const supabase = createClient();
@@ -122,6 +124,36 @@ const ReviewContent: FC<ReviewContentProps> = ({
     touchedQuestionIds,
   });
 
+  const {
+    setTitle,
+    setKeywords,
+    setCategory,
+    isTitlePending,
+    isKeywordsPending,
+    isCategoryPending,
+    titleIssues,
+    keywordsIssues,
+    categoryIssues,
+  } = useMetadataSave({
+    supabase,
+    caseId: caseData.id,
+    userId,
+    onStepComplete: (step) => {
+      if (step === 'category') {
+        setIsAwaitingCategoryTransition(true);
+        setCurrentStepId(METADATA_STEP_CATEGORY);
+        return;
+      }
+
+      const nextStepIdByStep = {
+        title: METADATA_STEP_KEYWORDS,
+        keywords: METADATA_STEP_CATEGORY,
+      } as const;
+
+      setCurrentStepId(nextStepIdByStep[step]);
+    },
+  });
+
   const isStepBlocking = (step: ReviewStep): boolean => !step.isComplete;
 
   const steps = useMemo<ReviewStep[]>(() => {
@@ -184,7 +216,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
           question,
         };
       }),
-      {
+    ];
+
+    if (!isReviewTemplateFetching && !isKeywordsPending) {
+      allSteps.push({
         id: COMMENT_STEP,
         label: 'Kommentar hinzufügen',
         description:
@@ -193,8 +228,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
         status: hasUserComment || isCommentSaved ? 'success' : undefined,
         kind: 'comment' as const,
         isComplete: true,
-      },
-      {
+      });
+      allSteps.push({
         id: SUBMIT_STEP,
         label: 'Fall abschließen',
         description:
@@ -203,8 +238,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
         status: isFinalStepEnabled ? undefined : 'incomplete',
         kind: 'submit' as const,
         isComplete: isFinalStepEnabled && isValidForSubmission,
-      },
-    ];
+      });
+    }
 
     const firstBlockingIndex = allSteps.findIndex(isStepBlocking);
     if (firstBlockingIndex === -1) {
@@ -294,36 +329,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseId: caseData.id,
     userId,
     markAsSaved,
-  });
-
-  const {
-    setTitle,
-    setKeywords,
-    setCategory,
-    isTitlePending,
-    isKeywordsPending,
-    isCategoryPending,
-    titleIssues,
-    keywordsIssues,
-    categoryIssues,
-  } = useMetadataSave({
-    supabase,
-    caseId: caseData.id,
-    userId,
-    onStepComplete: (step) => {
-      if (step === 'category') {
-        setIsAwaitingCategoryTransition(true);
-        setCurrentStepId(METADATA_STEP_CATEGORY);
-        return;
-      }
-
-      const nextStepIdByStep = {
-        title: METADATA_STEP_KEYWORDS,
-        keywords: METADATA_STEP_CATEGORY,
-      } as const;
-
-      setCurrentStepId(nextStepIdByStep[step]);
-    },
   });
 
   const {

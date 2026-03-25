@@ -48,7 +48,7 @@ const Review: FC<ReviewProps> = ({
     !!caseData?.case_categories;
 
   // Review template with useQuery
-  const { data: reviewTemplate } = useQuery({
+  const { data: reviewTemplate, isFetching: isReviewTemplateFetching } = useQuery({
     queryKey: ['review-template', initialCaseData.id],
     enabled: metadataComplete,
     queryFn: async () => {
@@ -73,6 +73,7 @@ const Review: FC<ReviewProps> = ({
       caseData={caseData}
       isSubmitted={initialIsSubmitted}
       userId={userId}
+      isReviewTemplateFetching={isReviewTemplateFetching}
     />
   );
 };
