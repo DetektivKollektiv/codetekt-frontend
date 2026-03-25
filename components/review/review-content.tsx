@@ -68,7 +68,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
   });
 
   const hasTitle = !!caseData.case_titles;
-  const hasKeywords = (caseData.case_keywords?.length ?? 0) > 0;
+  const hasKeywords =
+    (caseData.case_keywords?.some(
+      (keywordSet) => keywordSet.created_by === userId,
+    ) ??
+      false) &&
+    Boolean(userId);
   const hasCategory = !!caseData.case_categories;
   const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
 
