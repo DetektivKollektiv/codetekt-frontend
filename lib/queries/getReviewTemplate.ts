@@ -5,7 +5,7 @@ import { Database } from '../types/database.types';
 
 export async function getReviewTemplate(
   client: SupabaseClient<Database>,
-  caseId: string
+  caseId: string,
 ): Promise<FunctionsResponse<ReviewTemplateData[]>> {
   return client.functions.invoke<ReviewTemplateData[]>('get-review-template', {
     body: { case_id: caseId },
@@ -14,7 +14,7 @@ export async function getReviewTemplate(
 
 export const reviewTemplateQuery = (
   client: SupabaseClient<Database>,
-  caseId: string
+  caseId: string,
 ) => ({
   queryKey: ['review-template', caseId],
   queryFn: async () => {
