@@ -15,13 +15,24 @@ export {
   caseInsertSchema,
   contentTypeSchema,
   createCaseFormSchema,
-  legalAcceptanceSchema,
   textContentSchema,
   urlContentSchema,
   type CaseInsertData,
   type ContentType,
   type CreateCaseFormData,
 } from './case-schemas';
+export {
+  COMMENT_REPORT_REASON_MAX_LENGTH,
+  COMMENT_REPORT_REASON_MIN_LENGTH,
+  commentContentSchema,
+  commentInsertSchema,
+  commentReportReasonSchema,
+  createCommentFormSchema,
+  createCommentReportSchema,
+  type CommentInsertData,
+  type CreateCommentFormData,
+  type CreateCommentReportData,
+} from './comment-schemas';
 export {
   categoryInConditionSchema,
   comparisonConditionSchema,

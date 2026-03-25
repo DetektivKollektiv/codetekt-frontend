@@ -7,6 +7,26 @@ export const commentContentSchema = z
   .max(5000, 'Kommentar darf maximal 5000 Zeichen lang sein')
   .trim();
 
+export const COMMENT_REPORT_REASON_MIN_LENGTH = 4;
+export const COMMENT_REPORT_REASON_MAX_LENGTH = 500;
+
+export const commentReportReasonSchema = z
+  .string()
+  .min(
+    COMMENT_REPORT_REASON_MIN_LENGTH,
+    `Mindestens ${COMMENT_REPORT_REASON_MIN_LENGTH} Zeichen.`,
+  )
+  .max(
+    COMMENT_REPORT_REASON_MAX_LENGTH,
+    `Maximal ${COMMENT_REPORT_REASON_MAX_LENGTH} Zeichen.`,
+  )
+  .trim();
+
+export const createCommentReportSchema = z.object({
+  commentId: z.string().uuid('Ungültige Kommentar-ID'),
+  reason: commentReportReasonSchema,
+});
+
 // Form schema for creating a comment
 export const createCommentFormSchema = z.object({
   content: commentContentSchema,
@@ -23,3 +43,4 @@ export const commentInsertSchema = z.object({
 // Type exports
 export type CreateCommentFormData = z.infer<typeof createCommentFormSchema>;
 export type CommentInsertData = z.infer<typeof commentInsertSchema>;
+export type CreateCommentReportData = z.infer<typeof createCommentReportSchema>;

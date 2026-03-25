@@ -23,13 +23,18 @@ import {
   toggleCommentVoteMutation,
   type VoteDirection,
 } from '@/lib/queries/toggleCommentLike';
+import {
+  COMMENT_REPORT_REASON_MAX_LENGTH,
+  COMMENT_REPORT_REASON_MIN_LENGTH,
+  createCommentReportSchema,
+} from '@/lib/schemas/comment-schemas';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Flag, Triangle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 interface DetailCommentCardProps {
@@ -52,6 +57,17 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
   const [isReported, setIsReported] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reportReason, setReportReason] = useState('');
+
+  const reportReasonValidation = useMemo(
+    () =>
+      createCommentReportSchema.safeParse({
+        commentId: comment.id,
+        reason: reportReason,
+      }),
+    [comment.id, reportReason],
+  );
+  const reportReasonLength = reportReason.trim().length;
+  const showReportReasonIssue = reportReason.length > 0;
 
   // Fetch votes for this comment
   const { data: votes } = useQuery(commentVotesQuery(supabase, comment.id));
@@ -135,11 +151,12 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
 
   const handleReportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId || !reportReason.trim()) return;
+
+    if (!userId || !reportReasonValidation.success) return;
 
     reportMutation.mutate({
       commentId: comment.id,
-      reason: reportReason,
+      reason: reportReasonValidation.data.reason,
     });
   };
 
@@ -184,7 +201,28 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
                   onChange={(e) => setReportReason(e.target.value)}
                   required
                   rows={4}
+                  maxLength={COMMENT_REPORT_REASON_MAX_LENGTH}
                 />
+                <div className="flex justify-between items-start">
+                  {showReportReasonIssue && !reportReasonValidation.success && (
+                    <Label className="text-destructive">
+                      {reportReasonLength > COMMENT_REPORT_REASON_MAX_LENGTH
+                        ? `Maximal ${COMMENT_REPORT_REASON_MAX_LENGTH} Zeichen.`
+                        : reportReasonLength < COMMENT_REPORT_REASON_MIN_LENGTH
+                          ? `Mindestens ${COMMENT_REPORT_REASON_MIN_LENGTH} Zeichen.`
+                          : 'Fehlerhafte Eingabe.'}
+                    </Label>
+                  )}
+                  <div
+                    className={`text-right text-sm ml-auto ${
+                      showReportReasonIssue && !reportReasonValidation.success
+                        ? 'text-destructive'
+                        : 'text-muted-foreground'
+                    }`}
+                  >
+                    {reportReasonLength} / {COMMENT_REPORT_REASON_MAX_LENGTH}
+                  </div>
+                </div>
               </div>
             </div>
             <DialogFooter>
@@ -195,7 +233,9 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
               </DialogClose>
               <Button
                 type="submit"
-                disabled={!reportReason.trim() || reportMutation.isPending}
+                disabled={
+                  !reportReasonValidation.success || reportMutation.isPending
+                }
               >
                 {reportMutation.isPending ? 'Wird gesendet...' : 'Melden'}
               </Button>
