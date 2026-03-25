@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -38,7 +37,7 @@ export default function UserMenu({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel>
+        <DropdownMenuItem>
           <Link href="/">
             <div className="text-body-md font-medium">{name}</div>
             {user.email && (
@@ -50,8 +49,7 @@ export default function UserMenu({
               Zum Profil
             </div>
           </Link>
-        </DropdownMenuLabel>
-
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem className="text-body-md" asChild>
