@@ -62,6 +62,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   const [currentStepId, setCurrentStepId] = useState(
     initialIsSubmitted ? SUBMIT_STEP : METADATA_STEP_TITLE,
   );
+  const [isCommentSaved, setIsCommentSaved] = useState(false);
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
@@ -187,7 +188,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description:
           'Optional: Wenn du möchtest, kannst du noch einen zusammenfassenden Kommentar zu deiner Einschätzung hinzufügen.',
         isIndented: false,
-        status: undefined,
+        status: hasUserComment || isCommentSaved ? 'success' : undefined,
         kind: 'comment' as const,
         isComplete: true,
       },
@@ -320,7 +321,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseId: caseData.id,
     userId,
     isFinalStepEnabled,
-    onSuccess: () => setFinalComment(''),
+    onSuccess: () => {
+      setFinalComment('');
+      setIsCommentSaved(true);
+    },
   });
 
   if (!currentStep) {
