@@ -39,7 +39,7 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
 
   // Get the question text from the first option
   const questionText = field.question || '';
-  console.log(field.question, field.show_bottom_border);
+
   return (
     <div
       className={`md:min-h-9  ${field.show_bottom_border !== false ? 'border-b last:border-0 pb-6 last:pb-0' : 'pb-2 last:pb-4'}`}

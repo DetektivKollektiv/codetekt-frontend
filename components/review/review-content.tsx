@@ -65,8 +65,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     initialIsSubmitted ? SUBMIT_STEP : METADATA_STEP_TITLE,
   );
   const [isCommentSaved, setIsCommentSaved] = useState(false);
-  const [isAwaitingCategoryTransition, setIsAwaitingCategoryTransition] =
-    useState(false);
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
@@ -140,7 +138,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
     userId,
     onStepComplete: (step) => {
       if (step === 'category') {
-        setIsAwaitingCategoryTransition(true);
         setCurrentStepId(METADATA_STEP_CATEGORY);
         return;
       }
@@ -153,6 +150,26 @@ const ReviewContent: FC<ReviewContentProps> = ({
       setCurrentStepId(nextStepIdByStep[step]);
     },
   });
+
+  useEffect(() => {
+    if (hasTitle && hasKeywords && hasCategory && !isReviewTemplateFetching) {
+      if (shownReviewTemplateQuestions.length > 0) {
+        console.log('All metadata complete, moving to first question');
+        setCurrentStepId(shownReviewTemplateQuestions[0].id);
+      } else {
+        console.log(
+          'All metadata complete, but no questions to show, moving to comment step',
+        );
+        setCurrentStepId(COMMENT_STEP);
+      }
+    }
+  }, [
+    hasTitle,
+    hasKeywords,
+    hasCategory,
+    isReviewTemplateFetching,
+    shownReviewTemplateQuestions,
+  ]);
 
   const isStepBlocking = (step: ReviewStep): boolean => !step.isComplete;
 
@@ -283,26 +300,6 @@ const ReviewContent: FC<ReviewContentProps> = ({
   useEffect(() => {
     setUnsavedChangesWarningActive(!isLocked);
   }, [isLocked, setUnsavedChangesWarningActive]);
-
-  useEffect(() => {
-    if (!isAwaitingCategoryTransition) return;
-
-    const firstQuestionId = shownReviewTemplateQuestions[0]?.id;
-    if (firstQuestionId) {
-      setCurrentStepId(firstQuestionId);
-      setIsAwaitingCategoryTransition(false);
-      return;
-    }
-
-    if (caseCategory === 'satire') {
-      setCurrentStepId(COMMENT_STEP);
-      setIsAwaitingCategoryTransition(false);
-    }
-  }, [
-    caseCategory,
-    isAwaitingCategoryTransition,
-    shownReviewTemplateQuestions,
-  ]);
 
   const {
     handleSaveInProgress,
@@ -471,7 +468,13 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 isComplete={hasCategory}
                 onChange={handleCategoryChange}
                 onSave={hasCategory ? setNextStep : handleSaveCategory}
-                isSaving={isCategoryPending || isAwaitingCategoryTransition}
+                isSaving={isCategoryPending || isReviewTemplateFetching}
+                isDisputable={
+                  hasCategory &&
+                  !!metadataDraft.category &&
+                  !isCategoryPending &&
+                  !isReviewTemplateFetching
+                }
                 fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}

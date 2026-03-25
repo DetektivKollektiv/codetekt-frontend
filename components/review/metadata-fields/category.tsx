@@ -14,6 +14,7 @@ interface CategoryProps {
   onChange: (val: CaseCategoryValue | null) => void;
   onSave: () => void;
   isSaving: boolean;
+  isDisputable: boolean;
   onCreateDispute?: () => void;
   issues: $ZodIssue[];
   fieldTitle?: string;
@@ -76,6 +77,7 @@ const Category: FC<CategoryProps> = ({
   onChange,
   onSave,
   isSaving,
+  isDisputable,
   onCreateDispute,
   issues,
   fieldTitle,
@@ -98,7 +100,7 @@ const Category: FC<CategoryProps> = ({
   return (
     <FieldContainer
       title={fieldTitle ?? 'Welche Kategorie trifft auf diesen Fall zu?'}
-      isDisputable={isComplete && !!value}
+      isDisputable={isDisputable}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
       isSaveDisabled={isSaveDisabled}
