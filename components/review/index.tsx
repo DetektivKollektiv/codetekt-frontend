@@ -48,19 +48,20 @@ const Review: FC<ReviewProps> = ({
     !!caseData?.case_categories;
 
   // Review template with useQuery
-  const { data: reviewTemplate, isFetching: isReviewTemplateFetching } = useQuery({
-    queryKey: ['review-template', initialCaseData.id],
-    enabled: metadataComplete,
-    queryFn: async () => {
-      const { data, error } = await getReviewTemplate(
-        supabase,
-        initialCaseData.id,
-      );
-      if (error) throw error;
-      return data ?? [];
-    },
-    initialData: initialReviewTemplate ?? [],
-  });
+  const { data: reviewTemplate, isFetching: isReviewTemplateFetching } =
+    useQuery({
+      queryKey: ['review-template', initialCaseData.id],
+      enabled: metadataComplete,
+      queryFn: async () => {
+        const { data, error } = await getReviewTemplate(
+          supabase,
+          initialCaseData.id,
+        );
+        if (error) throw error;
+        return data ?? [];
+      },
+      initialData: initialReviewTemplate ?? [],
+    });
 
   // Early return if data is null (shouldn't happen with initialData)
   if (!caseData) {
