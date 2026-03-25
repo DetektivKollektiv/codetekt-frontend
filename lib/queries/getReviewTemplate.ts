@@ -16,7 +16,7 @@ export const reviewTemplateQuery = (
   client: SupabaseClient<Database>,
   caseId: string
 ) => ({
-  queryKey: ['reviewTemplate', caseId],
+  queryKey: ['review-template', caseId],
   queryFn: async () => {
     const { data, error } = await getReviewTemplate(client, caseId);
     if (error) throw error;

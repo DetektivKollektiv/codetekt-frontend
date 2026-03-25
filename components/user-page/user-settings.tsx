@@ -73,7 +73,7 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
       toast.success(
         'E-Mail-Adresse erfolgreich aktualisiert. Bitte überprüfe dein Postfach zur Bestätigung.',
       );
-      queryClient.invalidateQueries({ queryKey: ['current-user'] });
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
     onError: (err: Error) => {
       toast.error(

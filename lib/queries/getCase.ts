@@ -26,7 +26,7 @@ export function getCase(client: SupabaseClient<Database>, caseId: string) {
 }
 
 export const caseQuery = (client: SupabaseClient, caseId: string) => ({
-  queryKey: ['case-comments', caseId],
+  queryKey: ['case', caseId],
   queryFn: async () => {
     const { data, error } = await getCase(client, caseId);
     if (error) throw error;
