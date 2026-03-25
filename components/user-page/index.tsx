@@ -52,6 +52,20 @@ const UserPage: FC<UserPageProps> = ({
     return null;
   }
 
+  const handleOpenCasesClick = () => {
+    const openCasesSection = document.getElementById('open-cases');
+
+    if (!openCasesSection) {
+      return;
+    }
+
+    openCasesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (window.location.hash !== '#open-cases') {
+      window.history.replaceState(null, '', '#open-cases');
+    }
+  };
+
   return (
     <div className="overflow-x-hidden">
       <div className="bg-gradient-neutral-coral h-full pt-12 lg:pt-24">
@@ -81,7 +95,15 @@ const UserPage: FC<UserPageProps> = ({
                   <Link href="/submit">Fall einreichen</Link>
                 </Button>
                 <Button variant="secondary" asChild>
-                  <Link href="#open-cases">Fall bearbeiten</Link>
+                  <Link
+                    href="#open-cases"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleOpenCasesClick();
+                    }}
+                  >
+                    Fall bearbeiten
+                  </Link>
                 </Button>
               </div>
             </div>
