@@ -63,6 +63,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
     initialIsSubmitted ? SUBMIT_STEP : METADATA_STEP_TITLE,
   );
   const [isCommentSaved, setIsCommentSaved] = useState(false);
+  const [isAwaitingCategoryTransition, setIsAwaitingCategoryTransition] =
+    useState(false);
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
@@ -247,6 +249,26 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setUnsavedChangesWarningActive(!isLocked);
   }, [isLocked, setUnsavedChangesWarningActive]);
 
+  useEffect(() => {
+    if (!isAwaitingCategoryTransition) return;
+
+    const firstQuestionId = shownReviewTemplateQuestions[0]?.id;
+    if (firstQuestionId) {
+      setCurrentStepId(firstQuestionId);
+      setIsAwaitingCategoryTransition(false);
+      return;
+    }
+
+    if (caseCategory === 'satire') {
+      setCurrentStepId(COMMENT_STEP);
+      setIsAwaitingCategoryTransition(false);
+    }
+  }, [
+    caseCategory,
+    isAwaitingCategoryTransition,
+    shownReviewTemplateQuestions,
+  ]);
+
   const {
     handleSaveInProgress,
     handleSubmitReview,
@@ -289,10 +311,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseId: caseData.id,
     userId,
     onStepComplete: (step) => {
+      if (step === 'category') {
+        setIsAwaitingCategoryTransition(true);
+        setCurrentStepId(METADATA_STEP_CATEGORY);
+        return;
+      }
+
       const nextStepIdByStep = {
         title: METADATA_STEP_KEYWORDS,
         keywords: METADATA_STEP_CATEGORY,
-        category: shownReviewTemplateQuestions[0]?.id ?? COMMENT_STEP,
       } as const;
 
       setCurrentStepId(nextStepIdByStep[step]);
@@ -439,7 +466,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 isComplete={hasCategory}
                 onChange={handleCategoryChange}
                 onSave={hasCategory ? setNextStep : handleSaveCategory}
-                isSaving={isCategoryPending}
+                isSaving={isCategoryPending || isAwaitingCategoryTransition}
                 fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}
