@@ -8,7 +8,7 @@ import { getLocalDate } from '@/lib/utils';
 import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
 import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
-import { ArrowLeft, Edit, ExternalLinkIcon, LinkIcon } from 'lucide-react';
+import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import ImagePlaceholder from '../image-placeholder';
 import { HelpButton } from '../ui/help-button';
@@ -86,8 +86,7 @@ export function DetailHeader({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button variant="secondary" size="sm" className="mt-4">
-                    <ExternalLinkIcon className="w-4 h-4 mr-2" />
+                  <Button variant="outline" size="sm">
                     Zum Faktecheck
                   </Button>
                 </Link>
