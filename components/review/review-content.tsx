@@ -244,7 +244,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
       },
       {
         id: METADATA_STEP_FACTCHECK,
-        label: 'Faktencheck vorhanden?',
+        label: 'Faktencheck',
         description:
           'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen.',
         fieldTitle: 'Hat der Fall bereits einen Faktencheck?',
