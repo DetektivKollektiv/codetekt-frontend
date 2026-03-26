@@ -3,9 +3,12 @@
 import { LikertScaleField } from '@/components/review/fields/likert-scale-field';
 import { TextAreaField } from '@/components/review/fields/text-area-field';
 import { Button } from '@/components/ui/button';
+import {
+  likertScaleFieldSchema,
+  textAreaFieldSchema,
+} from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
-import { likertScaleFieldSchema, textAreaFieldSchema } from '@/lib/schemas/field-schemas';
 
 type LikertScaleFieldValue = 0 | 1 | 2 | 3 | 4 | null;
 
@@ -126,7 +129,11 @@ const Factcheck: FC<FactcheckProps> = ({
         />
       )}
 
-      <Button className="w-full mt-auto" onClick={onSave} disabled={isSaveDisabled}>
+      <Button
+        className="w-full mt-auto"
+        onClick={onSave}
+        disabled={isSaveDisabled}
+      >
         {isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
       </Button>
     </div>
