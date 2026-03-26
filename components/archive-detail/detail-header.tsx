@@ -33,7 +33,7 @@ export function DetailHeader({
 
   const category = getCaseCategoryName(caseData);
   const factcheckContent =
-    caseData.case_factchecks?.details?.trim() || 'Kein Faktencheck vorhanden';
+    caseData.case_factchecks?.value?.trim() || 'Kein Faktencheck vorhanden';
 
   return (
     <div className="space-y-6 page-max-w">

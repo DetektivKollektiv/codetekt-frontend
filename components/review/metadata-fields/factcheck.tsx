@@ -20,11 +20,11 @@ type FactcheckTextAreaField = z.infer<typeof textAreaFieldSchema>;
 
 interface FactcheckProps {
   selection: FactcheckSelection;
-  details: string;
+  value: string;
   isComplete: boolean;
   isSaving?: boolean;
   onSelectionChange: (value: FactcheckSelection) => void;
-  onDetailsChange: (value: string) => void;
+  onValueChange: (value: string) => void;
   onSave: () => void;
   saveLabel?: string;
   fieldTitle?: string;
@@ -33,11 +33,11 @@ interface FactcheckProps {
 
 const Factcheck: FC<FactcheckProps> = ({
   selection,
-  details,
+  value,
   isComplete,
   isSaving = false,
   onSelectionChange,
-  onDetailsChange,
+  onValueChange,
   onSave,
   saveLabel,
   fieldTitle,
@@ -78,24 +78,24 @@ const Factcheck: FC<FactcheckProps> = ({
     [fieldTitle, isDisabled, likertValue],
   );
 
-  const detailsField = useMemo<FactcheckTextAreaField>(
+  const valueField = useMemo<FactcheckTextAreaField>(
     () => ({
-      id: 'factcheck_details',
+      id: 'factcheck_value',
       type: 'text-area',
       question: 'Falls ja, ergänze bitte den Faktencheck.',
       options: [
         {
-          id: 'factcheck_details_input',
+          id: 'factcheck_value_input',
           placeholder: 'Link oder kurze Beschreibung des Faktenchecks',
           max_length: 2000,
         },
       ],
-      answer_value: details,
-      initial_answer_value: details,
+      answer_value: value,
+      initial_answer_value: value,
       is_disabled: isDisabled,
       is_disputable: false,
     }),
-    [details, isDisabled],
+    [value, isDisabled],
   );
 
   const shouldShowDetails = selection === 'yes';
@@ -126,9 +126,9 @@ const Factcheck: FC<FactcheckProps> = ({
 
       {shouldShowDetails && (
         <TextAreaField
-          field={detailsField}
+          field={valueField}
           issues={[]}
-          onChange={onDetailsChange}
+          onChange={onValueChange}
           onCreateReviewDispute={() => undefined}
         />
       )}

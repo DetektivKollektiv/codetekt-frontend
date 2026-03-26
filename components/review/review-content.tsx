@@ -376,7 +376,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     handleKeywordsChange,
     handleCategoryChange,
     handleFactcheckSelectionChange,
-    handleFactcheckDetailsChange,
+    handleFactcheckValueChange,
     handleSaveTitle,
     handleSaveKeywords,
     handleSaveCategory,
@@ -546,11 +546,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
             {currentStepId === METADATA_STEP_FACTCHECK && (
               <Factcheck
                 selection={metadataDraft.factcheckSelection}
-                details={metadataDraft.factcheckDetails}
+                value={metadataDraft.factcheckValue}
                 isComplete={hasFactcheckStepSaved}
                 isSaving={isFactcheckPending}
                 onSelectionChange={handleFactcheckSelectionChange}
-                onDetailsChange={handleFactcheckDetailsChange}
+                onValueChange={handleFactcheckValueChange}
                 onSave={
                   hasFactcheckStepSaved ? setNextStep : handleSaveFactcheck
                 }

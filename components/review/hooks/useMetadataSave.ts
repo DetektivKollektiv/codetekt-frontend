@@ -164,12 +164,12 @@ export const useMetadataSave = ({
       return;
     }
 
-    const normalizedDetails = value.hasFactcheck
-      ? value.details?.trim() || null
+    const normalizedValue = value.hasFactcheck
+      ? value.value?.trim() || null
       : null;
     const result = caseFactcheckSchema.safeParse({
       hasFactcheck: value.hasFactcheck,
-      details: normalizedDetails,
+      value: normalizedValue,
     });
 
     if (!result.success) {
@@ -181,7 +181,7 @@ export const useMetadataSave = ({
     mutateFactcheck({
       caseId,
       hasFactcheck: result.data.hasFactcheck,
-      details: result.data.details,
+      value: result.data.value,
       userId,
     });
   };

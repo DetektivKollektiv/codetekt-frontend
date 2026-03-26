@@ -4,7 +4,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export interface SetCaseFactcheckData {
   caseId: string;
   hasFactcheck: boolean;
-  details: string | null;
+  value: string | null;
   userId: string;
 }
 
@@ -18,7 +18,7 @@ export async function setCaseFactcheck(
       {
         case_id: data.caseId,
         has_factcheck: data.hasFactcheck,
-        details: data.details,
+        value: data.value,
         created_by: data.userId,
         updated_by: data.userId,
       },
