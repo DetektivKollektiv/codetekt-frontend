@@ -43,7 +43,12 @@ export const aggregationTrafficLightValueSchema =
 export const aggregationTextFieldValueSchema =
   baseAggregationValueSchema.extend({
     type: z.enum(['text', 'text-area']),
-    answer_values: z.array(z.string()),
+    answer_values: z.array(
+      z.object({
+        user_name: z.string(),
+        value: z.string(),
+      }),
+    ),
   });
 
 // Reuse the template metadata schema structure

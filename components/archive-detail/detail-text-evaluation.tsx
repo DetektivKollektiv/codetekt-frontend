@@ -37,8 +37,11 @@ export function DetailTextEvaluation({ field }: DetailTextEvaluationProps) {
                   key={index}
                   className="p-3 bg-muted/50 rounded-md border border-border"
                 >
+                  <p className="text-xs text-muted-foreground font-medium mb-2">
+                    {answer.user_name || 'Unbekannt'}
+                  </p>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {answer}
+                    {answer.value}
                   </p>
                 </div>
               ))
