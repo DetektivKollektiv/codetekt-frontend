@@ -53,6 +53,10 @@ export const useReviewSubmission = ({
       onSubmitSuccess();
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
+        queryClient.invalidateQueries({ queryKey: ['aggregated-cases'] }),
+        queryClient.invalidateQueries({ queryKey: ['user-cases'] }),
+        queryClient.invalidateQueries({ queryKey: ['user-reviews'] }),
+        queryClient.invalidateQueries({ queryKey: ['open-cases'] }),
         queryClient.invalidateQueries({
           queryKey: ['review-template', caseId],
         }),
@@ -60,6 +64,7 @@ export const useReviewSubmission = ({
           queryKey: ['aggregated-case', caseId],
         }),
       ]);
+
       markAsSaved();
     },
     onError: (error: Error) => {
