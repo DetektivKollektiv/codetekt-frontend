@@ -16,6 +16,7 @@ interface UseReviewSubmissionOptions {
   caseId: string;
   userId?: string;
   caseCategory?: CaseCategoryValue | null;
+  hasFactcheck?: boolean;
   inProgressReviewAnswerData: InProgressReviewAnswer;
   markAsSaved: () => void;
   onSubmitSuccess: () => void;
@@ -26,6 +27,7 @@ export const useReviewSubmission = ({
   caseId,
   userId,
   caseCategory,
+  hasFactcheck = false,
   inProgressReviewAnswerData,
   markAsSaved,
   onSubmitSuccess,
@@ -51,6 +53,10 @@ export const useReviewSubmission = ({
       onSubmitSuccess();
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
+        queryClient.invalidateQueries({ queryKey: ['aggregated-cases'] }),
+        queryClient.invalidateQueries({ queryKey: ['user-cases'] }),
+        queryClient.invalidateQueries({ queryKey: ['user-reviews'] }),
+        queryClient.invalidateQueries({ queryKey: ['open-cases'] }),
         queryClient.invalidateQueries({
           queryKey: ['review-template', caseId],
         }),
@@ -58,6 +64,7 @@ export const useReviewSubmission = ({
           queryKey: ['aggregated-case', caseId],
         }),
       ]);
+
       markAsSaved();
     },
     onError: (error: Error) => {
@@ -94,20 +101,22 @@ export const useReviewSubmission = ({
       return;
     }
 
-    if (!caseCategory) {
+    if (!hasFactcheck && !caseCategory) {
       toast.error('Bitte wähle zuerst eine Kategorie aus');
       return;
     }
 
-    const validationResult = validateSubmittedReviewAnswer(
-      inProgressReviewAnswerData,
-      caseCategory,
-    );
+    if (!hasFactcheck) {
+      const validationResult = validateSubmittedReviewAnswer(
+        inProgressReviewAnswerData,
+        caseCategory,
+      );
 
-    if (!validationResult.success) {
-      console.error('✗ Validation failed:', validationResult.error);
-      toast.error('Bitte fülle alle erforderlichen Felder aus');
-      return;
+      if (!validationResult.success) {
+        console.error('✗ Validation failed:', validationResult.error);
+        toast.error('Bitte fülle alle erforderlichen Felder aus');
+        return;
+      }
     }
 
     const inProgressValidation = validateInProgressReviewAnswer(

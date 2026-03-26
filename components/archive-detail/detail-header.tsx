@@ -8,7 +8,7 @@ import { getLocalDate } from '@/lib/utils';
 import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
 import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { getCaseTitle } from '@/lib/utils/get-case-title';
-import { ArrowLeft, Edit, LinkIcon } from 'lucide-react';
+import { ArrowLeft, Edit, ExternalLinkIcon, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import ImagePlaceholder from '../image-placeholder';
 import { HelpButton } from '../ui/help-button';
@@ -32,6 +32,8 @@ export function DetailHeader({
     'Keine Beschreibung verfügbar';
 
   const category = getCaseCategoryName(caseData);
+  const hasFactcheck = caseData.case_factchecks?.has_factcheck === true;
+  const factcheckUrl = caseData.case_factchecks?.value?.trim();
 
   return (
     <div className="space-y-6 page-max-w">
@@ -77,6 +79,19 @@ export function DetailHeader({
                   {getCaseTitle(aggregatedReview)}
                 </h2>
               </div>
+
+              {hasFactcheck && factcheckUrl && (
+                <Link
+                  href={factcheckUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="secondary" size="sm" className="mt-4">
+                    <ExternalLinkIcon className="w-4 h-4 mr-2" />
+                    Zum Faktecheck
+                  </Button>
+                </Link>
+              )}
 
               {aggregatedReview.cases.content_type === 'url' ? (
                 <Link

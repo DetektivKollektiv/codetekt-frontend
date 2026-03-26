@@ -46,12 +46,14 @@ const Review: FC<ReviewProps> = ({
     !!caseData?.case_titles &&
     (caseData?.case_keywords?.length ?? 0) > 0 &&
     !!caseData?.case_categories;
+  const shouldSkipReviewQuestions =
+    caseData?.case_factchecks?.has_factcheck === true;
 
   // Review template with useQuery
   const { data: reviewTemplate, isFetching: isReviewTemplateFetching } =
     useQuery({
       queryKey: ['review-template', initialCaseData.id],
-      enabled: metadataComplete,
+      enabled: metadataComplete && !shouldSkipReviewQuestions,
       queryFn: async () => {
         const { data, error } = await getReviewTemplate(
           supabase,

@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import {
   COMMENT_STEP,
   METADATA_STEP_CATEGORY,
+  METADATA_STEP_FACTCHECK,
   METADATA_STEP_KEYWORDS,
   METADATA_STEP_TITLE,
   SUBMIT_STEP,
@@ -35,6 +36,7 @@ import { useSaveFinalComment } from './hooks/useSaveFinalComment';
 import { useTouchedQuestions } from './hooks/useTouchedQuestions';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import Category from './metadata-fields/category';
+import Factcheck from './metadata-fields/factcheck';
 import FinalComment from './metadata-fields/final-comment';
 import Keywords from './metadata-fields/keywords';
 import Title from './metadata-fields/title';
@@ -78,6 +80,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
       false) &&
     Boolean(userId);
   const hasCategory = !!caseData.case_categories;
+  const hasFactcheckStepSaved = !!caseData.case_factchecks;
+  const shouldSkipReviewQuestions =
+    caseData.case_factchecks?.has_factcheck === true;
   const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
 
   const isTemplateSchemaValid = useMemo(
@@ -86,7 +91,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
   );
 
   const isFinalStepEnabled =
-    isMetadataComplete && isTemplateSchemaValid.success;
+    isMetadataComplete &&
+    (shouldSkipReviewQuestions || isTemplateSchemaValid.success);
 
   const {
     finalComment,
@@ -126,25 +132,29 @@ const ReviewContent: FC<ReviewContentProps> = ({
     setTitle,
     setKeywords,
     setCategory,
+    setFactcheck,
     isTitlePending,
     isKeywordsPending,
     isCategoryPending,
+    isFactcheckPending,
     titleIssues,
     keywordsIssues,
     categoryIssues,
+    factcheckIssues,
   } = useMetadataSave({
     supabase,
     caseId: caseData.id,
     userId,
     onStepComplete: (step) => {
       if (step === 'category') {
-        setCurrentStepId(METADATA_STEP_CATEGORY);
+        setCurrentStepId(METADATA_STEP_FACTCHECK);
         return;
       }
 
       const nextStepIdByStep = {
         title: METADATA_STEP_KEYWORDS,
         keywords: METADATA_STEP_CATEGORY,
+        factcheck: COMMENT_STEP,
       } as const;
 
       setCurrentStepId(nextStepIdByStep[step]);
@@ -153,9 +163,20 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
   useEffect(() => {
     if (hasTitle && hasKeywords && hasCategory && !isReviewTemplateFetching) {
+      if (!hasFactcheckStepSaved) {
+        setCurrentStepId(METADATA_STEP_FACTCHECK);
+        return;
+      }
+
+      if (shouldSkipReviewQuestions) {
+        setCurrentStepId(COMMENT_STEP);
+        return;
+      }
+
       if (shownReviewTemplateQuestions.length > 0) {
         console.log('All metadata complete, moving to first question');
-        setCurrentStepId(shownReviewTemplateQuestions[0].id);
+
+        // setCurrentStepId(shownReviewTemplateQuestions[0].id);
       } else {
         console.log(
           'All metadata complete, but no questions to show, moving to comment step',
@@ -167,6 +188,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
     hasTitle,
     hasKeywords,
     hasCategory,
+    hasFactcheckStepSaved,
+    shouldSkipReviewQuestions,
     isReviewTemplateFetching,
     shownReviewTemplateQuestions,
   ]);
@@ -219,20 +242,34 @@ const ReviewContent: FC<ReviewContentProps> = ({
         kind: 'metadata',
         isComplete: hasCategory,
       },
-      ...shownReviewTemplateQuestions.map((question) => {
-        const validationState = questionsValidationState.get(question.id);
+      {
+        id: METADATA_STEP_FACTCHECK,
+        label: 'Faktencheck',
+        description:
+          'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen.',
+        fieldTitle: 'Hat der Fall bereits einen Faktencheck?',
+        primaryActionLabel: 'Speichern',
+        isIndented: false,
+        status: hasFactcheckStepSaved ? 'success' : 'incomplete',
+        kind: 'metadata',
+        isComplete: hasFactcheckStepSaved,
+      },
+      ...(!shouldSkipReviewQuestions
+        ? shownReviewTemplateQuestions.map((question) => {
+            const validationState = questionsValidationState.get(question.id);
 
-        return {
-          id: question.id,
-          label: question.metadata.title,
-          helpUrl: question.metadata.help_url.trim() || undefined,
-          isIndented: (question.metadata.indent_level ?? 0) > 0,
-          status: validationState?.type,
-          kind: 'question' as const,
-          isComplete: validationState?.type === 'success',
-          question,
-        };
-      }),
+            return {
+              id: question.id,
+              label: question.metadata.title,
+              helpUrl: question.metadata.help_url.trim() || undefined,
+              isIndented: (question.metadata.indent_level ?? 0) > 0,
+              status: validationState?.type,
+              kind: 'question' as const,
+              isComplete: validationState?.type === 'success',
+              question,
+            };
+          })
+        : []),
     ];
 
     if (!isReviewTemplateFetching && !isKeywordsPending) {
@@ -254,7 +291,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
         isIndented: false,
         status: isFinalStepEnabled ? undefined : 'incomplete',
         kind: 'submit' as const,
-        isComplete: isFinalStepEnabled && isValidForSubmission,
+        isComplete:
+          isFinalStepEnabled &&
+          (shouldSkipReviewQuestions || isValidForSubmission),
       });
     }
 
@@ -268,7 +307,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
     hasUserComment,
     isFinalStepEnabled,
     isValidForSubmission,
+    shouldSkipReviewQuestions,
     hasCategory,
+    hasFactcheckStepSaved,
     hasKeywords,
     hasTitle,
     shownReviewTemplateQuestions,
@@ -311,6 +352,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseId: caseData.id,
     userId,
     caseCategory,
+    hasFactcheck: shouldSkipReviewQuestions,
     inProgressReviewAnswerData,
     markAsSaved,
     onSubmitSuccess: () => setIsLocked(true),
@@ -334,15 +376,19 @@ const ReviewContent: FC<ReviewContentProps> = ({
     handleTitleChange,
     handleKeywordsChange,
     handleCategoryChange,
+    handleFactcheckSelectionChange,
+    handleFactcheckValueChange,
     handleSaveTitle,
     handleSaveKeywords,
     handleSaveCategory,
+    handleSaveFactcheck,
   } = useMetadataDraftState({
     caseData,
     userId,
     setTitle,
     setKeywords,
     setCategory,
+    setFactcheck,
   });
 
   const { handleSaveFinalComment, isSavingFinalComment } = useSaveFinalComment({
@@ -498,6 +544,22 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 issues={categoryIssues}
               />
             )}
+            {currentStepId === METADATA_STEP_FACTCHECK && (
+              <Factcheck
+                selection={metadataDraft.factcheckSelection}
+                value={metadataDraft.factcheckValue}
+                isComplete={hasFactcheckStepSaved}
+                isSaving={isFactcheckPending}
+                onSelectionChange={handleFactcheckSelectionChange}
+                onValueChange={handleFactcheckValueChange}
+                onSave={
+                  hasFactcheckStepSaved ? setNextStep : handleSaveFactcheck
+                }
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
+                issues={factcheckIssues}
+              />
+            )}
           </QuestionCard>
         ) : currentQuestion ? (
           <QuestionCard
@@ -582,7 +644,9 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   className="w-full"
                   onClick={handleSubmitReview}
                   disabled={
-                    !isFinalStepEnabled || !isValidForSubmission || isSubmitting
+                    !isFinalStepEnabled ||
+                    (!shouldSkipReviewQuestions && !isValidForSubmission) ||
+                    isSubmitting
                   }
                 >
                   {isSubmitting ? 'Wird abgeschlossen...' : 'Fall abschließen'}

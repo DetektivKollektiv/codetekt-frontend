@@ -19,5 +19,6 @@ export const CASE_CATEGORY_OPTIONS: { id: CaseCategoryValue; text: string }[] =
 export const METADATA_STEP_TITLE = 'meta_title';
 export const METADATA_STEP_KEYWORDS = 'meta_keywords';
 export const METADATA_STEP_CATEGORY = 'meta_category';
+export const METADATA_STEP_FACTCHECK = 'meta_factcheck';
 export const COMMENT_STEP = 'comment_step';
 export const SUBMIT_STEP = 'submit_step';

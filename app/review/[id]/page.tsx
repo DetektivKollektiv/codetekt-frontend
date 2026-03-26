@@ -47,6 +47,8 @@ export default async function Page({
     !caseData.case_titles ||
     (caseData.case_keywords?.length ?? 0) === 0 ||
     !caseData.case_categories;
+  const shouldSkipReviewQuestions =
+    caseData.case_factchecks?.has_factcheck === true;
 
   let reviewTemplate: Awaited<ReturnType<typeof getReviewTemplate>>['data'] =
     null;
@@ -54,7 +56,7 @@ export default async function Page({
     ReturnType<typeof getReviewTemplate>
   >['error'] = null;
 
-  if (!metadataIncomplete) {
+  if (!metadataIncomplete && !shouldSkipReviewQuestions) {
     const { data, error } = await getReviewTemplate(supabase, id);
     reviewTemplate = data;
     reviewTemplateError = error;
@@ -68,7 +70,11 @@ export default async function Page({
     }
   }
 
-  if (reviewTemplateError && !metadataIncomplete) {
+  if (
+    reviewTemplateError &&
+    !metadataIncomplete &&
+    !shouldSkipReviewQuestions
+  ) {
     notFound();
   }
 

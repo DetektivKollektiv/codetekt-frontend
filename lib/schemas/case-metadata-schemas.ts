@@ -40,4 +40,39 @@ export const caseCategorySchema = z.enum(
   { error: 'Bitte wähle eine Kategorie aus' },
 );
 
+export const factcheckUrlSchema = z
+  .url('Bitte gib eine gültige URL ein')
+  .max(2000, 'Maximal 2000 Zeichen erlaubt');
+
+export const caseFactcheckSchema = z
+  .object({
+    hasFactcheck: z.boolean(),
+    value: z.string().nullable(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.hasFactcheck) return;
+
+    const normalizedValue = data.value?.trim() ?? '';
+    if (!normalizedValue) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['value'],
+        message: 'Bitte gib eine gültige URL ein',
+      });
+      return;
+    }
+
+    const result = factcheckUrlSchema.safeParse(normalizedValue);
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['value'],
+          message: issue.message,
+        });
+      });
+    }
+  });
+
 export type CaseCategoryValue = z.infer<typeof caseCategorySchema>;
+export type CaseFactcheckValue = z.infer<typeof caseFactcheckSchema>;
