@@ -1,7 +1,7 @@
 'use client';
 
+import { FieldContainer } from '@/components/review/fields/field-container';
 import { LikertScaleField } from '@/components/review/fields/likert-scale-field';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { factcheckUrlSchema } from '@/lib/schemas/case-metadata-schemas';
@@ -24,7 +24,7 @@ interface FactcheckProps {
   onValueChange: (value: string) => void;
   onSave: () => void;
   saveLabel?: string;
-  fieldTitle?: string;
+  fieldTitle: string;
   issues: $ZodIssue[];
 }
 
@@ -50,7 +50,7 @@ const Factcheck: FC<FactcheckProps> = ({
     () => ({
       id: 'factcheck_selection',
       type: 'likert-scale',
-      question: fieldTitle ?? 'Hat der Fall bereits einen Faktencheck?',
+      question: '',
       options: [
         {
           id: 'factcheck_no',
@@ -68,11 +68,10 @@ const Factcheck: FC<FactcheckProps> = ({
         },
       ],
       answer_value: likertValue,
-      initial_answer_value: likertValue,
       is_disabled: isDisabled,
       is_disputable: false,
     }),
-    [fieldTitle, isDisabled, likertValue],
+    [isDisabled, likertValue],
   );
 
   const shouldShowDetails = selection === 'yes';
@@ -100,38 +99,39 @@ const Factcheck: FC<FactcheckProps> = ({
   };
 
   return (
-    <div className="space-y-4 flex flex-col h-full">
-      <LikertScaleField
-        field={factcheckField}
-        issues={[]}
-        onChange={handleSelectionChange}
-        onCreateReviewDispute={() => undefined}
-      />
+    <FieldContainer
+      title={fieldTitle}
+      onCreateReviewDispute={() => undefined}
+      onSave={onSave}
+      isSaveDisabled={isSaveDisabled}
+      saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
+      hasError={!!issue}
+    >
+      <div className="space-y-4">
+        <LikertScaleField
+          field={factcheckField}
+          issues={[]}
+          onChange={handleSelectionChange}
+          onCreateReviewDispute={() => undefined}
+        />
 
-      {shouldShowDetails && (
-        <div className="space-y-2">
-          <Label>URL zum Faktencheck</Label>
-          <Input
-            type="url"
-            value={value}
-            onChange={(event) => onValueChange(event.target.value)}
-            placeholder="https://..."
-            maxLength={2000}
-            disabled={isDisabled}
-          />
-        </div>
-      )}
+        {shouldShowDetails && (
+          <div className="space-y-2">
+            <Label>URL zum Faktencheck</Label>
+            <Input
+              type="url"
+              value={value}
+              onChange={(event) => onValueChange(event.target.value)}
+              placeholder="https://..."
+              maxLength={2000}
+              disabled={isDisabled}
+            />
+          </div>
+        )}
 
-      {issue && <p className="text-destructive text-sm">{issue.message}</p>}
-
-      <Button
-        className="w-full mt-auto"
-        onClick={onSave}
-        disabled={isSaveDisabled}
-      >
-        {isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
-      </Button>
-    </div>
+        {issue && <p className="text-destructive text-sm">{issue.message}</p>}
+      </div>
+    </FieldContainer>
   );
 };
 

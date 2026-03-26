@@ -175,7 +175,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
       if (shownReviewTemplateQuestions.length > 0) {
         console.log('All metadata complete, moving to first question');
-        setCurrentStepId(shownReviewTemplateQuestions[0].id);
+
+        // setCurrentStepId(shownReviewTemplateQuestions[0].id);
       } else {
         console.log(
           'All metadata complete, but no questions to show, moving to comment step',
