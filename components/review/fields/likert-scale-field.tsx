@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Field, likertScaleFieldSchema } from '@/lib/schemas/field-schemas';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import { FC, useMemo } from 'react';
+import { CSSProperties, FC, useMemo } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
 import { FieldContainer } from './field-container';
@@ -47,7 +47,14 @@ export const LikertScaleField: FC<LikertScaleFieldProps> = ({
       hasError={issue !== null}
     >
       <div>
-        <div className="grid grid-cols-1 gap-2 lg:grid-cols-4 mb-2">
+        <div
+          className="grid grid-cols-1 gap-2 mb-2 lg:[grid-template-columns:repeat(var(--likert-cols),minmax(0,1fr))]"
+          style={
+            {
+              '--likert-cols': Math.max(field.options.length, 1),
+            } as CSSProperties
+          }
+        >
           {field.options.map((option) => {
             const isSelected = selectedValue === option.value;
             return (

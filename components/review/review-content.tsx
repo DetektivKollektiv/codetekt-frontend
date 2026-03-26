@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 
 import {
   COMMENT_STEP,
+  METADATA_STEP_FACTCHECK,
   METADATA_STEP_CATEGORY,
   METADATA_STEP_KEYWORDS,
   METADATA_STEP_TITLE,
@@ -35,6 +36,7 @@ import { useSaveFinalComment } from './hooks/useSaveFinalComment';
 import { useTouchedQuestions } from './hooks/useTouchedQuestions';
 import { useUnsavedChangesWarning } from './hooks/useUnsavedChangesWarning';
 import Category from './metadata-fields/category';
+import Factcheck from './metadata-fields/factcheck';
 import FinalComment from './metadata-fields/final-comment';
 import Keywords from './metadata-fields/keywords';
 import Title from './metadata-fields/title';
@@ -65,6 +67,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
     initialIsSubmitted ? SUBMIT_STEP : METADATA_STEP_TITLE,
   );
   const [isCommentSaved, setIsCommentSaved] = useState(false);
+  const [factcheckSelection, setFactcheckSelection] = useState<
+    'yes' | 'no' | null
+  >(null);
+  const [factcheckDetails, setFactcheckDetails] = useState('');
+  const [isFactcheckSaved, setIsFactcheckSaved] = useState(false);
 
   const { touchedQuestionIds } = useTouchedQuestions({
     currentQuestionId: currentStepId,
@@ -78,6 +85,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
       false) &&
     Boolean(userId);
   const hasCategory = !!caseData.case_categories;
+  const hasFactcheck = isFactcheckSaved;
   const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
 
   const isTemplateSchemaValid = useMemo(
@@ -138,7 +146,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     userId,
     onStepComplete: (step) => {
       if (step === 'category') {
-        setCurrentStepId(METADATA_STEP_CATEGORY);
+        setCurrentStepId(METADATA_STEP_FACTCHECK);
         return;
       }
 
@@ -153,6 +161,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
   useEffect(() => {
     if (hasTitle && hasKeywords && hasCategory && !isReviewTemplateFetching) {
+      if (!hasFactcheck) {
+        setCurrentStepId(METADATA_STEP_FACTCHECK);
+        return;
+      }
+
       if (shownReviewTemplateQuestions.length > 0) {
         console.log('All metadata complete, moving to first question');
         setCurrentStepId(shownReviewTemplateQuestions[0].id);
@@ -167,6 +180,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     hasTitle,
     hasKeywords,
     hasCategory,
+    hasFactcheck,
     isReviewTemplateFetching,
     shownReviewTemplateQuestions,
   ]);
@@ -219,6 +233,18 @@ const ReviewContent: FC<ReviewContentProps> = ({
         kind: 'metadata',
         isComplete: hasCategory,
       },
+      {
+        id: METADATA_STEP_FACTCHECK,
+        label: 'Faktencheck vorhanden?',
+        description:
+          'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen.',
+        fieldTitle: 'Hat der Fall bereits einen Faktencheck?',
+        primaryActionLabel: 'Speichern',
+        isIndented: false,
+        status: hasFactcheck ? 'success' : 'incomplete',
+        kind: 'metadata',
+        isComplete: hasFactcheck,
+      },
       ...shownReviewTemplateQuestions.map((question) => {
         const validationState = questionsValidationState.get(question.id);
 
@@ -269,6 +295,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     isFinalStepEnabled,
     isValidForSubmission,
     hasCategory,
+    hasFactcheck,
     hasKeywords,
     hasTitle,
     shownReviewTemplateQuestions,
@@ -496,6 +523,21 @@ const ReviewContent: FC<ReviewContentProps> = ({
                   })
                 }
                 issues={categoryIssues}
+              />
+            )}
+            {currentStepId === METADATA_STEP_FACTCHECK && (
+              <Factcheck
+                selection={factcheckSelection}
+                details={factcheckDetails}
+                isComplete={hasFactcheck}
+                onSelectionChange={setFactcheckSelection}
+                onDetailsChange={setFactcheckDetails}
+                onSave={() => {
+                  setIsFactcheckSaved(true);
+                  setNextStep();
+                }}
+                fieldTitle={currentStep.fieldTitle}
+                saveLabel={currentStep.primaryActionLabel}
               />
             )}
           </QuestionCard>
