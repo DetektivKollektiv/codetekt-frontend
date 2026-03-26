@@ -1,12 +1,11 @@
 'use client';
 
 import { LikertScaleField } from '@/components/review/fields/likert-scale-field';
-import { TextAreaField } from '@/components/review/fields/text-area-field';
 import { Button } from '@/components/ui/button';
-import {
-  likertScaleFieldSchema,
-  textAreaFieldSchema,
-} from '@/lib/schemas/field-schemas';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { factcheckUrlSchema } from '@/lib/schemas/case-metadata-schemas';
+import { likertScaleFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
@@ -16,8 +15,6 @@ type LikertScaleFieldValue = 0 | 1 | 2 | 3 | 4 | null;
 type FactcheckSelection = 'yes' | 'no' | null;
 
 type FactcheckLikertField = z.infer<typeof likertScaleFieldSchema>;
-type FactcheckTextAreaField = z.infer<typeof textAreaFieldSchema>;
-
 interface FactcheckProps {
   selection: FactcheckSelection;
   value: string;
@@ -78,28 +75,15 @@ const Factcheck: FC<FactcheckProps> = ({
     [fieldTitle, isDisabled, likertValue],
   );
 
-  const valueField = useMemo<FactcheckTextAreaField>(
-    () => ({
-      id: 'factcheck_value',
-      type: 'text-area',
-      question: 'Falls ja, ergänze bitte den Faktencheck.',
-      options: [
-        {
-          id: 'factcheck_value_input',
-          placeholder: 'Link oder kurze Beschreibung des Faktenchecks',
-          max_length: 2000,
-        },
-      ],
-      answer_value: value,
-      initial_answer_value: value,
-      is_disabled: isDisabled,
-      is_disputable: false,
-    }),
-    [value, isDisabled],
-  );
-
   const shouldShowDetails = selection === 'yes';
-  const isSaveDisabled = isComplete ? isSaving : isSaving || selection === null;
+  const isFactcheckUrlValid = factcheckUrlSchema.safeParse(
+    value.trim(),
+  ).success;
+  const isSaveDisabled = isComplete
+    ? isSaving
+    : isSaving ||
+      selection === null ||
+      (selection === 'yes' && !isFactcheckUrlValid);
 
   const handleSelectionChange = (value: LikertScaleFieldValue) => {
     if (value === 1) {
@@ -125,12 +109,17 @@ const Factcheck: FC<FactcheckProps> = ({
       />
 
       {shouldShowDetails && (
-        <TextAreaField
-          field={valueField}
-          issues={[]}
-          onChange={onValueChange}
-          onCreateReviewDispute={() => undefined}
-        />
+        <div className="space-y-2">
+          <Label>URL zum Faktencheck</Label>
+          <Input
+            type="url"
+            value={value}
+            onChange={(event) => onValueChange(event.target.value)}
+            placeholder="https://..."
+            maxLength={2000}
+            disabled={isDisabled}
+          />
+        </div>
       )}
 
       {issue && <p className="text-destructive text-sm">{issue.message}</p>}
