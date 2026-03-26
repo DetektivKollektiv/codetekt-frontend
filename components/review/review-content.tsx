@@ -555,7 +555,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 onSave={
                   hasFactcheckStepSaved ? setNextStep : handleSaveFactcheck
                 }
-                fieldTitle={currentStep.fieldTitle}
+                fieldTitle={currentStep.fieldTitle || ''}
                 saveLabel={currentStep.primaryActionLabel}
                 issues={factcheckIssues}
               />
