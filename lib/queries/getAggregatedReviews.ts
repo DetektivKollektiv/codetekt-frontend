@@ -9,7 +9,8 @@ export function getAggregatedReviews(client: SupabaseClient<Database>) {
         open_graph_data (*),
         case_titles (*),
         case_categories (*),
-        case_keywords (*)
+        case_keywords (*),
+        case_factchecks (*)
       )
     `);
 }

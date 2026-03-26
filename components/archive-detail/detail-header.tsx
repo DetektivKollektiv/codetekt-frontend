@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AggregatedReview } from '@/lib/queries/getAggregatedReview';
 import { getLocalDate } from '@/lib/utils';
 import { getCaseCategoryName } from '@/lib/utils/get-case-category-name';
@@ -32,6 +32,8 @@ export function DetailHeader({
     'Keine Beschreibung verfügbar';
 
   const category = getCaseCategoryName(caseData);
+  const factcheckContent =
+    caseData.case_factchecks?.details?.trim() || 'Kein Faktencheck vorhanden';
 
   return (
     <div className="space-y-6 page-max-w">
@@ -77,6 +79,15 @@ export function DetailHeader({
                   {getCaseTitle(aggregatedReview)}
                 </h2>
               </div>
+
+              <Card>
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-heading-md">Faktencheck</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 text-body-sm text-muted-foreground leading-relaxed">
+                  {factcheckContent}
+                </CardContent>
+              </Card>
 
               {aggregatedReview.cases.content_type === 'url' ? (
                 <Link
