@@ -1,9 +1,12 @@
 import { setCaseCategoryMutation } from '@/lib/queries/setCaseCategory';
+import { setCaseFactcheckMutation } from '@/lib/queries/setCaseFactcheck';
 import { setCaseKeywordsMutation } from '@/lib/queries/setCaseKeywords';
 import { setCaseTitleMutation } from '@/lib/queries/setCaseTitle';
 import {
   caseCategorySchema,
   CaseCategoryValue,
+  caseFactcheckSchema,
+  CaseFactcheckValue,
   caseKeywordsSchema,
   caseTitleSchema,
 } from '@/lib/schemas/case-metadata-schemas';
@@ -18,7 +21,9 @@ interface UseMetadataSaveOptions {
   supabase: SupabaseClient<Database>;
   caseId: string;
   userId?: string;
-  onStepComplete: (step: 'title' | 'keywords' | 'category') => void;
+  onStepComplete: (
+    step: 'title' | 'keywords' | 'category' | 'factcheck',
+  ) => void;
 }
 
 export const useMetadataSave = ({
@@ -31,6 +36,7 @@ export const useMetadataSave = ({
   const [titleIssues, setTitleIssues] = useState<$ZodIssue[]>([]);
   const [keywordsIssues, setKeywordsIssues] = useState<$ZodIssue[]>([]);
   const [categoryIssues, setCategoryIssues] = useState<$ZodIssue[]>([]);
+  const [factcheckIssues, setFactcheckIssues] = useState<$ZodIssue[]>([]);
 
   const invalidateCase = async () => {
     await Promise.all([
@@ -97,6 +103,19 @@ export const useMetadataSave = ({
     },
   });
 
+  const { mutate: mutateFactcheck, isPending: isFactcheckPending } =
+    useMutation({
+      ...setCaseFactcheckMutation(supabase),
+      onSuccess: async () => {
+        setFactcheckIssues([]);
+        await invalidateCase();
+        onStepComplete('factcheck');
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || 'Fehler beim Speichern des Faktenchecks');
+      },
+    });
+
   const setTitle = (value: string) => {
     if (!userId) {
       toast.error('Du musst angemeldet sein');
@@ -139,15 +158,46 @@ export const useMetadataSave = ({
     mutateCategory({ caseId, value: result.data, userId });
   };
 
+  const setFactcheck = (value: CaseFactcheckValue) => {
+    if (!userId) {
+      toast.error('Du musst angemeldet sein');
+      return;
+    }
+
+    const normalizedDetails = value.hasFactcheck
+      ? value.details?.trim() || null
+      : null;
+    const result = caseFactcheckSchema.safeParse({
+      hasFactcheck: value.hasFactcheck,
+      details: normalizedDetails,
+    });
+
+    if (!result.success) {
+      setFactcheckIssues(result.error.issues);
+      return;
+    }
+
+    setFactcheckIssues([]);
+    mutateFactcheck({
+      caseId,
+      hasFactcheck: result.data.hasFactcheck,
+      details: result.data.details,
+      userId,
+    });
+  };
+
   return {
     setTitle,
     setKeywords,
     setCategory,
+    setFactcheck,
     isTitlePending,
     isKeywordsPending,
     isCategoryPending,
+    isFactcheckPending,
     titleIssues,
     keywordsIssues,
     categoryIssues,
+    factcheckIssues,
   };
 };

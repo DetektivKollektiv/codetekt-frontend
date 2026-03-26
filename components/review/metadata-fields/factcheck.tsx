@@ -9,6 +9,7 @@ import {
 } from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
+import { $ZodIssue } from 'zod/v4/core';
 
 type LikertScaleFieldValue = 0 | 1 | 2 | 3 | 4 | null;
 
@@ -27,6 +28,7 @@ interface FactcheckProps {
   onSave: () => void;
   saveLabel?: string;
   fieldTitle?: string;
+  issues: $ZodIssue[];
 }
 
 const Factcheck: FC<FactcheckProps> = ({
@@ -39,8 +41,10 @@ const Factcheck: FC<FactcheckProps> = ({
   onSave,
   saveLabel,
   fieldTitle,
+  issues,
 }) => {
   const isDisabled = isSaving || isComplete;
+  const issue = issues[0] ?? null;
 
   const likertValue: LikertScaleFieldValue =
     selection === 'yes' ? 1 : selection === 'no' ? 0 : null;
@@ -95,7 +99,7 @@ const Factcheck: FC<FactcheckProps> = ({
   );
 
   const shouldShowDetails = selection === 'yes';
-  const isSaveDisabled = isSaving || isComplete || selection === null;
+  const isSaveDisabled = isComplete ? isSaving : isSaving || selection === null;
 
   const handleSelectionChange = (value: LikertScaleFieldValue) => {
     if (value === 1) {
@@ -128,6 +132,8 @@ const Factcheck: FC<FactcheckProps> = ({
           onCreateReviewDispute={() => undefined}
         />
       )}
+
+      {issue && <p className="text-destructive text-sm">{issue.message}</p>}
 
       <Button
         className="w-full mt-auto"

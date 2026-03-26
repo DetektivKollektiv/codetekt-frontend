@@ -40,4 +40,10 @@ export const caseCategorySchema = z.enum(
   { error: 'Bitte wähle eine Kategorie aus' },
 );
 
+export const caseFactcheckSchema = z.object({
+  hasFactcheck: z.boolean(),
+  details: z.string().max(2000, 'Maximal 2000 Zeichen erlaubt').nullable(),
+});
+
 export type CaseCategoryValue = z.infer<typeof caseCategorySchema>;
+export type CaseFactcheckValue = z.infer<typeof caseFactcheckSchema>;

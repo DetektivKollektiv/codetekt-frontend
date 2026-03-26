@@ -1,5 +1,8 @@
 import { Case } from '@/lib/queries/getCase';
-import { CaseCategoryValue } from '@/lib/schemas/case-metadata-schemas';
+import {
+  CaseCategoryValue,
+  CaseFactcheckValue,
+} from '@/lib/schemas/case-metadata-schemas';
 import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -7,12 +10,15 @@ interface MetadataDraftState {
   title: string;
   keywords: string[];
   category: CaseCategoryValue | null;
+  factcheckSelection: 'yes' | 'no' | null;
+  factcheckDetails: string;
 }
 
 interface MetadataDirtyState {
   title: boolean;
   keywords: boolean;
   category: boolean;
+  factcheck: boolean;
 }
 
 interface UseMetadataDraftStateOptions {
@@ -21,6 +27,7 @@ interface UseMetadataDraftStateOptions {
   setTitle: (value: string) => void;
   setKeywords: (values: string[]) => void;
   setCategory: (value: CaseCategoryValue) => void;
+  setFactcheck: (value: CaseFactcheckValue) => void;
 }
 
 const hasSameKeywords = (left: string[], right: string[]) => {
@@ -48,6 +55,7 @@ export const useMetadataDraftState = ({
   setTitle,
   setKeywords,
   setCategory,
+  setFactcheck,
 }: UseMetadataDraftStateOptions) => {
   const userExistingKeywords = useMemo(
     () =>
@@ -67,6 +75,13 @@ export const useMetadataDraftState = ({
       keywords: userExistingKeywords,
       category:
         (caseData.case_categories?.value as CaseCategoryValue | null) ?? null,
+      factcheckSelection:
+        caseData.case_factchecks?.has_factcheck === true
+          ? 'yes'
+          : caseData.case_factchecks?.has_factcheck === false
+            ? 'no'
+            : null,
+      factcheckDetails: caseData.case_factchecks?.details ?? '',
     }),
   );
 
@@ -74,25 +89,42 @@ export const useMetadataDraftState = ({
     title: false,
     keywords: false,
     category: false,
+    factcheck: false,
   });
 
   useEffect(() => {
     const nextTitle = getInitialTitle(caseData);
     const nextCategory =
       (caseData.case_categories?.value as CaseCategoryValue | null) ?? null;
+    const nextFactcheckSelection =
+      caseData.case_factchecks?.has_factcheck === true
+        ? 'yes'
+        : caseData.case_factchecks?.has_factcheck === false
+          ? 'no'
+          : null;
+    const nextFactcheckDetails = caseData.case_factchecks?.details ?? '';
 
     setMetadataDraft((prev) => ({
       title: metadataDirty.title ? prev.title : nextTitle,
       keywords: metadataDirty.keywords ? prev.keywords : userExistingKeywords,
       category: metadataDirty.category ? prev.category : nextCategory,
+      factcheckSelection: metadataDirty.factcheck
+        ? prev.factcheckSelection
+        : nextFactcheckSelection,
+      factcheckDetails: metadataDirty.factcheck
+        ? prev.factcheckDetails
+        : nextFactcheckDetails,
     }));
   }, [
     caseData.case_titles?.value,
     caseData.open_graph_data?.og_title,
     caseData.case_categories?.value,
+    caseData.case_factchecks?.has_factcheck,
+    caseData.case_factchecks?.details,
     metadataDirty.title,
     metadataDirty.keywords,
     metadataDirty.category,
+    metadataDirty.factcheck,
     userExistingKeywords,
   ]);
 
@@ -125,6 +157,31 @@ export const useMetadataDraftState = ({
     metadataDraft.category,
   ]);
 
+  useEffect(() => {
+    if (!metadataDirty.factcheck) return;
+
+    const persistedSelection =
+      caseData.case_factchecks?.has_factcheck === true
+        ? 'yes'
+        : caseData.case_factchecks?.has_factcheck === false
+          ? 'no'
+          : null;
+    const persistedDetails = caseData.case_factchecks?.details ?? '';
+
+    if (
+      persistedSelection === metadataDraft.factcheckSelection &&
+      persistedDetails === metadataDraft.factcheckDetails
+    ) {
+      setMetadataDirty((prev) => ({ ...prev, factcheck: false }));
+    }
+  }, [
+    metadataDirty.factcheck,
+    caseData.case_factchecks?.has_factcheck,
+    caseData.case_factchecks?.details,
+    metadataDraft.factcheckSelection,
+    metadataDraft.factcheckDetails,
+  ]);
+
   const handleTitleChange = useCallback((value: string) => {
     setMetadataDraft((prev) => ({ ...prev, title: value }));
     setMetadataDirty((prev) => ({ ...prev, title: true }));
@@ -143,6 +200,19 @@ export const useMetadataDraftState = ({
     [],
   );
 
+  const handleFactcheckSelectionChange = useCallback(
+    (value: 'yes' | 'no' | null) => {
+      setMetadataDraft((prev) => ({ ...prev, factcheckSelection: value }));
+      setMetadataDirty((prev) => ({ ...prev, factcheck: true }));
+    },
+    [],
+  );
+
+  const handleFactcheckDetailsChange = useCallback((value: string) => {
+    setMetadataDraft((prev) => ({ ...prev, factcheckDetails: value }));
+    setMetadataDirty((prev) => ({ ...prev, factcheck: true }));
+  }, []);
+
   const handleSaveTitle = useCallback(() => {
     setTitle(metadataDraft.title);
   }, [metadataDraft.title, setTitle]);
@@ -156,14 +226,33 @@ export const useMetadataDraftState = ({
     setCategory(metadataDraft.category);
   }, [metadataDraft.category, setCategory]);
 
+  const handleSaveFactcheck = useCallback(() => {
+    if (!metadataDraft.factcheckSelection) return;
+
+    setFactcheck({
+      hasFactcheck: metadataDraft.factcheckSelection === 'yes',
+      details:
+        metadataDraft.factcheckSelection === 'yes'
+          ? metadataDraft.factcheckDetails
+          : null,
+    });
+  }, [
+    metadataDraft.factcheckDetails,
+    metadataDraft.factcheckSelection,
+    setFactcheck,
+  ]);
+
   return {
     metadataDraft,
     existingKeywords,
     handleTitleChange,
     handleKeywordsChange,
     handleCategoryChange,
+    handleFactcheckSelectionChange,
+    handleFactcheckDetailsChange,
     handleSaveTitle,
     handleSaveKeywords,
     handleSaveCategory,
+    handleSaveFactcheck,
   };
 };
