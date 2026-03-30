@@ -583,7 +583,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
                         ? `Ja: ${caseData.case_factchecks.value}`
                         : 'Ja'
                       : 'Nein',
-                    initial_answer_value: caseData.case_factchecks?.has_factcheck
+                    initial_answer_value: caseData.case_factchecks
+                      ?.has_factcheck
                       ? (caseData.case_factchecks.value ?? '').trim()
                         ? `Ja: ${caseData.case_factchecks.value}`
                         : 'Ja'
