@@ -289,7 +289,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description:
           'Prüfe deine Angaben und schließe den Fall ab. Danach ist deine Bewertung eingereicht.',
         isIndented: false,
-        status: isFinalStepEnabled ? undefined : 'incomplete',
+        status: isLocked
+          ? 'success'
+          : isFinalStepEnabled
+            ? undefined
+            : 'incomplete',
         kind: 'submit' as const,
         isComplete:
           isFinalStepEnabled &&
