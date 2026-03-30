@@ -146,17 +146,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
     caseId: caseData.id,
     userId,
     onStepComplete: (step) => {
-      if (step === 'category') {
-        setCurrentStepId(METADATA_STEP_FACTCHECK);
+      if (step === 'factcheck') {
         return;
       }
 
       const nextStepIdByStep = {
         title: METADATA_STEP_KEYWORDS,
         keywords: METADATA_STEP_CATEGORY,
-        factcheck: COMMENT_STEP,
+        category: METADATA_STEP_FACTCHECK,
       } as const;
-
       setCurrentStepId(nextStepIdByStep[step]);
     },
   });
@@ -172,15 +170,16 @@ const ReviewContent: FC<ReviewContentProps> = ({
         setCurrentStepId(COMMENT_STEP);
         return;
       }
+      if (
+        shownReviewTemplateQuestions.length > 0 &&
+        currentStepId === METADATA_STEP_FACTCHECK
+      ) {
+        setCurrentStepId(shownReviewTemplateQuestions[0].id);
+      }
 
       if (shownReviewTemplateQuestions.length > 0) {
-        console.log('All metadata complete, moving to first question');
-
         // setCurrentStepId(shownReviewTemplateQuestions[0].id);
       } else {
-        console.log(
-          'All metadata complete, but no questions to show, moving to comment step',
-        );
         setCurrentStepId(COMMENT_STEP);
       }
     }
@@ -275,7 +274,14 @@ const ReviewContent: FC<ReviewContentProps> = ({
         : []),
     ];
 
-    if (!isReviewTemplateFetching && !isKeywordsPending) {
+    if (
+      !isReviewTemplateFetching &&
+      !isKeywordsPending &&
+      !isTitlePending &&
+      !isCategoryPending &&
+      !isFactcheckPending &&
+      hasFactcheckStepSaved
+    ) {
       allSteps.push({
         id: COMMENT_STEP,
         label: 'Kommentar hinzufügen',
