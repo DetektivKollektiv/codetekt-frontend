@@ -282,7 +282,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description:
           'Optional: Wenn du möchtest, kannst du noch einen zusammenfassenden Kommentar zu deiner Einschätzung hinzufügen.',
         isIndented: false,
-        status: hasUserComment || isCommentSaved ? 'success' : undefined,
+        status:
+          hasUserComment ||
+          isCommentSaved ||
+          touchedQuestionIds.has(COMMENT_STEP)
+            ? 'success'
+            : undefined,
         kind: 'comment' as const,
         isComplete: true,
       });
