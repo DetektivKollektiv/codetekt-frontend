@@ -8,7 +8,9 @@ import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { getRatingStyle, isSatireCategory } from '@/lib/utils/rating-helpers';
 import { useQuery } from '@tanstack/react-query';
+import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '../ui/button';
 
 interface DetailRatingProps {
   aggregatedReview: NonNullable<AggregatedReview>;
@@ -33,6 +35,9 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
   const isSatire = isSatireCategory(caseCategory);
   const currentRating = getRatingStyle(score, caseCategory);
   const reviewerCount = aggregatedReview.reviewer_ids.length;
+  const caseData = aggregatedReview.cases;
+  const hasFactcheck = caseData.case_factchecks?.has_factcheck === true;
+  const factcheckUrl = caseData.case_factchecks?.value?.trim();
 
   return (
     <div className="page-max-w">
@@ -43,6 +48,14 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Rating buttons */}
+          {hasFactcheck && factcheckUrl && (
+            <Link href={factcheckUrl} target="_blank" rel="noopener noreferrer">
+              <Button variant="default" className="w-full" size="lg">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Zum Faktecheck
+              </Button>
+            </Link>
+          )}
           {isSatire ? (
             <div>
               <button

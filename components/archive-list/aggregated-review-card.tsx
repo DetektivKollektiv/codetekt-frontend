@@ -76,7 +76,7 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
           {/* Right: Evaluation */}
           {caseItem.case_id && (
             <Evaluation
-              caseId={caseItem.case_id}
+              caseItem={caseItem}
               ratingStyle={ratingStyle}
               isSatire={isSatire}
               warningTags={getWarningTags(reviewData)}
