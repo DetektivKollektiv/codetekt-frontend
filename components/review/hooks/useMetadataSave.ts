@@ -39,6 +39,10 @@ export const useMetadataSave = ({
   const [factcheckIssues, setFactcheckIssues] = useState<$ZodIssue[]>([]);
 
   const invalidateCase = async () => {
+    console.log(
+      'Invalidating case and review template queries for caseId:',
+      caseId,
+    );
     await Promise.all([
       // queryClient.clear(),
       queryClient.invalidateQueries({ queryKey: ['case', caseId] }),

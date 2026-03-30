@@ -36,10 +36,12 @@ export default async function Page({
   }
 
   if (caseError) {
+    console.error('1:', caseError);
     notFound();
   }
 
   if (!caseData) {
+    console.error('2:', caseError);
     notFound();
   }
 
@@ -66,6 +68,7 @@ export default async function Page({
     const parsed = reviewTemplateSchema.array().safeParse(reviewTemplate);
 
     if (!parsed.success) {
+      console.error('3:', caseError);
       notFound();
     }
   }
@@ -75,6 +78,12 @@ export default async function Page({
     !metadataIncomplete &&
     !shouldSkipReviewQuestions
   ) {
+    console.error(
+      '4:',
+      reviewTemplateError,
+      metadataIncomplete,
+      shouldSkipReviewQuestions,
+    );
     notFound();
   }
 

@@ -6,8 +6,8 @@ import {
 } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
-import { useQuery } from '@tanstack/react-query';
-import { FC } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { FC, useEffect } from 'react';
 import ReviewContent from './review-content';
 
 interface ReviewProps {
@@ -22,7 +22,7 @@ const Review: FC<ReviewProps> = ({
   isSubmitted: initialIsSubmitted,
 }) => {
   const supabase = createClient();
-
+  const queryClient = useQueryClient();
   // Auth context
   const { data: authData } = useQuery({
     queryFn: () => getAuth(supabase),
@@ -41,6 +41,27 @@ const Review: FC<ReviewProps> = ({
     },
     initialData: initialCaseData,
   });
+
+  console.log('initialCaseData.id:', initialCaseData?.id);
+
+  useEffect(() => {
+    console.log('caseData updated:', caseData);
+  }, [caseData]);
+
+  useEffect(() => {
+    console.log(
+      'queryClient:',
+      queryClient
+        .getQueryCache()
+        .getAll()
+        .values()
+        .find(
+          (query) =>
+            query.queryKey[0] === 'case' &&
+            query.queryKey[1] === initialCaseData.id,
+        ),
+    );
+  }, [queryClient]);
 
   const metadataComplete =
     !!caseData?.case_titles &&
