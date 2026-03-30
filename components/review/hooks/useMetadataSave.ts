@@ -40,7 +40,7 @@ export const useMetadataSave = ({
 
   const invalidateCase = async () => {
     await Promise.all([
-      queryClient.clear(),
+      // queryClient.clear(),
       queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
       queryClient.invalidateQueries({ queryKey: ['review-template', caseId] }),
     ]);
