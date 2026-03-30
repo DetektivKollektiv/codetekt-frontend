@@ -44,7 +44,10 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
       <Card className="border-none bg-brand-darkblue text-neutral-0 ">
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
           <CardTitle className="text-heading-xl">Bewertung des Falls</CardTitle>
-          <HelpButton theme="dark" href="/help" />
+          <HelpButton
+            theme="dark"
+            href="https://codetekt.org/informationen/die-codetekt-trust-checking-plattform-erklart/"
+          />
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Rating buttons */}
