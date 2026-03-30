@@ -23,7 +23,9 @@ interface FactcheckProps {
   onSelectionChange: (value: FactcheckSelection) => void;
   onValueChange: (value: string) => void;
   onSave: () => void;
+  onCreateDispute?: () => void;
   saveLabel?: string;
+  disputeLabel?: string;
   fieldTitle: string;
   issues: $ZodIssue[];
 }
@@ -36,7 +38,9 @@ const Factcheck: FC<FactcheckProps> = ({
   onSelectionChange,
   onValueChange,
   onSave,
+  onCreateDispute,
   saveLabel,
+  disputeLabel,
   fieldTitle,
   issues,
 }) => {
@@ -101,10 +105,12 @@ const Factcheck: FC<FactcheckProps> = ({
   return (
     <FieldContainer
       title={fieldTitle}
-      onCreateReviewDispute={() => undefined}
+      isDisputable={isComplete && selection !== null}
+      onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={onSave}
       isSaveDisabled={isSaveDisabled}
       saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
+      disputeLabel={disputeLabel}
       hasError={!!issue}
     >
       <div className="space-y-4">

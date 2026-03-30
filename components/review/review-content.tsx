@@ -248,7 +248,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
         description:
           'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen.',
         fieldTitle: 'Hat der Fall bereits einen Faktencheck?',
-        primaryActionLabel: 'Speichern',
+        primaryActionLabel: hasFactcheckStepSaved
+          ? 'Faktencheck passt'
+          : 'Speichern',
+        disputeActionLabel: 'Einspruch erheben',
         isIndented: false,
         status: hasFactcheckStepSaved ? 'success' : 'incomplete',
         kind: 'metadata',
@@ -561,6 +564,32 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 }
                 fieldTitle={currentStep.fieldTitle || ''}
                 saveLabel={currentStep.primaryActionLabel}
+                disputeLabel={currentStep.disputeActionLabel}
+                onCreateDispute={() =>
+                  openDisputeDialog({
+                    id: 'factcheck',
+                    type: 'text',
+                    question: 'Faktencheck',
+                    options: [
+                      {
+                        id: 'factcheck',
+                        placeholder: '',
+                        max_length: 2000,
+                        min_length: 1,
+                      },
+                    ],
+                    answer_value: caseData.case_factchecks?.has_factcheck
+                      ? (caseData.case_factchecks.value ?? '').trim()
+                        ? `Ja: ${caseData.case_factchecks.value}`
+                        : 'Ja'
+                      : 'Nein',
+                    initial_answer_value: caseData.case_factchecks?.has_factcheck
+                      ? (caseData.case_factchecks.value ?? '').trim()
+                        ? `Ja: ${caseData.case_factchecks.value}`
+                        : 'Ja'
+                      : 'Nein',
+                  })
+                }
                 issues={factcheckIssues}
               />
             )}
