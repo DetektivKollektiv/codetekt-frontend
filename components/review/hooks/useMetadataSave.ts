@@ -43,11 +43,20 @@ export const useMetadataSave = ({
       'Invalidating case and review template queries for caseId:',
       caseId,
     );
+    console.log(
+      'invalidateCase - before:',
+      queryClient.getQueryCache().getAll(),
+    );
     await Promise.all([
       // queryClient.clear(),
       queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
       queryClient.invalidateQueries({ queryKey: ['review-template', caseId] }),
     ]);
+
+    console.log(
+      'invalidateCase - after:',
+      queryClient.getQueryCache().getAll(),
+    );
   };
 
   const getKeywordsSaveErrorMessage = (error: unknown) => {

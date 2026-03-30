@@ -49,18 +49,7 @@ const Review: FC<ReviewProps> = ({
   }, [caseData]);
 
   useEffect(() => {
-    console.log(
-      'queryClient:',
-      queryClient
-        .getQueryCache()
-        .getAll()
-        .values()
-        .find(
-          (query) =>
-            query.queryKey[0] === 'case' &&
-            query.queryKey[1] === initialCaseData.id,
-        ),
-    );
+    console.log('queryClient:', queryClient.getQueryCache().getAll());
   }, [queryClient]);
 
   const metadataComplete =
