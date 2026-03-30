@@ -14,39 +14,30 @@ import { toast } from 'sonner';
 interface UseReviewSubmissionOptions {
   supabase: SupabaseClient<Database>;
   caseId: string;
-  userId?: string;
-  caseCategory?: CaseCategoryValue | null;
-  hasFactcheck?: boolean;
-  inProgressReviewAnswerData: InProgressReviewAnswer;
-  markAsSaved: () => void;
   onSubmitSuccess: () => void;
 }
 
 export const useReviewSubmission = ({
   supabase,
   caseId,
-  userId,
-  caseCategory,
-  hasFactcheck = false,
-  inProgressReviewAnswerData,
-  markAsSaved,
   onSubmitSuccess,
 }: UseReviewSubmissionOptions) => {
   const queryClient = useQueryClient();
 
-  const { mutate: saveInProgress, isPending: isSavingPending } = useMutation({
-    ...saveReviewAnswersInProgressMutation(supabase),
-    onSuccess: () => {
-      toast.success('Zwischenstand gespeichert');
-      markAsSaved();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Fehler beim Speichern');
-      console.error('✗ Save failed:', error);
-    },
-  });
+  const { mutateAsync: saveInProgressAsync, isPending: isSavingPending } =
+    useMutation({
+      ...saveReviewAnswersInProgressMutation(supabase),
+      onSuccess: () => {
+        toast.success('Zwischenstand gespeichert');
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || 'Fehler beim Speichern');
+        console.error('✗ Save failed:', error);
+      },
+    });
 
-  const { mutate: submitReview, isPending: isSubmitting } = useMutation({
+  const { mutateAsync: submitReviewAsync, isPending: isSubmitting } =
+    useMutation({
     ...submitReviewAnswersMutation(supabase),
     onSuccess: async () => {
       toast.success('Fall erfolgreich abgeschlossen');
@@ -64,8 +55,6 @@ export const useReviewSubmission = ({
           queryKey: ['aggregated-case', caseId],
         }),
       ]);
-
-      markAsSaved();
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Abschließen des Falls');
@@ -73,37 +62,58 @@ export const useReviewSubmission = ({
     },
   });
 
-  const handleSaveInProgress = () => {
+  const saveInProgress = async ({
+    data,
+    userId,
+  }: {
+    data: InProgressReviewAnswer;
+    userId?: string;
+  }): Promise<boolean> => {
     const validationResult = validateInProgressReviewAnswer(
-      inProgressReviewAnswerData,
+      data,
     );
 
     if (!validationResult.success) {
       console.error('✗ Validation failed:', validationResult.error);
       toast.error('Validierungsfehler beim Speichern');
-      return;
+      return false;
     }
 
     if (!userId) {
       toast.error('Du musst angemeldet sein, um zu speichern');
-      return;
+      return false;
     }
 
-    saveInProgress({
-      case_id: caseId,
-      data: validationResult.data,
-    });
+    try {
+      await saveInProgressAsync({
+        case_id: caseId,
+        data: validationResult.data,
+      });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const handleSubmitReview = () => {
+  const submitReview = async ({
+    userId,
+    caseCategory,
+    hasFactcheck,
+    inProgressReviewAnswerData,
+  }: {
+    userId?: string;
+    caseCategory?: CaseCategoryValue | null;
+    hasFactcheck: boolean;
+    inProgressReviewAnswerData: InProgressReviewAnswer;
+  }): Promise<boolean> => {
     if (!userId) {
       toast.error('Du musst angemeldet sein, um einen Fall abzuschließen');
-      return;
+      return false;
     }
 
     if (!hasFactcheck && !caseCategory) {
       toast.error('Bitte wähle zuerst eine Kategorie aus');
-      return;
+      return false;
     }
 
     if (!hasFactcheck) {
@@ -115,7 +125,7 @@ export const useReviewSubmission = ({
       if (!validationResult.success) {
         console.error('✗ Validation failed:', validationResult.error);
         toast.error('Bitte fülle alle erforderlichen Felder aus');
-        return;
+        return false;
       }
     }
 
@@ -129,29 +139,32 @@ export const useReviewSubmission = ({
         inProgressValidation.error,
       );
       toast.error('Validierungsfehler');
-      return;
+      return false;
     }
 
-    saveInProgress(
-      {
+    try {
+      const saveResult = await saveInProgressAsync({
         case_id: caseId,
         data: inProgressValidation.data,
-      },
-      {
-        onSuccess: (saveResult) => {
-          if (saveResult?.in_progress_id) {
-            submitReview({
-              in_progress_id: saveResult.in_progress_id,
-            });
-          }
-        },
-      },
-    );
+      });
+
+      if (!saveResult?.in_progress_id) {
+        return false;
+      }
+
+      await submitReviewAsync({
+        in_progress_id: saveResult.in_progress_id,
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   return {
-    handleSaveInProgress,
-    handleSubmitReview,
+    saveInProgress,
+    submitReview,
     isSavingPending,
     isSubmitting,
   };

@@ -17,6 +17,10 @@ interface ReviewNavigationProps {
   onItemClick: (id: string) => void;
   disabled?: boolean;
   currentStepId: string;
+  canGoPrev: boolean;
+  canGoNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
 }
 
 const ReviewNavigation: FC<ReviewNavigationProps> = ({
@@ -24,9 +28,12 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
   onItemClick,
   disabled = false,
   currentStepId,
+  canGoPrev,
+  canGoNext,
+  onPrev,
+  onNext,
 }) => {
-  const currentIndex = items.findIndex((item) => item.id === currentStepId);
-  const currentItem = currentIndex >= 0 ? items[currentIndex] : null;
+  const currentItem = items.find((item) => item.id === currentStepId) ?? null;
 
   return (
     <nav>
@@ -49,12 +56,8 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           variant="secondary"
           size="icon"
           className="cursor-pointer"
-          disabled={currentIndex <= 0 || disabled || items.length === 0}
-          onClick={() => {
-            if (currentIndex > 0) {
-              onItemClick(items[currentIndex - 1].id);
-            }
-          }}
+          disabled={!canGoPrev || disabled || items.length === 0}
+          onClick={onPrev}
         >
           <ArrowLeft size={16} />
         </Button>
@@ -74,17 +77,8 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
           variant="secondary"
           size="icon"
           className="cursor-pointer"
-          disabled={
-            currentIndex === -1 ||
-            currentIndex >= items.length - 1 ||
-            disabled ||
-            items.length === 0
-          }
-          onClick={() => {
-            if (currentIndex >= 0 && currentIndex < items.length - 1) {
-              onItemClick(items[currentIndex + 1].id);
-            }
-          }}
+          disabled={!canGoNext || disabled || items.length === 0}
+          onClick={onNext}
         >
           <ArrowRight size={16} />
         </Button>

@@ -13,34 +13,23 @@ import {
 import { Database } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import { toast } from 'sonner';
-import { $ZodIssue } from 'zod/v4/core';
 
 interface UseMetadataSaveOptions {
   supabase: SupabaseClient<Database>;
   caseId: string;
   userId?: string;
-  onStepComplete: (
-    step: 'title' | 'keywords' | 'category' | 'factcheck',
-  ) => void;
 }
 
 export const useMetadataSave = ({
   supabase,
   caseId,
   userId,
-  onStepComplete,
 }: UseMetadataSaveOptions) => {
   const queryClient = useQueryClient();
-  const [titleIssues, setTitleIssues] = useState<$ZodIssue[]>([]);
-  const [keywordsIssues, setKeywordsIssues] = useState<$ZodIssue[]>([]);
-  const [categoryIssues, setCategoryIssues] = useState<$ZodIssue[]>([]);
-  const [factcheckIssues, setFactcheckIssues] = useState<$ZodIssue[]>([]);
 
   const invalidateCase = async () => {
     await Promise.all([
-      // queryClient.clear(),
       queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
       queryClient.invalidateQueries({ queryKey: ['review-template', caseId] }),
     ]);
@@ -68,101 +57,105 @@ export const useMetadataSave = ({
     return 'Fehler beim Speichern der Stichwörter';
   };
 
-  const { mutate: mutateTitle, isPending: isTitlePending } = useMutation({
+  const { mutateAsync: mutateTitleAsync, isPending: isTitlePending } =
+    useMutation({
     ...setCaseTitleMutation(supabase),
     onSuccess: async () => {
-      setTitleIssues([]);
       await invalidateCase();
-      onStepComplete('title');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Fehler beim Speichern des Titels');
     },
   });
 
-  const { mutate: mutateKeywords, isPending: isKeywordsPending } = useMutation({
-    ...setCaseKeywordsMutation(supabase),
-    onSuccess: async () => {
-      setKeywordsIssues([]);
-      await invalidateCase();
-      onStepComplete('keywords');
-    },
-    onError: (error: unknown) => {
-      toast.error(getKeywordsSaveErrorMessage(error));
-    },
-  });
+  const { mutateAsync: mutateKeywordsAsync, isPending: isKeywordsPending } =
+    useMutation({
+      ...setCaseKeywordsMutation(supabase),
+      onSuccess: async () => {
+        await invalidateCase();
+      },
+      onError: (error: unknown) => {
+        toast.error(getKeywordsSaveErrorMessage(error));
+      },
+    });
 
-  const { mutate: mutateCategory, isPending: isCategoryPending } = useMutation({
-    ...setCaseCategoryMutation(supabase),
-    onSuccess: async () => {
-      setCategoryIssues([]);
-      await invalidateCase();
-      onStepComplete('category');
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Fehler beim Speichern der Kategorie');
-    },
-  });
+  const { mutateAsync: mutateCategoryAsync, isPending: isCategoryPending } =
+    useMutation({
+      ...setCaseCategoryMutation(supabase),
+      onSuccess: async () => {
+        await invalidateCase();
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || 'Fehler beim Speichern der Kategorie');
+      },
+    });
 
-  const { mutate: mutateFactcheck, isPending: isFactcheckPending } =
+  const { mutateAsync: mutateFactcheckAsync, isPending: isFactcheckPending } =
     useMutation({
       ...setCaseFactcheckMutation(supabase),
       onSuccess: async () => {
-        setFactcheckIssues([]);
         await invalidateCase();
-        onStepComplete('factcheck');
       },
       onError: (error: Error) => {
         toast.error(error.message || 'Fehler beim Speichern des Faktenchecks');
       },
     });
 
-  const setTitle = (value: string) => {
+  const saveTitle = async (value: string): Promise<boolean> => {
     if (!userId) {
       toast.error('Du musst angemeldet sein');
-      return;
+      return false;
     }
     const result = caseTitleSchema.safeParse(value);
     if (!result.success) {
-      setTitleIssues(result.error.issues);
-      return;
+      return false;
     }
-    setTitleIssues([]);
-    mutateTitle({ caseId, value: result.data, userId });
+    try {
+      await mutateTitleAsync({ caseId, value: result.data, userId });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const setKeywords = (values: string[]) => {
+  const saveKeywords = async (values: string[]): Promise<boolean> => {
     if (!userId) {
       toast.error('Du musst angemeldet sein');
-      return;
+      return false;
     }
     const result = caseKeywordsSchema.safeParse(values);
     if (!result.success) {
-      setKeywordsIssues(result.error.issues);
-      return;
+      return false;
     }
-    setKeywordsIssues([]);
-    mutateKeywords({ caseId, values: result.data, userId });
+    try {
+      await mutateKeywordsAsync({ caseId, values: result.data, userId });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const setCategory = (value: CaseCategoryValue) => {
+  const saveCategory = async (value: CaseCategoryValue): Promise<boolean> => {
     if (!userId) {
       toast.error('Du musst angemeldet sein');
-      return;
+      return false;
     }
     const result = caseCategorySchema.safeParse(value);
     if (!result.success) {
-      setCategoryIssues(result.error.issues);
-      return;
+      return false;
     }
-    setCategoryIssues([]);
-    mutateCategory({ caseId, value: result.data, userId });
+    try {
+      await mutateCategoryAsync({ caseId, value: result.data, userId });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const setFactcheck = (value: CaseFactcheckValue) => {
+  const saveFactcheck = async (value: CaseFactcheckValue): Promise<boolean> => {
     if (!userId) {
       toast.error('Du musst angemeldet sein');
-      return;
+      return false;
     }
 
     const normalizedValue = value.hasFactcheck
@@ -174,31 +167,30 @@ export const useMetadataSave = ({
     });
 
     if (!result.success) {
-      setFactcheckIssues(result.error.issues);
-      return;
+      return false;
     }
 
-    setFactcheckIssues([]);
-    mutateFactcheck({
-      caseId,
-      hasFactcheck: result.data.hasFactcheck,
-      value: result.data.value,
-      userId,
-    });
+    try {
+      await mutateFactcheckAsync({
+        caseId,
+        hasFactcheck: result.data.hasFactcheck,
+        value: result.data.value,
+        userId,
+      });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   return {
-    setTitle,
-    setKeywords,
-    setCategory,
-    setFactcheck,
+    saveTitle,
+    saveKeywords,
+    saveCategory,
+    saveFactcheck,
     isTitlePending,
     isKeywordsPending,
     isCategoryPending,
     isFactcheckPending,
-    titleIssues,
-    keywordsIssues,
-    categoryIssues,
-    factcheckIssues,
   };
 };

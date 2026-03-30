@@ -8,20 +8,16 @@ interface UseSaveFinalCommentOptions {
   supabase: SupabaseClient<Database>;
   caseId: string;
   userId?: string;
-  isFinalStepEnabled: boolean;
-  onSuccess?: () => void;
 }
 
 export const useSaveFinalComment = ({
   supabase,
   caseId,
   userId,
-  isFinalStepEnabled,
-  onSuccess,
 }: UseSaveFinalCommentOptions) => {
   const queryClient = useQueryClient();
 
-  const { mutate: saveFinalComment, isPending: isSavingFinalComment } =
+  const { mutateAsync: saveFinalCommentAsync, isPending: isSavingFinalComment } =
     useMutation({
       ...createCommentMutation(supabase),
       onSuccess: async () => {
@@ -29,34 +25,41 @@ export const useSaveFinalComment = ({
           queryKey: ['case', caseId],
         });
         toast.success('Kommentar gespeichert');
-        onSuccess?.();
       },
       onError: (error: Error) => {
         toast.error(error.message || 'Fehler beim Speichern des Kommentars');
       },
     });
 
-  const handleSaveFinalComment = (comment: string) => {
+  const saveFinalComment = async (
+    comment: string,
+    isFinalStepEnabled: boolean,
+  ): Promise<boolean> => {
     const trimmedComment = comment.trim();
 
     if (!isFinalStepEnabled || trimmedComment.length === 0) {
-      return;
+      return false;
     }
 
     if (!userId) {
       toast.error('Du musst angemeldet sein, um zu kommentieren');
-      return;
+      return false;
     }
 
-    saveFinalComment({
-      case_id: caseId,
-      author_id: userId,
-      content: trimmedComment,
-    });
+    try {
+      await saveFinalCommentAsync({
+        case_id: caseId,
+        author_id: userId,
+        content: trimmedComment,
+      });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   return {
-    handleSaveFinalComment,
+    saveFinalComment,
     isSavingFinalComment,
   };
 };

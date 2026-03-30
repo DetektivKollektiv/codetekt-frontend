@@ -7,13 +7,11 @@ import { toast } from 'sonner';
 interface UseReviewDisputeOptions {
   caseId: string;
   userId?: string;
-  markAsSaved: () => void;
 }
 
 export const useReviewDispute = ({
   caseId,
   userId,
-  markAsSaved,
 }: UseReviewDisputeOptions) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -37,7 +35,6 @@ export const useReviewDispute = ({
         queryKey: ['review-template', caseId],
       }),
     ]);
-    markAsSaved();
     router.push('/');
   };
 

@@ -1,45 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 interface UseUnsavedChangesWarningOptions {
-  /**
-   * The data to track for changes
-   */
-  data: unknown;
-  /**
-   * Custom confirmation message for in-app navigation
-   */
+  hasUnsavedChanges: boolean;
+  isActive?: boolean;
   message?: string;
 }
 
 export const useUnsavedChangesWarning = ({
-  data,
+  hasUnsavedChanges,
+  isActive = true,
   message = 'Du hast ungespeicherte Änderungen. Möchtest du die Seite wirklich verlassen?',
 }: UseUnsavedChangesWarningOptions) => {
-  const [isActive, setIsActive] = useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const lastSavedDataRef = useRef<string>(JSON.stringify(data));
-  const isInitialMount = useRef(true);
-
-  // Check if data has changed from last saved version
-  useEffect(() => {
-    // Skip the initial mount
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const currentDataStr = JSON.stringify(data);
-    const hasChanged = lastSavedDataRef.current !== currentDataStr;
-
-    if (hasChanged) {
-      setHasUnsavedChanges(true);
-    }
-  }, [data]);
+  const isPromptEnabled = hasUnsavedChanges && isActive;
 
   // Warn user before leaving page with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges && isActive) {
+      if (isPromptEnabled) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -47,14 +24,13 @@ export const useUnsavedChangesWarning = ({
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasUnsavedChanges, isActive]);
+  }, [isPromptEnabled]);
 
   // Block in-app navigation with unsaved changes
   useEffect(() => {
-    if (!hasUnsavedChanges && !isActive) return;
+    if (!isPromptEnabled) return;
 
     const handleClick = (e: MouseEvent) => {
-      if (!isActive) return;
       const target = e.target as HTMLElement;
       const link = target.closest('a');
 
@@ -80,19 +56,5 @@ export const useUnsavedChangesWarning = ({
     return () => {
       document.removeEventListener('click', handleClick, true);
     };
-  }, [hasUnsavedChanges, message, isActive]);
-
-  /**
-   * Mark current data as saved
-   */
-  const markAsSaved = () => {
-    setHasUnsavedChanges(false);
-    lastSavedDataRef.current = JSON.stringify(data);
-  };
-
-  return {
-    hasUnsavedChanges,
-    markAsSaved,
-    setIsActive,
-  };
+  }, [isPromptEnabled, message]);
 };

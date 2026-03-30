@@ -6,15 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tag } from '@/components/ui/tag';
 import { CASE_KEYWORDS_LIMITS } from '@/lib/schemas/case-metadata-schemas';
-import { Tables } from '@/lib/types/database.types';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
 interface KeywordsProps {
   existingKeywords: string[];
-  caseKeywords: Tables<'case_keywords'>[];
-  userId?: string;
   newKeywords: string[];
+  hasUserKeywords: boolean;
   onChangeKeywords: (values: string[]) => void;
   isComplete: boolean;
   onSave: () => void;
@@ -28,9 +26,8 @@ interface KeywordsProps {
 
 const Keywords: FC<KeywordsProps> = ({
   existingKeywords,
-  caseKeywords,
-  userId,
   newKeywords,
+  hasUserKeywords,
   onChangeKeywords,
   isComplete,
   onSave,
@@ -43,22 +40,10 @@ const Keywords: FC<KeywordsProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const issue = issues[0] ?? null;
-  const userExistingKeywords = userId
-    ? (caseKeywords.find((keywordSet) => keywordSet.created_by === userId)
-        ?.values ?? [])
-    : [];
-  const hasUserKeywords = userExistingKeywords.length > 0;
   const totalCaseKeywords = existingKeywords.length + newKeywords.length;
   const hasReachedCaseKeywordsLimit =
     totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords;
   const isReviewMode = isComplete && existingKeywords.length > 0;
-
-  useEffect(() => {
-    if (hasUserKeywords) {
-      setInputValue('');
-      onChangeKeywords([]);
-    }
-  }, [hasUserKeywords, onChangeKeywords]);
 
   const handleAddKeyword = () => {
     const trimmed = inputValue.trim();
