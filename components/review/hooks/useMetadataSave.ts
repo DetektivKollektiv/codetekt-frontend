@@ -1,16 +1,30 @@
-import { setCaseCategoryMutation } from '@/lib/queries/setCaseCategory';
-import { setCaseFactcheckMutation } from '@/lib/queries/setCaseFactcheck';
-import { setCaseKeywordsMutation } from '@/lib/queries/setCaseKeywords';
-import { setCaseTitleMutation } from '@/lib/queries/setCaseTitle';
+import {
+  setCaseCategoryMutation,
+} from '@/lib/queries/setCaseCategory';
+import type { SetCaseCategoryData } from '@/lib/queries/setCaseCategory';
+import {
+  setCaseFactcheckMutation,
+} from '@/lib/queries/setCaseFactcheck';
+import type { SetCaseFactcheckData } from '@/lib/queries/setCaseFactcheck';
+import {
+  setCaseKeywordsMutation,
+} from '@/lib/queries/setCaseKeywords';
+import type { SetCaseKeywordsData } from '@/lib/queries/setCaseKeywords';
+import {
+  setCaseTitleMutation,
+} from '@/lib/queries/setCaseTitle';
+import type { SetCaseTitleData } from '@/lib/queries/setCaseTitle';
 import {
   caseCategorySchema,
-  CaseCategoryValue,
   caseFactcheckSchema,
-  CaseFactcheckValue,
   caseKeywordsSchema,
   caseTitleSchema,
 } from '@/lib/schemas/case-metadata-schemas';
-import { Database } from '@/lib/types/database.types';
+import type {
+  CaseCategoryValue,
+  CaseFactcheckValue,
+} from '@/lib/schemas/case-metadata-schemas';
+import type { Database } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -20,6 +34,116 @@ interface UseMetadataSaveOptions {
   caseId: string;
   userId?: string;
 }
+
+interface MetadataSaveMutations {
+  mutateTitleAsync: (data: SetCaseTitleData) => Promise<unknown>;
+  mutateKeywordsAsync: (data: SetCaseKeywordsData) => Promise<unknown>;
+  mutateCategoryAsync: (data: SetCaseCategoryData) => Promise<unknown>;
+  mutateFactcheckAsync: (data: SetCaseFactcheckData) => Promise<unknown>;
+}
+
+const getKeywordsSaveErrorMessage = (error: unknown) => {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code?: string }).code === '23505'
+  ) {
+    return 'Du hast bereits Stichwörter für diesen Fall erstellt';
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return (error as { message: string }).message;
+  }
+
+  return 'Fehler beim Speichern der Stichwörter';
+};
+
+const getRequiredUserId = (userId?: string) => {
+  if (userId) return userId;
+  toast.error('Du musst angemeldet sein');
+  return null;
+};
+
+const createMetadataSaveHandlers = ({
+  caseId,
+  userId,
+  mutations,
+}: {
+  caseId: string;
+  userId?: string;
+  mutations: MetadataSaveMutations;
+}) => {
+  const saveTitle = async (value: string): Promise<boolean> => {
+    const authorId = getRequiredUserId(userId);
+    if (!authorId) return false;
+    const result = caseTitleSchema.safeParse(value);
+    if (!result.success) return false;
+
+    try {
+      await mutations.mutateTitleAsync({ caseId, value: result.data, userId: authorId });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const saveKeywords = async (values: string[]): Promise<boolean> => {
+    const authorId = getRequiredUserId(userId);
+    if (!authorId) return false;
+    const result = caseKeywordsSchema.safeParse(values);
+    if (!result.success) return false;
+
+    try {
+      await mutations.mutateKeywordsAsync({ caseId, values: result.data, userId: authorId });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const saveCategory = async (value: CaseCategoryValue): Promise<boolean> => {
+    const authorId = getRequiredUserId(userId);
+    if (!authorId) return false;
+    const result = caseCategorySchema.safeParse(value);
+    if (!result.success) return false;
+
+    try {
+      await mutations.mutateCategoryAsync({ caseId, value: result.data, userId: authorId });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const saveFactcheck = async (value: CaseFactcheckValue): Promise<boolean> => {
+    const authorId = getRequiredUserId(userId);
+    if (!authorId) return false;
+    const result = caseFactcheckSchema.safeParse({
+      hasFactcheck: value.hasFactcheck,
+      value: value.hasFactcheck ? value.value?.trim() || null : null,
+    });
+    if (!result.success) return false;
+
+    try {
+      await mutations.mutateFactcheckAsync({
+        caseId,
+        ...result.data,
+        userId: authorId,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  return { saveTitle, saveKeywords, saveCategory, saveFactcheck };
+};
 
 export const useMetadataSave = ({
   supabase,
@@ -33,28 +157,6 @@ export const useMetadataSave = ({
       queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
       queryClient.invalidateQueries({ queryKey: ['review-template', caseId] }),
     ]);
-  };
-
-  const getKeywordsSaveErrorMessage = (error: unknown) => {
-    if (
-      typeof error === 'object' &&
-      error !== null &&
-      'code' in error &&
-      (error as { code?: string }).code === '23505'
-    ) {
-      return 'Du hast bereits Stichwörter für diesen Fall erstellt';
-    }
-
-    if (
-      typeof error === 'object' &&
-      error !== null &&
-      'message' in error &&
-      typeof (error as { message?: unknown }).message === 'string'
-    ) {
-      return (error as { message: string }).message;
-    }
-
-    return 'Fehler beim Speichern der Stichwörter';
   };
 
   const { mutateAsync: mutateTitleAsync, isPending: isTitlePending } =
@@ -101,93 +203,19 @@ export const useMetadataSave = ({
       },
     });
 
-  const saveTitle = async (value: string): Promise<boolean> => {
-    if (!userId) {
-      toast.error('Du musst angemeldet sein');
-      return false;
-    }
-    const result = caseTitleSchema.safeParse(value);
-    if (!result.success) {
-      return false;
-    }
-    try {
-      await mutateTitleAsync({ caseId, value: result.data, userId });
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const saveKeywords = async (values: string[]): Promise<boolean> => {
-    if (!userId) {
-      toast.error('Du musst angemeldet sein');
-      return false;
-    }
-    const result = caseKeywordsSchema.safeParse(values);
-    if (!result.success) {
-      return false;
-    }
-    try {
-      await mutateKeywordsAsync({ caseId, values: result.data, userId });
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const saveCategory = async (value: CaseCategoryValue): Promise<boolean> => {
-    if (!userId) {
-      toast.error('Du musst angemeldet sein');
-      return false;
-    }
-    const result = caseCategorySchema.safeParse(value);
-    if (!result.success) {
-      return false;
-    }
-    try {
-      await mutateCategoryAsync({ caseId, value: result.data, userId });
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  const saveFactcheck = async (value: CaseFactcheckValue): Promise<boolean> => {
-    if (!userId) {
-      toast.error('Du musst angemeldet sein');
-      return false;
-    }
-
-    const normalizedValue = value.hasFactcheck
-      ? value.value?.trim() || null
-      : null;
-    const result = caseFactcheckSchema.safeParse({
-      hasFactcheck: value.hasFactcheck,
-      value: normalizedValue,
-    });
-
-    if (!result.success) {
-      return false;
-    }
-
-    try {
-      await mutateFactcheckAsync({
-        caseId,
-        hasFactcheck: result.data.hasFactcheck,
-        value: result.data.value,
-        userId,
-      });
-      return true;
-    } catch {
-      return false;
-    }
-  };
+  const saveHandlers = createMetadataSaveHandlers({
+    caseId,
+    userId,
+    mutations: {
+      mutateTitleAsync,
+      mutateKeywordsAsync,
+      mutateCategoryAsync,
+      mutateFactcheckAsync,
+    },
+  });
 
   return {
-    saveTitle,
-    saveKeywords,
-    saveCategory,
-    saveFactcheck,
+    ...saveHandlers,
     isTitlePending,
     isKeywordsPending,
     isCategoryPending,

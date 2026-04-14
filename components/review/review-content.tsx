@@ -50,7 +50,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
     userId,
   });
 
-  const { currentStep, currentQuestion } = flow;
+  const { currentStep, currentQuestion } = flow.navigation;
 
   if (!currentStep) {
     return null;
@@ -59,12 +59,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
   return (
     <>
       <ReviewDisputeDialog
-        isOpen={flow.dialog.isDisputeDialogOpen}
-        onOpenChange={flow.dialog.setIsDisputeDialogOpen}
-        disputingField={flow.dialog.disputingField}
+        isOpen={flow.state.dispute.isOpen}
+        onOpenChange={flow.actions.dispute.setOpen}
+        disputingField={flow.state.dispute.field}
         caseId={caseData.id}
         userId={userId}
-        onSuccess={flow.dialog.handleDisputeSuccess}
+        onSuccess={flow.actions.dispute.handleSuccess}
       />
 
       <div
@@ -76,13 +76,13 @@ const ReviewContent: FC<ReviewContentProps> = ({
         <div>
           <CaseCard
             case={caseData}
-            ratingStyle={getPreviewRatingStyle(flow.reviewTemplateWithAnswersValues)}
+            ratingStyle={getPreviewRatingStyle(flow.state.answerDraft)}
           />
           <div className="my-4 lg:my-0 lg:mt-4">
             <ReviewNavigation
               items={flow.navigation.items}
               onItemClick={flow.navigation.selectStep}
-              disabled={flow.isLocked}
+              disabled={flow.state.isLocked}
               currentStepId={flow.navigation.currentStepId}
               canGoPrev={flow.navigation.canGoPrev}
               canGoNext={flow.navigation.canGoNext}
@@ -92,7 +92,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
           </div>
         </div>
 
-        {flow.isLocked ? (
+        {flow.state.isLocked ? (
           <SuccesCard caseId={caseData.id} />
         ) : currentStep.kind === 'metadata' ? (
           <QuestionCard
@@ -102,20 +102,20 @@ const ReviewContent: FC<ReviewContentProps> = ({
           >
             {currentStep.id === METADATA_STEP_TITLE && (
               <Title
-                value={flow.metadataDraft.title}
-                isComplete={flow.hasTitle}
-                onChange={flow.handleTitleChange}
+                value={flow.state.metadataDraft.title}
+                isComplete={flow.state.flags.hasTitle}
+                onChange={flow.actions.metadata.changeTitle}
                 onSave={
-                  flow.hasTitle
-                    ? flow.handleConfirmCurrentStep
-                    : flow.handleSaveTitle
+                  flow.state.flags.hasTitle
+                    ? flow.actions.confirmCurrentStep
+                    : flow.actions.metadata.saveTitle
                 }
-                isSaving={flow.isTitlePending}
+                isSaving={flow.status.isTitlePending}
                 fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
-                  flow.dialog.openDisputeDialog({
+                  flow.actions.dispute.open({
                     id: 'title',
                     type: 'text',
                     question: 'Titel',
@@ -131,28 +131,28 @@ const ReviewContent: FC<ReviewContentProps> = ({
                     initial_answer_value: caseData.case_titles?.value ?? '',
                   })
                 }
-                issues={flow.titleIssues}
+                issues={flow.validation.metadata.title}
               />
             )}
 
             {currentStep.id === METADATA_STEP_KEYWORDS && (
               <Keywords
-                existingKeywords={flow.existingKeywords}
-                hasUserKeywords={flow.hasKeywords}
-                newKeywords={flow.keywordDraftKeywords}
-                onChangeKeywords={flow.handleKeywordsChange}
-                isComplete={flow.hasKeywords}
+                existingKeywords={flow.state.existingKeywords}
+                hasUserKeywords={flow.state.flags.hasKeywords}
+                newKeywords={flow.state.keywordDraftKeywords}
+                onChangeKeywords={flow.actions.metadata.changeKeywords}
+                isComplete={flow.state.flags.hasKeywords}
                 onSave={
-                  flow.hasKeywords
-                    ? flow.handleConfirmCurrentStep
-                    : flow.handleSaveKeywords
+                  flow.state.flags.hasKeywords
+                    ? flow.actions.confirmCurrentStep
+                    : flow.actions.metadata.saveKeywords
                 }
-                isSaving={flow.isKeywordsPending}
+                isSaving={flow.status.isKeywordsPending}
                 fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
-                  flow.dialog.openDisputeDialog({
+                  flow.actions.dispute.open({
                     id: 'keywords',
                     type: 'text',
                     question: 'Stichwörter',
@@ -164,36 +164,39 @@ const ReviewContent: FC<ReviewContentProps> = ({
                         min_length: 1,
                       },
                     ],
-                    answer_value: flow.existingKeywords.join(', '),
-                    initial_answer_value: flow.existingKeywords.join(', '),
+                    answer_value: flow.state.existingKeywords.join(', '),
+                    initial_answer_value: flow.state.existingKeywords.join(', '),
                   })
                 }
-                issues={flow.keywordsIssues}
+                issues={flow.validation.metadata.keywords}
               />
             )}
 
             {currentStep.id === METADATA_STEP_CATEGORY && (
               <Category
-                value={flow.metadataDraft.category}
-                isComplete={flow.hasCategory}
-                onChange={flow.handleCategoryChange}
+                value={flow.state.metadataDraft.category}
+                isComplete={flow.state.flags.hasCategory}
+                onChange={flow.actions.metadata.changeCategory}
                 onSave={
-                  flow.hasCategory
-                    ? flow.handleConfirmCurrentStep
-                    : flow.handleSaveCategory
+                  flow.state.flags.hasCategory
+                    ? flow.actions.confirmCurrentStep
+                    : flow.actions.metadata.saveCategory
                 }
-                isSaving={flow.isCategoryPending || isReviewTemplateFetching}
+                isSaving={
+                  flow.status.isCategoryPending ||
+                  flow.status.isReviewTemplateFetching
+                }
                 isDisputable={
-                  flow.hasCategory &&
-                  !!flow.metadataDraft.category &&
-                  !flow.isCategoryPending &&
-                  !isReviewTemplateFetching
+                  flow.state.flags.hasCategory &&
+                  !!flow.state.metadataDraft.category &&
+                  !flow.status.isCategoryPending &&
+                  !flow.status.isReviewTemplateFetching
                 }
                 fieldTitle={currentStep.fieldTitle}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
-                  flow.dialog.openDisputeDialog({
+                  flow.actions.dispute.open({
                     id: 'category',
                     type: 'text',
                     question: 'Kategorie',
@@ -209,28 +212,28 @@ const ReviewContent: FC<ReviewContentProps> = ({
                     initial_answer_value: caseData.case_categories?.value ?? '',
                   })
                 }
-                issues={flow.categoryIssues}
+                issues={flow.validation.metadata.category}
               />
             )}
 
             {currentStep.id === METADATA_STEP_FACTCHECK && (
               <Factcheck
-                selection={flow.metadataDraft.factcheckSelection}
-                value={flow.metadataDraft.factcheckValue}
-                isComplete={flow.hasFactcheckStepSaved}
-                isSaving={flow.isFactcheckPending}
-                onSelectionChange={flow.handleFactcheckSelectionChange}
-                onValueChange={flow.handleFactcheckValueChange}
+                selection={flow.state.metadataDraft.factcheckSelection}
+                value={flow.state.metadataDraft.factcheckValue}
+                isComplete={flow.state.flags.hasFactcheckStepSaved}
+                isSaving={flow.status.isFactcheckPending}
+                onSelectionChange={flow.actions.metadata.changeFactcheckSelection}
+                onValueChange={flow.actions.metadata.changeFactcheckValue}
                 onSave={
-                  flow.hasFactcheckStepSaved
-                    ? flow.handleConfirmCurrentStep
-                    : flow.handleSaveFactcheck
+                  flow.state.flags.hasFactcheckStepSaved
+                    ? flow.actions.confirmCurrentStep
+                    : flow.actions.metadata.saveFactcheck
                 }
                 fieldTitle={currentStep.fieldTitle || ''}
                 saveLabel={currentStep.primaryActionLabel}
                 disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
-                  flow.dialog.openDisputeDialog({
+                  flow.actions.dispute.open({
                     id: 'factcheck',
                     type: 'text',
                     question: 'Faktencheck',
@@ -254,7 +257,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                       : 'Nein',
                   })
                 }
-                issues={flow.factcheckIssues}
+                issues={flow.validation.metadata.factcheck}
               />
             )}
           </QuestionCard>
@@ -266,12 +269,19 @@ const ReviewContent: FC<ReviewContentProps> = ({
               <>
                 <HelpButton href={currentStep.helpUrl} />
                 <Button
-                  variant={flow.hasUnsavedReviewAnswers ? 'destructive' : 'outline'}
+                  variant={
+                    flow.state.hasUnsavedReviewAnswers
+                      ? 'destructive'
+                      : 'outline'
+                  }
                   size="default"
-                  onClick={flow.handleSaveInProgress}
-                  disabled={!flow.hasUnsavedReviewAnswers || flow.isSavingPending}
+                  onClick={flow.actions.answers.saveInProgress}
+                  disabled={
+                    !flow.state.hasUnsavedReviewAnswers ||
+                    flow.status.isSavingPending
+                  }
                 >
-                  {flow.isSavingPending ? (
+                  {flow.status.isSavingPending ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   ) : (
                     <SaveAll className="w-4 h-4 mr-2" />
@@ -285,8 +295,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 <Button
                   variant="default"
                   className="w-full"
-                  onClick={flow.handleNextStep}
-                  disabled={flow.isLastStep}
+                  onClick={flow.actions.nextStep}
+                  disabled={flow.state.isLastStep}
                 >
                   Nächste Frage
                 </Button>
@@ -295,10 +305,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
           >
             <RenderFieldsWithHeaders
               currentQuestion={currentQuestion}
-              questionsValidationState={flow.questionsValidationState}
-              onFieldChange={flow.handleFieldValueChange}
-              onCreateReviewDispute={flow.dialog.openDisputeDialog}
-              touchedQuestions={Array.from(flow.touchedQuestionIds)}
+              questionsValidationState={flow.validation.questions}
+              onFieldChange={flow.actions.answers.changeField}
+              onCreateReviewDispute={flow.actions.dispute.open}
+              touchedQuestions={Array.from(flow.validation.touchedQuestionIds)}
             />
           </QuestionCard>
         ) : currentStep.kind === 'comment' ? (
@@ -311,8 +321,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 <Button
                   variant="default"
                   className="w-full"
-                  onClick={flow.handleNextStep}
-                  disabled={flow.isLastStep}
+                  onClick={flow.actions.nextStep}
+                  disabled={flow.state.isLastStep}
                 >
                   Weiter zum Abschließen
                 </Button>
@@ -320,11 +330,11 @@ const ReviewContent: FC<ReviewContentProps> = ({
             }
           >
             <FinalComment
-              value={flow.displayedFinalComment}
-              onChange={flow.handleFinalCommentChange}
-              onSave={flow.handleSaveFinalComment}
-              isSaving={flow.isSavingFinalComment}
-              isDisabled={flow.isFinalCommentInputDisabled}
+              value={flow.state.displayedFinalComment}
+              onChange={flow.actions.comment.change}
+              onSave={flow.actions.comment.save}
+              isSaving={flow.status.isSavingFinalComment}
+              isDisabled={flow.state.isFinalCommentInputDisabled}
               fieldTitle="Was ist dir noch aufgefallen?"
               saveLabel="Kommentar speichern"
             />
@@ -339,15 +349,17 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 <Button
                   variant="default"
                   className="w-full"
-                  onClick={flow.handleSubmitReview}
+                  onClick={flow.actions.submitReview}
                   disabled={
-                    !flow.isFinalStepEnabled ||
-                    (!flow.shouldSkipReviewQuestions &&
-                      !flow.isValidForSubmission) ||
-                    flow.isSubmitting
+                    !flow.state.flags.isFinalStepEnabled ||
+                    (!flow.state.flags.shouldSkipReviewQuestions &&
+                      !flow.validation.isValidForSubmission) ||
+                    flow.status.isSubmitting
                   }
                 >
-                  {flow.isSubmitting ? 'Wird abgeschlossen...' : 'Fall abschließen'}
+                  {flow.status.isSubmitting
+                    ? 'Wird abgeschlossen...'
+                    : 'Fall abschließen'}
                 </Button>
               </div>
             }

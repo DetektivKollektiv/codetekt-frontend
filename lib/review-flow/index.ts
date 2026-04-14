@@ -13,6 +13,7 @@ import { reviewTemplateSchema } from '@/lib/schemas/template-schemas';
 import { ReviewStep } from '@/lib/types';
 import { getCaseKeywords } from '@/lib/utils/get-case-keywords';
 import { buildInProgressReviewAnswerData } from '@/lib/utils/review-validation';
+import { areStringArraysEqual, isDeepEqual } from './equality';
 
 export type FactcheckSelection = 'yes' | 'no' | null;
 
@@ -76,8 +77,7 @@ const EMPTY_DIRTY_STATE: MetadataDirtyState = {
 };
 
 const hasSameKeywords = (left: string[], right: string[]) => {
-  if (left.length !== right.length) return false;
-  return left.every((keyword, index) => keyword === right[index]);
+  return areStringArraysEqual(left, right);
 };
 
 const hasSameFactcheckDraft = (
@@ -308,12 +308,14 @@ export const hydrateReviewFlowState = (
       },
     );
 
-  const hasUnsavedReviewAnswers =
-    JSON.stringify(buildInProgressReviewAnswerData(previousState.answerDraft)) !==
-    JSON.stringify(previousState.savedReviewAnswers);
+  const hasUnsavedReviewAnswers = !isDeepEqual(
+    buildInProgressReviewAnswerData(previousState.answerDraft),
+    previousState.savedReviewAnswers,
+  );
 
   return {
     ...previousState,
+    currentStepId: snapshot.isSubmitted ? SUBMIT_STEP : previousState.currentStepId,
     isLocked: previousState.isLocked || snapshot.isSubmitted,
     metadataDraft: {
       title: nextTitleDirty
