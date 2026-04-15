@@ -53,6 +53,7 @@ const FinalComment: FC<FinalCommentProps> = ({
         <Textarea
           value={inputValue}
           onChange={(event) => onChange(event.target.value)}
+          aria-label="Abschlusskommentar"
           placeholder="Schreibe deine Antwort hier..."
           maxLength={5000}
           className="min-h-36 w-full resize-none"

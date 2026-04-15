@@ -1,0 +1,892 @@
+{
+    "title": "codetekt-create_report_review",
+    "steps": [
+        {
+            "type": "setViewport",
+            "width": 3325,
+            "height": 1675,
+            "deviceScaleFactor": 1,
+            "isMobile": false,
+            "hasTouch": false,
+            "isLandscape": false
+        },
+        {
+            "type": "navigate",
+            "url": "http://localhost:3000/review/REPLACE_WITH_CASE_ID",
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:3000/review/REPLACE_WITH_CASE_ID",
+                    "title": "codetekt - Plattform"
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.mt-10 > div > div.rounded-xl button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.mt-10 > div > div.rounded-xl button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 17.89581298828125,
+            "offsetX": 359.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Stichwort eingeben (max. 50 Zeichen)"
+                ],
+                [
+                    "div.mt-10 input"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/input"
+                ],
+                [
+                    "pierce/div.mt-10 input"
+                ]
+            ],
+            "offsetY": 22.30902099609375,
+            "offsetX": 322.3541259765625
+        },
+        {
+            "type": "change",
+            "value": "S",
+            "selectors": [
+                [
+                    "aria/Stichwort eingeben (max. 50 Zeichen)"
+                ],
+                [
+                    "div.mt-10 input"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/input"
+                ],
+                [
+                    "pierce/div.mt-10 input"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "keyUp",
+            "key": "s",
+            "target": "main"
+        },
+        {
+            "type": "change",
+            "value": "Stichwort",
+            "selectors": [
+                [
+                    "aria/Stichwort eingeben (max. 50 Zeichen)"
+                ],
+                [
+                    "div.mt-10 input"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/input"
+                ],
+                [
+                    "pierce/div.mt-10 input"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Hinzufügen"
+                ],
+                [
+                    "div.pt-0 > div > div.flex-1 button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/button"
+                ],
+                [
+                    "pierce/div.pt-0 > div > div.flex-1 button"
+                ],
+                [
+                    "text/Hinzufügen"
+                ]
+            ],
+            "offsetY": 27.30902099609375,
+            "offsetX": 63.65087890625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.space-y-2 > button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.space-y-2 > button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 10.9027099609375,
+            "offsetX": 533.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Bericht",
+                    "aria/[role=\"generic\"]"
+                ],
+                [
+                    "div.rounded-xl button:nth-of-type(3) > span"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/button[3]/span"
+                ],
+                [
+                    "pierce/div.rounded-xl button:nth-of-type(3) > span"
+                ]
+            ],
+            "offsetY": 5.3055419921875,
+            "offsetX": 9.4808349609375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.space-y-2 > button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.space-y-2 > button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 14.90966796875,
+            "offsetX": 355.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nein Es liegt kein Faktencheck vor."
+                ],
+                [
+                    "div.pt-0 > div > div.flex-1 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div/div/div/div/button[1]"
+                ],
+                [
+                    "pierce/div.pt-0 > div > div.flex-1 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 87.30902099609375,
+            "offsetX": 320.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.space-y-2 > button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.space-y-2 > button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 20.9166259765625,
+            "offsetX": 351.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 9.343719482421875,
+            "offsetX": 14.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(3) button:nth-of-type(2)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/button[2]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(3) button:nth-of-type(2)"
+                ]
+            ],
+            "offsetY": 14.81072998046875,
+            "offsetX": 7.414794921875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[4]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 10.2760009765625,
+            "offsetX": 12.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.pb-2 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[5]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.pb-2 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 6.74127197265625,
+            "offsetX": 9.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nächste Frage"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Nächste Frage"
+                ]
+            ],
+            "offsetY": 8.75518798828125,
+            "offsetX": 681.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 0.343719482421875,
+            "offsetX": 8.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 9.80902099609375,
+            "offsetX": 13.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[4]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 8.27252197265625,
+            "offsetX": 12.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(5) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[5]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(5) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 10.73956298828125,
+            "offsetX": 13.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(6) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[6]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(6) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 13.204833984375,
+            "offsetX": 14.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.pb-2 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[7]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.pb-2 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 8.6683349609375,
+            "offsetX": 10.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nächste Frage"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Nächste Frage"
+                ]
+            ],
+            "offsetY": 17.6805419921875,
+            "offsetX": 694.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 8.343719482421875,
+            "offsetX": 12.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 9.81072998046875,
+            "offsetX": 6.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[4]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 10.27947998046875,
+            "offsetX": 4.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(5) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[5]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(5) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 10.7430419921875,
+            "offsetX": 15.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.pb-2 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[6]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.pb-2 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 12.21002197265625,
+            "offsetX": 9.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nächste Frage"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Nächste Frage"
+                ]
+            ],
+            "offsetY": 11.22393798828125,
+            "offsetX": 664.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 6.343719482421875,
+            "offsetX": 14.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 5.80902099609375,
+            "offsetX": 3.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(4) > div"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[4]/div"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(4) > div"
+                ]
+            ],
+            "offsetY": 23.267333984375,
+            "offsetX": 735.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[4]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 15.2742919921875,
+            "offsetX": 10.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.pb-2 > div"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[5]/div"
+                ],
+                [
+                    "pierce/div.pb-2 > div"
+                ]
+            ],
+            "offsetY": 2.73260498046875,
+            "offsetX": 740.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.pb-2 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[5]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.pb-2 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 8.73956298828125,
+            "offsetX": 11.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nächste Frage"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Nächste Frage"
+                ]
+            ],
+            "offsetY": 16.95135498046875,
+            "offsetX": 576.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(2) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 9.343719482421875,
+            "offsetX": 8.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[3]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.text-body-md > div:nth-of-type(3) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 13.80902099609375,
+            "offsetX": 7.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[4]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.mt-10 div:nth-of-type(4) button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 4.2742919921875,
+            "offsetX": 11.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "div.pb-2 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div[5]/div/div[2]/button[1]"
+                ],
+                [
+                    "pierce/div.pb-2 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 12.73956298828125,
+            "offsetX": 8.40966796875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nächste Frage"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Nächste Frage"
+                ]
+            ],
+            "offsetY": 17.9652099609375,
+            "offsetX": 485.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Schreibe deine Antwort hier..."
+                ],
+                [
+                    "textarea"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+                ],
+                [
+                    "pierce/textarea"
+                ]
+            ],
+            "offsetY": 100.30902099609375,
+            "offsetX": 402.3541259765625
+        },
+        {
+            "type": "change",
+            "value": "Ein Test Kommentar",
+            "selectors": [
+                [
+                    "aria/Schreibe deine Antwort hier..."
+                ],
+                [
+                    "textarea"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+                ],
+                [
+                    "pierce/textarea"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Kommentar speichern"
+                ],
+                [
+                    "div.mt-10 > div > div.rounded-xl > div.text-body-md button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.mt-10 > div > div.rounded-xl > div.text-body-md button"
+                ],
+                [
+                    "text/Kommentar speichern"
+                ]
+            ],
+            "offsetY": 27.95654296875,
+            "offsetX": 329.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Weiter zum Abschließen"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Weiter zum Abschließen"
+                ]
+            ],
+            "offsetY": 23.9652099609375,
+            "offsetX": 427.3541259765625
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Weiter zum Abschließen"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Weiter zum Abschließen"
+                ]
+            ],
+            "offsetY": 18.9652099609375,
+            "offsetX": 432.3541259765625
+        }
+    ]
+}

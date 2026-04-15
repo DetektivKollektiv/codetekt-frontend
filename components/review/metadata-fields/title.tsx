@@ -52,6 +52,7 @@ const Title: FC<TitleProps> = ({
         <Input
           value={inputValue}
           onChange={(e) => onChange(e.target.value)}
+          aria-label={fieldTitle ?? 'Falltitel'}
           placeholder=""
           maxLength={caseTitleSchema.maxLength!}
           className="w-full"

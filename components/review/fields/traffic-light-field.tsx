@@ -71,6 +71,10 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
               <RadioGroupItem
                 value={option.value.toString()}
                 className="size-6 md:size-5 border-2"
+                aria-label={`${questionText}: ${option.value}`}
+                data-testid="review-traffic-light-option"
+                data-field-id={field.id}
+                data-answer-value={option.value}
                 style={{
                   borderColor: option.color,
                 }}

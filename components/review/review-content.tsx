@@ -349,6 +349,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
                 <Button
                   variant="default"
                   className="w-full"
+                  data-testid="submit-review"
                   onClick={flow.actions.submitReview}
                   disabled={
                     !flow.state.flags.isFinalStepEnabled ||

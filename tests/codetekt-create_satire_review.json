@@ -1,0 +1,395 @@
+{
+    "title": "codetekt-create_satire_review",
+    "steps": [
+        {
+            "type": "setViewport",
+            "width": 1903,
+            "height": 1107,
+            "deviceScaleFactor": 1,
+            "isMobile": false,
+            "hasTouch": false,
+            "isLandscape": false
+        },
+        {
+            "type": "navigate",
+            "url": "http://localhost:3000/",
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:3000/",
+                    "title": "codetekt - Plattform"
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#open-cases div.gap-4 > div:nth-of-type(1) button"
+                ],
+                [
+                    "xpath///*[@id=\"open-cases\"]/div/div[3]/div[1]/div/div/div/div[2]/div[3]/a/button"
+                ],
+                [
+                    "pierce/#open-cases div.gap-4 > div:nth-of-type(1) button"
+                ]
+            ],
+            "offsetY": 22.57806396484375,
+            "offsetX": 60.93572998046875
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.mt-10 > div > div.rounded-xl button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.mt-10 > div > div.rounded-xl button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 26.89581298828125,
+            "offsetX": 423.46527099609375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Stichwort eingeben (max. 50 Zeichen)"
+                ],
+                [
+                    "div.mt-10 input"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/input"
+                ],
+                [
+                    "pierce/div.mt-10 input"
+                ]
+            ],
+            "offsetY": 31.30902099609375,
+            "offsetX": 285.46527099609375
+        },
+        {
+            "type": "change",
+            "value": "S",
+            "selectors": [
+                [
+                    "aria/Stichwort eingeben (max. 50 Zeichen)"
+                ],
+                [
+                    "div.mt-10 input"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/input"
+                ],
+                [
+                    "pierce/div.mt-10 input"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "keyUp",
+            "key": "s",
+            "target": "main"
+        },
+        {
+            "type": "change",
+            "value": "Stichwort",
+            "selectors": [
+                [
+                    "aria/Stichwort eingeben (max. 50 Zeichen)"
+                ],
+                [
+                    "div.mt-10 input"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/input"
+                ],
+                [
+                    "pierce/div.mt-10 input"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Hinzufügen"
+                ],
+                [
+                    "div.pt-0 > div > div.flex-1 button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div[1]/button"
+                ],
+                [
+                    "pierce/div.pt-0 > div > div.flex-1 button"
+                ],
+                [
+                    "text/Hinzufügen"
+                ]
+            ],
+            "offsetY": 18.30902099609375,
+            "offsetX": 50.7620849609375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.space-y-2 > button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.space-y-2 > button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 16.9027099609375,
+            "offsetX": 416.46527099609375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Satire"
+                ],
+                [
+                    "div.mt-10 button:nth-of-type(4)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/button[4]"
+                ],
+                [
+                    "pierce/div.mt-10 button:nth-of-type(4)"
+                ],
+                [
+                    "text/Satire"
+                ]
+            ],
+            "offsetY": 28.30902099609375,
+            "offsetX": 50.5277099609375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.space-y-2 > button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.space-y-2 > button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 21.90966796875,
+            "offsetX": 482.798583984375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Nein Es liegt kein Faktencheck vor."
+                ],
+                [
+                    "div.pt-0 > div > div.flex-1 button:nth-of-type(1)"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/div/div/div/div/div/button[1]"
+                ],
+                [
+                    "pierce/div.pt-0 > div > div.flex-1 button:nth-of-type(1)"
+                ]
+            ],
+            "offsetY": 108.30902099609375,
+            "offsetX": 326.798583984375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Speichern"
+                ],
+                [
+                    "div.space-y-2 > button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.space-y-2 > button"
+                ],
+                [
+                    "text/Speichern"
+                ]
+            ],
+            "offsetY": 19.9166259765625,
+            "offsetX": 448.798583984375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Abschlusskommentar"
+                ],
+                [
+                    "textarea"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+                ],
+                [
+                    "pierce/textarea"
+                ]
+            ],
+            "offsetY": 91.30902099609375,
+            "offsetX": 369.798583984375
+        },
+        {
+            "type": "change",
+            "value": "Test K",
+            "selectors": [
+                [
+                    "aria/Abschlusskommentar"
+                ],
+                [
+                    "textarea"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+                ],
+                [
+                    "pierce/textarea"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "keyUp",
+            "key": "k",
+            "target": "main"
+        },
+        {
+            "type": "change",
+            "value": "Test Kommentar",
+            "selectors": [
+                [
+                    "aria/Abschlusskommentar"
+                ],
+                [
+                    "textarea"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+                ],
+                [
+                    "pierce/textarea"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Kommentar speichern"
+                ],
+                [
+                    "div.mt-10 > div > div.rounded-xl > div.text-body-md button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+                ],
+                [
+                    "pierce/div.mt-10 > div > div.rounded-xl > div.text-body-md button"
+                ],
+                [
+                    "text/Kommentar speichern"
+                ]
+            ],
+            "offsetY": 10.92181396484375,
+            "offsetX": 425.798583984375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Weiter zum Abschließen"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Weiter zum Abschließen"
+                ]
+            ],
+            "offsetY": 33.9305419921875,
+            "offsetX": 439.798583984375
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "aria/Weiter zum Abschließen"
+                ],
+                [
+                    "div.mt-10 div.items-center button"
+                ],
+                [
+                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
+                ],
+                [
+                    "pierce/div.mt-10 div.items-center button"
+                ],
+                [
+                    "text/Weiter zum Abschließen"
+                ]
+            ],
+            "offsetY": 17.9305419921875,
+            "offsetX": 449.798583984375
+        }
+    ]
+}
