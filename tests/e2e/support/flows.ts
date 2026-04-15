@@ -9,10 +9,16 @@ export const createMarker = (prefix: string) =>
 export const caseContentFor = (marker: string) =>
   `https://example.com/codetekt-e2e-${marker}`;
 
-export const signIn = async (page: Page) => {
+export const signIn = async (
+  page: Page,
+  credentials = {
+    email: E2E_USER_EMAIL,
+    password: E2E_USER_PASSWORD,
+  },
+) => {
   await page.goto('/auth/login');
-  await page.getByLabel('Email').fill(E2E_USER_EMAIL);
-  await page.getByLabel('Passwort').fill(E2E_USER_PASSWORD);
+  await page.getByLabel('Email').fill(credentials.email);
+  await page.getByLabel('Passwort').fill(credentials.password);
   await page.getByRole('button', { name: 'Anmelden' }).click();
   await expect(page).toHaveURL(/\/$/);
 };
@@ -86,6 +92,13 @@ const selectNoFactcheck = async (page: Page) => {
   await saveMetadataStep(page);
 };
 
+const confirmExistingReportMetadata = async (page: Page) => {
+  await page.getByRole('button', { name: 'Der Titel passt' }).click();
+  await page.getByRole('button', { name: 'Die Stichwörter passen' }).click();
+  await page.getByRole('button', { name: 'Die Kategorie passt' }).click();
+  await page.getByRole('button', { name: 'Faktencheck passt' }).click();
+};
+
 const selectExistingFactcheck = async (page: Page) => {
   await page
     .getByRole('button', { name: /Ja\s+Es gibt bereits einen Faktencheck\./ })
@@ -107,10 +120,7 @@ const submitReviewWithComment = async (page: Page) => {
   ).toBeVisible();
 };
 
-export const reviewReport = async (page: Page, caseId: string) => {
-  await page.goto(`/review/${caseId}`);
-  await fillBasicReviewMetadata(page, 'E2E Report Review', 'Bericht');
-  await selectNoFactcheck(page);
+const answerReportQuestionsAndSubmit = async (page: Page) => {
   await expect(
     page.locator('[data-testid="review-traffic-light-option"]').first(),
   ).toBeVisible();
@@ -127,6 +137,19 @@ export const reviewReport = async (page: Page, caseId: string) => {
   }
 
   await submitReviewWithComment(page);
+};
+
+export const reviewReport = async (page: Page, caseId: string) => {
+  await page.goto(`/review/${caseId}`);
+  await fillBasicReviewMetadata(page, 'E2E Report Review', 'Bericht');
+  await selectNoFactcheck(page);
+  await answerReportQuestionsAndSubmit(page);
+};
+
+export const reviewExistingReport = async (page: Page, caseId: string) => {
+  await page.goto(`/review/${caseId}`);
+  await confirmExistingReportMetadata(page);
+  await answerReportQuestionsAndSubmit(page);
 };
 
 export const reviewSatire = async (page: Page, caseId: string) => {

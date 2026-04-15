@@ -12,7 +12,7 @@ type CaseRecord = Pick<
 >;
 
 let adminClient: SupabaseClient<Database> | null = null;
-let e2eUserId: string | null = null;
+const userIdByEmail = new Map<string, string>();
 
 export const getAdminClient = () => {
   if (adminClient) return adminClient;
@@ -37,8 +37,9 @@ const delay = (milliseconds: number) =>
     setTimeout(resolve, milliseconds);
   });
 
-export const getE2EUserId = async () => {
-  if (e2eUserId) return e2eUserId;
+export const getUserIdByEmail = async (email: string) => {
+  const cachedUserId = userIdByEmail.get(email);
+  if (cachedUserId) return cachedUserId;
 
   const { data, error } = await getAdminClient().auth.admin.listUsers({
     page: 1,
@@ -46,14 +47,16 @@ export const getE2EUserId = async () => {
   });
   throwIfError('List Supabase users', error);
 
-  const user = data.users.find((candidate) => candidate.email === E2E_USER_EMAIL);
+  const user = data.users.find((candidate) => candidate.email === email);
   if (!user) {
-    throw new Error(`No Supabase auth user found for E2E_USER_EMAIL.`);
+    throw new Error(`No Supabase auth user found for ${email}.`);
   }
 
-  e2eUserId = user.id;
-  return e2eUserId;
+  userIdByEmail.set(email, user.id);
+  return user.id;
 };
+
+export const getE2EUserId = () => getUserIdByEmail(E2E_USER_EMAIL);
 
 export const getCaseByContent = async (
   content: string,
@@ -80,8 +83,11 @@ export const waitForCaseByContent = async (content: string) => {
   throw new Error(`Case was not persisted for ${content}`);
 };
 
-export const waitForSubmittedReview = async (caseId: string) => {
-  const userId = await getE2EUserId();
+export const waitForSubmittedReview = async (
+  caseId: string,
+  userEmail = E2E_USER_EMAIL,
+) => {
+  const userId = await getUserIdByEmail(userEmail);
   const deadline = Date.now() + 20_000;
 
   while (Date.now() < deadline) {
@@ -98,6 +104,24 @@ export const waitForSubmittedReview = async (caseId: string) => {
   }
 
   throw new Error(`Submitted review was not persisted for case ${caseId}`);
+};
+
+export const waitForAggregatedReview = async (caseId: string) => {
+  const deadline = Date.now() + 20_000;
+
+  while (Date.now() < deadline) {
+    const { data, error } = await getAdminClient()
+      .from('review_aggregations')
+      .select('case_id')
+      .eq('case_id', caseId)
+      .maybeSingle();
+
+    throwIfError('Fetch aggregated review', error);
+    if (data?.case_id) return data.case_id;
+    await delay(250);
+  }
+
+  throw new Error(`Aggregated review was not persisted for case ${caseId}`);
 };
 
 export const cleanupCase = async (caseId: string) => {
