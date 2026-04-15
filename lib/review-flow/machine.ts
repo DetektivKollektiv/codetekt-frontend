@@ -105,8 +105,8 @@ export const transitionReviewFlow = (
       if (state.isLocked) return state;
       return {
         ...state,
-        metadataDraft: { ...state.metadataDraft, keywords: event.value },
-        metadataDirty: { ...state.metadataDirty, keywords: true },
+        metadataDraft: { ...state.metadataDraft, userKeywords: event.value },
+        metadataDirty: { ...state.metadataDirty, keywords: event.value.length > 0 },
       };
     case 'UPDATE_CATEGORY':
       if (state.isLocked) return state;

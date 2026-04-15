@@ -17,8 +17,8 @@ import type { SetCaseTitleData } from '@/lib/queries/setCaseTitle';
 import {
   caseCategorySchema,
   caseFactcheckSchema,
-  caseKeywordsSchema,
   caseTitleSchema,
+  userKeywordsSchema,
 } from '@/lib/schemas/case-metadata-schemas';
 import type {
   CaseCategoryValue,
@@ -96,7 +96,7 @@ const createMetadataSaveHandlers = ({
   const saveKeywords = async (values: string[]): Promise<boolean> => {
     const authorId = getRequiredUserId(userId);
     if (!authorId) return false;
-    const result = caseKeywordsSchema.safeParse(values);
+    const result = userKeywordsSchema.safeParse(values);
     if (!result.success) return false;
 
     try {

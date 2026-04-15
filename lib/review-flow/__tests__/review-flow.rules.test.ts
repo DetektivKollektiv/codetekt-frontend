@@ -9,6 +9,7 @@ import {
 } from '@/lib/constants';
 import { Case } from '@/lib/queries/getCase';
 import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
+import { userKeywordsSchema } from '@/lib/schemas/case-metadata-schemas';
 import { Field } from '@/lib/schemas/field-schemas';
 import {
   buildReachableSteps,
@@ -325,7 +326,22 @@ describe('R5.1 - title', () => {
 });
 
 describe('R5.2 - keywords', () => {
-  it('counts only current-user keywords as complete and aggregates all keywords', () => {
+  it('requires user keywords only while the case has no keywords', () => {
+    const flowSnapshot = snapshot({
+      caseData: completeCase({ case_keywords: [] }),
+    });
+    const selection = selectReviewFlow(initialState(flowSnapshot), flowSnapshot);
+
+    expect(flowSnapshot.hasCaseKeywords).toBe(false);
+    expect(flowSnapshot.hasUserKeywords).toBe(false);
+    expect(selection.effective.metadataComplete).toBe(false);
+    expect(selection.reachableSteps.map((step) => step.id)).toEqual([
+      METADATA_STEP_TITLE,
+      METADATA_STEP_KEYWORDS,
+    ]);
+  });
+
+  it('counts case keywords as complete and keeps user keywords separate', () => {
     const flowSnapshot = snapshot({
       caseData: completeCase({
         case_keywords: [
@@ -336,12 +352,70 @@ describe('R5.2 - keywords', () => {
     });
     const selection = selectReviewFlow(initialState(flowSnapshot), flowSnapshot);
 
-    expect(flowSnapshot.hasKeywords).toBe(false);
-    expect(selection.displayedKeywords).toEqual(['Alpha']);
+    expect(flowSnapshot.hasCaseKeywords).toBe(true);
+    expect(flowSnapshot.hasUserKeywords).toBe(false);
+    expect(selection.effective.metadataComplete).toBe(true);
+    expect(selection.caseKeywords).toEqual(['Alpha']);
+    expect(selection.userKeywordDraft).toEqual([]);
     expect(mergeKeywordsCaseInsensitive(['Alpha'], ['alpha', 'Beta'])).toEqual([
       'Alpha',
       'Beta',
     ]);
+  });
+
+  it('allows an optional current-user keyword draft without duplicating case keywords', () => {
+    const flowSnapshot = snapshot({
+      caseData: completeCase({
+        case_keywords: [{ created_by: 'other-user', values: ['Alpha'] }],
+      }),
+    });
+    const state = transitionReviewFlow(initialState(flowSnapshot), {
+      type: 'UPDATE_KEYWORDS',
+      value: ['alpha', 'Beta'],
+    });
+    const selection = selectReviewFlow(state, flowSnapshot);
+
+    expect(selection.caseKeywords).toEqual(['Alpha']);
+    expect(selection.userKeywordDraft).toEqual(['alpha', 'Beta']);
+    expect(
+      mergeKeywordsCaseInsensitive(selection.caseKeywords, selection.userKeywordDraft),
+    ).toEqual(['Alpha', 'Beta']);
+    expect(selection.effective.metadataComplete).toBe(false);
+    expect(selection.allSteps.find((step) => step.id === METADATA_STEP_KEYWORDS))
+      .toMatchObject({ isComplete: false, status: 'incomplete' });
+  });
+
+  it('treats existing current-user keywords as saved and read-only in the draft', () => {
+    const flowSnapshot = snapshot();
+    const selection = selectReviewFlow(initialState(flowSnapshot), flowSnapshot);
+
+    expect(flowSnapshot.hasCaseKeywords).toBe(true);
+    expect(flowSnapshot.hasUserKeywords).toBe(true);
+    expect(selection.caseKeywords).toEqual(['alpha']);
+    expect(selection.userKeywordDraft).toEqual([]);
+  });
+
+  it('keeps the keyword step complete when the case keyword limit is reached', () => {
+    const caseKeywordValues = Array.from({ length: 10 }, (_, index) => `kw-${index}`);
+    const flowSnapshot = snapshot({
+      caseData: completeCase({
+        case_keywords: [{ created_by: 'other-user', values: caseKeywordValues }],
+      }),
+    });
+    const selection = selectReviewFlow(initialState(flowSnapshot), flowSnapshot);
+
+    expect(selection.caseKeywords).toHaveLength(10);
+    expect(selection.effective.hasCaseKeywords).toBe(true);
+    expect(selection.allSteps.find((step) => step.id === METADATA_STEP_KEYWORDS))
+      .toMatchObject({ isComplete: true });
+  });
+
+  it('validates 1-3 keywords per user keyword set', () => {
+    expect(userKeywordsSchema.safeParse(['one']).success).toBe(true);
+    expect(userKeywordsSchema.safeParse(['one', 'two', 'three']).success).toBe(true);
+    expect(userKeywordsSchema.safeParse([]).success).toBe(false);
+    expect(userKeywordsSchema.safeParse(['one', 'two', 'three', 'four']).success)
+      .toBe(false);
   });
 });
 

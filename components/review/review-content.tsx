@@ -51,6 +51,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
   });
 
   const { currentStep, currentQuestion } = flow.navigation;
+  const hasUserKeywordDraft = flow.state.userKeywordDraft.length > 0;
 
   if (!currentStep) {
     return null;
@@ -137,19 +138,24 @@ const ReviewContent: FC<ReviewContentProps> = ({
 
             {currentStep.id === METADATA_STEP_KEYWORDS && (
               <Keywords
-                existingKeywords={flow.state.existingKeywords}
-                hasUserKeywords={flow.state.flags.hasKeywords}
-                newKeywords={flow.state.keywordDraftKeywords}
+                caseKeywords={flow.state.caseKeywords}
+                hasCaseKeywords={flow.state.flags.hasCaseKeywords}
+                hasUserKeywords={flow.state.flags.hasUserKeywords}
+                userKeywordDraft={flow.state.userKeywordDraft}
                 onChangeKeywords={flow.actions.metadata.changeKeywords}
-                isComplete={flow.state.flags.hasKeywords}
+                isComplete={flow.state.flags.hasCaseKeywords}
                 onSave={
-                  flow.state.flags.hasKeywords
+                  flow.state.flags.hasCaseKeywords && !hasUserKeywordDraft
                     ? flow.actions.confirmCurrentStep
                     : flow.actions.metadata.saveKeywords
                 }
                 isSaving={flow.status.isKeywordsPending}
                 fieldTitle={currentStep.fieldTitle}
-                saveLabel={currentStep.primaryActionLabel}
+                saveLabel={
+                  flow.state.flags.hasCaseKeywords && hasUserKeywordDraft
+                    ? 'Stichwörter speichern'
+                    : currentStep.primaryActionLabel
+                }
                 disputeLabel={currentStep.disputeActionLabel}
                 onCreateDispute={() =>
                   flow.actions.dispute.open({
@@ -164,8 +170,8 @@ const ReviewContent: FC<ReviewContentProps> = ({
                         min_length: 1,
                       },
                     ],
-                    answer_value: flow.state.existingKeywords.join(', '),
-                    initial_answer_value: flow.state.existingKeywords.join(', '),
+                    answer_value: flow.state.caseKeywords.join(', '),
+                    initial_answer_value: flow.state.caseKeywords.join(', '),
                   })
                 }
                 issues={flow.validation.metadata.keywords}

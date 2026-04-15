@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
 export const CASE_KEYWORDS_LIMITS = {
-  minKeywords: 1,
-  // Per-User-Limit (validiert über caseKeywordsSchema beim Speichern)
-  maxKeywords: 3,
+  minUserKeywords: 1,
+  maxUserKeywords: 3,
   // Gesamt-Limit pro Fall (Frontend-UI-Check im Keywords-Field)
   maxCaseKeywords: 10,
   minKeywordLength: 1,
@@ -15,7 +14,7 @@ export const caseTitleSchema = z
   .min(10, 'Mindestens 10 Zeichen erforderlich')
   .max(500, 'Maximal 500 Zeichen erlaubt');
 
-export const caseKeywordsSchema = z
+export const userKeywordsSchema = z
   // Validiert ausschließlich das vom aktuellen User neu zu speichernde Set
   .array(
     z
@@ -27,12 +26,12 @@ export const caseKeywordsSchema = z
       ),
   )
   .min(
-    CASE_KEYWORDS_LIMITS.minKeywords,
+    CASE_KEYWORDS_LIMITS.minUserKeywords,
     'Mindestens ein Stichwort erforderlich',
   )
   .max(
-    CASE_KEYWORDS_LIMITS.maxKeywords,
-    `Maximal ${CASE_KEYWORDS_LIMITS.maxKeywords} Stichwörter erlaubt`,
+    CASE_KEYWORDS_LIMITS.maxUserKeywords,
+    `Maximal ${CASE_KEYWORDS_LIMITS.maxUserKeywords} Stichwörter erlaubt`,
   );
 
 export const caseCategorySchema = z.enum(

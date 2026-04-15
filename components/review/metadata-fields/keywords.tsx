@@ -10,8 +10,9 @@ import { FC, useState } from 'react';
 import { $ZodIssue } from 'zod/v4/core';
 
 interface KeywordsProps {
-  existingKeywords: string[];
-  newKeywords: string[];
+  caseKeywords: string[];
+  userKeywordDraft: string[];
+  hasCaseKeywords: boolean;
   hasUserKeywords: boolean;
   onChangeKeywords: (values: string[]) => void;
   isComplete: boolean;
@@ -25,8 +26,9 @@ interface KeywordsProps {
 }
 
 const Keywords: FC<KeywordsProps> = ({
-  existingKeywords,
-  newKeywords,
+  caseKeywords,
+  userKeywordDraft,
+  hasCaseKeywords,
   hasUserKeywords,
   onChangeKeywords,
   isComplete,
@@ -40,28 +42,30 @@ const Keywords: FC<KeywordsProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const issue = issues[0] ?? null;
-  const totalCaseKeywords = existingKeywords.length + newKeywords.length;
+  const totalCaseKeywords = caseKeywords.length + userKeywordDraft.length;
   const hasReachedCaseKeywordsLimit =
     totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords;
-  const isReviewMode = isComplete && existingKeywords.length > 0;
 
   const handleAddKeyword = () => {
     const trimmed = inputValue.trim();
 
-    // Validierungen
     if (!trimmed) return;
     if (trimmed.length > CASE_KEYWORDS_LIMITS.maxKeywordLength) return;
-    if (newKeywords.some((kw) => kw.toLowerCase() === trimmed.toLowerCase()))
+    if (
+      [...caseKeywords, ...userKeywordDraft].some(
+        (kw) => kw.toLowerCase() === trimmed.toLowerCase(),
+      )
+    )
       return;
-    if (newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords) return;
+    if (userKeywordDraft.length >= CASE_KEYWORDS_LIMITS.maxUserKeywords) return;
     if (totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords) return;
 
-    onChangeKeywords([...newKeywords, trimmed]);
+    onChangeKeywords([...userKeywordDraft, trimmed]);
     setInputValue('');
   };
 
   const handleRemoveKeyword = (index: number) => {
-    onChangeKeywords(newKeywords.filter((_, i) => i !== index));
+    onChangeKeywords(userKeywordDraft.filter((_, i) => i !== index));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,43 +76,47 @@ const Keywords: FC<KeywordsProps> = ({
   };
 
   const handleSave = () => {
-    if (hasUserKeywords && !isReviewMode) return;
+    if (!canSave()) return;
     onSave();
   };
 
   const canAddKeyword = () => {
-    if (isReviewMode) return false;
     if (hasUserKeywords) return false;
     if (totalCaseKeywords >= CASE_KEYWORDS_LIMITS.maxCaseKeywords) return false;
     const trimmed = inputValue.trim();
     if (!trimmed) return false;
     if (trimmed.length > CASE_KEYWORDS_LIMITS.maxKeywordLength) return false;
-    if (newKeywords.some((kw) => kw.toLowerCase() === trimmed.toLowerCase()))
+    if (
+      [...caseKeywords, ...userKeywordDraft].some(
+        (kw) => kw.toLowerCase() === trimmed.toLowerCase(),
+      )
+    )
       return false;
-    if (newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords) return false;
+    if (userKeywordDraft.length >= CASE_KEYWORDS_LIMITS.maxUserKeywords) return false;
     return true;
   };
 
   const canSave = () => {
-    if (isReviewMode) return !isSaving;
-    if (hasUserKeywords) return false;
+    if (isSaving) return false;
+    if (hasUserKeywords) return true;
     if (totalCaseKeywords > CASE_KEYWORDS_LIMITS.maxCaseKeywords) return false;
-    return newKeywords.length > 0 && !isSaving;
+    if (hasCaseKeywords && userKeywordDraft.length === 0) return true;
+    return userKeywordDraft.length > 0;
   };
 
   return (
     <FieldContainer
       title={fieldTitle ?? ''}
-      isDisputable={isComplete && existingKeywords.length > 0}
+      isDisputable={isComplete && caseKeywords.length > 0}
       onCreateReviewDispute={() => onCreateDispute?.()}
       onSave={handleSave}
-      isSaveDisabled={!canSave() || (hasUserKeywords && !isReviewMode)}
+      isSaveDisabled={!canSave()}
       saveLabel={isSaving ? 'Wird gespeichert...' : (saveLabel ?? 'Speichern')}
       disputeLabel={disputeLabel}
     >
       <div className="space-y-6">
         {/* Erstellte Stichwörter (bestehend + neu) */}
-        {(existingKeywords.length > 0 || newKeywords.length > 0) && (
+        {(caseKeywords.length > 0 || userKeywordDraft.length > 0) && (
           <div className="space-y-2">
             <Label className="text-body-sm font-medium text-foreground">
               Erstellte Stichwörter{' '}
@@ -118,7 +126,7 @@ const Keywords: FC<KeywordsProps> = ({
             </Label>
             <div className="flex flex-wrap gap-2">
               {/* Bestehende Keywords (read-only) */}
-              {existingKeywords.map((kw) => (
+              {caseKeywords.map((kw) => (
                 <Tag
                   key={`existing-${kw}`}
                   label={kw}
@@ -127,13 +135,13 @@ const Keywords: FC<KeywordsProps> = ({
                 />
               ))}
               {/* Neu hinzugefügte Keywords (removable) */}
-              {newKeywords.map((kw, index) => (
+              {userKeywordDraft.map((kw, index) => (
                 <Tag
                   key={`new-${index}`}
                   label={kw}
                   removable={true}
                   onRemove={() => handleRemoveKeyword(index)}
-                  disabled={isSaving || hasUserKeywords || isReviewMode}
+                  disabled={isSaving || hasUserKeywords}
                   variant="primary"
                 />
               ))}
@@ -155,11 +163,10 @@ const Keywords: FC<KeywordsProps> = ({
               aria-label={`Stichwort eingeben (max. ${CASE_KEYWORDS_LIMITS.maxKeywordLength} Zeichen)`}
               placeholder={`Stichwort eingeben (max. ${CASE_KEYWORDS_LIMITS.maxKeywordLength} Zeichen)`}
               disabled={
-                isReviewMode ||
                 hasUserKeywords ||
                 hasReachedCaseKeywordsLimit ||
                 isSaving ||
-                newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords
+                userKeywordDraft.length >= CASE_KEYWORDS_LIMITS.maxUserKeywords
               }
               maxLength={CASE_KEYWORDS_LIMITS.maxKeywordLength}
               className="w-full"
@@ -171,7 +178,6 @@ const Keywords: FC<KeywordsProps> = ({
                 !canAddKeyword() ||
                 isSaving ||
                 hasUserKeywords ||
-                isReviewMode ||
                 hasReachedCaseKeywordsLimit
               }
               variant="secondary"
@@ -186,10 +192,10 @@ const Keywords: FC<KeywordsProps> = ({
                 {issue.message}
               </Label>
             )}
-            {newKeywords.length >= CASE_KEYWORDS_LIMITS.maxKeywords && (
+            {userKeywordDraft.length >= CASE_KEYWORDS_LIMITS.maxUserKeywords && (
               <Label className="text-muted-foreground text-body-sm">
                 Du hast die Maximale Anzahl von{' '}
-                {CASE_KEYWORDS_LIMITS.maxKeywords} Stichwörtern erreicht
+                {CASE_KEYWORDS_LIMITS.maxUserKeywords} Stichwörtern erreicht
               </Label>
             )}
             {inputValue.trim().length >
@@ -200,7 +206,7 @@ const Keywords: FC<KeywordsProps> = ({
               </Label>
             )}
             {inputValue.trim() &&
-              newKeywords.some(
+              [...caseKeywords, ...userKeywordDraft].some(
                 (kw) => kw.toLowerCase() === inputValue.trim().toLowerCase(),
               ) && (
                 <Label className="text-destructive text-body-sm">
@@ -208,7 +214,7 @@ const Keywords: FC<KeywordsProps> = ({
                 </Label>
               )}
             {hasUserKeywords && (
-              <Label className="text-destructive text-body-sm">
+              <Label className="text-muted-foreground text-body-sm">
                 Du hast bereits Stichwörter für diesen Fall erstellt.
               </Label>
             )}

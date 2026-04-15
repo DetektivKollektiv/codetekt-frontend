@@ -19,7 +19,7 @@ export type FactcheckSelection = 'yes' | 'no' | null;
 
 export interface MetadataDraftState {
   title: string;
-  keywords: string[];
+  userKeywords: string[];
   category: CaseCategoryValue | null;
   factcheckSelection: FactcheckSelection;
   factcheckValue: string;
@@ -39,15 +39,15 @@ export interface ReviewFlowSnapshot {
   isReviewTemplateFetching: boolean;
   userId?: string;
   hasTitle: boolean;
-  hasKeywords: boolean;
+  hasCaseKeywords: boolean;
+  hasUserKeywords: boolean;
   hasCategory: boolean;
   hasFactcheckStepSaved: boolean;
   shouldSkipReviewQuestions: boolean;
   isMetadataComplete: boolean;
   caseCategory: CaseCategoryValue | null;
-  existingKeywords: string[];
-  userExistingKeywords: string[];
-  caseKeywords: NonNullable<Case>['case_keywords'];
+  caseKeywords: string[];
+  userKeywords: string[];
   metadataInitialDraft: MetadataDraftState;
   hasUserComment: boolean;
   latestUserComment: string;
@@ -184,23 +184,24 @@ export const buildReviewFlowSnapshot = ({
   isReviewTemplateFetching: boolean;
   userId?: string;
 }): ReviewFlowSnapshot => {
-  const userExistingKeywords = userId
+  const userKeywords = userId
     ? (caseData.case_keywords?.find(
         (keywordSet) => keywordSet.created_by === userId,
       )?.values ?? [])
     : [];
-  const existingKeywords = getCaseKeywords(caseData);
+  const caseKeywords = getCaseKeywords(caseData);
   const parsedCaseCategory = caseCategorySchema.safeParse(
     caseData.case_categories?.value,
   );
   const caseCategory = parsedCaseCategory.success ? parsedCaseCategory.data : null;
   const hasTitle = !!caseData.case_titles;
-  const hasKeywords = userExistingKeywords.length > 0 && Boolean(userId);
+  const hasCaseKeywords = caseKeywords.length > 0;
+  const hasUserKeywords = userKeywords.length > 0 && Boolean(userId);
   const hasCategory = !!caseData.case_categories;
   const hasFactcheckStepSaved = !!caseData.case_factchecks;
   const shouldSkipReviewQuestions =
     caseData.case_factchecks?.has_factcheck === true;
-  const isMetadataComplete = hasTitle && hasKeywords && hasCategory;
+  const isMetadataComplete = hasTitle && hasCaseKeywords && hasCategory;
   const isTemplateSchemaValid =
     reviewTemplateSchema.array().safeParse(reviewTemplate).success;
   const latestUserComment = getLatestUserComment(caseData, userId);
@@ -213,18 +214,18 @@ export const buildReviewFlowSnapshot = ({
     isReviewTemplateFetching,
     userId,
     hasTitle,
-    hasKeywords,
+    hasCaseKeywords,
+    hasUserKeywords,
     hasCategory,
     hasFactcheckStepSaved,
     shouldSkipReviewQuestions,
     isMetadataComplete,
     caseCategory,
-    existingKeywords,
-    userExistingKeywords,
-    caseKeywords: caseData.case_keywords ?? [],
+    caseKeywords,
+    userKeywords,
     metadataInitialDraft: {
       title: getInitialTitle(caseData),
-      keywords: userExistingKeywords,
+      userKeywords,
       category:
         (caseData.case_categories?.value as CaseCategoryValue | null) ?? null,
       factcheckSelection:
@@ -257,7 +258,7 @@ export const createInitialReviewFlowState = (
     metadataDirty: EMPTY_DIRTY_STATE,
     metadataSaved: {
       title: snapshot.hasTitle,
-      keywords: snapshot.hasKeywords,
+      keywords: snapshot.hasCaseKeywords,
       category: snapshot.hasCategory,
       factcheck: snapshot.hasFactcheckStepSaved,
     },
@@ -289,8 +290,8 @@ export const hydrateReviewFlowState = (
   const nextKeywordsDirty =
     previousState.metadataDirty.keywords &&
     !hasSameKeywords(
-      previousState.metadataDraft.keywords,
-      snapshot.metadataInitialDraft.keywords,
+      previousState.metadataDraft.userKeywords,
+      snapshot.metadataInitialDraft.userKeywords,
     );
   const nextCategoryDirty =
     previousState.metadataDirty.category &&
@@ -321,9 +322,9 @@ export const hydrateReviewFlowState = (
       title: nextTitleDirty
         ? previousState.metadataDraft.title
         : snapshot.metadataInitialDraft.title,
-      keywords: nextKeywordsDirty
-        ? previousState.metadataDraft.keywords
-        : snapshot.metadataInitialDraft.keywords,
+      userKeywords: nextKeywordsDirty
+        ? previousState.metadataDraft.userKeywords
+        : snapshot.metadataInitialDraft.userKeywords,
       category: nextCategoryDirty
         ? previousState.metadataDraft.category
         : snapshot.metadataInitialDraft.category,
@@ -342,7 +343,7 @@ export const hydrateReviewFlowState = (
     },
     metadataSaved: {
       title: previousState.metadataSaved.title || snapshot.hasTitle,
-      keywords: previousState.metadataSaved.keywords || snapshot.hasKeywords,
+      keywords: previousState.metadataSaved.keywords || snapshot.hasCaseKeywords,
       category: previousState.metadataSaved.category || snapshot.hasCategory,
       factcheck:
         previousState.metadataSaved.factcheck || snapshot.hasFactcheckStepSaved,

@@ -64,7 +64,7 @@ export const useReviewMetadataActions = ({
         issues: issues.keywords,
         step: 'keywords',
         nextStepId: METADATA_STEP_CATEGORY,
-        save: () => persistence.metadata.saveKeywords(state.metadataDraft.keywords),
+        save: () => persistence.metadata.saveKeywords(state.metadataDraft.userKeywords),
       }),
     saveCategory: () => {
       if (!state.metadataDraft.category) {

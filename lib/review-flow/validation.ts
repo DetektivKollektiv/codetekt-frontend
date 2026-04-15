@@ -7,8 +7,8 @@ import {
 import {
   caseCategorySchema,
   caseFactcheckSchema,
-  caseKeywordsSchema,
   caseTitleSchema,
+  userKeywordsSchema,
 } from '@/lib/schemas/case-metadata-schemas';
 import { ReviewStepStatus } from '@/lib/types';
 import { $ZodIssue } from 'zod/v4/core';
@@ -54,9 +54,11 @@ export const validateMetadataDraft = ({
   const titleResult = metadataSaved.title
     ? null
     : caseTitleSchema.safeParse(metadataDraft.title);
-  const keywordsResult = metadataSaved.keywords
-    ? null
-    : caseKeywordsSchema.safeParse(metadataDraft.keywords);
+  const shouldValidateUserKeywords =
+    !metadataSaved.keywords || metadataDraft.userKeywords.length > 0;
+  const keywordsResult = shouldValidateUserKeywords
+    ? userKeywordsSchema.safeParse(metadataDraft.userKeywords)
+    : null;
   const categoryResult = metadataSaved.category
     ? null
     : caseCategorySchema.safeParse(metadataDraft.category);

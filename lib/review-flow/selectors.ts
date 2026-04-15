@@ -38,7 +38,9 @@ import type { MetadataValidationIssues } from './validation';
 
 export interface EffectiveReviewFlowState {
   hasTitle: boolean;
-  hasKeywords: boolean;
+  hasCaseKeywords: boolean;
+  hasUserKeywords: boolean;
+  hasUnsavedUserKeywordDraft: boolean;
   hasCategory: boolean;
   hasFactcheckStepSaved: boolean;
   caseCategory: CaseCategoryValue | null;
@@ -62,8 +64,8 @@ export interface ReviewFlowSelection {
   currentStep: ReviewStep | null;
   currentQuestion: NonNullable<ReviewTemplate>[number] | null;
   currentStepIndex: number;
-  displayedKeywords: string[];
-  keywordDraftKeywords: string[];
+  caseKeywords: string[];
+  userKeywordDraft: string[];
   displayedFinalComment: string;
   isFinalCommentInputDisabled: boolean;
   hasUnsavedReviewAnswers: boolean;
@@ -78,7 +80,12 @@ export const getEffectiveReviewFlowState = (
   snapshot: ReviewFlowSnapshot,
 ): EffectiveReviewFlowState => {
   const hasTitle = state.metadataSaved.title;
-  const hasKeywords = state.metadataSaved.keywords;
+  const hasCaseKeywords = state.metadataSaved.keywords;
+  const hasUnsavedUserKeywordDraft =
+    state.metadataDirty.keywords && state.metadataDraft.userKeywords.length > 0;
+  const hasUserKeywords =
+    snapshot.hasUserKeywords ||
+    (!state.metadataDirty.keywords && state.metadataDraft.userKeywords.length > 0);
   const hasCategory = state.metadataSaved.category;
   const hasFactcheckStepSaved = state.metadataSaved.factcheck;
   const caseCategory = hasCategory
@@ -86,14 +93,17 @@ export const getEffectiveReviewFlowState = (
     : snapshot.caseCategory;
   const shouldSkipReviewQuestions =
     hasFactcheckStepSaved && state.metadataDraft.factcheckSelection === 'yes';
-  const metadataComplete = hasTitle && hasKeywords && hasCategory;
+  const metadataComplete =
+    hasTitle && hasCaseKeywords && hasCategory && !hasUnsavedUserKeywordDraft;
   const finalStepEnabled =
     metadataComplete &&
     (shouldSkipReviewQuestions || snapshot.isTemplateSchemaValid);
 
   return {
     hasTitle,
-    hasKeywords,
+    hasCaseKeywords,
+    hasUserKeywords,
+    hasUnsavedUserKeywordDraft,
     hasCategory,
     hasFactcheckStepSaved,
     caseCategory,
@@ -104,10 +114,10 @@ export const getEffectiveReviewFlowState = (
 };
 
 export const mergeKeywordsCaseInsensitive = (
-  existingKeywords: string[],
+  caseKeywords: string[],
   draftKeywords: string[],
 ) => {
-  const mergedKeywords = [...existingKeywords];
+  const mergedKeywords = [...caseKeywords];
 
   draftKeywords.forEach((keyword) => {
     if (
@@ -199,17 +209,20 @@ const buildReviewSteps = ({
     {
       id: METADATA_STEP_KEYWORDS,
       label: 'Stichwörter',
-      description: effective.hasKeywords
+      description: effective.hasCaseKeywords
         ? 'Bitte prüfe die Stichwörter, die für diesen Fall bereits vergeben wurden. Wenn die Stichwörter den Fall gut beschreiben, klicke auf "Die Stichwörter passen". Falls nicht, klicke auf "Stichwörter beanstanden", damit die Stichwörter von unserer Moderation geprüft werden können.'
         : 'Ergänze passende Stichwörter, die den Inhalt des Falls treffend beschreiben und die Einordnung erleichtern.',
-      primaryActionLabel: effective.hasKeywords
+      primaryActionLabel: effective.hasCaseKeywords
         ? 'Die Stichwörter passen'
         : 'Speichern',
       disputeActionLabel: 'Stichwörter beanstanden',
       isIndented: false,
-      status: statuses.keywords,
+      status: effective.hasUnsavedUserKeywordDraft
+        ? 'incomplete'
+        : statuses.keywords,
       kind: 'metadata',
-      isComplete: effective.hasKeywords,
+      isComplete:
+        effective.hasCaseKeywords && !effective.hasUnsavedUserKeywordDraft,
     },
     {
       id: METADATA_STEP_CATEGORY,
@@ -400,15 +413,15 @@ export const selectReviewFlow = (
     currentStep,
     currentQuestion,
     currentStepIndex,
-    displayedKeywords: effective.hasKeywords
+    caseKeywords: effective.hasUserKeywords
       ? mergeKeywordsCaseInsensitive(
-          snapshot.existingKeywords,
-          state.metadataDraft.keywords,
+          snapshot.caseKeywords,
+          state.metadataDraft.userKeywords,
         )
-      : snapshot.existingKeywords,
-    keywordDraftKeywords: effective.hasKeywords
+      : snapshot.caseKeywords,
+    userKeywordDraft: effective.hasUserKeywords
       ? []
-      : state.metadataDraft.keywords,
+      : state.metadataDraft.userKeywords,
     displayedFinalComment: snapshot.hasUserComment
       ? snapshot.latestUserComment
       : state.finalCommentDraft,
