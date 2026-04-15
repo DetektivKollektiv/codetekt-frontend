@@ -59,23 +59,58 @@ const answerVisibleTrafficLights = async (page: Page) => {
   }
 };
 
-export const reviewReport = async (page: Page, caseId: string) => {
-  await page.goto(`/review/${caseId}`);
-
-  await page.getByLabel('Titel').fill(`E2E Report Review ${Date.now()}`);
+const saveMetadataStep = async (page: Page) => {
   await page.getByRole('button', { name: 'Speichern' }).click();
+};
+
+const fillBasicReviewMetadata = async (
+  page: Page,
+  titlePrefix: string,
+  category: 'Bericht' | 'Satire',
+) => {
+  await page.getByLabel('Titel').fill(`${titlePrefix} ${Date.now()}`);
+  await saveMetadataStep(page);
 
   await page.getByLabel('Stichwort eingeben (max. 50 Zeichen)').fill('Stichwort');
   await page.getByRole('button', { name: 'Hinzufügen' }).click();
-  await page.getByRole('button', { name: 'Speichern' }).click();
+  await saveMetadataStep(page);
 
-  await page.getByRole('button', { name: 'Bericht' }).click();
-  await page.getByRole('button', { name: 'Speichern' }).click();
+  await page.getByRole('button', { name: category }).click();
+  await saveMetadataStep(page);
+};
 
+const selectNoFactcheck = async (page: Page) => {
   await page
     .getByRole('button', { name: /Nein\s+Es liegt kein Faktencheck vor\./ })
     .click();
-  await page.getByRole('button', { name: 'Speichern' }).click();
+  await saveMetadataStep(page);
+};
+
+const selectExistingFactcheck = async (page: Page) => {
+  await page
+    .getByRole('button', { name: /Ja\s+Es gibt bereits einen Faktencheck\./ })
+    .click();
+  await page
+    .getByLabel('URL zum Faktencheck')
+    .fill(`https://example.com/codetekt-e2e-factcheck-${Date.now()}`);
+  await saveMetadataStep(page);
+};
+
+const submitReviewWithComment = async (page: Page) => {
+  await expect(page.getByLabel('Abschlusskommentar')).toBeVisible();
+  await page.getByLabel('Abschlusskommentar').fill(`Ein Test Kommentar ${Date.now()}`);
+  await page.getByRole('button', { name: 'Kommentar speichern' }).click();
+  await page.getByRole('button', { name: 'Weiter zum Abschließen' }).click();
+  await page.getByTestId('submit-review').click();
+  await expect(
+    page.getByText('Geschafft! Danke für deine Bewertung!'),
+  ).toBeVisible();
+};
+
+export const reviewReport = async (page: Page, caseId: string) => {
+  await page.goto(`/review/${caseId}`);
+  await fillBasicReviewMetadata(page, 'E2E Report Review', 'Bericht');
+  await selectNoFactcheck(page);
   await expect(
     page.locator('[data-testid="review-traffic-light-option"]').first(),
   ).toBeVisible();
@@ -91,12 +126,19 @@ export const reviewReport = async (page: Page, caseId: string) => {
     await page.getByRole('button', { name: 'Nächste Frage' }).click();
   }
 
-  await expect(page.getByLabel('Abschlusskommentar')).toBeVisible();
-  await page.getByLabel('Abschlusskommentar').fill(`Ein Test Kommentar ${Date.now()}`);
-  await page.getByRole('button', { name: 'Kommentar speichern' }).click();
-  await page.getByRole('button', { name: 'Weiter zum Abschließen' }).click();
-  await page.getByTestId('submit-review').click();
-  await expect(
-    page.getByText('Geschafft! Danke für deine Bewertung!'),
-  ).toBeVisible();
+  await submitReviewWithComment(page);
+};
+
+export const reviewSatire = async (page: Page, caseId: string) => {
+  await page.goto(`/review/${caseId}`);
+  await fillBasicReviewMetadata(page, 'E2E Satire Review', 'Satire');
+  await selectNoFactcheck(page);
+  await submitReviewWithComment(page);
+};
+
+export const reviewFactchecked = async (page: Page, caseId: string) => {
+  await page.goto(`/review/${caseId}`);
+  await fillBasicReviewMetadata(page, 'E2E Factchecked Review', 'Bericht');
+  await selectExistingFactcheck(page);
+  await submitReviewWithComment(page);
 };

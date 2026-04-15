@@ -128,6 +128,7 @@ const Factcheck: FC<FactcheckProps> = ({
               type="url"
               value={value}
               onChange={(event) => onValueChange(event.target.value)}
+              aria-label="URL zum Faktencheck"
               placeholder="https://..."
               maxLength={2000}
               disabled={isDisabled}
