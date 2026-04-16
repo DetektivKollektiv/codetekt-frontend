@@ -12,29 +12,29 @@ import type { InProgressReviewAnswer } from '@/lib/schemas/review-schemas';
 import type { ReviewStep } from '@/lib/types';
 import { resolveReviewTemplateConditions } from '@/lib/utils/condition-evaluator';
 import { filterShownQuestions } from '@/lib/utils/review-question-navigation';
+import type { QuestionValidationState } from '@/lib/utils/review-validation';
 import {
   buildInProgressReviewAnswerData,
   getQuestionsValidationState,
   validateSubmittedReviewAnswer,
 } from '@/lib/utils/review-validation';
-import type { QuestionValidationState } from '@/lib/utils/review-validation';
-import {
-  buildMetadataDirtyState,
-  buildReachableSteps,
-  repairCurrentStepId,
-} from './index';
+import { isDeepEqual } from './equality';
 import type {
   FactcheckSelection,
   ReviewFlowSnapshot,
   ReviewFlowState,
 } from './index';
-import { isDeepEqual } from './equality';
+import {
+  buildMetadataDirtyState,
+  buildReachableSteps,
+  repairCurrentStepId,
+} from './index';
+import type { MetadataValidationIssues } from './validation';
 import {
   filterMetadataIssuesByTouched,
   getMetadataStepStatuses,
   validateMetadataDraft,
 } from './validation';
-import type { MetadataValidationIssues } from './validation';
 
 export interface EffectiveReviewFlowState {
   hasTitle: boolean;
@@ -85,7 +85,8 @@ export const getEffectiveReviewFlowState = (
     state.metadataDirty.keywords && state.metadataDraft.userKeywords.length > 0;
   const hasUserKeywords =
     snapshot.hasUserKeywords ||
-    (!state.metadataDirty.keywords && state.metadataDraft.userKeywords.length > 0);
+    (!state.metadataDirty.keywords &&
+      state.metadataDraft.userKeywords.length > 0);
   const hasCategory = state.metadataSaved.category;
   const hasFactcheckStepSaved = state.metadataSaved.factcheck;
   const caseCategory = hasCategory
@@ -247,7 +248,7 @@ const buildReviewSteps = ({
         'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen.',
       fieldTitle: 'Hat der Fall bereits einen Faktencheck?',
       primaryActionLabel: effective.hasFactcheckStepSaved
-        ? 'Faktencheck passt'
+        ? 'Einordnung passt'
         : 'Speichern',
       disputeActionLabel: 'Einspruch erheben',
       isIndented: false,

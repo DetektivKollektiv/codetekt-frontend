@@ -1,5 +1,5 @@
-import { randomUUID } from 'node:crypto';
 import { expect, type Page } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
 import { E2E_USER_EMAIL, E2E_USER_PASSWORD } from './env';
 import { waitForCaseByContent } from './supabase';
 
@@ -77,7 +77,9 @@ const fillBasicReviewMetadata = async (
   await page.getByLabel('Titel').fill(`${titlePrefix} ${Date.now()}`);
   await saveMetadataStep(page);
 
-  await page.getByLabel('Stichwort eingeben (max. 50 Zeichen)').fill('Stichwort');
+  await page
+    .getByLabel('Stichwort eingeben (max. 50 Zeichen)')
+    .fill('Stichwort');
   await page.getByRole('button', { name: 'Hinzufügen' }).click();
   await saveMetadataStep(page);
 
@@ -96,7 +98,7 @@ const confirmExistingReportMetadata = async (page: Page) => {
   await page.getByRole('button', { name: 'Der Titel passt' }).click();
   await page.getByRole('button', { name: 'Die Stichwörter passen' }).click();
   await page.getByRole('button', { name: 'Die Kategorie passt' }).click();
-  await page.getByRole('button', { name: 'Faktencheck passt' }).click();
+  await page.getByRole('button', { name: 'Einordnung passt' }).click();
 };
 
 const selectExistingFactcheck = async (page: Page) => {
@@ -111,7 +113,9 @@ const selectExistingFactcheck = async (page: Page) => {
 
 const submitReviewWithComment = async (page: Page) => {
   await expect(page.getByLabel('Abschlusskommentar')).toBeVisible();
-  await page.getByLabel('Abschlusskommentar').fill(`Ein Test Kommentar ${Date.now()}`);
+  await page
+    .getByLabel('Abschlusskommentar')
+    .fill(`Ein Test Kommentar ${Date.now()}`);
   await page.getByRole('button', { name: 'Kommentar speichern' }).click();
   await page.getByRole('button', { name: 'Weiter zum Abschließen' }).click();
   await page.getByTestId('submit-review').click();

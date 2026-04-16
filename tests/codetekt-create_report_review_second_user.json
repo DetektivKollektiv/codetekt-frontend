@@ -1,852 +1,690 @@
 {
-    "title": "codetekt-create_report_review_second_user",
-    "steps": [
+  "title": "codetekt-create_report_review_second_user",
+  "steps": [
+    {
+      "type": "setViewport",
+      "width": 1903,
+      "height": 1106,
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "isLandscape": false
+    },
+    {
+      "type": "navigate",
+      "url": "http://localhost:3000/#open-cases",
+      "assertedEvents": [
         {
-            "type": "setViewport",
-            "width": 1903,
-            "height": 1106,
-            "deviceScaleFactor": 1,
-            "isMobile": false,
-            "hasTouch": false,
-            "isLandscape": false
-        },
-        {
-            "type": "navigate",
-            "url": "http://localhost:3000/#open-cases",
-            "assertedEvents": [
-                {
-                    "type": "navigation",
-                    "url": "http://localhost:3000/#open-cases",
-                    "title": "codetekt - Plattform"
-                }
-            ]
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "#open-cases div.gap-4 > div:nth-of-type(2) button"
-                ],
-                [
-                    "xpath///*[@id=\"open-cases\"]/div/div[3]/div[2]/div/div/div/div[2]/div[3]/a/button"
-                ],
-                [
-                    "pierce/#open-cases div.gap-4 > div:nth-of-type(2) button"
-                ]
-            ],
-            "offsetY": 23.24993896484375,
-            "offsetX": 40.93572998046875
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Der Titel passt"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
-                ]
-            ],
-            "offsetY": 29.69439697265625,
-            "offsetX": 394.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Stichwörter passen"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.space-y-2 > button.focus-visible\\:ring-ring\\/50"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.space-y-2 > button.focus-visible\\:ring-ring\\/50"
-                ]
-            ],
-            "offsetY": 19.69439697265625,
-            "offsetX": 403.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Kategorie passt"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
-                ]
-            ],
-            "offsetY": 19.69439697265625,
-            "offsetX": 403.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Faktencheck passt"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
-                ],
-                [
-                    "text/Faktencheck passt"
-                ]
-            ],
-            "offsetY": 19.69439697265625,
-            "offsetX": 403.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Bilder und Videos im Artikel stellen das beschriebene Geschehen tatsächlich und objektiv dar. (falls vorhanden): 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 9.12152099609375,
-            "offsetX": 16.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Bilder/Videos sind nicht offensichtlich manipuliert oder bearbeitet.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 9.588531494140625,
-            "offsetX": 10.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Diagramme und Infografiken sind korrekt dargestellt und führen nicht bewusst in die Irre: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 7.053802490234375,
-            "offsetX": 10.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Bilder & Videos negativ beeinflussen. : 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 8.51904296875,
-            "offsetX": 8.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Nächste Frage"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Nächste Frage"
-                ]
-            ],
-            "offsetY": 22.532958984375,
-            "offsetX": 669.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Im Artikel werden unterschiedliche Positionen dargestellt.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 9.12152099609375,
-            "offsetX": 17.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Grammatik und Rechtschreibung sind fehlerfrei.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 10.5867919921875,
-            "offsetX": 15.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Der Artikel ist objektiv geschrieben und frei von Hetze, Generalisierungen, Panikmache oder Ähnlichem.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 8.050323486328125,
-            "offsetX": 10.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Überschrift passt zum Inhalt des Artikels.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 7.517333984375,
-            "offsetX": 3.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die im Beitrag aufgeführten Behauptungen wurden bislang nicht durch Fact-Checking widerlegt.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(6) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(6) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 3.98260498046875,
-            "offsetX": 11.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Inhalt negativ beeinflussen.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 13.4461669921875,
-            "offsetX": 8.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Nächste Frage"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Nächste Frage"
-                ]
-            ],
-            "offsetY": 17.45831298828125,
-            "offsetX": 654.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Das Medium wirkt unabhängig. Es gibt keine Hinweise, dass finanzielle oder politische Interessen den Inhalt beeinflussen.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 6.12152099609375,
-            "offsetX": 6.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/URL, Logo und Design passen zusammen und wirken authentisch. Die Seite gibt sich nicht als ein anderes bekanntes Medium aus.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 9.588531494140625,
-            "offsetX": 8.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Seite hat keine ungewöhnliche oder auffällge Tracker, Pop-Ups und/oder aggressive Werbung.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 10.057281494140625,
-            "offsetX": 15.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Das Medium hat ein Impressum, inkl. Angabe von verantwortlichen Personen und Kontaktinformationen wie Telefonnummer und E-Mail-Adresse.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 6.52081298828125,
-            "offsetX": 9.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit im Bereich Medium negativ beeinflussen.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 7.98779296875,
-            "offsetX": 7.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Nächste Frage"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Nächste Frage"
-                ]
-            ],
-            "offsetY": 19.001708984375,
-            "offsetX": 618.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Der Artikel ist von einer fachkundigen Person oder einer/einem beruflichen Journalist*in geschrieben.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 4.12152099609375,
-            "offsetX": 12.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Behauptungen werden mit externen Quellen und/oder eigenen Rechercheergebnissen belegt.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 13.5867919921875,
-            "offsetX": 12.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die genannten externen Quellen wurden vollständig aufgeführt und/oder verlinkt und sind nachprüfbar.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 1.05206298828125,
-            "offsetX": 11.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Quelle negativ beeinflussen.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 11.517333984375,
-            "offsetX": 11.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Nächste Frage"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Nächste Frage"
-                ]
-            ],
-            "offsetY": 4.7291259765625,
-            "offsetX": 525.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/In dem Beitrag werden identifizierbare Personen direkt oder indirekt zitiert.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 2.12152099609375,
-            "offsetX": 15.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die zitierten Expert*innen haben nachweislich eine Ausbildung, Beruf oder Erfahrung, zu diesem Thema.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 13.5867919921875,
-            "offsetX": 8.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Die Zitate sind korrekt wiedergegeben und nicht aus dem Zusammenhang gerissen.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 3.05206298828125,
-            "offsetX": 3.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Zitate negativ beeinflussen.: 0"
-                ],
-                [
-                    "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ],
-                [
-                    "xpath///*[@data-testid=\"review-traffic-light-option\"]"
-                ],
-                [
-                    "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
-                ]
-            ],
-            "offsetY": 10.517333984375,
-            "offsetX": 7.8541259765625
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Nächste Frage"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Nächste Frage"
-                ]
-            ],
-            "offsetY": 23.7430419921875,
-            "offsetX": 503.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Abschlusskommentar"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) textarea"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) textarea"
-                ]
-            ],
-            "offsetY": 87.0867919921875,
-            "offsetX": 358.798583984375
-        },
-        {
-            "type": "change",
-            "value": "Ein zweiter T",
-            "selectors": [
-                [
-                    "aria/Abschlusskommentar"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) textarea"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) textarea"
-                ]
-            ],
-            "target": "main"
-        },
-        {
-            "type": "keyUp",
-            "key": "t",
-            "target": "main"
-        },
-        {
-            "type": "change",
-            "value": "Ein zweiter Testkommentar",
-            "selectors": [
-                [
-                    "aria/Abschlusskommentar"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) textarea"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) textarea"
-                ]
-            ],
-            "target": "main"
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Kommentar speichern"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md button"
-                ],
-                [
-                    "text/Kommentar speichern"
-                ]
-            ],
-            "offsetY": 11.73431396484375,
-            "offsetX": 413.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Weiter zum Abschließen"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Weiter zum Abschließen"
-                ]
-            ],
-            "offsetY": 16.7430419921875,
-            "offsetX": 458.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Weiter zum Abschließen"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) div.items-center button"
-                ],
-                [
-                    "text/Weiter zum Abschließen"
-                ]
-            ],
-            "offsetY": 16.7430419921875,
-            "offsetX": 458.798583984375
-        },
-        {
-            "type": "click",
-            "target": "main",
-            "selectors": [
-                [
-                    "aria/Zum Fall[role=\"button\"]"
-                ],
-                [
-                    "main > div > div:nth-of-type(1) > div > div.rounded-xl a:nth-of-type(1) > button"
-                ],
-                [
-                    "xpath//html/body/main/div/div[1]/div/div[2]/div[3]/a[1]/button"
-                ],
-                [
-                    "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl a:nth-of-type(1) > button"
-                ]
-            ],
-            "offsetY": 11.736083984375,
-            "offsetX": 468.798583984375
+          "type": "navigation",
+          "url": "http://localhost:3000/#open-cases",
+          "title": "codetekt - Plattform"
         }
-    ]
+      ]
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["#open-cases div.gap-4 > div:nth-of-type(2) button"],
+        [
+          "xpath///*[@id=\"open-cases\"]/div/div[3]/div[2]/div/div/div/div[2]/div[3]/a/button"
+        ],
+        ["pierce/#open-cases div.gap-4 > div:nth-of-type(2) button"]
+      ],
+      "offsetY": 23.24993896484375,
+      "offsetX": 40.93572998046875
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Der Titel passt"],
+        [
+          "main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
+        ],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
+        ],
+        [
+          "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
+        ]
+      ],
+      "offsetY": 29.69439697265625,
+      "offsetX": 394.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Die Stichwörter passen"],
+        [
+          "main > div > div:nth-of-type(1) div.space-y-2 > button.focus-visible\\:ring-ring\\/50"
+        ],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
+        ],
+        [
+          "pierce/main > div > div:nth-of-type(1) div.space-y-2 > button.focus-visible\\:ring-ring\\/50"
+        ]
+      ],
+      "offsetY": 19.69439697265625,
+      "offsetX": 403.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Die Kategorie passt"],
+        [
+          "main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
+        ],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
+        ],
+        [
+          "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
+        ]
+      ],
+      "offsetY": 19.69439697265625,
+      "offsetX": 403.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Einordnung passt"],
+        [
+          "main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
+        ],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button[1]"
+        ],
+        [
+          "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl button.focus-visible\\:ring-ring\\/50"
+        ],
+        ["text/Einordnung passt"]
+      ],
+      "offsetY": 19.69439697265625,
+      "offsetX": 403.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Bilder und Videos im Artikel stellen das beschriebene Geschehen tatsächlich und objektiv dar. (falls vorhanden): 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 9.12152099609375,
+      "offsetX": 16.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Die Bilder/Videos sind nicht offensichtlich manipuliert oder bearbeitet.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 9.588531494140625,
+      "offsetX": 10.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Diagramme und Infografiken sind korrekt dargestellt und führen nicht bewusst in die Irre: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 7.053802490234375,
+      "offsetX": 10.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Bilder & Videos negativ beeinflussen. : 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 8.51904296875,
+      "offsetX": 8.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Nächste Frage"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Nächste Frage"]
+      ],
+      "offsetY": 22.532958984375,
+      "offsetX": 669.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Im Artikel werden unterschiedliche Positionen dargestellt.: 0"],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 9.12152099609375,
+      "offsetX": 17.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Die Grammatik und Rechtschreibung sind fehlerfrei.: 0"],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 10.5867919921875,
+      "offsetX": 15.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Der Artikel ist objektiv geschrieben und frei von Hetze, Generalisierungen, Panikmache oder Ähnlichem.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 8.050323486328125,
+      "offsetX": 10.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Die Überschrift passt zum Inhalt des Artikels.: 0"],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 7.517333984375,
+      "offsetX": 3.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Die im Beitrag aufgeführten Behauptungen wurden bislang nicht durch Fact-Checking widerlegt.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(6) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(6) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 3.98260498046875,
+      "offsetX": 11.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Inhalt negativ beeinflussen.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 13.4461669921875,
+      "offsetX": 8.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Nächste Frage"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Nächste Frage"]
+      ],
+      "offsetY": 17.45831298828125,
+      "offsetX": 654.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Das Medium wirkt unabhängig. Es gibt keine Hinweise, dass finanzielle oder politische Interessen den Inhalt beeinflussen.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 6.12152099609375,
+      "offsetX": 6.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/URL, Logo und Design passen zusammen und wirken authentisch. Die Seite gibt sich nicht als ein anderes bekanntes Medium aus.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 9.588531494140625,
+      "offsetX": 8.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Die Seite hat keine ungewöhnliche oder auffällge Tracker, Pop-Ups und/oder aggressive Werbung.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 10.057281494140625,
+      "offsetX": 15.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Das Medium hat ein Impressum, inkl. Angabe von verantwortlichen Personen und Kontaktinformationen wie Telefonnummer und E-Mail-Adresse.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(5) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 6.52081298828125,
+      "offsetX": 9.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit im Bereich Medium negativ beeinflussen.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 7.98779296875,
+      "offsetX": 7.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Nächste Frage"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Nächste Frage"]
+      ],
+      "offsetY": 19.001708984375,
+      "offsetX": 618.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Der Artikel ist von einer fachkundigen Person oder einer/einem beruflichen Journalist*in geschrieben.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 4.12152099609375,
+      "offsetX": 12.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Behauptungen werden mit externen Quellen und/oder eigenen Rechercheergebnissen belegt.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 13.5867919921875,
+      "offsetX": 12.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Die genannten externen Quellen wurden vollständig aufgeführt und/oder verlinkt und sind nachprüfbar.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 1.05206298828125,
+      "offsetX": 11.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Quelle negativ beeinflussen.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 11.517333984375,
+      "offsetX": 11.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Nächste Frage"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Nächste Frage"]
+      ],
+      "offsetY": 4.7291259765625,
+      "offsetX": 525.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/In dem Beitrag werden identifizierbare Personen direkt oder indirekt zitiert.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(2) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 2.12152099609375,
+      "offsetX": 15.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Die zitierten Expert*innen haben nachweislich eine Ausbildung, Beruf oder Erfahrung, zu diesem Thema.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(3) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 13.5867919921875,
+      "offsetX": 8.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Die Zitate sind korrekt wiedergegeben und nicht aus dem Zusammenhang gerissen.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div:nth-of-type(4) > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 3.05206298828125,
+      "offsetX": 3.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        [
+          "aria/Es gibt keine weiteren Punkte, die die Vertrauenswürdigkeit des Kriteriums Zitate negativ beeinflussen.: 0"
+        ],
+        [
+          "html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ],
+        ["xpath///*[@data-testid=\"review-traffic-light-option\"]"],
+        [
+          "pierce/html > body > main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md > div.pb-2 > div > div.flex > [data-testid='review-traffic-light-option']"
+        ]
+      ],
+      "offsetY": 10.517333984375,
+      "offsetX": 7.8541259765625
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Nächste Frage"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Nächste Frage"]
+      ],
+      "offsetY": 23.7430419921875,
+      "offsetX": 503.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Abschlusskommentar"],
+        ["main > div > div:nth-of-type(1) textarea"],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+        ],
+        ["pierce/main > div > div:nth-of-type(1) textarea"]
+      ],
+      "offsetY": 87.0867919921875,
+      "offsetX": 358.798583984375
+    },
+    {
+      "type": "change",
+      "value": "Ein zweiter T",
+      "selectors": [
+        ["aria/Abschlusskommentar"],
+        ["main > div > div:nth-of-type(1) textarea"],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+        ],
+        ["pierce/main > div > div:nth-of-type(1) textarea"]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "keyUp",
+      "key": "t",
+      "target": "main"
+    },
+    {
+      "type": "change",
+      "value": "Ein zweiter Testkommentar",
+      "selectors": [
+        ["aria/Abschlusskommentar"],
+        ["main > div > div:nth-of-type(1) textarea"],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[1]/div/div/textarea"
+        ],
+        ["pierce/main > div > div:nth-of-type(1) textarea"]
+      ],
+      "target": "main"
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Kommentar speichern"],
+        [
+          "main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md button"
+        ],
+        [
+          "xpath//html/body/main/div/div[1]/div/div[2]/div[2]/div/div[2]/button"
+        ],
+        [
+          "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl > div.text-body-md button"
+        ],
+        ["text/Kommentar speichern"]
+      ],
+      "offsetY": 11.73431396484375,
+      "offsetX": 413.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Weiter zum Abschließen"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Weiter zum Abschließen"]
+      ],
+      "offsetY": 16.7430419921875,
+      "offsetX": 458.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Weiter zum Abschließen"],
+        ["main > div > div:nth-of-type(1) div.items-center button"],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/div/button"],
+        ["pierce/main > div > div:nth-of-type(1) div.items-center button"],
+        ["text/Weiter zum Abschließen"]
+      ],
+      "offsetY": 16.7430419921875,
+      "offsetX": 458.798583984375
+    },
+    {
+      "type": "click",
+      "target": "main",
+      "selectors": [
+        ["aria/Zum Fall[role=\"button\"]"],
+        [
+          "main > div > div:nth-of-type(1) > div > div.rounded-xl a:nth-of-type(1) > button"
+        ],
+        ["xpath//html/body/main/div/div[1]/div/div[2]/div[3]/a[1]/button"],
+        [
+          "pierce/main > div > div:nth-of-type(1) > div > div.rounded-xl a:nth-of-type(1) > button"
+        ]
+      ],
+      "offsetY": 11.736083984375,
+      "offsetX": 468.798583984375
+    }
+  ]
 }
