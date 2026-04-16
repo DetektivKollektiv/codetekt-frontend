@@ -88,7 +88,11 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
               <CircleMinus className="size-6 md:size-5 text-muted-foreground" />
             </TooltipTrigger>
             <TooltipContent className="max-w-48 text-center">
-              <p className="text-body-sm opacity-80">Frage nicht anwendbar</p>
+              <p className="text-body-sm opacity-80">
+                Frage nicht anwendbar/
+                <br />
+                nicht sicher
+              </p>
             </TooltipContent>
           </Tooltip>
         </div>
