@@ -55,7 +55,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
             <Link href={factcheckUrl} target="_blank" rel="noopener noreferrer">
               <Button variant="default" className="w-full" size="lg">
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Zum Faktecheck
+                Zum Faktencheck
               </Button>
             </Link>
           )}

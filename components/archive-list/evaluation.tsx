@@ -33,16 +33,7 @@ const Evaluation: FC<EvaluationProps> = ({
           <h4 className="text-body-sm font-semibold">Bewertung</h4>
           <HelpButton theme="dark" />
         </div>
-        {hasFactcheck && factcheckUrl && (
-          <div className="mb-2">
-            <Link href={factcheckUrl} target="_blank" rel="noopener noreferrer">
-              <Button variant="default" className="w-full" size="lg">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Zum Faktecheck
-              </Button>
-            </Link>
-          </div>
-        )}
+
         <Badge
           className={cn(
             ratingStyle.backgroundClass,
@@ -52,6 +43,17 @@ const Evaluation: FC<EvaluationProps> = ({
         >
           {ratingStyle.label}
         </Badge>
+
+        {hasFactcheck && factcheckUrl && (
+          <div className="mb-2">
+            <Link href={factcheckUrl} target="_blank" rel="noopener noreferrer">
+              <Button variant="default" className="w-full" size="lg">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Zum Faktencheck
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
       {!isSatire && warningTags.length > 0 && (
