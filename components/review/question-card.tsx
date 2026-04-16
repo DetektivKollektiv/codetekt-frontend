@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
+import SafeRichText from './safe-rich-text';
 
 interface QuestionCardProps {
   title: ReactNode;
@@ -26,11 +27,20 @@ const QuestionCard: FC<QuestionCardProps> = ({
   headerActions,
   contentClassName,
 }) => {
+  const renderedDescription =
+    typeof description === 'string' ? (
+      <SafeRichText value={description} />
+    ) : (
+      description
+    );
+
   return (
     <Card className="pt-6 flex flex-col">
       <CardHeader className="relative">
         <CardTitle className=" text-display-sm">{title}</CardTitle>
-        <CardDescription className="max-w-xl">{description}</CardDescription>
+        <CardDescription className="max-w-xl">
+          {renderedDescription}
+        </CardDescription>
         {headerActions && (
           <div className="absolute top-6 right-6 space-x-4">
             {headerActions}

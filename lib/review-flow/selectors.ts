@@ -245,7 +245,7 @@ const buildReviewSteps = ({
       id: METADATA_STEP_FACTCHECK,
       label: 'Faktencheck',
       description:
-        'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen.',
+        'Gib an, ob für diesen Fall bereits ein Faktencheck existiert. Wenn ja, kannst du ihn im nächsten Feld ergänzen. Einen Überblick über deutschsprachige Fakt-Checking Seiten findest du bspw. <a href="https://www.medien-in-die-schule.de/wp-content/uploads/FSM_Modul5_Materialblatt_Meinung_42_2.pdf" target="_blank" rel="noopener noreferrer">hier</a>.',
       fieldTitle: 'Hat der Fall bereits einen Faktencheck?',
       primaryActionLabel: effective.hasFactcheckStepSaved
         ? 'Einordnung passt'
