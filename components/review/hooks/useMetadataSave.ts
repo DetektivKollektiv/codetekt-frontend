@@ -234,7 +234,10 @@ export const useMetadataSave = ({
     if (error) throw error;
 
     queryClient.setQueryData(['case', caseId], data);
-    await queryClient.invalidateQueries({ queryKey: ['review-template', caseId] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
+      queryClient.invalidateQueries({ queryKey: ['review-template', caseId] }),
+    ]);
 
     return data;
   };
