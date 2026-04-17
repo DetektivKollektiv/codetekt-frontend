@@ -38,14 +38,14 @@ const Evaluation: FC<EvaluationProps> = ({
           className={cn(
             ratingStyle.backgroundClass,
             ratingStyle.textForegroundClass,
-            'w-full justify-center pointer-events-none h-9',
+            'w-full justify-center pointer-events-none h-9 mb-2',
           )}
         >
           {ratingStyle.label}
         </Badge>
 
         {hasFactcheck && factcheckUrl && (
-          <div className="mb-2">
+          <div>
             <Link href={factcheckUrl} target="_blank" rel="noopener noreferrer">
               <Button variant="default" className="w-full" size="lg">
                 <ExternalLink className="w-4 h-4 mr-2" />
