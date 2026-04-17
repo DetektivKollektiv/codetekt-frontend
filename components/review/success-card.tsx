@@ -89,6 +89,7 @@ const SuccesCard: FC<SuccesCardProps> = ({
         <Image
           src={randomGif.path}
           alt="Success"
+          unoptimized
           width={randomGif.width}
           height={randomGif.height}
           className="h-auto w-auto max-h-96 max-w-96 object-contain"
