@@ -286,6 +286,7 @@ export const hydrateReviewFlowState = (
 
   const nextTitleDirty =
     previousState.metadataDirty.title &&
+    !snapshot.hasTitle &&
     previousState.metadataDraft.title !== snapshot.metadataInitialDraft.title;
   const nextKeywordsDirty =
     previousState.metadataDirty.keywords &&
@@ -295,9 +296,11 @@ export const hydrateReviewFlowState = (
     );
   const nextCategoryDirty =
     previousState.metadataDirty.category &&
+    !snapshot.hasCategory &&
     previousState.metadataDraft.category !== snapshot.metadataInitialDraft.category;
   const nextFactcheckDirty =
     previousState.metadataDirty.factcheck &&
+    !snapshot.hasFactcheckStepSaved &&
     !hasSameFactcheckDraft(
       {
         factcheckSelection: previousState.metadataDraft.factcheckSelection,

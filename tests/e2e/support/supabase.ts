@@ -145,6 +145,21 @@ export const waitForAggregatedReview = async (caseId: string) => {
   throw new Error(`Aggregated review was not persisted for case ${caseId}`);
 };
 
+export const insertCaseCategory = async (
+  caseId: string,
+  value: 'opinion' | 'report' | 'satire' | 'text_message',
+  userEmail = E2E_SECOND_USER_EMAIL,
+) => {
+  const userId = await getUserIdByEmail(userEmail);
+  const { error } = await getAdminClient().from('case_categories').insert({
+    case_id: caseId,
+    value,
+    created_by: userId,
+  });
+
+  throwIfError('Insert case category', error);
+};
+
 export const cleanupCase = async (caseId: string) => {
   const client = getAdminClient();
 

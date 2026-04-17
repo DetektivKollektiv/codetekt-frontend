@@ -14,6 +14,8 @@ import {
   setCaseTitleMutation,
 } from '@/lib/queries/setCaseTitle';
 import type { SetCaseTitleData } from '@/lib/queries/setCaseTitle';
+import { getCase } from '@/lib/queries/getCase';
+import type { Case } from '@/lib/queries/getCase';
 import {
   caseCategorySchema,
   caseFactcheckSchema,
@@ -42,26 +44,44 @@ interface MetadataSaveMutations {
   mutateFactcheckAsync: (data: SetCaseFactcheckData) => Promise<unknown>;
 }
 
+type SingleMetadataField = 'title' | 'category' | 'factcheck';
+
+const METADATA_STALE_CONFLICT_MESSAGE =
+  'In der Zwischenzeit hat ein anderer Nutzer den Fall weiter bearbeitet. Der aktuelle Stand wurde geladen.';
+const METADATA_STALE_REFRESH_FAILED_MESSAGE =
+  'In der Zwischenzeit hat ein anderer Nutzer den Fall weiter bearbeitet. Der aktuelle Stand konnte nicht geladen werden. Bitte lade die Seite neu.';
+
+const getErrorValue = (
+  error: unknown,
+  key: 'code' | 'message' | 'details',
+) => {
+  if (typeof error !== 'object' || error === null || !(key in error)) {
+    return undefined;
+  }
+
+  const value = (error as Record<string, unknown>)[key];
+  return typeof value === 'string' ? value : undefined;
+};
+
+const getSaveErrorMessage = (error: unknown, fallback: string) =>
+  getErrorValue(error, 'message') ?? fallback;
+
+const isUniqueConstraintError = (error: unknown, constraintName: string) => {
+  if (getErrorValue(error, 'code') !== '23505') {
+    return false;
+  }
+
+  return [getErrorValue(error, 'message'), getErrorValue(error, 'details')]
+    .filter((value): value is string => Boolean(value))
+    .some((value) => value.includes(constraintName));
+};
+
 const getKeywordsSaveErrorMessage = (error: unknown) => {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    (error as { code?: string }).code === '23505'
-  ) {
+  if (getErrorValue(error, 'code') === '23505') {
     return 'Du hast bereits Stichwörter für diesen Fall erstellt';
   }
 
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'message' in error &&
-    typeof (error as { message?: unknown }).message === 'string'
-  ) {
-    return (error as { message: string }).message;
-  }
-
-  return 'Fehler beim Speichern der Stichwörter';
+  return getSaveErrorMessage(error, 'Fehler beim Speichern der Stichwörter');
 };
 
 const getRequiredUserId = (userId?: string) => {
@@ -74,11 +94,28 @@ const createMetadataSaveHandlers = ({
   caseId,
   userId,
   mutations,
+  refreshCaseAfterConflict,
 }: {
   caseId: string;
   userId?: string;
   mutations: MetadataSaveMutations;
+  refreshCaseAfterConflict: () => Promise<Case>;
 }) => {
+  const handleStaleConflict = async (field: SingleMetadataField) => {
+    const freshCase = await refreshCaseAfterConflict().catch(() => null);
+    const hasFreshValue =
+      field === 'title'
+        ? !!freshCase?.case_titles
+        : field === 'category'
+          ? !!freshCase?.case_categories
+          : !!freshCase?.case_factchecks;
+
+    if (!hasFreshValue) return false;
+
+    toast.error(METADATA_STALE_CONFLICT_MESSAGE);
+    return true;
+  };
+
   const saveTitle = async (value: string): Promise<boolean> => {
     const authorId = getRequiredUserId(userId);
     if (!authorId) return false;
@@ -88,7 +125,20 @@ const createMetadataSaveHandlers = ({
     try {
       await mutations.mutateTitleAsync({ caseId, value: result.data, userId: authorId });
       return true;
-    } catch {
+    } catch (error) {
+      if (
+        isUniqueConstraintError(error, 'case_titles_case_id_unique') &&
+        (await handleStaleConflict('title'))
+      ) {
+        return false;
+      }
+
+      if (isUniqueConstraintError(error, 'case_titles_case_id_unique')) {
+        toast.error(METADATA_STALE_REFRESH_FAILED_MESSAGE);
+        return false;
+      }
+
+      toast.error(getSaveErrorMessage(error, 'Fehler beim Speichern des Titels'));
       return false;
     }
   };
@@ -116,7 +166,20 @@ const createMetadataSaveHandlers = ({
     try {
       await mutations.mutateCategoryAsync({ caseId, value: result.data, userId: authorId });
       return true;
-    } catch {
+    } catch (error) {
+      if (
+        isUniqueConstraintError(error, 'case_categories_case_id_unique') &&
+        (await handleStaleConflict('category'))
+      ) {
+        return false;
+      }
+
+      if (isUniqueConstraintError(error, 'case_categories_case_id_unique')) {
+        toast.error(METADATA_STALE_REFRESH_FAILED_MESSAGE);
+        return false;
+      }
+
+      toast.error(getSaveErrorMessage(error, 'Fehler beim Speichern der Kategorie'));
       return false;
     }
   };
@@ -137,7 +200,14 @@ const createMetadataSaveHandlers = ({
         userId: authorId,
       });
       return true;
-    } catch {
+    } catch (error) {
+      if (await handleStaleConflict('factcheck')) {
+        return false;
+      }
+
+      toast.error(
+        getSaveErrorMessage(error, 'Fehler beim Speichern des Faktenchecks'),
+      );
       return false;
     }
   };
@@ -159,14 +229,21 @@ export const useMetadataSave = ({
     ]);
   };
 
+  const refreshCaseAfterConflict = async () => {
+    const { data, error } = await getCase(supabase, caseId);
+    if (error) throw error;
+
+    queryClient.setQueryData(['case', caseId], data);
+    await queryClient.invalidateQueries({ queryKey: ['review-template', caseId] });
+
+    return data;
+  };
+
   const { mutateAsync: mutateTitleAsync, isPending: isTitlePending } =
     useMutation({
     ...setCaseTitleMutation(supabase),
     onSuccess: async () => {
       await invalidateCase();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Fehler beim Speichern des Titels');
     },
   });
 
@@ -187,9 +264,6 @@ export const useMetadataSave = ({
       onSuccess: async () => {
         await invalidateCase();
       },
-      onError: (error: Error) => {
-        toast.error(error.message || 'Fehler beim Speichern der Kategorie');
-      },
     });
 
   const { mutateAsync: mutateFactcheckAsync, isPending: isFactcheckPending } =
@@ -197,9 +271,6 @@ export const useMetadataSave = ({
       ...setCaseFactcheckMutation(supabase),
       onSuccess: async () => {
         await invalidateCase();
-      },
-      onError: (error: Error) => {
-        toast.error(error.message || 'Fehler beim Speichern des Faktenchecks');
       },
     });
 
@@ -212,6 +283,7 @@ export const useMetadataSave = ({
       mutateCategoryAsync,
       mutateFactcheckAsync,
     },
+    refreshCaseAfterConflict,
   });
 
   return {

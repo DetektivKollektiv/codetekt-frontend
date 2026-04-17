@@ -754,6 +754,94 @@ describe('R14 - hydration and server sync', () => {
     expect(hydrated.metadataSaved.title).toBe(true);
   });
 
+  it('replaces stale dirty title when another user saved one', () => {
+    const flowSnapshot = snapshot({
+      caseData: makeCase({ open_graph_data: { og_title: '' } }),
+    });
+    const dirty = transitionReviewFlow(initialState(flowSnapshot), {
+      type: 'UPDATE_TITLE',
+      value: 'A local valid title',
+    });
+    const serverSaved = snapshot({
+      caseData: makeCase({
+        case_titles: { value: 'Server title from another user' },
+      }),
+    });
+    const hydrated = hydrateReviewFlowState(dirty, serverSaved);
+
+    expect(hydrated.metadataDraft.title).toBe('Server title from another user');
+    expect(hydrated.metadataDirty.title).toBe(false);
+    expect(hydrated.metadataSaved.title).toBe(true);
+  });
+
+  it('replaces stale dirty category when another user saved one', () => {
+    const flowSnapshot = snapshot({
+      caseData: completeCase({ case_categories: null }),
+    });
+    const dirty = transitionReviewFlow(
+      patchState(initialState(flowSnapshot), {
+        currentStepId: METADATA_STEP_CATEGORY,
+      }),
+      {
+        type: 'UPDATE_CATEGORY',
+        value: 'satire',
+      },
+    );
+    const serverSaved = snapshot({
+      caseData: completeCase({ case_categories: { value: 'report' } }),
+    });
+    const hydrated = hydrateReviewFlowState(dirty, serverSaved);
+
+    expect(hydrated.currentStepId).toBe(METADATA_STEP_CATEGORY);
+    expect(hydrated.metadataDraft.category).toBe('report');
+    expect(hydrated.metadataDirty.category).toBe(false);
+    expect(hydrated.metadataSaved.category).toBe(true);
+  });
+
+  it('replaces stale dirty factcheck when another user saved one', () => {
+    const flowSnapshot = snapshot({
+      caseData: completeCase({ case_factchecks: null }),
+    });
+    const dirtySelection = transitionReviewFlow(initialState(flowSnapshot), {
+      type: 'UPDATE_FACTCHECK_SELECTION',
+      value: 'yes',
+    });
+    const dirty = transitionReviewFlow(dirtySelection, {
+      type: 'UPDATE_FACTCHECK_VALUE',
+      value: 'https://example.com/local-factcheck',
+    });
+    const serverSaved = snapshot({
+      caseData: completeCase({
+        case_factchecks: { has_factcheck: false, value: null },
+      }),
+    });
+    const hydrated = hydrateReviewFlowState(dirty, serverSaved);
+
+    expect(hydrated.metadataDraft.factcheckSelection).toBe('no');
+    expect(hydrated.metadataDraft.factcheckValue).toBe('');
+    expect(hydrated.metadataDirty.factcheck).toBe(false);
+    expect(hydrated.metadataSaved.factcheck).toBe(true);
+  });
+
+  it('keeps dirty user keywords when another user saved case keywords', () => {
+    const flowSnapshot = snapshot({
+      caseData: completeCase({ case_keywords: [] }),
+    });
+    const dirty = transitionReviewFlow(initialState(flowSnapshot), {
+      type: 'UPDATE_KEYWORDS',
+      value: ['local'],
+    });
+    const serverSaved = snapshot({
+      caseData: completeCase({
+        case_keywords: [{ created_by: 'user-2', values: ['server'] }],
+      }),
+    });
+    const hydrated = hydrateReviewFlowState(dirty, serverSaved);
+
+    expect(hydrated.metadataDraft.userKeywords).toEqual(['local']);
+    expect(hydrated.metadataDirty.keywords).toBe(true);
+  });
+
   it('overwrites comment drafts from server comments', () => {
     const flowSnapshot = snapshot();
     const withDraft = transitionReviewFlow(initialState(flowSnapshot), {

@@ -8,6 +8,7 @@ import {
 } from './support/flows';
 import {
   cleanupCase,
+  insertCaseCategory,
   waitForAggregatedReview,
   waitForSubmittedReview,
 } from './support/supabase';
@@ -37,6 +38,38 @@ test.describe('report review flow', () => {
 
     await reviewReport(page, caseId!);
     await waitForSubmittedReview(caseId!);
+  });
+
+  test('refreshes the case after a concurrent category save', async ({ page }) => {
+    expect(caseId).not.toBeNull();
+
+    await page.goto(`/review/${caseId}`);
+
+    await page.getByLabel('Titel').fill(`E2E Race Review ${Date.now()}`);
+    await page.getByRole('button', { name: 'Speichern' }).click();
+
+    await page
+      .getByLabel('Stichwort eingeben (max. 50 Zeichen)')
+      .fill('Stichwort');
+    await page.getByRole('button', { name: 'Hinzufügen' }).click();
+    await page.getByRole('button', { name: 'Speichern' }).click();
+
+    await page.getByRole('button', { name: 'Satire' }).click();
+    await insertCaseCategory(caseId!, 'report');
+    await page.getByRole('button', { name: 'Speichern' }).click();
+
+    await expect(
+      page.getByText(
+        'In der Zwischenzeit hat ein anderer Nutzer den Fall weiter bearbeitet. Der aktuelle Stand wurde geladen.',
+      ),
+    ).toBeVisible();
+    await expect(page.getByText(/duplicate key value/)).toHaveCount(0);
+    await expect(page.getByText(/fallen unter die Kategorie/)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Die Kategorie passt' }).click();
+    await expect(
+      page.getByText('Hat der Fall bereits einen Faktencheck?'),
+    ).toBeVisible();
   });
 
   test('lets a second user review a report and open it from the archive', async ({
