@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
-import { AUTH_FILE, BASE_URL } from './tests/e2e/support/env';
+import {
+  AUTH_FILE,
+  BASE_URL,
+  START_WEB_SERVER,
+} from './tests/e2e/support/env';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -11,12 +15,16 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
-  webServer: {
-    command: 'npm run dev',
-    url: BASE_URL,
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  ...(START_WEB_SERVER
+    ? {
+        webServer: {
+          command: 'npm run dev',
+          url: BASE_URL,
+          reuseExistingServer: true,
+          timeout: 120_000,
+        },
+      }
+    : {}),
   projects: [
     {
       name: 'setup',

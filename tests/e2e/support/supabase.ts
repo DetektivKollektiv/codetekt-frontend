@@ -1,7 +1,10 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../../../lib/types/database.types';
 import {
+  E2E_SECOND_USER_EMAIL,
+  E2E_SECOND_USER_ID,
   E2E_USER_EMAIL,
+  E2E_USER_ID,
   SUPABASE_SERVICE_ROLE_KEY,
   SUPABASE_URL,
 } from './env';
@@ -13,6 +16,12 @@ type CaseRecord = Pick<
 
 let adminClient: SupabaseClient<Database> | null = null;
 const userIdByEmail = new Map<string, string>();
+const configuredUserIdsByEmail = new Map(
+  [
+    [E2E_USER_EMAIL, E2E_USER_ID],
+    [E2E_SECOND_USER_EMAIL, E2E_SECOND_USER_ID],
+  ].filter((entry): entry is [string, string] => Boolean(entry[1])),
+);
 
 export const getAdminClient = () => {
   if (adminClient) return adminClient;
@@ -41,19 +50,31 @@ export const getUserIdByEmail = async (email: string) => {
   const cachedUserId = userIdByEmail.get(email);
   if (cachedUserId) return cachedUserId;
 
-  const { data, error } = await getAdminClient().auth.admin.listUsers({
-    page: 1,
-    perPage: 1000,
-  });
-  throwIfError('List Supabase users', error);
-
-  const user = data.users.find((candidate) => candidate.email === email);
-  if (!user) {
-    throw new Error(`No Supabase auth user found for ${email}.`);
+  const configuredUserId = configuredUserIdsByEmail.get(email);
+  if (configuredUserId) {
+    userIdByEmail.set(email, configuredUserId);
+    return configuredUserId;
   }
 
-  userIdByEmail.set(email, user.id);
-  return user.id;
+  const perPage = 1000;
+
+  for (let page = 1; ; page += 1) {
+    const { data, error } = await getAdminClient().auth.admin.listUsers({
+      page,
+      perPage,
+    });
+    throwIfError('List Supabase users', error);
+
+    const user = data.users.find((candidate) => candidate.email === email);
+    if (user) {
+      userIdByEmail.set(email, user.id);
+      return user.id;
+    }
+
+    if (data.users.length < perPage) break;
+  }
+
+  throw new Error(`No Supabase auth user found for ${email}.`);
 };
 
 export const getE2EUserId = () => getUserIdByEmail(E2E_USER_EMAIL);
