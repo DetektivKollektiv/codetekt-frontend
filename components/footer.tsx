@@ -70,6 +70,14 @@ const Footer: FC = ({}) => {
                   LinkedIn
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="https://discord.com/invite/xZHm49Vt8v"
+                  className="hover:underline"
+                >
+                  Discord
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="lg:w-40 lg:ml-auto">
@@ -146,6 +154,11 @@ const Footer: FC = ({}) => {
                 <li>
                   <Link href="https://www.linkedin.com/company/codetekt">
                     LinkedIn
+                  </Link>
+                </li>
+                <li>
+                  <Link href="https://discord.com/invite/xZHm49Vt8v">
+                    Discord
                   </Link>
                 </li>
               </ul>
