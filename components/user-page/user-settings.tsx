@@ -27,7 +27,7 @@ import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { toast } from 'sonner';
 
 interface UserSettingsProps {
@@ -47,24 +47,25 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
 
   const { profile, user } = authData;
 
-  const [email, setEmail] = useState(user?.email || '');
-  const [getNotifications, setGetNotifications] = useState(
-    profile?.get_notifications ?? false,
-  );
+  const currentEmail = user?.email || '';
+  const [emailState, setEmailState] = useState(() => ({
+    source: currentEmail,
+    value: currentEmail,
+  }));
+  const email =
+    emailState.source === currentEmail ? emailState.value : currentEmail;
+
+  const currentGetNotifications = profile?.get_notifications ?? false;
+  const [notificationState, setNotificationState] = useState(() => ({
+    source: currentGetNotifications,
+    value: currentGetNotifications,
+  }));
+  const getNotifications =
+    notificationState.source === currentGetNotifications
+      ? notificationState.value
+      : currentGetNotifications;
   const [isDeactivateDialogOpen, setIsDeactivateDialogOpen] = useState(false);
   const [deactivateConfirmation, setDeactivateConfirmation] = useState('');
-
-  useEffect(() => {
-    if (user?.email) {
-      setEmail(user.email);
-    }
-  }, [user?.email]);
-
-  useEffect(() => {
-    if (profile?.get_notifications !== undefined) {
-      setGetNotifications(profile.get_notifications);
-    }
-  }, [profile?.get_notifications]);
 
   // Update email mutation
   const emailMutation = useMutation({
@@ -119,7 +120,7 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
   };
 
   const handleNotificationToggle = async (checked: boolean) => {
-    setGetNotifications(checked);
+    setNotificationState({ source: currentGetNotifications, value: checked });
     profileMutation.mutate({ get_notifications: checked });
   };
 
@@ -160,7 +161,12 @@ const UserSettings: FC<UserSettingsProps> = ({ auth }) => {
                   placeholder="m@example.com"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setEmailState({
+                      source: currentEmail,
+                      value: e.target.value,
+                    })
+                  }
                   disabled={isLoading || !user}
                 />
                 <Button

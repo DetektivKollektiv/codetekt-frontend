@@ -16,15 +16,6 @@ const percentagesSchema = z.object({
   3: z.number(),
 });
 
-// Schema for tags - maps value (0-3) to human-readable label
-// Note: Option 4 ("not applicable") is excluded from aggregated output
-const tagsSchema = z.object({
-  0: z.string(),
-  1: z.string(),
-  2: z.string(),
-  3: z.string(),
-});
-
 export const baseAggregationValueSchema = z.object({
   id: z.string(),
   question: z.string(),

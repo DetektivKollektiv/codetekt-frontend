@@ -4,11 +4,6 @@ import {
   trafficLightAnswerSchema,
 } from './answer-schemas';
 
-const submittedReviewCommentSchema = z
-  .union([z.literal(''), z.string().min(10)])
-  .nullable()
-  .optional();
-
 export const submittedReviewAnswerSatireSchema = z.object({}).strict();
 
 export const submittedReviewAnswerReportSchema = z

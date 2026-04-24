@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import Confetti from 'react-confetti';
 import { Button } from '../ui/button';
 import {
@@ -41,7 +41,13 @@ const SuccesCard: FC<SuccesCardProps> = ({
   openCasesHref = '/#open-cases',
 }) => {
   const supabase = createClient();
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [dimensions] = useState(() => ({
+    width:
+      typeof document === 'undefined'
+        ? 800
+        : document.documentElement.clientWidth,
+    height: typeof window === 'undefined' ? 600 : window.innerHeight,
+  }));
 
   const { data: aggregatedCase } = useQuery({
     ...aggregatedReviewQuery(supabase, caseId),
@@ -53,15 +59,6 @@ const SuccesCard: FC<SuccesCardProps> = ({
   const randomGif = getDeterministicGif(caseId);
 
   const hasAggregatedReview = Boolean(aggregatedCase);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setDimensions({
-        width: document.documentElement.clientWidth,
-        height: window.innerHeight,
-      });
-    }
-  }, []);
 
   return (
     <Card className="pt-6 flex flex-col">

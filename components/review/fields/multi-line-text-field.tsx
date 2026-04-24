@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Field, multiLineTextFieldSchema } from '@/lib/schemas/field-schemas';
 import { X } from 'lucide-react';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
 import { FieldContainer } from './field-container';
@@ -25,8 +25,8 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
   onCreateReviewDispute,
   issues,
 }) => {
-  const initialAnswerValues = useRef(
-    (field.initial_answer_value ?? []) as string[],
+  const [initialAnswerValues] = useState(
+    () => (field.initial_answer_value ?? []) as string[],
   );
 
   const allError = useMemo(() => {
@@ -35,19 +35,8 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
     });
   }, [issues]);
 
-  const [additionalAnswerValues, setAdditionalAnswerValues] = useState<
-    string[]
-  >(
-    Array.from({ length: field.additonal_option_count ?? 0 }).map(
-      (_, index) =>
-        field.answer_value?.[
-          index + (field.initial_answer_value?.length ?? 0)
-        ] ?? '',
-    ),
-  );
-
-  useEffect(() => {
-    const newAdditionalValues = Array.from({
+  const additionalAnswerSource = useMemo(() => {
+    const values = Array.from({
       length: field.additonal_option_count ?? 0,
     }).map(
       (_, index) =>
@@ -55,16 +44,33 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
           index + (field.initial_answer_value?.length ?? 0)
         ] ?? '',
     );
-    setAdditionalAnswerValues(newAdditionalValues);
+
+    return {
+      key: JSON.stringify([
+        field.additonal_option_count ?? 0,
+        field.initial_answer_value?.length ?? 0,
+        values,
+      ]),
+      values,
+    };
   }, [
     field.answer_value,
     field.additonal_option_count,
     field.initial_answer_value,
   ]);
 
+  const [additionalAnswerState, setAdditionalAnswerState] = useState(() => ({
+    source: additionalAnswerSource.key,
+    values: additionalAnswerSource.values,
+  }));
+  const additionalAnswerValues =
+    additionalAnswerState.source === additionalAnswerSource.key
+      ? additionalAnswerState.values
+      : additionalAnswerSource.values;
+
   const answerValues = ((field.answer_value ?? []) as string[]).slice(
     0,
-    initialAnswerValues.current.length,
+    initialAnswerValues.length,
   );
 
   const isDisabled =
@@ -115,8 +121,7 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
         })}
 
         {/* Additional editable inputs for user answers */}
-        {initialAnswerValues.current &&
-          initialAnswerValues.current.map((answer_value, index) => {
+        {initialAnswerValues.map((answer_value, index) => {
             return (
               <div key={`additional-${index}`} className="flex gap-2 ">
                 <Input
@@ -161,7 +166,10 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
                   onChange={(e) => {
                     const newValues = additionalAnswerValues.slice();
                     newValues[index] = e.target.value;
-                    setAdditionalAnswerValues(newValues);
+                    setAdditionalAnswerState({
+                      source: additionalAnswerSource.key,
+                      values: newValues,
+                    });
                     onChange?.([...answerValues, ...newValues]);
                   }}
                   placeholder={field.placeholder}
@@ -176,7 +184,10 @@ export const MultiLineTextField: FC<MultiLineTextFieldProps> = ({
                   onClick={() => {
                     const newValues = additionalAnswerValues.slice();
                     newValues[index] = '';
-                    setAdditionalAnswerValues(newValues);
+                    setAdditionalAnswerState({
+                      source: additionalAnswerSource.key,
+                      values: newValues,
+                    });
                     onChange?.([...answerValues, ...newValues]);
                   }}
                   disabled={!value}

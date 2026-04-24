@@ -58,10 +58,11 @@ export function DetailComments({
   useEffect(() => {
     if (!emblaApi) return;
 
-    onSelect(emblaApi);
+    const selectTimer = window.setTimeout(() => onSelect(emblaApi), 0);
     emblaApi.on('reInit', onSelect).on('select', onSelect);
 
     return () => {
+      window.clearTimeout(selectTimer);
       emblaApi.off('reInit', onSelect).off('select', onSelect);
     };
   }, [emblaApi, onSelect]);

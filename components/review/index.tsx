@@ -6,7 +6,7 @@ import {
 } from '@/lib/queries/getReviewTemplate';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FC } from 'react';
 import ReviewContent from './review-content';
 
@@ -22,7 +22,6 @@ const Review: FC<ReviewProps> = ({
   isSubmitted: initialIsSubmitted,
 }) => {
   const supabase = createClient();
-  const queryClient = useQueryClient();
   // Auth context
   const { data: authData } = useQuery({
     queryFn: () => getAuth(supabase),
