@@ -6,6 +6,7 @@ import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
+import SafeRichText from '../safe-rich-text';
 import {
   TrafficLightTooltip,
   TrafficLightTooltipValue,
@@ -58,11 +59,10 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
           >
             {questionText}
           </p>
-          <p
+          <SafeRichText
+            value={field.shortTip}
             className={`block mt-1 font-normal text-body-md md:text-body-md italic cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground ' : ''}`}
-          >
-            {field.shortTip}
-          </p>
+          />
         </div>
         <RadioGroup
           value={value?.toString() ?? ''}
