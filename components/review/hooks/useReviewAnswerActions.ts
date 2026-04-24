@@ -47,7 +47,7 @@ export const useReviewAnswerActions = ({
   const submitReview = useCallback(async () => {
     dispatch({
       type: 'SUBMIT_ATTEMPTED',
-      incompleteStepIds: getIncompleteStepIds(selection.reachableSteps),
+      incompleteStepIds: getIncompleteStepIds(selection.enabledSteps),
     });
 
     if (selection.submitBlockers.length > 0) return;

@@ -22,7 +22,7 @@ export const REVIEW_FLOW_PHASES = [
 
 export const REVIEW_FLOW_TRANSITIONS = {
   HYDRATE: 'merge server snapshot; never unlock an already locked review',
-  NAVIGATE: 'move to reachable step; touch the step being left',
+  NAVIGATE: 'move to enabled step; touch the step being left',
   REPAIR_CURRENT_STEP: 'move current step after dynamic step changes',
   UPDATE_METADATA: 'edit unlocked metadata draft and mark field dirty',
   UPDATE_ANSWER: 'edit unlocked answer draft immutably',
@@ -36,7 +36,7 @@ export const REVIEW_FLOW_TRANSITIONS = {
 
 export type ReviewFlowEvent =
   | { type: 'HYDRATE'; snapshot: ReviewFlowSnapshot }
-  | { type: 'NAVIGATE'; stepId: string; reachableStepIds: readonly string[] }
+  | { type: 'NAVIGATE'; stepId: string; enabledStepIds: readonly string[] }
   | { type: 'REPAIR_CURRENT_STEP'; stepId: string }
   | { type: 'UPDATE_TITLE'; value: string }
   | { type: 'UPDATE_KEYWORDS'; value: string[] }
@@ -80,7 +80,7 @@ export const transitionReviewFlow = (
       if (
         state.isLocked ||
         event.stepId === state.currentStepId ||
-        !event.reachableStepIds.includes(event.stepId)
+        !event.enabledStepIds.includes(event.stepId)
       ) {
         return state;
       }

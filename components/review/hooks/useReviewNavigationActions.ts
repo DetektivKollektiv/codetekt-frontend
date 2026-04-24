@@ -16,36 +16,36 @@ export const useReviewNavigationActions = ({
   selection,
   isLocked,
 }: UseReviewNavigationActionsOptions) => {
-  const reachableStepIds = useMemo(
-    () => selection.reachableSteps.map((step) => step.id),
-    [selection.reachableSteps],
+  const enabledStepIds = useMemo(
+    () => selection.enabledSteps.map((step) => step.id),
+    [selection.enabledSteps],
   );
 
   const selectStep = useCallback(
     (stepId: string) => {
-      dispatch({ type: 'NAVIGATE', stepId, reachableStepIds });
+      dispatch({ type: 'NAVIGATE', stepId, enabledStepIds });
     },
-    [dispatch, reachableStepIds],
+    [dispatch, enabledStepIds],
   );
 
   const goPrev = useCallback(() => {
     if (isLocked || selection.currentStepIndex <= 0) return;
-    const previousStep = selection.reachableSteps[selection.currentStepIndex - 1];
+    const previousStep = selection.enabledSteps[selection.currentStepIndex - 1];
     if (previousStep) selectStep(previousStep.id);
-  }, [isLocked, selectStep, selection.currentStepIndex, selection.reachableSteps]);
+  }, [isLocked, selectStep, selection.currentStepIndex, selection.enabledSteps]);
 
   const goNext = useCallback(() => {
     if (
       isLocked ||
       selection.currentStepIndex < 0 ||
-      selection.currentStepIndex >= selection.reachableSteps.length - 1
+      selection.currentStepIndex >= selection.enabledSteps.length - 1
     ) {
       return;
     }
 
-    const nextStep = selection.reachableSteps[selection.currentStepIndex + 1];
+    const nextStep = selection.enabledSteps[selection.currentStepIndex + 1];
     if (nextStep) selectStep(nextStep.id);
-  }, [isLocked, selectStep, selection.currentStepIndex, selection.reachableSteps]);
+  }, [isLocked, selectStep, selection.currentStepIndex, selection.enabledSteps]);
 
   return {
     goPrev,

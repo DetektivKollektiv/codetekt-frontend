@@ -47,7 +47,7 @@ export const buildReviewFlowReturn = ({
     hasUnsavedChanges: selection.hasUnsavedChanges,
     hasUnsavedReviewAnswers: selection.hasUnsavedReviewAnswers,
     isLastStep:
-      selection.currentStepIndex === selection.reachableSteps.length - 1,
+      selection.currentStepIndex === selection.enabledSteps.length - 1,
     flags: {
       hasTitle: selection.effective.hasTitle,
       hasCaseKeywords: selection.effective.hasCaseKeywords,
@@ -64,26 +64,29 @@ export const buildReviewFlowReturn = ({
     },
     debug: {
       allStepIds: selection.allSteps.map((step) => step.id),
-      reachableStepIds: selection.reachableSteps.map((step) => step.id),
+      enabledStepIds: selection.enabledSteps.map((step) => step.id),
       submitBlockers: selection.submitBlockers,
       repairedCurrentStepId: selection.repairedCurrentStepId,
     },
   },
   navigation: {
-    items: selection.reachableSteps.map((step) => ({
+    items: selection.allSteps.map((step) => ({
       id: step.id,
       label: step.label,
       isIndented: step.isIndented,
       status: step.status,
+      disabled: !selection.enabledSteps.some(
+        (enabledStep) => enabledStep.id === step.id,
+      ),
     })),
-    steps: selection.reachableSteps,
+    steps: selection.enabledSteps,
     currentStepId: selection.repairedCurrentStepId,
     currentStep: selection.currentStep,
     currentQuestion: selection.currentQuestion,
     canGoPrev: selection.currentStepIndex > 0 && !state.isLocked,
     canGoNext:
       selection.currentStepIndex >= 0 &&
-      selection.currentStepIndex < selection.reachableSteps.length - 1 &&
+      selection.currentStepIndex < selection.enabledSteps.length - 1 &&
       !state.isLocked,
     goPrev: navigationActions.goPrev,
     goNext: navigationActions.goNext,

@@ -388,7 +388,7 @@ export const updateAnswerTemplateValue = (
     };
   }) as NonNullable<ReviewTemplate>;
 
-export const buildReachableSteps = (steps: ReviewStep[]): ReviewStep[] => {
+export const buildEnabledSteps = (steps: ReviewStep[]): ReviewStep[] => {
   const firstBlockingIndex = steps.findIndex((step) => !step.isComplete);
 
   if (firstBlockingIndex === -1) {
@@ -401,13 +401,13 @@ export const buildReachableSteps = (steps: ReviewStep[]): ReviewStep[] => {
 export const repairCurrentStepId = ({
   currentStepId,
   allSteps,
-  reachableSteps,
+  enabledSteps,
 }: {
   currentStepId: string;
   allSteps: ReviewStep[];
-  reachableSteps: ReviewStep[];
+  enabledSteps: ReviewStep[];
 }) => {
-  if (reachableSteps.some((step) => step.id === currentStepId)) {
+  if (enabledSteps.some((step) => step.id === currentStepId)) {
     return currentStepId;
   }
 
@@ -415,13 +415,13 @@ export const repairCurrentStepId = ({
   if (currentStepIndex >= 0) {
     for (let index = currentStepIndex; index >= 0; index -= 1) {
       const step = allSteps[index];
-      if (step && reachableSteps.some((candidate) => candidate.id === step.id)) {
+      if (step && enabledSteps.some((candidate) => candidate.id === step.id)) {
         return step.id;
       }
     }
   }
 
-  return reachableSteps[0]?.id ?? METADATA_STEP_TITLE;
+  return enabledSteps[0]?.id ?? METADATA_STEP_TITLE;
 };
 
 export const buildMetadataDirtyState = (

@@ -12,7 +12,7 @@ import { ReviewTemplate } from '@/lib/queries/getReviewTemplate';
 import { userKeywordsSchema } from '@/lib/schemas/case-metadata-schemas';
 import { Field } from '@/lib/schemas/field-schemas';
 import {
-  buildReachableSteps,
+  buildEnabledSteps,
   buildReviewFlowSnapshot,
   createInitialReviewFlowState,
   getInitialTitle,
@@ -166,8 +166,8 @@ describe('R1 - phases and step order', () => {
   });
 });
 
-describe('R2 - linear reachability', () => {
-  it('keeps only steps up to the first incomplete step reachable', () => {
+describe('R2 - linear enabled steps', () => {
+  it('keeps only steps up to the first incomplete step enabled', () => {
     const flowSnapshot = snapshot({
       caseData: completeCase({
         case_keywords: [],
@@ -177,13 +177,19 @@ describe('R2 - linear reachability', () => {
     });
     const selection = selectReviewFlow(initialState(flowSnapshot), flowSnapshot);
 
-    expect(selection.reachableSteps.map((step) => step.id)).toEqual([
+    expect(selection.allSteps.map((step) => step.id)).toEqual([
+      METADATA_STEP_TITLE,
+      METADATA_STEP_KEYWORDS,
+      METADATA_STEP_CATEGORY,
+      METADATA_STEP_FACTCHECK,
+    ]);
+    expect(selection.enabledSteps.map((step) => step.id)).toEqual([
       METADATA_STEP_TITLE,
       METADATA_STEP_KEYWORDS,
     ]);
   });
 
-  it('ignores navigation to a non-reachable step', () => {
+  it('ignores navigation to a disabled step', () => {
     const state = initialState(
       snapshot({
         caseData: completeCase({
@@ -197,7 +203,7 @@ describe('R2 - linear reachability', () => {
     const nextState = transitionReviewFlow(state, {
       type: 'NAVIGATE',
       stepId: SUBMIT_STEP,
-      reachableStepIds: [METADATA_STEP_TITLE, METADATA_STEP_KEYWORDS],
+      enabledStepIds: [METADATA_STEP_TITLE, METADATA_STEP_KEYWORDS],
     });
 
     expect(nextState.currentStepId).toBe(METADATA_STEP_TITLE);
@@ -210,19 +216,19 @@ describe('R3 - entry and current step repair', () => {
     expect(initialState(flowSnapshot).currentStepId).toBe(SUBMIT_STEP);
   });
 
-  it('repairs an unreachable current step by searching backwards', () => {
+  it('repairs a disabled current step by searching backwards', () => {
     const steps = [
       { id: 'a', isComplete: true },
       { id: 'b', isComplete: false },
       { id: 'c', isComplete: true },
-    ] as ReturnType<typeof buildReachableSteps>;
-    const reachableSteps = buildReachableSteps(steps);
+    ] as ReturnType<typeof buildEnabledSteps>;
+    const enabledSteps = buildEnabledSteps(steps);
 
     expect(
       repairCurrentStepId({
         currentStepId: 'c',
         allSteps: steps,
-        reachableSteps,
+        enabledSteps,
       }),
     ).toBe('b');
   });
@@ -239,7 +245,7 @@ describe('R4 - locking', () => {
     const navigated = transitionReviewFlow(state, {
       type: 'NAVIGATE',
       stepId: METADATA_STEP_KEYWORDS,
-      reachableStepIds: [METADATA_STEP_TITLE, METADATA_STEP_KEYWORDS],
+      enabledStepIds: [METADATA_STEP_TITLE, METADATA_STEP_KEYWORDS],
     });
     const edited = transitionReviewFlow(state, {
       type: 'UPDATE_TITLE',
@@ -335,7 +341,7 @@ describe('R5.2 - keywords', () => {
     expect(flowSnapshot.hasCaseKeywords).toBe(false);
     expect(flowSnapshot.hasUserKeywords).toBe(false);
     expect(selection.effective.metadataComplete).toBe(false);
-    expect(selection.reachableSteps.map((step) => step.id)).toEqual([
+    expect(selection.enabledSteps.map((step) => step.id)).toEqual([
       METADATA_STEP_TITLE,
       METADATA_STEP_KEYWORDS,
     ]);
@@ -656,7 +662,7 @@ describe('R11 - submit', () => {
     const selection = selectReviewFlow(initialState(flowSnapshot), flowSnapshot);
     const submitted = transitionReviewFlow(initialState(flowSnapshot), {
       type: 'SUBMIT_ATTEMPTED',
-      incompleteStepIds: getIncompleteStepIds(selection.reachableSteps),
+      incompleteStepIds: getIncompleteStepIds(selection.enabledSteps),
     });
 
     expect(submitted.touchedStepIds.has('question-a')).toBe(true);
@@ -690,7 +696,7 @@ describe('R12 - touched mechanism', () => {
     const navigated = transitionReviewFlow(state, {
       type: 'NAVIGATE',
       stepId: METADATA_STEP_KEYWORDS,
-      reachableStepIds: [METADATA_STEP_TITLE, METADATA_STEP_KEYWORDS],
+      enabledStepIds: [METADATA_STEP_TITLE, METADATA_STEP_KEYWORDS],
     });
 
     expect(navigated.touchedStepIds.has(METADATA_STEP_TITLE)).toBe(true);
@@ -895,6 +901,6 @@ describe('R15 - effective values', () => {
     expect(effective.metadataComplete).toBe(true);
     expect(effective.shouldSkipReviewQuestions).toBe(true);
     expect(effective.finalStepEnabled).toBe(true);
-    expect(REVIEW_FLOW_TRANSITIONS.NAVIGATE).toContain('reachable');
+    expect(REVIEW_FLOW_TRANSITIONS.NAVIGATE).toContain('enabled');
   });
 });

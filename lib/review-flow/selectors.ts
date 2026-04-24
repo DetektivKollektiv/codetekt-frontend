@@ -26,7 +26,7 @@ import type {
 } from './index';
 import {
   buildMetadataDirtyState,
-  buildReachableSteps,
+  buildEnabledSteps,
   repairCurrentStepId,
 } from './index';
 import type { MetadataValidationIssues } from './validation';
@@ -59,7 +59,7 @@ export interface ReviewFlowSelection {
   isValidForSubmission: boolean;
   submitBlockers: string[];
   allSteps: ReviewStep[];
-  reachableSteps: ReviewStep[];
+  enabledSteps: ReviewStep[];
   repairedCurrentStepId: string;
   currentStep: ReviewStep | null;
   currentQuestion: NonNullable<ReviewTemplate>[number] | null;
@@ -373,17 +373,17 @@ export const selectReviewFlow = (
     isLocked: state.isLocked,
     isValidForSubmission,
   });
-  const reachableSteps = buildReachableSteps(allSteps);
+  const enabledSteps = buildEnabledSteps(allSteps);
   const repairedCurrentStepId = repairCurrentStepId({
     currentStepId: state.currentStepId,
     allSteps,
-    reachableSteps,
+    enabledSteps,
   });
   const currentStep =
-    reachableSteps.find((step) => step.id === repairedCurrentStepId) ??
-    reachableSteps[0] ??
+    enabledSteps.find((step) => step.id === repairedCurrentStepId) ??
+    enabledSteps[0] ??
     null;
-  const currentStepIndex = reachableSteps.findIndex(
+  const currentStepIndex = enabledSteps.findIndex(
     (step) => step.id === repairedCurrentStepId,
   );
   const currentQuestion =
@@ -409,7 +409,7 @@ export const selectReviewFlow = (
     isValidForSubmission,
     submitBlockers,
     allSteps,
-    reachableSteps,
+    enabledSteps,
     repairedCurrentStepId,
     currentStep,
     currentQuestion,

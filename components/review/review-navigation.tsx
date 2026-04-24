@@ -10,6 +10,7 @@ export interface ReviewNavigationItemData {
   label: string;
   isIndented: boolean;
   status: 'error' | 'success' | 'incomplete' | undefined;
+  disabled: boolean;
 }
 
 interface ReviewNavigationProps {
@@ -47,7 +48,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
             status={item.status}
             isActive={currentStepId === item.id}
             onItemClick={onItemClick}
-            disabled={disabled}
+            disabled={disabled || item.disabled}
           />
         ))}
       </div>
@@ -70,7 +71,7 @@ const ReviewNavigation: FC<ReviewNavigationProps> = ({
             status={currentItem.status}
             onItemClick={() => {}}
             isActive={true}
-            disabled={disabled}
+            disabled={disabled || currentItem.disabled}
           />
         )}
         <Button
