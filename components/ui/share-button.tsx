@@ -22,10 +22,14 @@ export interface ShareButtonProps
     Omit<React.ComponentPropsWithoutRef<typeof Button>, 'variant'>,
     VariantProps<typeof shareButtonVariants> {
   caseId: string;
+  showText?: boolean;
 }
 
 const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
-  ({ className, theme, caseId, size = 'sm', ...props }, ref) => {
+  (
+    { className, theme, caseId, showText = true, size = 'sm', ...props },
+    ref,
+  ) => {
     const handleShare = async () => {
       const shareData: ShareData = {
         title: `Fall`,
@@ -58,8 +62,8 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
         onClick={handleShare}
         {...props}
       >
-        <Share2 className="w-4 h-4 mr-2" />
-        Fall teilen
+        <Share2 className={`w-4 h-4  ${showText && 'mr-2'}`} />
+        {showText && 'Fall teilen'}
       </Button>
     );
   },

@@ -69,7 +69,11 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
               <Link href={`/archive/${caseItem.case_id}`}>
                 <Button variant={'destructive'}>Fall ansehen</Button>
               </Link>
-              <ShareButton size={'lg'} caseId={caseItem.case_id || ''} />
+              <ShareButton
+                showText={false}
+                size={'lg'}
+                caseId={caseItem.case_id || ''}
+              />
             </div>
           </div>
 
