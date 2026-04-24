@@ -52,7 +52,7 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
       <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4 md:gap-12 ">
         <div className="flex-1 ">
           <p
-            className={`text-body-md md:text-body-md font-bold cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
+            className={`text-body-md md:text-body-md font-bold leading-normal ${isDisabled ? 'text-muted-foreground' : ''} ${issue ? 'text-destructive' : ''}`}
             style={{
               fontWeight: 500,
             }}
@@ -61,7 +61,7 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
           </p>
           <SafeRichText
             value={field.shortTip}
-            className={`block mt-1 font-normal text-body-md md:text-body-md italic cursor-pointer leading-normal ${isDisabled ? 'text-muted-foreground ' : ''}`}
+            className={`block mt-1 font-normal text-body-md md:text-body-md italic leading-normal ${isDisabled ? 'text-muted-foreground ' : ''}`}
           />
         </div>
         <RadioGroup
