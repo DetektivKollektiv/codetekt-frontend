@@ -144,7 +144,7 @@ export function SignUpForm({
                   minLength={3}
                   maxLength={50}
                   pattern="[a-zA-Z0-9_\-]+"
-                  title="Nur Buchstaben, Zahlen, Unterstriche und Bindestriche"
+                  title="Nur Buchstaben, keine Umlaute, Zahlen, Unterstriche und Bindestriche"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
