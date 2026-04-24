@@ -362,7 +362,7 @@ export const selectReviewFlow = (
     state.isCommentSaved ||
     state.touchedStepIds.has(COMMENT_STEP)
       ? 'success'
-      : undefined;
+      : 'incomplete';
   const allSteps = buildReviewSteps({
     effective,
     statuses,

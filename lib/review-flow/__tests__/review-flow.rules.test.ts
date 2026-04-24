@@ -609,7 +609,7 @@ describe('R9 - answer draft and template merge', () => {
 });
 
 describe('R10 - comment', () => {
-  it('is complete, disabled after server comment, and success after touch', () => {
+  it('is complete, incomplete by default, disabled after server comment, and success after touch', () => {
     const withServerComment = snapshot({
       caseData: completeCase({
         case_comments: [
@@ -626,6 +626,10 @@ describe('R10 - comment', () => {
       withServerComment,
     );
     const withoutComment = snapshot();
+    const defaultComment = selectReviewFlow(
+      initialState(withoutComment),
+      withoutComment,
+    ).allSteps.find((step) => step.id === COMMENT_STEP);
     const touched = transitionReviewFlow(initialState(withoutComment), {
       type: 'STEPS_TOUCHED',
       stepIds: [COMMENT_STEP],
@@ -637,6 +641,10 @@ describe('R10 - comment', () => {
 
     expect(serverSelection.displayedFinalComment).toBe('A stored final comment');
     expect(serverSelection.isFinalCommentInputDisabled).toBe(true);
+    expect(defaultComment).toMatchObject({
+      isComplete: true,
+      status: 'incomplete',
+    });
     expect(touchedComment).toMatchObject({ isComplete: true, status: 'success' });
   });
 });
