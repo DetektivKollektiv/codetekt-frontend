@@ -76,17 +76,26 @@ const Footer: FC = ({}) => {
             <h3 className="font-bold text-heading-lg mb-3">Rechtliches</h3>
             <ul className="space-y-2 text-secondary-foreground/60">
               <li>
-                <Link href="#" className="hover:underline">
+                <Link
+                  href="https://codetekt.org/impressum/"
+                  className="hover:underline"
+                >
                   Impressum
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline">
+                <Link
+                  href="https://codetekt.org/datenschutz/"
+                  className="hover:underline"
+                >
                   Datenschutz
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:underline">
+                <Link
+                  href="https://gilded-fireplant-773.notion.site/Nutzungsbedingungen-Plattform-34a425d9f23a80f59c2ec28daab286e8"
+                  className="hover:underline"
+                >
                   Nutzungsbedingungen
                 </Link>
               </li>
@@ -127,16 +136,17 @@ const Footer: FC = ({}) => {
                   <Link href="mailto:info@codetekt.org">info@codetekt.org</Link>
                 </li>
                 <li>
-                  <Link href="#">Instagram</Link>
+                  <Link href="https://www.instagram.com/codetekt/">
+                    Instagram
+                  </Link>
                 </li>
                 <li>
-                  <Link href="#">Twitter</Link>
+                  <Link href="https://www.tiktok.com/@codetekt">TikTok</Link>
                 </li>
                 <li>
-                  <Link href="#">Facebook</Link>
-                </li>
-                <li>
-                  <Link href="#">LinkedIn</Link>
+                  <Link href="https://www.linkedin.com/company/codetekt">
+                    LinkedIn
+                  </Link>
                 </li>
               </ul>
             </AccordionContent>
@@ -157,7 +167,7 @@ const Footer: FC = ({}) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://codetekt.org/datenschutz/">
+                  <Link href="https://gilded-fireplant-773.notion.site/Nutzungsbedingungen-Plattform-34a425d9f23a80f59c2ec28daab286e8">
                     Nutzungsbedingungen
                   </Link>
                 </li>
