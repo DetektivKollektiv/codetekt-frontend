@@ -41,16 +41,19 @@ export default async function Home() {
   type CaseWithSubmissionState = UserCases[number] & {
     hasSubmittedByCurrentUser: boolean;
   };
+  type AggregatedReviewWithSubmissionState = AggregatedReviews[number] & {
+    hasSubmittedByCurrentUser: boolean;
+  };
 
   // cases the user has created (and their aggregated reviews)
   let ownUserReviewsAndCases:
     | null
-    | (CaseWithSubmissionState | AggregatedReviews[number])[] = null;
+    | (CaseWithSubmissionState | AggregatedReviewWithSubmissionState)[] = null;
 
   // cases the user has reviewed (and their aggregated reviews)
   let userReviewsAndCases:
     | null
-    | (CaseWithSubmissionState | AggregatedReviews[number])[] = null;
+    | (CaseWithSubmissionState | AggregatedReviewWithSubmissionState)[] = null;
 
   // Separate arrays for cases with and without aggregated reviews
   let userCases: UserCases | null = null;
@@ -74,10 +77,18 @@ export default async function Home() {
         .map((review) => review.case_id),
     );
 
-    const ownUserAggregatedReviewsData = aggregatedReviewsData?.filter(
-      (review) =>
-        userCasesData?.some((userCase) => review.case_id === userCase.id),
+    const aggregatedReviewsWithSubmissionState = aggregatedReviewsData?.map(
+      (review) => ({
+        ...review,
+        hasSubmittedByCurrentUser: submittedCaseIds.has(review.case_id),
+      }),
     );
+
+    const ownUserAggregatedReviewsData =
+      aggregatedReviewsWithSubmissionState?.filter(
+        (review) =>
+          userCasesData?.some((userCase) => review.case_id === userCase.id),
+      );
 
     const ownFilteredUserCases = userCasesData?.filter(
       (userCase) =>
@@ -105,11 +116,12 @@ export default async function Home() {
     }
 
     // 1. Eigene Reviews aus aggregatedReviewsData (Vorrang)
-    const userAggregatedReviewsData = aggregatedReviewsData?.filter((review) =>
-      userReviewsData?.some(
-        (userReview) => review.case_id === userReview.case_id,
-      ),
-    );
+    const userAggregatedReviewsData =
+      aggregatedReviewsWithSubmissionState?.filter((review) =>
+        userReviewsData?.some(
+          (userReview) => review.case_id === userReview.case_id,
+        ),
+      );
 
     // 2. Eigene Reviews, die NICHT in aggregatedReviewsData sind
     const userReviewsDataFiltered = userReviewsData?.filter(

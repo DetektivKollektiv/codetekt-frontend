@@ -14,6 +14,7 @@ import {
   getWarningTags,
   isSatireCategory,
 } from '@/lib/utils/rating-helpers';
+import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 import ImagePlaceholder from '../image-placeholder';
@@ -21,7 +22,9 @@ import CardText from './card-text';
 import Evaluation from './evaluation';
 
 interface AggregatedReviewCardProps {
-  caseItem: NonNullable<AggregatedReviews[number]>;
+  caseItem: NonNullable<AggregatedReviews[number]> & {
+    hasSubmittedByCurrentUser?: boolean;
+  };
 }
 
 export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
@@ -30,6 +33,8 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
   const caseCategory = caseItem.cases.case_categories?.value;
   const isSatire = isSatireCategory(caseCategory);
   const ratingStyle = getRatingStyle(caseItem.result_score || 0, caseCategory);
+  const showReviewButton =
+    caseItem.case_id && !caseItem.hasSubmittedByCurrentUser;
 
   const reviewData = caseItem.data;
   if (!reviewData) return null;
@@ -65,10 +70,18 @@ export const AggregatedReviewCard: FC<AggregatedReviewCardProps> = ({
             />
 
             {/* Action Buttons */}
-            <div className="flex gap-3 flex-1 items-end">
+            <div className="flex flex-wrap gap-3 flex-1 items-end">
               <Link href={`/archive/${caseItem.case_id}`}>
                 <Button variant={'destructive'}>Fall ansehen</Button>
               </Link>
+              {showReviewButton && (
+                <Link href={`/review/${caseItem.case_id}`}>
+                  <Button variant={'default'}>
+                    <Edit className="w-4 h-4 mr-2" />
+                    Fall checken
+                  </Button>
+                </Link>
+              )}
               <ShareButton
                 showText={false}
                 size={'lg'}
