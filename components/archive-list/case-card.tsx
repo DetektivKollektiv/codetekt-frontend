@@ -30,7 +30,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
       <CardContent className="p-4 lg:p-6 w-full">
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Left: Image */}
-          <div className="aspect-video lg:aspect-[4/3] flex-shrink-0">
+          <div className="w-full lg:w-72 flex-shrink-0">
             <ImagePlaceholder
               width={317}
               height={238}
