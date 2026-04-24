@@ -1,16 +1,26 @@
 'use client';
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { CircleMinus, HelpCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { CircleMinus } from 'lucide-react';
 import { FC } from 'react';
+import {
+  TrafficLightTooltip,
+  TrafficLightTooltipValue,
+} from './traffic-light-tooltip';
 
 interface TrafficLightHeaderProps {
   className?: string;
 }
+
+const trafficLightHeaderItems: {
+  value: TrafficLightTooltipValue;
+  className: string;
+}[] = [
+  { value: 0, className: 'bg-brand-green' },
+  { value: 1, className: 'bg-brand-yellow' },
+  { value: 2, className: 'bg-brand-orange' },
+  { value: 3, className: 'bg-destructive' },
+];
 
 export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
   className,
@@ -18,83 +28,25 @@ export const TrafficLightHeader: FC<TrafficLightHeaderProps> = ({
   return (
     <div className={className}>
       <div className="flex items-center justify-between md:justify-end gap-0 border-b pb-4">
-        <div className="flex space-x-2 justify-between md:justify-end w-full md:w-auto ">
-          {/* Stimme voll zu */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <HelpCircle
-                className="size-6 md:size-5 text-brand-green"
-                strokeWidth={2.5}
+        <div className="flex gap-2 justify-between md:justify-end w-full md:w-auto">
+          {trafficLightHeaderItems.map((item) => (
+            <TrafficLightTooltip key={item.value} value={item.value}>
+              <span
+                tabIndex={0}
+                className={cn(
+                  'block size-6 md:size-5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
+                  item.className,
+                )}
               />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-48 text-center">
-              <p className="text-body-sm opacity-80">
-                Trifft zu bzw. hat keinen negativen Einfluss auf die
-                Vertrauenswürdigkeit des Falls
-              </p>
-            </TooltipContent>
-          </Tooltip>
+            </TrafficLightTooltip>
+          ))}
 
-          {/* Stimme eher zu */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <HelpCircle
-                className="size-6 md:size-5 text-brand-yellow"
-                strokeWidth={2.5}
-              />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-48 text-center">
-              <p className="text-body-sm opacity-80">
-                Trifft nicht zu, aber hat einen geringen Einfluss auf die
-                Vertrauenswürdigkeit des Falls
-              </p>
-            </TooltipContent>
-          </Tooltip>
-
-          {/* Stimme eher nicht zu */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <HelpCircle
-                className="size-6 md:size-5 text-brand-orange"
-                strokeWidth={2.5}
-              />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-48 text-center">
-              <p className="text-body-sm opacity-80">
-                Trifft nicht zu und hat erheblichen Einfluss auf die
-                Vertrauenswürdigkeit des Falls
-              </p>
-            </TooltipContent>
-          </Tooltip>
-
-          {/* Stimme nicht zu */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <HelpCircle
-                className="size-6 md:size-5 text-destructive"
-                strokeWidth={2.5}
-              />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-48 text-center">
-              <p className="text-body-sm opacity-80">
-                Trifft nicht zu und lässt den ganzen Fall nicht vertrauenswürdig
-                wirken.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <CircleMinus className="size-6 md:size-5 text-muted-foreground" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-48 text-center">
-              <p className="text-body-sm opacity-80">
-                Frage nicht anwendbar/
-                <br />
-                nicht sicher
-              </p>
-            </TooltipContent>
-          </Tooltip>
+          <TrafficLightTooltip value={4}>
+            <CircleMinus
+              tabIndex={0}
+              className="size-6 md:size-5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            />
+          </TrafficLightTooltip>
         </div>
       </div>
     </div>

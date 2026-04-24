@@ -6,6 +6,10 @@ import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
+import {
+  TrafficLightTooltip,
+  TrafficLightTooltipValue,
+} from './traffic-light-tooltip';
 
 type TrafficLightField = z.infer<typeof trafficLightFieldSchema>;
 
@@ -67,23 +71,28 @@ export const TrafficLightField: FC<TrafficLightFieldProps> = ({
           className="flex justify-between md:justify-start w-full md:w-auto md:items-center gap-2 mt-1 min-w-32"
         >
           {field.options.map((option) => {
+            const optionValue = option.value as TrafficLightTooltipValue;
+
             return (
-              <RadioGroupItem
-                value={option.value.toString()}
-                className="size-6 md:size-5 border-2"
-                aria-label={`${questionText}: ${option.value}`}
-                data-testid="review-traffic-light-option"
-                data-field-id={field.id}
-                data-answer-value={option.value}
-                style={{
-                  borderColor: option.color,
-                }}
-                key={option.value}
-                iconClassName="size-3 stroke-0"
-                iconStyle={{
-                  fill: option.color,
-                }}
-              />
+              <TrafficLightTooltip key={option.value} value={optionValue}>
+                <span className="inline-flex rounded-full outline-none focus-within:ring-2 focus-within:ring-primary/50">
+                  <RadioGroupItem
+                    value={option.value.toString()}
+                    className="size-6 md:size-5 border-2"
+                    aria-label={`${questionText}: ${option.value}`}
+                    data-testid="review-traffic-light-option"
+                    data-field-id={field.id}
+                    data-answer-value={option.value}
+                    style={{
+                      borderColor: option.color,
+                    }}
+                    iconClassName="size-3 stroke-0"
+                    iconStyle={{
+                      fill: option.color,
+                    }}
+                  />
+                </span>
+              </TrafficLightTooltip>
             );
           })}
         </RadioGroup>
