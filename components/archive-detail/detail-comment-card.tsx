@@ -34,7 +34,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Flag, Triangle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 interface DetailCommentCardProps {
@@ -53,8 +53,7 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
   });
 
   const userId = authData.user?.id;
-  const [myVote, setMyVote] = useState<VoteDirection | null>(null);
-  const [isReported, setIsReported] = useState(false);
+  const isOwnComment = userId === comment.author_id;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reportReason, setReportReason] = useState('');
 
@@ -80,25 +79,17 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
     commentModerationQuery(supabase, comment.id),
   );
 
-  // Check current user vote for this comment
-  useEffect(() => {
-    if (votes && userId) {
-      const userVote = votes.find((vote) => vote.user_id === userId);
-      setMyVote((userVote?.vote_type as VoteDirection | undefined) ?? null);
-      return;
-    }
+  const myVote = useMemo(() => {
+    if (!votes || !userId) return null;
 
-    setMyVote(null);
+    const userVote = votes.find((vote) => vote.user_id === userId);
+    return (userVote?.vote_type as VoteDirection | undefined) ?? null;
   }, [votes, userId]);
 
-  // Check if current user has reported this comment
-  useEffect(() => {
-    if (reports && userId) {
-      const userReport = reports.find(
-        (report) => report.reported_by === userId,
-      );
-      setIsReported(!!userReport);
-    }
+  const isReported = useMemo(() => {
+    if (!reports || !userId) return false;
+
+    return reports.some((report) => report.reported_by === userId);
   }, [reports, userId]);
 
   // Mutation for toggling vote
@@ -152,7 +143,7 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
   const handleReportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!userId || !reportReasonValidation.success) return;
+    if (!userId || isOwnComment || !reportReasonValidation.success) return;
 
     reportMutation.mutate({
       commentId: comment.id,
@@ -181,68 +172,72 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
 
   return (
     <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={handleReportSubmit}>
-            <DialogHeader>
-              <DialogTitle>Kommentar melden</DialogTitle>
-              <DialogDescription>
-                Bitte geben Sie den Grund für die Meldung an. Unser Team wird
-                den Kommentar überprüfen.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-3">
-                <Label htmlFor="reason">Grund der Meldung</Label>
-                <Textarea
-                  id="reason"
-                  placeholder="Beschreiben Sie, warum dieser Kommentar gemeldet werden sollte..."
-                  value={reportReason}
-                  onChange={(e) => setReportReason(e.target.value)}
-                  required
-                  rows={4}
-                  maxLength={COMMENT_REPORT_REASON_MAX_LENGTH}
-                />
-                <div className="flex justify-between items-start">
-                  {showReportReasonIssue && !reportReasonValidation.success && (
-                    <Label className="text-destructive">
-                      {reportReasonLength > COMMENT_REPORT_REASON_MAX_LENGTH
-                        ? `Maximal ${COMMENT_REPORT_REASON_MAX_LENGTH} Zeichen.`
-                        : reportReasonLength < COMMENT_REPORT_REASON_MIN_LENGTH
-                          ? `Mindestens ${COMMENT_REPORT_REASON_MIN_LENGTH} Zeichen.`
-                          : 'Fehlerhafte Eingabe.'}
-                    </Label>
-                  )}
-                  <div
-                    className={`text-right text-sm ml-auto ${
-                      showReportReasonIssue && !reportReasonValidation.success
-                        ? 'text-destructive'
-                        : 'text-muted-foreground'
-                    }`}
-                  >
-                    {reportReasonLength} / {COMMENT_REPORT_REASON_MAX_LENGTH}
+      {!isOwnComment && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <form onSubmit={handleReportSubmit}>
+              <DialogHeader>
+                <DialogTitle>Kommentar melden</DialogTitle>
+                <DialogDescription>
+                  Bitte geben Sie den Grund für die Meldung an. Unser Team wird
+                  den Kommentar überprüfen.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-3">
+                  <Label htmlFor="reason">Grund der Meldung</Label>
+                  <Textarea
+                    id="reason"
+                    placeholder="Beschreiben Sie, warum dieser Kommentar gemeldet werden sollte..."
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    required
+                    rows={4}
+                    maxLength={COMMENT_REPORT_REASON_MAX_LENGTH}
+                  />
+                  <div className="flex justify-between items-start">
+                    {showReportReasonIssue &&
+                      !reportReasonValidation.success && (
+                        <Label className="text-destructive">
+                          {reportReasonLength > COMMENT_REPORT_REASON_MAX_LENGTH
+                            ? `Maximal ${COMMENT_REPORT_REASON_MAX_LENGTH} Zeichen.`
+                            : reportReasonLength <
+                                COMMENT_REPORT_REASON_MIN_LENGTH
+                              ? `Mindestens ${COMMENT_REPORT_REASON_MIN_LENGTH} Zeichen.`
+                              : 'Fehlerhafte Eingabe.'}
+                        </Label>
+                      )}
+                    <div
+                      className={`text-right text-sm ml-auto ${
+                        showReportReasonIssue && !reportReasonValidation.success
+                          ? 'text-destructive'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      {reportReasonLength} / {COMMENT_REPORT_REASON_MAX_LENGTH}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline" type="button">
-                  Abbrechen
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline" type="button">
+                    Abbrechen
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  disabled={
+                    !reportReasonValidation.success || reportMutation.isPending
+                  }
+                >
+                  {reportMutation.isPending ? 'Wird gesendet...' : 'Melden'}
                 </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                disabled={
-                  !reportReasonValidation.success || reportMutation.isPending
-                }
-              >
-                {reportMutation.isPending ? 'Wird gesendet...' : 'Melden'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      )}
 
       <Card className="h-auto w-full">
         <CardContent className="p-6 h-full relative overflow-hidden">
@@ -279,18 +274,20 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
                   </p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsDialogOpen(true)}
-                disabled={!userId || isReported || !!moderation}
-                className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
-              >
-                <Flag
-                  className="h-4 w-4 text-destructive"
-                  fill={isReported ? 'currentColor' : 'none'}
-                />
-              </Button>
+              {!isOwnComment && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsDialogOpen(true)}
+                  disabled={!userId || isReported || !!moderation}
+                  className="gap-2 h-8 px-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                >
+                  <Flag
+                    className="h-4 w-4 text-destructive"
+                    fill={isReported ? 'currentColor' : 'none'}
+                  />
+                </Button>
+              )}
             </div>
 
             {/* Comment content */}
