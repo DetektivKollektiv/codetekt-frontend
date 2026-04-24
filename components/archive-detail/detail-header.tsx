@@ -49,14 +49,6 @@ export function DetailHeader({
           Fall {caseData.case_number}
         </h1>
         <div className="flex gap-2">
-          {!hasSubmittedByCurrentUser && (
-            <Link href={`/review/${aggregatedReview.case_id}`}>
-              <Button variant={'outline'} size={'sm'}>
-                <Edit className="w-4 h-4 mr-2" />
-                Fall bearbeiten
-              </Button>
-            </Link>
-          )}
           <ShareButton caseId={aggregatedReview.case_id} size={'sm'} />
           <HelpButton />
         </div>
@@ -67,7 +59,7 @@ export function DetailHeader({
         <CardContent className="p-6">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Left: Text content */}
-            <div className="space-y-4">
+            <div className="space-y-4 flex flex-col h-full">
               <p className="text-body-sm text-muted-foreground uppercase tracking-wide">
                 Infos zum Fall
               </p>
@@ -93,6 +85,15 @@ export function DetailHeader({
                 <p className="text-body-md text-muted-foreground leading-relaxed">
                   {description}
                 </p>
+              )}
+
+              {!hasSubmittedByCurrentUser && (
+                <Link href={`/review/${aggregatedReview.case_id}`}>
+                  <Button variant={'default'} size={'sm'}>
+                    <Edit className="w-4 h-4 mr-2" />
+                    Fall bearbeiten
+                  </Button>
+                </Link>
               )}
             </div>
 
