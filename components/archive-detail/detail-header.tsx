@@ -91,7 +91,7 @@ export function DetailHeader({
                 <Link href={`/review/${aggregatedReview.case_id}`}>
                   <Button variant={'default'} size={'sm'}>
                     <Edit className="w-4 h-4 mr-2" />
-                    Fall bearbeiten
+                    Fall checken
                   </Button>
                 </Link>
               )}
