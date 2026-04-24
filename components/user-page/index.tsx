@@ -102,7 +102,7 @@ const UserPage: FC<UserPageProps> = ({
                       handleOpenCasesClick();
                     }}
                   >
-                    Fall bearbeiten
+                    Fall checken
                   </Link>
                 </Button>
               </div>

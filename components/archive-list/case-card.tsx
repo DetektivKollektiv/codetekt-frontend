@@ -60,7 +60,7 @@ export const CaseCard: FC<CaseCardProps> = ({ caseItem }) => {
             {showEditButton && (
               <div className="flex gap-3 flex-1 items-end">
                 <Link href={`/review/${caseItem.id}`}>
-                  <Button variant={'default'}>Fall bearbeiten</Button>
+                  <Button variant={'default'}>Fall checken</Button>
                 </Link>
               </div>
             )}

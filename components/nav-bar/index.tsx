@@ -14,7 +14,7 @@ const guestNavigation: NavLink[] = [
 ];
 
 const authenticatedNavigation: NavLink[] = [
-  { label: 'Fall bearbeiten', href: '/#open-cases' },
+  { label: 'Fall checken', href: '/#open-cases' },
   { label: 'Fall einreichen', href: '/submit' },
   { label: 'Gelöste Fälle', href: '/archive' },
   {

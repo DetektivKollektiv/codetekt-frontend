@@ -19,7 +19,7 @@ const Footer: FC = ({}) => {
             <ul className="space-y-2 text-secondary-foreground/60">
               <li>
                 <Link href="/#open-cases" className="hover:underline">
-                  Fall bearbeiten
+                  Fall checken
                 </Link>
               </li>
               <li>
@@ -121,7 +121,7 @@ const Footer: FC = ({}) => {
             <AccordionContent>
               <ul className="space-y-2 text-secondary-foreground/60 pl-4 text-body-md">
                 <li>
-                  <Link href="/#open-cases">Fall bearbeiten</Link>
+                  <Link href="/#open-cases">Fall checken</Link>
                 </li>
                 <li>
                   <Link href="/submit">Fall einreichen</Link>

@@ -112,7 +112,7 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
               <CardTitle>
                 Mach mit und <br /> bearbeite diesen Fall!
               </CardTitle>
-              <Button>Fall bearbeiten</Button>
+              <Button>Fall checken</Button>
             </CardHeader>
           </CardContent>
           <CardContent className="p-0 flex-1 flex flex-col">
@@ -164,7 +164,7 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
           <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 w-full">
             <div className="w-full md:w-auto">
               <CardTitle>
-                Du möchtest den Fall bearbeiten <br />
+                Du möchtest den Fall checken <br />
                 oder kommentieren?
               </CardTitle>
               <CardDescription className="mt-4">Mach mit!</CardDescription>
