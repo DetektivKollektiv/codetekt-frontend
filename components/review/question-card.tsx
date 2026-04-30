@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
-import SafeRichText from './safe-rich-text';
+import SafeRichText from '../safe-rich-text';
 
 interface QuestionCardProps {
   title: ReactNode;

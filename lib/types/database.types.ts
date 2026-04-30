@@ -4,6 +4,7 @@ import {
   OpenGraphData,
   ReviewAggregationData,
   SubmittedReviewAnswer,
+  TutorialContentData,
 } from '../schemas';
 import { Database as DatabaseGenerated } from './database.types-generated';
 
@@ -54,6 +55,28 @@ export type Database = MergeDeep<
           };
           Update: {
             data?: SubmittedReviewAnswer | null;
+          };
+        };
+        profiles: {
+          Row: {
+            tutorial_completed_at: string | null;
+          };
+          Insert: {
+            tutorial_completed_at?: string | null;
+          };
+          Update: {
+            tutorial_completed_at?: string | null;
+          };
+        };
+        tutorial_content: {
+          Row: {
+            content: TutorialContentData | null;
+          };
+          Insert: {
+            content?: TutorialContentData | null;
+          };
+          Update: {
+            content?: TutorialContentData | null;
           };
         };
       };

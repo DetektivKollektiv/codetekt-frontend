@@ -1,4 +1,5 @@
 import { getAuth } from '@/lib/supabase/getAuth';
+import { getTutorialContent } from '@/lib/queries/getTutorialContent';
 
 import { createClient } from '@/lib/supabase/server';
 import { NavLink } from '@/lib/types';
@@ -25,12 +26,21 @@ const authenticatedNavigation: NavLink[] = [
 
 export default async function NavBar() {
   const client = await createClient();
-  const auth = await getAuth(client);
+  const [auth, tutorialContentResult] = await Promise.all([
+    getAuth(client),
+    getTutorialContent(client),
+  ]);
+
+  if (tutorialContentResult.error) {
+    console.error(tutorialContentResult.error);
+  }
+
   return (
     <Header
       authenticatedNavigation={authenticatedNavigation}
       guestNavigation={guestNavigation}
       auth={auth}
+      tutorialContent={tutorialContentResult.data}
     />
   );
 }

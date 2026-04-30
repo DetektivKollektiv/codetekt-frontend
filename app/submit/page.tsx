@@ -27,7 +27,7 @@ export default async function SubmitPage() {
                 Hier kannst du Inhalte zur Überprüfung einreichen – etwa
                 Behauptungen aus Gesprächen, Online-Artikel, Social-Media-Posts
                 oder Messenger-Nachrichten. Wir leiten deinen Fall direkt an
-                unsere Detektiv*innen weiter, die ihn prüfen und bewerten.
+                unsere co:detectives weiter, die ihn prüfen und bewerten.
               </p>
             </div>
           </div>

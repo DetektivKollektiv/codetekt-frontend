@@ -3,6 +3,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface UpdateProfileData {
   get_notifications?: boolean;
+  tutorial_completed_at?: string | null;
 }
 
 export async function updateProfile(

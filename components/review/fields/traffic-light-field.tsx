@@ -6,7 +6,7 @@ import { trafficLightFieldSchema } from '@/lib/schemas/field-schemas';
 import { FC, useMemo } from 'react';
 import { z } from 'zod';
 import { $ZodIssue } from 'zod/v4/core';
-import SafeRichText from '../safe-rich-text';
+import SafeRichText from '@/components/safe-rich-text';
 import {
   TrafficLightTooltip,
   TrafficLightTooltipValue,

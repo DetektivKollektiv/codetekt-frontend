@@ -78,3 +78,13 @@ export {
   type ReviewTemplateData,
   type ReviewTemplateMetadataData,
 } from './template-schemas';
+export {
+  tutorialBlogArticleSchema,
+  tutorialCommunityCardSchema,
+  tutorialContentSchema,
+  tutorialFaqItemSchema,
+  type TutorialBlogArticleData,
+  type TutorialCommunityCardData,
+  type TutorialContentData,
+  type TutorialFaqItemData,
+} from './tutorial-schemas';

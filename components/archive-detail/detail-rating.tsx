@@ -105,7 +105,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
               <p className="text-neutral-0/90">
                 Dieser Fall wurde von{' '}
                 <span className="font-semibold">
-                  {reviewerCount} Detektiv*innen
+                  {reviewerCount} co:detectives
                 </span>{' '}
                 bearbeitet. Mach mit und{' '}
                 <Link
@@ -128,7 +128,7 @@ export function DetailRating({ aggregatedReview, auth }: DetailRatingProps) {
               <p className="text-neutral-0/90">
                 Dieser Fall wurde von{' '}
                 <span className="font-semibold">
-                  {reviewerCount} Detektiv*innen
+                  {reviewerCount} co:detectives
                 </span>{' '}
                 bearbeitet.
               </p>
