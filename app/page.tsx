@@ -193,13 +193,13 @@ export default async function Home() {
                     Bei codetekt kannst du digitale Informationen auf
                     Vertrauenswürdigkeit prüfen lassen.{' '}
                     <br className="hidden xl:block" />
-                    Reiche Fälle ein oder werde selbst Detektiv*in und
+                    Reiche Fälle ein oder werde selbst co:detective und
                     verbessere deine Recherche-Fähigkeiten.
                   </p>
                   <div className="mt-6">
                     <Link href="/auth/sign-up">
                       <Button size="lg" variant={'default'}>
-                        Detektiv*in werden
+                        co:detective werden
                       </Button>
                     </Link>
                   </div>

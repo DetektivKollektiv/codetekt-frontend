@@ -171,7 +171,7 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
             </div>
             <div className="flex flex-col w-full md:w-80 gap-2">
               <Button variant="ghost">Anmelden</Button>
-              <Button variant="default">Detektiv*in werden</Button>
+              <Button variant="default">co:detective werden</Button>
             </div>
           </CardHeader>
         </Card>

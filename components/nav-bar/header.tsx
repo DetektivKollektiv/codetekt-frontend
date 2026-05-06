@@ -225,7 +225,7 @@ export default function Header({
                   <Link href="/auth/login">Login</Link>
                 </Button>
                 <Button asChild size={'lg'}>
-                  <Link href="/auth/sign-up">Detektiv*in werden</Link>
+                  <Link href="/auth/sign-up">co:detective werden</Link>
                 </Button>
               </div>
             )}
@@ -313,7 +313,7 @@ export default function Header({
                           <Link href="/auth/login">Login</Link>
                         </Button>
                         <Button className="flex-1" asChild>
-                          <Link href="/auth/sign-up">Detektiv*in werden</Link>
+                          <Link href="/auth/sign-up">co:detective werden</Link>
                         </Button>
                       </div>
                     )}
