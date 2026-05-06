@@ -35,6 +35,14 @@ export function TutorialCommunityCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <Image
+                  src="https://discord.com/assets/favicon.ico"
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="mr-2"
+                  unoptimized
+                />
                 {communityCard.buttonLabel}
               </Link>
             </Button>

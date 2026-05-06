@@ -35,7 +35,7 @@ export function TutorialDialog({
   const actionLabel = requiresConfirmation
     ? isSaving
       ? 'Wird gespeichert...'
-      : 'Tutorial gelesen'
+      : 'Tutorial schließen'
     : 'Tutorial schließen';
 
   const renderActionButton = () =>
@@ -74,8 +74,7 @@ export function TutorialDialog({
       >
         <DialogTitle className="sr-only">Tutorial</DialogTitle>
         <DialogDescription className="sr-only">
-          Lerne die Plattform, die wichtigsten Hilfsangebote und den Einstieg
-          ins Trust-Checking kennen.
+          So funktioniert die Plattform.
         </DialogDescription>
 
         <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
@@ -85,14 +84,37 @@ export function TutorialDialog({
                 <div className="max-w-2xl space-y-6 text-center lg:text-left">
                   <h2 className="text-display-eyebrow uppercase">Tutorial</h2>
                   <h1 className="text-display-sm uppercase sm:text-display-md 2xl:text-display-lg">
-                    So funktioniert
-                    <br />
-                    codetekt
+                    So funktioniert die Plattform
                   </h1>
                   <p className="text-body-md max-w-xl xl:max-w-2xl mx-auto lg:mx-0">
-                    Lerne die Plattform, die wichtigsten Hilfsangebote und den
-                    Einstieg ins Trust-Checking kennen. Die Videos, Artikel und
-                    FAQ unten geben dir den schnellsten Überblick.
+                    {requiresConfirmation ? (
+                      <>
+                        Herzlich willkommen auf unserer
+                        Trust-Checking-Plattform, co:detective! Wir haben dir
+                        hier die wichtigsten Informationen zusammengestellt,
+                        die du brauchst, um zu verstehen, wie die Plattform
+                        funktioniert und worauf du achten musst, wenn du als
+                        co:detective selbst Fälle checken willst. Schau dir
+                        dazu gerne die Videos an, lies die Artikel oder stöbere
+                        in den FAQs. Wenn du bereit bist loszulegen, klicke
+                        unten auf “Tutorial schließen”. Melde dich auch gerne
+                        auf unserem{' '}
+                        <a
+                          href="https://discord.gg/fFABTPSxXA"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline underline-offset-4"
+                        >
+                          Discord-Server
+                        </a>{' '}
+                        an, um dich mit anderen co:detectives und dem
+                        codetekt-Team auszutauschen. Viel Spaß beim
+                        Trust-Checken und danke für deinen Einsatz gegen
+                        Falschinformationen!
+                      </>
+                    ) : (
+                      'Auf dieser Seite findest du Videos und Artikel, die die Funktionsweise der Trust-Checking-Plattform erklären. Außerdem findest du Antworten zu häufig gestellten Fragen.'
+                    )}
                   </p>
                   {!requiresConfirmation ? (
                     <div className="flex justify-center lg:justify-start">

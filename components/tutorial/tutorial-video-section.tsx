@@ -8,7 +8,7 @@ import { TutorialVideoPlayer } from './tutorial-video-player';
 const tutorialVideos = [
   {
     id: 'tutorial-cases',
-    title: 'Fälle einreichen und bearbeiten',
+    title: 'Teil 1: Basics, Fall einreichen & Gelöste Fälle',
     poster: '/images/tutorial_thumbnails/tutorial-platform-cases.jpg',
     sources: [
       {
@@ -23,7 +23,7 @@ const tutorialVideos = [
   },
   {
     id: 'tutorial-trust-checking',
-    title: 'Trust-Checking verstehen',
+    title: 'Teil 2: Fall checken & Trust-Checking',
     poster: '/images/tutorial_thumbnails/tutorial-platform-trust-checking.jpg',
     sources: [
       {

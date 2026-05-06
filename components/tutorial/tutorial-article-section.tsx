@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { TutorialContentData } from '@/lib/schemas';
-import { getLocalDate } from '@/lib/utils';
 import { TutorialCarousel } from './tutorial-carousel';
 import { TutorialSection } from './tutorial-section';
 
@@ -18,8 +17,8 @@ export function TutorialArticleSection({
 }: TutorialArticleSectionProps) {
   return (
     <TutorialSection
-      title="Weiterführende Artikel"
-      description="Vertiefe einzelne Trust-Checking-Kriterien mit den verlinkten Hilfeseiten."
+      title="Hilfe zum Nachlesen"
+      description="Auf unseren Hilfeseiten kannst du nachlesen, wie die Plattform funktioniert und du findest Hintergrundinfos und Tipps für den Check der einzelnen Trust-Checking-Kriterien"
     >
       <TutorialCarousel
         options={{
@@ -43,16 +42,10 @@ export function TutorialArticleSection({
                 />
               </div>
               <div className="flex flex-col gap-3">
-                <div className="text-body-sm text-muted-foreground">
-                  {article.siteName} • {getLocalDate(article.publishedAt)}
-                </div>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-xl font-semibold leading-tight">
                     {article.title}
                   </h3>
-                  <p className="text-body-md text-muted-foreground line-clamp-3">
-                    {article.description}
-                  </p>
                 </div>
               </div>
               <div className="mt-auto">
