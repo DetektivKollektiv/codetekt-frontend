@@ -79,6 +79,46 @@ export const getUserIdByEmail = async (email: string) => {
 
 export const getE2EUserId = () => getUserIdByEmail(E2E_USER_EMAIL);
 
+export const getProfileTutorialCompletedAt = async (
+  userEmail = E2E_USER_EMAIL,
+) => {
+  const userId = await getUserIdByEmail(userEmail);
+  const { data, error } = await getAdminClient()
+    .from('profiles')
+    .select('tutorial_completed_at')
+    .eq('id', userId)
+    .maybeSingle();
+
+  throwIfError('Fetch profile tutorial completion', error);
+
+  if (!data) {
+    throw new Error(`No profile found for ${userEmail}.`);
+  }
+
+  return data.tutorial_completed_at;
+};
+
+export const setProfileTutorialCompletedAt = async (
+  completedAt: string | null,
+  userEmail = E2E_USER_EMAIL,
+) => {
+  const userId = await getUserIdByEmail(userEmail);
+  const { data, error } = await getAdminClient()
+    .from('profiles')
+    .update({ tutorial_completed_at: completedAt })
+    .eq('id', userId)
+    .select('tutorial_completed_at')
+    .single();
+
+  throwIfError('Update profile tutorial completion', error);
+
+  if (!data) {
+    throw new Error(`No profile updated for ${userEmail}.`);
+  }
+
+  return data.tutorial_completed_at;
+};
+
 export const getCaseByContent = async (
   content: string,
 ): Promise<CaseRecord | null> => {

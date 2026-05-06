@@ -9,6 +9,57 @@ export const createMarker = (prefix: string) =>
 export const caseContentFor = (marker: string) =>
   `https://example.com/codetekt-e2e-${marker}`;
 
+export const completeRequiredTutorial = async (page: Page) => {
+  const tutorialDialog = page.getByRole('dialog', { name: 'Tutorial' });
+  const confirmButton = page.getByRole('button', {
+    name: 'Tutorial gelesen',
+  });
+
+  await expect(tutorialDialog).toBeVisible();
+  await expect(confirmButton).toBeVisible();
+  await confirmButton.click();
+  await expect(tutorialDialog).toBeHidden({ timeout: 10_000 });
+};
+
+export const maybeCompleteRequiredTutorial = async (
+  page: Page,
+  timeout = 1_000,
+) => {
+  const confirmButton = page.getByRole('button', {
+    name: 'Tutorial gelesen',
+  });
+
+  try {
+    await confirmButton.waitFor({ state: 'visible', timeout });
+  } catch {
+    return false;
+  }
+
+  await confirmButton.click();
+  await expect(page.getByRole('dialog', { name: 'Tutorial' })).toBeHidden({
+    timeout: 10_000,
+  });
+  return true;
+};
+
+export const expectRequiredTutorialNotToAppear = async (
+  page: Page,
+  timeout = 1_500,
+) => {
+  const confirmButton = page.getByRole('button', {
+    name: 'Tutorial gelesen',
+  });
+
+  try {
+    await confirmButton.waitFor({ state: 'visible', timeout });
+  } catch {
+    await expect(page.getByRole('dialog', { name: 'Tutorial' })).toBeHidden();
+    return;
+  }
+
+  throw new Error('Tutorial confirmation appeared again after completion.');
+};
+
 export const signIn = async (
   page: Page,
   credentials = {
@@ -21,6 +72,7 @@ export const signIn = async (
   await page.getByLabel('Passwort').fill(credentials.password);
   await page.getByRole('button', { name: 'Anmelden' }).click();
   await expect(page).toHaveURL(/\/$/);
+  await maybeCompleteRequiredTutorial(page, 3_000);
 };
 
 export const createCase = async (page: Page, marker: string) => {
