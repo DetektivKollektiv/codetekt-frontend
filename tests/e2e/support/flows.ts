@@ -12,7 +12,7 @@ export const caseContentFor = (marker: string) =>
 export const completeRequiredTutorial = async (page: Page) => {
   const tutorialDialog = page.getByRole('dialog', { name: 'Tutorial' });
   const confirmButton = page.getByRole('button', {
-    name: 'Tutorial gelesen',
+    name: 'Tutorial schließen',
   });
 
   await expect(tutorialDialog).toBeVisible();
@@ -26,7 +26,7 @@ export const maybeCompleteRequiredTutorial = async (
   timeout = 1_000,
 ) => {
   const confirmButton = page.getByRole('button', {
-    name: 'Tutorial gelesen',
+    name: 'Tutorial schließen',
   });
 
   try {
@@ -47,7 +47,7 @@ export const expectRequiredTutorialNotToAppear = async (
   timeout = 1_500,
 ) => {
   const confirmButton = page.getByRole('button', {
-    name: 'Tutorial gelesen',
+    name: 'Tutorial schließen',
   });
 
   try {

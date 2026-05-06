@@ -7,12 +7,12 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { createClient } from '@/lib/supabase/client';
 import { updateProfile } from '@/lib/queries/updateProfile';
 import { TutorialDialog } from '@/components/tutorial';
 import type { TutorialContentData } from '@/lib/schemas';
 import type { Tables } from '@/lib/types/database.types';
 import { cn, getDisplayName } from '@/lib/utils';
+import { useAuth, type AuthQueryData } from '@/components/provider/auth-provider';
 
 import {
   Sheet,
@@ -24,23 +24,18 @@ import {
 } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
-import { getAuth } from '@/lib/supabase/getAuth';
 import { NavLink } from '@/lib/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Toaster } from '../ui/sonner';
 import DesktopNavigation from './desktop-navigation';
 import UserMenu from './user-menu';
 
-type AuthQueryData = Awaited<ReturnType<typeof getAuth>>;
-
 export default function Header({
-  auth,
   authenticatedNavigation,
   guestNavigation,
   tutorialContent,
 }: {
-  auth: Awaited<ReturnType<typeof getAuth>>;
   authenticatedNavigation: NavLink[];
   guestNavigation: NavLink[];
   tutorialContent: TutorialContentData | null;
@@ -50,31 +45,9 @@ export default function Header({
   const [isTutorialOpen, setIsTutorialOpen] = React.useState(false);
   const pathname = usePathname();
 
-  const client = createClient();
   const queryClient = useQueryClient();
-
-  const {
-    data: authData,
-    refetch,
-  } = useQuery<AuthQueryData>({
-    queryFn: () => getAuth(client),
-    queryKey: ['auth'],
-    initialData: auth,
-  });
+  const { auth: authData, client } = useAuth();
   const { isAuthenticated, user, profile } = authData;
-
-  React.useEffect(() => {
-    const { data } = client.auth.onAuthStateChange((event) => {
-      if (event === 'INITIAL_SESSION') {
-        return;
-      }
-      queryClient.clear();
-      queryClient.invalidateQueries({ queryKey: ['auth'] });
-      refetch();
-    });
-
-    return () => data.subscription.unsubscribe();
-  }, [client.auth, queryClient, refetch]);
 
   React.useEffect(() => {
     setMobileOpen(false);
@@ -141,8 +114,6 @@ export default function Header({
         ['profile', updatedProfile.id],
         updatedProfile,
       );
-      queryClient.invalidateQueries({ queryKey: ['auth'] });
-      queryClient.invalidateQueries({ queryKey: ['profile', updatedProfile.id] });
       setIsTutorialOpen(false);
       toast.success('Tutorial als gelesen markiert.');
     },
@@ -153,7 +124,6 @@ export default function Header({
 
   const handleLogout = async () => {
     await client.auth.signOut();
-    queryClient.clear();
     setMobileOpen(false);
     setIsTutorialOpen(false);
     router.push('/auth/login');

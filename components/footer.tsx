@@ -47,7 +47,7 @@ const Footer: FC = ({}) => {
               </li>
               <li>
                 <Link href="https://codetekt.org/" className="hover:underline">
-                  Zu Codetekt
+                  Codetekt
                 </Link>
               </li>
               <li>
@@ -146,7 +146,7 @@ const Footer: FC = ({}) => {
                   <Link href="mailto:info@codetekt.org">info@codetekt.org</Link>
                 </li>
                 <li>
-                  <Link href="https://codetekt.org/">Zu Codetekt</Link>
+                  <Link href="https://codetekt.org/">Codetekt</Link>
                 </li>
                 <li>
                   <Link href="https://www.instagram.com/codetekt/">

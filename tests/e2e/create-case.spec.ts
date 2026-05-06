@@ -30,6 +30,13 @@ test('creates a case from a URL after confirming the tutorial once', async ({
     await page.goto('/submit');
     await expectRequiredTutorialNotToAppear(page);
 
+    const blankPage = await page.context().newPage();
+    await blankPage.goto('about:blank');
+    await blankPage.bringToFront();
+    await page.bringToFront();
+    await blankPage.close();
+    await expectRequiredTutorialNotToAppear(page);
+
     const createdCase = await createCase(page, marker);
     caseId = createdCase.caseId;
 
