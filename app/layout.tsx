@@ -1,15 +1,8 @@
-import Footer from '@/components/footer';
-import { AppShell } from '@/components/app-shell';
-import { AuthProvider } from '@/components/provider/auth-provider';
+import { AuthenticatedApp } from '@/components/authenticated-app';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
-
 import LoadingComponent from '@/components/loading-component';
-import NavBar from '@/components/nav-bar';
-import BProgressProvider from '@/components/provider/bprogress-provider';
-import { getAuth } from '@/lib/supabase/getAuth';
-import { createClient } from '@/lib/supabase/server';
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
+import { Suspense, type ReactNode } from 'react';
 import './globals.css';
 
 const defaultUrl = process.env.VERCEL_URL
@@ -23,34 +16,25 @@ export const metadata: Metadata = {
     'Wir sind codetekt: Durch unseren Trust-Checking-Ansatz ermöglichen wir es allen, die Vertrauenswürdigkeit von Informationen einzuschätzen.',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
-  const client = await createClient();
-  const auth = await getAuth(client);
-
   return (
-    <ReactQueryClientProvider>
-      <html
-        lang="de"
-        className="scroll-pt-32 scroll-smooth"
-        suppressHydrationWarning
-        data-scroll-behavior="smooth"
-      >
-        <body className={`antialiased`}>
-          <AuthProvider initialAuth={auth}>
-            <BProgressProvider>
-              <Suspense fallback={<LoadingComponent />}>
-                <AppShell footer={<Footer />} navbar={<NavBar />}>
-                  {children}
-                </AppShell>
-              </Suspense>
-            </BProgressProvider>
-          </AuthProvider>
-        </body>
-      </html>
-    </ReactQueryClientProvider>
+    <html
+      lang="de"
+      className="scroll-pt-32 scroll-smooth"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
+      <body className="antialiased">
+        <ReactQueryClientProvider>
+          <Suspense fallback={<LoadingComponent />}>
+            <AuthenticatedApp>{children}</AuthenticatedApp>
+          </Suspense>
+        </ReactQueryClientProvider>
+      </body>
+    </html>
   );
 }
