@@ -130,14 +130,25 @@ export default function Header({
     router.refresh();
   };
 
-  const handleTutorialTrigger = () => {
+  const handleTutorialTrigger = React.useCallback(() => {
     if (!tutorialContent) {
       return;
     }
 
     setMobileOpen(false);
     setIsTutorialOpen(true);
-  };
+  }, [tutorialContent]);
+
+  React.useEffect(() => {
+    window.addEventListener('codetekt:open-tutorial', handleTutorialTrigger);
+
+    return () => {
+      window.removeEventListener(
+        'codetekt:open-tutorial',
+        handleTutorialTrigger,
+      );
+    };
+  }, [handleTutorialTrigger]);
 
   const handleTutorialOpenChange = (open: boolean) => {
     if (tutorialRequiresConfirmation && !open) {
