@@ -3,7 +3,7 @@
 import { createReviewDisputeMutation } from '@/lib/queries/createReviewDispute';
 import { Field } from '@/lib/schemas';
 import { createClient } from '@/lib/supabase/client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -38,7 +38,6 @@ const ReviewDisputeDialog = ({
 }: ReviewDisputeDialogProps) => {
   const supabase = createClient();
   const [disputeReason, setDisputeReason] = useState('');
-  const queryClient = useQueryClient();
 
   const { mutate: createDispute, isPending: isDisputeSubmitting } = useMutation(
     {
@@ -49,15 +48,6 @@ const ReviewDisputeDialog = ({
         );
         setDisputeReason('');
         onOpenChange(false);
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
-          queryClient.invalidateQueries({
-            queryKey: ['review-template', caseId],
-          }),
-          queryClient.invalidateQueries({
-            queryKey: ['aggregated-case', caseId],
-          }),
-        ]);
         await onSuccess?.();
       },
       onError: (error: Error) => {

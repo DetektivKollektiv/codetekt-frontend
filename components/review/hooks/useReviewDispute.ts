@@ -29,12 +29,10 @@ export const useReviewDispute = ({
 
   const handleDisputeSuccess = async () => {
     setDisputingField(null);
-    await Promise.all([
-      queryClient.invalidateQueries({ queryKey: ['case', caseId] }),
-      queryClient.invalidateQueries({
-        queryKey: ['review-template', caseId],
-      }),
-    ]);
+    await queryClient.cancelQueries({ queryKey: ['review-template', caseId] });
+    queryClient.removeQueries({ queryKey: ['review-template', caseId] });
+    queryClient.removeQueries({ queryKey: ['case', caseId] });
+    queryClient.removeQueries({ queryKey: ['aggregated-case', caseId] });
     router.push('/');
   };
 
