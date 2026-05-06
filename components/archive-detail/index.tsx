@@ -48,7 +48,11 @@ export function ArchiveDetail({
         caseId={aggregatedReview.case_id}
       />
 
-      <DetailCreateComment auth={auth} caseId={aggregatedReview.case_id} />
+      <DetailCreateComment
+        auth={auth}
+        caseId={aggregatedReview.case_id}
+        hasSubmittedByCurrentUser={hasSubmittedByCurrentUser}
+      />
     </div>
   );
 }

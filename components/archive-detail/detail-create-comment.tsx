@@ -24,11 +24,13 @@ import Link from 'next/link';
 interface DetailCreateCommentProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
   caseId: string;
+  hasSubmittedByCurrentUser: boolean;
 }
 
 const DetailCreateComment: FC<DetailCreateCommentProps> = ({
   auth,
   caseId,
+  hasSubmittedByCurrentUser,
 }) => {
   const supabase = createClient();
   const queryClient = useQueryClient();
@@ -113,11 +115,13 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
               <CardTitle>
                 Mach mit und <br /> bearbeite diesen Fall!
               </CardTitle>
-              <Button asChild>
-                <Link href={`/review/${caseId}`}>
-                  Fall checken
-                </Link>
-              </Button>
+              {!hasSubmittedByCurrentUser && (
+                <Button asChild>
+                  <Link href={`/review/${caseId}`}>
+                    Fall checken
+                  </Link>
+                </Button>
+              )}
             </CardHeader>
           </CardContent>
           <CardContent className="p-0 flex-1 flex flex-col">
