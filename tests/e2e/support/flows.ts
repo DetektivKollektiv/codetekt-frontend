@@ -9,25 +9,28 @@ export const createMarker = (prefix: string) =>
 export const caseContentFor = (marker: string) =>
   `https://example.com/codetekt-e2e-${marker}`;
 
-export const completeRequiredTutorial = async (page: Page) => {
-  const tutorialDialog = page.getByRole('dialog', { name: 'Tutorial' });
-  const confirmButton = page.getByRole('button', {
-    name: 'Tutorial schließen',
-  });
+const requiredTutorialUrlPattern = /^https?:\/\/[^/]+\/tutorial(?:[/?#]|$)/;
+const homeOrRequiredTutorialUrlPattern =
+  /^https?:\/\/[^/]+\/(?:tutorial)?(?:[?#].*)?$/;
 
-  await expect(tutorialDialog).toBeVisible();
+const getRequiredTutorialConfirmationButton = (page: Page) =>
+  page.getByRole('button', { name: /Tutorial (gelesen|schließen)/ }).first();
+
+export const completeRequiredTutorial = async (page: Page) => {
+  const confirmButton = getRequiredTutorialConfirmationButton(page);
+
+  await expect(page).toHaveURL(requiredTutorialUrlPattern);
   await expect(confirmButton).toBeVisible();
   await confirmButton.click();
-  await expect(tutorialDialog).toBeHidden({ timeout: 10_000 });
+  await expect(confirmButton).toBeHidden({ timeout: 10_000 });
+  await expect(page).not.toHaveURL(requiredTutorialUrlPattern);
 };
 
 export const maybeCompleteRequiredTutorial = async (
   page: Page,
   timeout = 1_000,
 ) => {
-  const confirmButton = page.getByRole('button', {
-    name: 'Tutorial schließen',
-  });
+  const confirmButton = getRequiredTutorialConfirmationButton(page);
 
   try {
     await confirmButton.waitFor({ state: 'visible', timeout });
@@ -36,9 +39,8 @@ export const maybeCompleteRequiredTutorial = async (
   }
 
   await confirmButton.click();
-  await expect(page.getByRole('dialog', { name: 'Tutorial' })).toBeHidden({
-    timeout: 10_000,
-  });
+  await expect(confirmButton).toBeHidden({ timeout: 10_000 });
+  await expect(page).not.toHaveURL(requiredTutorialUrlPattern);
   return true;
 };
 
@@ -46,14 +48,13 @@ export const expectRequiredTutorialNotToAppear = async (
   page: Page,
   timeout = 1_500,
 ) => {
-  const confirmButton = page.getByRole('button', {
-    name: 'Tutorial schließen',
-  });
+  const confirmButton = getRequiredTutorialConfirmationButton(page);
 
   try {
     await confirmButton.waitFor({ state: 'visible', timeout });
   } catch {
-    await expect(page.getByRole('dialog', { name: 'Tutorial' })).toBeHidden();
+    await expect(page).not.toHaveURL(requiredTutorialUrlPattern);
+    await expect(confirmButton).toBeHidden();
     return;
   }
 
@@ -71,7 +72,7 @@ export const signIn = async (
   await page.getByLabel('Email').fill(credentials.email);
   await page.getByLabel('Passwort').fill(credentials.password);
   await page.getByRole('button', { name: 'Anmelden' }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(homeOrRequiredTutorialUrlPattern);
   await maybeCompleteRequiredTutorial(page, 3_000);
 };
 
