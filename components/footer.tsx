@@ -100,10 +100,7 @@ const Footer: FC = ({}) => {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="https://gilded-fireplant-773.notion.site/Nutzungsbedingungen-Plattform-34a425d9f23a80f59c2ec28daab286e8"
-                  className="hover:underline"
-                >
+                <Link href="/nutzungsbedingungen" className="hover:underline">
                   Nutzungsbedingungen
                 </Link>
               </li>
@@ -180,7 +177,7 @@ const Footer: FC = ({}) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="https://gilded-fireplant-773.notion.site/Nutzungsbedingungen-Plattform-34a425d9f23a80f59c2ec28daab286e8">
+                  <Link href="/nutzungsbedingungen">
                     Nutzungsbedingungen
                   </Link>
                 </li>

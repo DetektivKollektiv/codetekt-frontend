@@ -228,9 +228,10 @@ export function SignUpForm({
                     <label htmlFor="terms" className="text-sm cursor-pointer">
                       Ich stimme den{' '}
                       <Link
-                        href="https://gilded-fireplant-773.notion.site/Nutzungsbedingungen-Plattform-34a425d9f23a80f59c2ec28daab286e8"
+                        href="/nutzungsbedingungen"
                         className="underline underline-offset-4 hover:text-primary"
                         target="_blank"
+                        rel="noopener noreferrer"
                       >
                         Nutzungsbedingungen
                       </Link>{' '}
