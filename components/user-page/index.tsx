@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
+import { HomeHelpCard } from './home-help-card';
 import UserSettings from './user-settings';
 import UserStatistics from './user-statistics';
 
@@ -64,6 +65,10 @@ const UserPage: FC<UserPageProps> = ({
     if (window.location.hash !== '#open-cases') {
       window.history.replaceState(null, '', '#open-cases');
     }
+  };
+
+  const handleTutorialClick = () => {
+    window.dispatchEvent(new Event('codetekt:open-tutorial'));
   };
 
   return (
@@ -136,6 +141,9 @@ const UserPage: FC<UserPageProps> = ({
       </div>
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">
+          <div className="page-max-w mb-12">
+            <HomeHelpCard onTutorialClick={handleTutorialClick} />
+          </div>
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
             Fälle, die deine Hilfe benötigen
           </h1>

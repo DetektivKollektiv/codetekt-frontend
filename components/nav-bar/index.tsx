@@ -7,20 +7,12 @@ import Header from './header';
 const guestNavigation: NavLink[] = [
   { label: 'Gelöste Fälle', href: '/archive' },
   { label: 'Fall einreichen', href: '/submit' },
-  {
-    label: 'Zu Codetekt',
-    href: 'https://codetekt.org/',
-  },
 ];
 
 const authenticatedNavigation: NavLink[] = [
   { label: 'Fall checken', href: '/#open-cases' },
   { label: 'Fall einreichen', href: '/submit' },
   { label: 'Gelöste Fälle', href: '/archive' },
-  {
-    label: 'Zu Codetekt',
-    href: 'https://codetekt.org/',
-  },
 ];
 
 export default async function NavBar() {
