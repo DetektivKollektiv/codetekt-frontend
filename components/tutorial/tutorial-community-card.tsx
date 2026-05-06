@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { MessageCircle } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -35,14 +36,7 @@ export function TutorialCommunityCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Image
-                  src="https://discord.com/assets/favicon.ico"
-                  alt=""
-                  width={16}
-                  height={16}
-                  className="mr-2"
-                  unoptimized
-                />
+                <MessageCircle className="size-4" />
                 {communityCard.buttonLabel}
               </Link>
             </Button>
