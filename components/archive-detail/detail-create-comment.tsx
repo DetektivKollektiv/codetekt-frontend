@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from '../ui/card';
 import { Textarea } from '../ui/textarea';
+import Link from 'next/link';
 
 interface DetailCreateCommentProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
@@ -170,8 +171,16 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
               <CardDescription className="mt-4">Mach mit!</CardDescription>
             </div>
             <div className="flex flex-col w-full md:w-80 gap-2">
-              <Button variant="ghost">Anmelden</Button>
-              <Button variant="default">co:detective werden</Button>
+              <Button asChild variant="ghost">
+                <Link href="/auth/login">
+                  Anmelden
+                </Link>
+              </Button>
+              <Button asChild variant="default">
+                <Link href="/auth/sign-up">
+                  co:detective werden
+                </Link>
+              </Button>
             </div>
           </CardHeader>
         </Card>
