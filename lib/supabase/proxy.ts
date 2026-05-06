@@ -1,5 +1,20 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { shouldRedirectToTutorial, TUTORIAL_PATH } from '../tutorial-gate';
+import { Database } from '../types/database.types';
+
+function redirectPreservingCookies(
+  url: URL,
+  supabaseResponse: NextResponse,
+) {
+  const redirectResponse = NextResponse.redirect(url);
+
+  supabaseResponse.cookies.getAll().forEach(({ name, value, ...options }) => {
+    redirectResponse.cookies.set(name, value, options);
+  });
+
+  return redirectResponse;
+}
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -8,7 +23,7 @@ export async function updateSession(request: NextRequest) {
 
   // With Fluid compute, don't put this client in a global environment
   // variable. Always create a new one on each request.
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
@@ -39,20 +54,46 @@ export async function updateSession(request: NextRequest) {
   // with the Supabase client, your users may be randomly logged out.
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
+  const pathname = request.nextUrl.pathname;
 
-  const unauthenticatedPaths = ['/login', '/auth', '/archive'];
+  const unauthenticatedPaths = ['/login', '/auth', '/archive', TUTORIAL_PATH];
 
   if (
-    request.nextUrl.pathname !== '/' &&
+    pathname !== '/' &&
     !user &&
     !unauthenticatedPaths.some((path) =>
-      request.nextUrl.pathname.startsWith(path),
+      pathname.startsWith(path),
     )
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = '/auth/login';
-    return NextResponse.redirect(url);
+    return redirectPreservingCookies(url, supabaseResponse);
+  }
+
+  if (user) {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('tutorial_completed_at')
+      .eq('id', user.sub)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching tutorial completion state:', error);
+    }
+
+    if (
+      !error &&
+      shouldRedirectToTutorial({
+        pathname,
+        tutorialCompletedAt: profile?.tutorial_completed_at,
+        userId: user.sub,
+      })
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = TUTORIAL_PATH;
+      return redirectPreservingCookies(url, supabaseResponse);
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

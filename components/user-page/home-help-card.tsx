@@ -8,11 +8,7 @@ import Link from 'next/link';
 
 const discordUrl = 'https://discord.gg/fFABTPSxXA';
 
-interface HomeHelpCardProps {
-  onTutorialClick: () => void;
-}
-
-export function HomeHelpCard({ onTutorialClick }: HomeHelpCardProps) {
+export function HomeHelpCard() {
   return (
     <Card className="relative w-full overflow-hidden rounded-lg border-none bg-brand-darkblue text-neutral-0 shadow-md">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-brand" />
@@ -30,9 +26,11 @@ export function HomeHelpCard({ onTutorialClick }: HomeHelpCardProps) {
               Fragen stellen und dich mit anderen co:detectives austauschen.
             </p>
             <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-              <Button type="button" onClick={onTutorialClick}>
-                <BookOpen className="size-4" />
-                Zum Tutorial
+              <Button asChild>
+                <Link href="/tutorial">
+                  <BookOpen className="size-4" />
+                  Zum Tutorial
+                </Link>
               </Button>
               <Button
                 variant="outline"

@@ -1,6 +1,3 @@
-import { getTutorialContent } from '@/lib/queries/getTutorialContent';
-
-import { createClient } from '@/lib/supabase/server';
 import { NavLink } from '@/lib/types';
 import Header from './header';
 
@@ -15,19 +12,11 @@ const authenticatedNavigation: NavLink[] = [
   { label: 'Gelöste Fälle', href: '/archive' },
 ];
 
-export default async function NavBar() {
-  const client = await createClient();
-  const tutorialContentResult = await getTutorialContent(client);
-
-  if (tutorialContentResult.error) {
-    console.error(tutorialContentResult.error);
-  }
-
+export default function NavBar() {
   return (
     <Header
       authenticatedNavigation={authenticatedNavigation}
       guestNavigation={guestNavigation}
-      tutorialContent={tutorialContentResult.data}
     />
   );
 }

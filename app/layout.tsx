@@ -1,4 +1,5 @@
 import Footer from '@/components/footer';
+import { AppShell } from '@/components/app-shell';
 import { AuthProvider } from '@/components/provider/auth-provider';
 import { ReactQueryClientProvider } from '@/components/provider/react-query-client-provider';
 
@@ -42,11 +43,9 @@ export default async function RootLayout({
           <AuthProvider initialAuth={auth}>
             <BProgressProvider>
               <Suspense fallback={<LoadingComponent />}>
-                <NavBar />
-                <main className="page-mt page-min-h flex flex-col">
-                  <div className="flex-1 flex flex-col">{children}</div>
-                  <Footer />
-                </main>
+                <AppShell footer={<Footer />} navbar={<NavBar />}>
+                  {children}
+                </AppShell>
               </Suspense>
             </BProgressProvider>
           </AuthProvider>

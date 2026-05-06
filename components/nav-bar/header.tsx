@@ -1,19 +1,14 @@
 'use client';
-import { Bar, Progress } from '@bprogress/next';
 
+import { Bar, Progress } from '@bprogress/next';
 import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { updateProfile } from '@/lib/queries/updateProfile';
-import { TutorialDialog } from '@/components/tutorial';
-import type { TutorialContentData } from '@/lib/schemas';
-import type { Tables } from '@/lib/types/database.types';
-import { cn, getDisplayName } from '@/lib/utils';
-import { useAuth, type AuthQueryData } from '@/components/provider/auth-provider';
-
+import { useAuth } from '@/components/provider/auth-provider';
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -22,30 +17,21 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-
-import { Button } from '@/components/ui/button';
 import { NavLink } from '@/lib/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { Toaster } from '../ui/sonner';
+import { cn, getDisplayName } from '@/lib/utils';
 import DesktopNavigation from './desktop-navigation';
 import UserMenu from './user-menu';
 
 export default function Header({
   authenticatedNavigation,
   guestNavigation,
-  tutorialContent,
 }: {
   authenticatedNavigation: NavLink[];
   guestNavigation: NavLink[];
-  tutorialContent: TutorialContentData | null;
 }) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isTutorialOpen, setIsTutorialOpen] = React.useState(false);
   const pathname = usePathname();
-
-  const queryClient = useQueryClient();
   const { auth: authData, client } = useAuth();
   const { isAuthenticated, user, profile } = authData;
 
@@ -69,258 +55,156 @@ export default function Header({
   const navigation = isAuthenticated
     ? authenticatedNavigation
     : guestNavigation;
-  const tutorialRequiresConfirmation = Boolean(
-    tutorialContent &&
-      isAuthenticated &&
-      user &&
-      profile &&
-      profile.tutorial_completed_at === null,
-  );
-
-  React.useEffect(() => {
-    if (tutorialRequiresConfirmation) {
-      setIsTutorialOpen(true);
-    }
-  }, [tutorialRequiresConfirmation]);
-
-  const tutorialReadMutation = useMutation({
-    mutationFn: async () => {
-      if (!user) {
-        throw new Error('Nutzerprofil konnte nicht geladen werden');
-      }
-
-      const { data, error } = await updateProfile(client, user.id, {
-        tutorial_completed_at: new Date().toISOString(),
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      return data as Tables<'profiles'>;
-    },
-    onSuccess: (updatedProfile) => {
-      queryClient.setQueryData<AuthQueryData>(
-        ['auth'],
-        (currentAuth) =>
-          currentAuth
-            ? {
-                ...currentAuth,
-                profile: updatedProfile,
-              }
-            : currentAuth,
-      );
-      queryClient.setQueryData<Tables<'profiles'> | null>(
-        ['profile', updatedProfile.id],
-        updatedProfile,
-      );
-      setIsTutorialOpen(false);
-      toast.success('Tutorial als gelesen markiert.');
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Tutorial konnte nicht gespeichert werden.');
-    },
-  });
 
   const handleLogout = async () => {
     await client.auth.signOut();
     setMobileOpen(false);
-    setIsTutorialOpen(false);
     router.push('/auth/login');
     router.refresh();
   };
 
-  const handleTutorialTrigger = React.useCallback(() => {
-    if (!tutorialContent) {
-      return;
-    }
-
-    setMobileOpen(false);
-    setIsTutorialOpen(true);
-  }, [tutorialContent]);
-
-  React.useEffect(() => {
-    window.addEventListener('codetekt:open-tutorial', handleTutorialTrigger);
-
-    return () => {
-      window.removeEventListener(
-        'codetekt:open-tutorial',
-        handleTutorialTrigger,
-      );
-    };
-  }, [handleTutorialTrigger]);
-
-  const handleTutorialOpenChange = (open: boolean) => {
-    if (tutorialRequiresConfirmation && !open) {
-      return;
-    }
-
-    setIsTutorialOpen(open);
-  };
-
   return (
-    <>
-      <header className="fixed top-0 z-50 h-20 w-lvw bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-full items-center justify-between py-4 page-max-w">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/codetekt_logo.png"
-              alt="Codetekt"
-              width={156}
-              height={40}
-              priority
-              className="h-8 w-auto"
-            />
-          </Link>
+    <header className="fixed top-0 z-50 h-20 w-lvw bg-background/90 backdrop-blur">
+      <div className="mx-auto flex h-full items-center justify-between py-4 page-max-w">
+        <Link href="/" className="flex items-center gap-3">
+          <Image
+            src="/codetekt_logo.png"
+            alt="Codetekt"
+            width={156}
+            height={40}
+            priority
+            className="h-8 w-auto"
+          />
+        </Link>
 
-          <div className="hidden items-center gap-1 lg:flex">
-            <DesktopNavigation items={navigation} />
-            {tutorialContent ? (
+        <div className="hidden items-center gap-1 lg:flex">
+          <DesktopNavigation items={navigation} />
+          <Button asChild variant="ghost" className="text-body-md font-medium">
+            <Link href="/tutorial">Tutorial</Link>
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {isAuthenticated && user ? (
+            <div className="hidden lg:block">
+              <UserMenu
+                user={user}
+                profile={profile}
+                onLogout={handleLogout}
+              />
+            </div>
+          ) : (
+            <div className="hidden items-center gap-2 lg:flex">
               <Button
                 variant="ghost"
-                className="text-body-md font-medium"
-                onClick={handleTutorialTrigger}
+                className="text-body-md"
+                size={'lg'}
+                asChild
               >
-                Tutorial
+                <Link href="/auth/login">Login</Link>
               </Button>
-            ) : null}
-          </div>
+              <Button asChild size={'lg'}>
+                <Link href="/auth/sign-up">co:detective werden</Link>
+              </Button>
+            </div>
+          )}
 
-          <div className="flex items-center gap-2">
-            {isAuthenticated && user ? (
-              <div className="hidden lg:block">
-                <UserMenu
-                  user={user}
-                  profile={profile}
-                  onLogout={handleLogout}
-                />
-              </div>
-            ) : (
-              <div className="hidden items-center gap-2 lg:flex">
+          <div className="lg:hidden">
+            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+              <SheetTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="text-body-md"
-                  size={'lg'}
-                  asChild
+                  size="icon-lg"
+                  onClick={() => setMobileOpen(true)}
                 >
-                  <Link href="/auth/login">Login</Link>
+                  <Menu className="size-6" />
                 </Button>
-                <Button asChild size={'lg'}>
-                  <Link href="/auth/sign-up">co:detective werden</Link>
-                </Button>
-              </div>
-            )}
+              </SheetTrigger>
 
-            <div className="lg:hidden">
-              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon-lg"
-                    onClick={() => setMobileOpen(true)}
+              <SheetContent side="right">
+                <SheetHeader className="flex h-20 justify-center">
+                  <SheetTitle className="text-heading-md">
+                    <Link href="/" onClick={() => setMobileOpen(false)}>
+                      {isAuthenticated && user
+                        ? `Hi ${getDisplayName(profile, user)}!`
+                        : 'Zur Startseite'}
+                      {isAuthenticated && (
+                        <div className="block text-heading-sm font-medium text-primary">
+                          Zum Profil
+                        </div>
+                      )}
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="-mt-4 h-px w-full bg-gradient-brand"></div>
+                <div className="grid flex-1 auto-rows-min gap-3 px-4">
+                  <Link
+                    href="/tutorial"
+                    onClick={() => setMobileOpen(false)}
+                    className="block text-heading-sm font-medium"
                   >
-                    <Menu className="size-6" />
-                  </Button>
-                </SheetTrigger>
-
-                <SheetContent side="right">
-                  <SheetHeader className="flex h-20 justify-center">
-                    <SheetTitle className="text-heading-md">
-                      <Link href="/" onClick={() => setMobileOpen(false)}>
-                        {isAuthenticated && user
-                          ? `Hi ${getDisplayName(profile, user)}!`
-                          : 'Zur Startseite'}
-                        {isAuthenticated && (
-                          <div className="block text-heading-sm font-medium text-primary">
-                            Zum Profil
-                          </div>
+                    Tutorial
+                  </Link>
+                  {navigation.map((item) => (
+                    <div key={item.label} className="space-y-2">
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={cn(
+                          'block text-heading-sm font-medium',
+                          item.highlight && 'text-primary',
                         )}
+                      >
+                        {item.label}
                       </Link>
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="-mt-4 h-px w-full bg-gradient-brand"></div>
-                  <div className="grid flex-1 auto-rows-min gap-3 px-4">
-                    {tutorialContent ? (
-                      <Button
-                        variant="ghost"
-                        className="justify-start px-0 text-heading-sm font-medium"
-                        onClick={handleTutorialTrigger}
-                      >
-                        Tutorial
-                      </Button>
-                    ) : null}
-                    {navigation.map((item) => (
-                      <div key={item.label} className="space-y-2">
-                        <Link
-                          href={item.href}
-                          onClick={() => setMobileOpen(false)}
-                          className={cn(
-                            'block text-heading-sm font-medium',
-                            item.highlight && 'text-primary',
-                          )}
-                        >
-                          {item.label}
-                        </Link>
 
-                        {item.children && (
-                          <div className="space-y-2 pl-4 pt-1">
-                            {item.children.map((child) => (
-                              <Link
-                                key={child.label}
-                                href={child.href}
-                                onClick={() => setMobileOpen(false)}
-                                className="block text-body-md text-muted-foreground hover:text-foreground"
-                              >
-                                {child.label}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <SheetFooter>
-                    {isAuthenticated ? (
-                      <Button
-                        variant="destructive"
-                        className="w-full"
-                        onClick={handleLogout}
-                      >
-                        Abmelden
+                      {item.children && (
+                        <div className="space-y-2 pl-4 pt-1">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.label}
+                              href={child.href}
+                              onClick={() => setMobileOpen(false)}
+                              className="block text-body-md text-muted-foreground hover:text-foreground"
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <SheetFooter>
+                  {isAuthenticated ? (
+                    <Button
+                      variant="destructive"
+                      className="w-full"
+                      onClick={handleLogout}
+                    >
+                      Abmelden
+                    </Button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button variant="outline" className="flex-1" asChild>
+                        <Link href="/auth/login">Login</Link>
                       </Button>
-                    ) : (
-                      <div className="flex gap-2">
-                        <Button variant="outline" className="flex-1" asChild>
-                          <Link href="/auth/login">Login</Link>
-                        </Button>
-                        <Button className="flex-1" asChild>
-                          <Link href="/auth/sign-up">co:detective werden</Link>
-                        </Button>
-                      </div>
-                    )}
-                  </SheetFooter>
-                </SheetContent>
-              </Sheet>
-            </div>
+                      <Button className="flex-1" asChild>
+                        <Link href="/auth/sign-up">co:detective werden</Link>
+                      </Button>
+                    </div>
+                  )}
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-        <div className="relative h-px w-full bg-gradient-brand">
-          <Progress>
-            <Bar className="!absolute !left-0 !top-0 !h-px !bg-neutral-0 !opacity-60"></Bar>
-          </Progress>
-        </div>
-        <Toaster position="top-center" offset="6rem" />
-      </header>
-      {tutorialContent ? (
-        <TutorialDialog
-          open={isTutorialOpen}
-          onOpenChange={handleTutorialOpenChange}
-          tutorialContent={tutorialContent}
-          requiresConfirmation={tutorialRequiresConfirmation}
-          isSaving={tutorialReadMutation.isPending}
-          onConfirmRead={() => tutorialReadMutation.mutate()}
-        />
-      ) : null}
-    </>
+      </div>
+      <div className="relative h-px w-full bg-gradient-brand">
+        <Progress>
+          <Bar className="!absolute !left-0 !top-0 !h-px !bg-neutral-0 !opacity-60"></Bar>
+        </Progress>
+      </div>
+    </header>
   );
 }
