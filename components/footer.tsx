@@ -46,6 +46,11 @@ const Footer: FC = ({}) => {
                 </Link>
               </li>
               <li>
+                <Link href="https://codetekt.org/" className="hover:underline">
+                  Zu Codetekt
+                </Link>
+              </li>
+              <li>
                 <Link
                   href="https://www.instagram.com/codetekt/"
                   className="hover:underline"
@@ -139,6 +144,9 @@ const Footer: FC = ({}) => {
               <ul className="space-y-2 text-secondary-foreground/60 pl-4 text-body-md">
                 <li>
                   <Link href="mailto:info@codetekt.org">info@codetekt.org</Link>
+                </li>
+                <li>
+                  <Link href="https://codetekt.org/">Zu Codetekt</Link>
                 </li>
                 <li>
                   <Link href="https://www.instagram.com/codetekt/">
