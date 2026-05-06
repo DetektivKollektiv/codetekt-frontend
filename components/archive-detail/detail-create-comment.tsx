@@ -113,7 +113,11 @@ const DetailCreateComment: FC<DetailCreateCommentProps> = ({
               <CardTitle>
                 Mach mit und <br /> bearbeite diesen Fall!
               </CardTitle>
-              <Button>Fall checken</Button>
+              <Button asChild>
+                <Link href={`/review/${caseId}`}>
+                  Fall checken
+                </Link>
+              </Button>
             </CardHeader>
           </CardContent>
           <CardContent className="p-0 flex-1 flex flex-col">
