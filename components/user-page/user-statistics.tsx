@@ -23,6 +23,8 @@ import { getShortUsername } from '@/lib/utils/get-short-username';
 import { FC, useMemo } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
+const MAX_VISIBLE_DAYS = 30;
+
 interface UserStatisticsProps {
   leaderboard: Leaderboard;
   userCases: UserCases;
@@ -131,7 +133,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
     let cumulativeReviews = 0;
 
     const firstDate = startOfDay(activities[0].date);
-    const lastDate = startOfDay(activities[activities.length - 1].date);
+    const today = startOfDay(new Date());
+    const lastActivityDate = startOfDay(activities[activities.length - 1].date);
+    const lastDate =
+      lastActivityDate.getTime() > today.getTime() ? lastActivityDate : today;
 
     for (
       let currentDate = new Date(firstDate);
@@ -158,9 +163,9 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       };
     }
 
-    // Return all days between first and last activity, limited to last 30 days
+    // Return all days between first activity and today, limited to the latest visible range
     const allDays = Object.values(dailyData);
-    const visibleDays = allDays.slice(-30);
+    const visibleDays = allDays.slice(-MAX_VISIBLE_DAYS);
 
     const firstVisibleDay = visibleDays[0];
     if (!firstVisibleDay) {
@@ -169,6 +174,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
 
     const baselineDate = fromDayKey(firstVisibleDay.day);
     baselineDate.setDate(baselineDate.getDate() - 1);
+    const firstVisibleIncrements = dailyIncrements[firstVisibleDay.day] ?? {
+      cases: 0,
+      reviews: 0,
+    };
 
     const baselineDay = {
       day: toDayKey(baselineDate),
@@ -176,8 +185,8 @@ const UserStatistics: FC<UserStatisticsProps> = ({
         day: '2-digit',
         month: '2-digit',
       }),
-      cases: 0,
-      reviews: 0,
+      cases: firstVisibleDay.cases - firstVisibleIncrements.cases,
+      reviews: firstVisibleDay.reviews - firstVisibleIncrements.reviews,
       hasCaseEvent: false,
       hasReviewEvent: false,
     };
