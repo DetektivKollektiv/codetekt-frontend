@@ -31,7 +31,7 @@ const Evaluation: FC<EvaluationProps> = ({
       <div>
         <div className="flex justify-between items-center mb-2">
           <h4 className="text-body-sm font-semibold">Bewertung</h4>
-          <HelpButton theme="dark" />
+          <HelpButton theme="dark" href='https://codetekt.org/informationen/die-codetekt-trust-checking-plattform-erklart#archiv' />
         </div>
 
         <Badge
