@@ -14,6 +14,26 @@ export const metadata: Metadata = {
   title: 'codetekt - Plattform',
   description:
     'Wir sind codetekt: Durch unseren Trust-Checking-Ansatz ermöglichen wir es allen, die Vertrauenswürdigkeit von Informationen einzuschätzen.',
+  openGraph: {
+    title: 'codetekt - Plattform',
+    description:
+      'Wir sind codetekt: Durch unseren Trust-Checking-Ansatz ermöglichen wir es allen, die Vertrauenswürdigkeit von Informationen einzuschätzen.',
+    images: [
+      {
+        url: '/images/og-image.jpeg',
+        width: 2048,
+        height: 1138,
+        alt: 'codetekt - Plattform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'codetekt - Plattform',
+    description:
+      'Wir sind codetekt: Durch unseren Trust-Checking-Ansatz ermöglichen wir es allen, die Vertrauenswürdigkeit von Informationen einzuschätzen.',
+    images: ['/images/og-image.jpeg'],
+  },
 };
 
 export default function RootLayout({
