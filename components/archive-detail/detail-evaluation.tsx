@@ -37,7 +37,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
             bewertet
           </p>
         </div>
-        <HelpButton theme="light" />
+        <HelpButton theme="light" href='https://codetekt.org/informationen/die-codetekt-trust-checking-plattform-erklart#archiv' />
       </div>
 
       <Accordion type="multiple" className="space-y-4">
