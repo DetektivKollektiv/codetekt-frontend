@@ -39,7 +39,7 @@ export function DetailHeader({
       <Link href="/archive">
         <Button variant="ghost" size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Zum Archive
+          Zur Übersicht
         </Button>
       </Link>
 
