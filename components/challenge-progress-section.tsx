@@ -305,9 +305,6 @@ export function ChallengeProgressSection({
                             {goal.label}
                           </p>
                           <p className="shrink-0 text-heading-sm font-black tabular-nums">
-                            <span className="mr-2 text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
-                              FÄLLE GELÖST
-                            </span>
                             {goal.resolvedCases}
                             <span className="text-brand-darkblue/45">
                               /{goal.target}
