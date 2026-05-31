@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Card,
   CardContent,
@@ -5,6 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 
@@ -37,6 +46,33 @@ const challengeProgress = {
       label: 'Demokratie',
       resolvedCases: 7,
       target: 12,
+    },
+  ],
+  leaderboard: [
+    {
+      username: 'Ada',
+      reviewedCases: 34,
+      activeDays: 10,
+    },
+    {
+      username: 'Mika',
+      reviewedCases: 29,
+      activeDays: 9,
+    },
+    {
+      username: 'Noor',
+      reviewedCases: 24,
+      activeDays: 8,
+    },
+    {
+      username: 'Leonie',
+      reviewedCases: 21,
+      activeDays: 7,
+    },
+    {
+      username: 'Samir',
+      reviewedCases: 18,
+      activeDays: 6,
     },
   ],
 };
@@ -88,6 +124,14 @@ const getDailyGoalStatus = (resolvedCases: number): DailyGoalStatus => {
   if (resolvedCases >= challengeProgress.dailyGoals[0]) return 'three';
   return 'open';
 };
+
+const getInitials = (username: string) =>
+  username
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
 export function ChallengeProgressSection({
   className,
@@ -242,41 +286,100 @@ export function ChallengeProgressSection({
           </section>
 
           <section className="border-t border-brand-darkblue/25 pt-8">
-            <h3 className="text-heading-lg font-black tracking-normal">
-              Tag-Ziele
-            </h3>
-            <div className="mt-6 flex flex-col gap-6">
-              {challengeProgress.tagGoals.map((goal) => {
-                const progress = getProgressPercent(
-                  goal.resolvedCases,
-                  goal.target,
-                );
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
+              <div>
+                <h3 className="text-heading-lg font-black tracking-normal">
+                  Tag-Ziele
+                </h3>
+                <div className="mt-6 flex flex-col gap-6">
+                  {challengeProgress.tagGoals.map((goal) => {
+                    const progress = getProgressPercent(
+                      goal.resolvedCases,
+                      goal.target,
+                    );
 
-                return (
-                  <div key={goal.label} className="flex flex-col gap-3">
-                    <div className="flex items-start justify-between gap-4">
-                      <p className="text-heading-sm font-black text-brand-darkblue/65">
-                        {goal.label}
-                      </p>
-                      <p className="shrink-0 text-heading-sm font-black tabular-nums">
-                        <span className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65 mr-2">
-                          FÄLLE GELÖST
-                        </span>
-                        {goal.resolvedCases}
-                        <span className="text-brand-darkblue/45">
-                          /{goal.target}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="h-3 overflow-hidden rounded-full bg-brand-darkblue/25">
-                      <div
-                        className="h-full rounded-full bg-brand-darkblue"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                    return (
+                      <div key={goal.label} className="flex flex-col gap-3">
+                        <div className="flex items-start justify-between gap-4">
+                          <p className="text-heading-sm font-black text-brand-darkblue/65">
+                            {goal.label}
+                          </p>
+                          <p className="shrink-0 text-heading-sm font-black tabular-nums">
+                            <span className="mr-2 text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
+                              FÄLLE GELÖST
+                            </span>
+                            {goal.resolvedCases}
+                            <span className="text-brand-darkblue/45">
+                              /{goal.target}
+                            </span>
+                          </p>
+                        </div>
+                        <div className="h-3 overflow-hidden rounded-full bg-brand-darkblue/25">
+                          <div
+                            className="h-full rounded-full bg-brand-darkblue"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="border-t border-brand-darkblue/25 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+                <h3 className="text-heading-lg font-black tracking-normal">
+                  Leaderboard
+                </h3>
+                <div className="relative mt-5 max-h-72 overflow-y-auto no-scrollbar">
+                  <Table>
+                    <TableHeader className="sticky top-0 bg-brand-coral [&_tr>th:first-child]:rounded-tl-md [&_tr>th:last-child]:rounded-tr-md">
+                      <TableRow className="border-brand-darkblue/20">
+                        <TableHead className="w-9 bg-brand-coral text-brand-darkblue/65">
+                          #
+                        </TableHead>
+                        <TableHead className="bg-brand-coral text-brand-darkblue/65">
+                          co:detectives
+                        </TableHead>
+                        <TableHead className="bg-brand-coral text-right text-brand-darkblue/65">
+                          Fälle
+                        </TableHead>
+                        <TableHead className="bg-brand-coral text-right text-brand-darkblue/65">
+                          Tage
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {challengeProgress.leaderboard.map((user, index) => (
+                        <TableRow
+                          key={user.username}
+                          className="border-brand-darkblue/15"
+                        >
+                          <TableCell className="font-black tabular-nums">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="size-8">
+                                <AvatarFallback className="bg-brand-darkblue text-meta font-black text-brand-coral">
+                                  {getInitials(user.username)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="font-bold">{user.username}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right font-black tabular-nums">
+                            {user.reviewedCases}
+                          </TableCell>
+                          <TableCell className="text-right font-black tabular-nums text-brand-darkblue/65">
+                            {user.activeDays}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="sticky bottom-0 h-6 bg-gradient-to-t from-brand-coral to-brand-coral/0" />
+                </div>
+              </div>
             </div>
           </section>
         </div>
