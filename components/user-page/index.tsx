@@ -1,5 +1,6 @@
 'use client';
 import { ArchiveList } from '@/components/archive-list';
+import { ChallengeProgressSection } from '@/components/challenge-progress-section';
 import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import { OpenCases } from '@/lib/queries/getOpenCases';
 import { UserCases } from '@/lib/queries/getUserCases';
@@ -138,6 +139,7 @@ const UserPage: FC<UserPageProps> = ({
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">
           <div className="page-max-w mb-12">
+            <ChallengeProgressSection className="mb-6" />
             <HomeHelpCard />
           </div>
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
