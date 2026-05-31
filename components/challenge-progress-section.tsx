@@ -6,17 +6,21 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Check } from 'lucide-react';
 
 const challengeProgress = {
-  title: 'Landtagswahlen 2026',
+  title: 'Community Challenge',
   day: 12,
   totalDays: 25,
   resolvedCases: 126,
   totalTarget: 200,
   milestones: [0, 50, 100, 150, 200],
-  dailyGoals: [1, 3, 5, 10],
+  startDate: '01.09.',
+  endDate: '25.09.',
+  dailyGoals: [3, 5, 10],
   dailyResolvedCases: [
-    3, 4, 6, 11, 7, 4, 3, 0, 2, 4, 5, 10, 8, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    5, 7, 8, 12, 9, 11, 13, 6, 14, 10, 15, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0,
   ],
   tagGoals: [
     {
@@ -41,18 +45,17 @@ interface ChallengeProgressSectionProps {
   className?: string;
 }
 
-type DailyGoalStatus = 'open' | 'one' | 'three' | 'five' | 'ten';
+type DailyGoalStatus = 'open' | 'three' | 'five' | 'ten';
 
 const dailyGoalStatusStyles: Record<DailyGoalStatus, string> = {
-  open: 'border-neutral-500/70 bg-neutral-0/15 text-neutral-800/50',
-  one: 'border-brand-red bg-neutral-0/15 text-brand-red',
-  three: 'border-brand-orange bg-neutral-0/15 text-brand-orange',
-  five: 'border-brand-green bg-neutral-0/15 text-brand-green',
-  ten: 'border-brand-darkblue bg-brand-green/20 text-brand-darkblue',
+  open: 'bg-neutral-500/55',
+  three: 'bg-brand-orange',
+  five: 'bg-brand-yellow',
+  ten: 'bg-brand-green',
 };
 
 const dailyGoalLegend: { label: string; status: DailyGoalStatus }[] = [
-  { label: '1+ Fall', status: 'one' },
+  { label: '<3 Fälle', status: 'open' },
   { label: '3+ Fälle', status: 'three' },
   { label: '5+ Fälle', status: 'five' },
   { label: '10+ Fälle', status: 'ten' },
@@ -68,7 +71,7 @@ const milestoneSegments = challengeProgress.milestones
 const dailyProgress = challengeProgress.dailyResolvedCases.map(
   (resolvedCases, index) => ({
     day: index + 1,
-    date: `${String(index + 1).padStart(2, '0')}.09.`,
+    displayDate: `${index + 1}.9`,
     resolvedCases,
   }),
 );
@@ -80,10 +83,9 @@ const getSegmentProgressPercent = (value: number, start: number, end: number) =>
   getProgressPercent(Math.max(value - start, 0), end - start);
 
 const getDailyGoalStatus = (resolvedCases: number): DailyGoalStatus => {
-  if (resolvedCases >= challengeProgress.dailyGoals[3]) return 'ten';
-  if (resolvedCases >= challengeProgress.dailyGoals[2]) return 'five';
-  if (resolvedCases >= challengeProgress.dailyGoals[1]) return 'three';
-  if (resolvedCases >= challengeProgress.dailyGoals[0]) return 'one';
+  if (resolvedCases >= challengeProgress.dailyGoals[2]) return 'ten';
+  if (resolvedCases >= challengeProgress.dailyGoals[1]) return 'five';
+  if (resolvedCases >= challengeProgress.dailyGoals[0]) return 'three';
   return 'open';
 };
 
@@ -93,7 +95,7 @@ export function ChallengeProgressSection({
   return (
     <Card
       className={cn(
-        'relative w-full overflow-hidden rounded-lg border-2 border-brand-darkblue/35 bg-brand-coral text-brand-darkblue shadow-md',
+        'relative w-full overflow-hidden rounded-lg bg-brand-coral text-brand-darkblue shadow-md',
         className,
       )}
     >
@@ -101,7 +103,7 @@ export function ChallengeProgressSection({
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
           <div>
             <p className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
-              Community Challenge •{' '}
+              Landtagswahlen 2026 •{' '}
               <span className="text-brand-darkblue/85">
                 Tag {challengeProgress.day} von {challengeProgress.totalDays}
               </span>
@@ -112,7 +114,7 @@ export function ChallengeProgressSection({
           </div>
           <div className="lg:text-right">
             <p className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
-              Gesamtfortschritt
+              FÄLLE GELÖST
             </p>
             <p className="mt-2 text-display-sm font-black leading-none tracking-normal tabular-nums sm:text-display-md">
               {challengeProgress.resolvedCases}
@@ -167,23 +169,31 @@ export function ChallengeProgressSection({
 
         <div className="my-8 h-px bg-brand-darkblue/25 lg:my-10" />
 
-        <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr] xl:gap-10">
+        <div className="grid gap-8 ">
           <section>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-heading-lg font-black tracking-normal">
-                Tagesziele
-              </h3>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:justify-end">
+            <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+                <h3 className="whitespace-nowrap text-heading-lg font-black tracking-normal">
+                  Tagesziele
+                </h3>
+                <p className="whitespace-nowrap text-heading-lg font-black tracking-normal text-brand-darkblue/45">
+                  {challengeProgress.startDate} bis {challengeProgress.endDate}
+                </p>
+              </div>
+              <div className="no-scrollbar flex flex-nowrap gap-4 overflow-x-auto 2xl:justify-end ">
                 {dailyGoalLegend.map((item) => (
-                  <div key={item.status} className="flex items-center gap-2">
+                  <div
+                    key={item.status}
+                    className="flex shrink-0 items-center gap-2"
+                  >
                     <span
                       className={cn(
-                        'size-4 rounded-full border-4',
+                        'size-3 rounded-full',
                         dailyGoalStatusStyles[item.status],
                       )}
                       aria-hidden="true"
                     />
-                    <span className="text-meta font-bold text-brand-darkblue/65">
+                    <span className="whitespace-nowrap text-meta font-bold text-brand-darkblue/65">
                       {item.label}
                     </span>
                   </div>
@@ -191,30 +201,39 @@ export function ChallengeProgressSection({
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-5 gap-x-3 gap-y-5 sm:grid-cols-8 lg:gap-x-4">
+            <div className="mt-6 flex flex-wrap gap-2 xl:justify-between">
               {dailyProgress.map((day) => {
-                const status = getDailyGoalStatus(day.resolvedCases);
+                const isFutureDay = day.day > challengeProgress.day;
+                const status = isFutureDay
+                  ? 'open'
+                  : getDailyGoalStatus(day.resolvedCases);
+                const isCompletedDay = day.day < challengeProgress.day;
+                const isCurrentDay = day.day === challengeProgress.day;
 
                 return (
                   <div
                     key={day.day}
-                    className="flex min-w-0 flex-col items-center gap-2"
+                    className="flex items-center justify-center"
                   >
                     <span
                       className={cn(
-                        'flex size-10 items-center justify-center rounded-full border-4 text-meta font-bold tabular-nums sm:size-11',
+                        'flex size-7 items-center justify-center rounded-full text-[0.625rem] font-black leading-none tabular-nums sm:size-8',
                         dailyGoalStatusStyles[status],
-                        day.day === challengeProgress.day &&
+                        isCurrentDay &&
                           'ring-2 ring-brand-darkblue/45 ring-offset-2 ring-offset-brand-coral',
                       )}
                       aria-label={`Tag ${day.day}: ${day.resolvedCases} gelöste Fälle`}
                     >
+                      {isCompletedDay && (
+                        <Check
+                          className="size-3 text-brand-darkblue"
+                          aria-hidden="true"
+                        />
+                      )}
+                      {isCurrentDay && day.displayDate}
                       <span className="sr-only">
                         {day.resolvedCases} gelöste Fälle
                       </span>
-                    </span>
-                    <span className="text-meta font-bold tabular-nums text-brand-darkblue/60">
-                      {day.date}
                     </span>
                   </div>
                 );
@@ -222,7 +241,7 @@ export function ChallengeProgressSection({
             </div>
           </section>
 
-          <section className="border-t border-brand-darkblue/25 pt-8 xl:border-l xl:border-t-0 xl:pl-10 xl:pt-0">
+          <section className="border-t border-brand-darkblue/25 pt-8">
             <h3 className="text-heading-lg font-black tracking-normal">
               Tag-Ziele
             </h3>
@@ -240,7 +259,13 @@ export function ChallengeProgressSection({
                         {goal.label}
                       </p>
                       <p className="shrink-0 text-heading-sm font-black tabular-nums">
-                        {goal.resolvedCases}/{goal.target}
+                        <span className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65 mr-2">
+                          FÄLLE GELÖST
+                        </span>
+                        {goal.resolvedCases}
+                        <span className="text-brand-darkblue/45">
+                          /{goal.target}
+                        </span>
                       </p>
                     </div>
                     <div className="h-3 overflow-hidden rounded-full bg-brand-darkblue/25">
