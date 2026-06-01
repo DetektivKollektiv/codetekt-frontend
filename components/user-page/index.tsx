@@ -1,17 +1,18 @@
 'use client';
 import { ArchiveList } from '@/components/archive-list';
 import { ChallengeProgressSection } from '@/components/challenge-progress-section';
-import { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
-import { OpenCases } from '@/lib/queries/getOpenCases';
-import { UserCases } from '@/lib/queries/getUserCases';
+import type { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
+import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
+import type { OpenCases } from '@/lib/queries/getOpenCases';
+import type { UserCases } from '@/lib/queries/getUserCases';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { getShortUsername } from '@/lib/utils/get-short-username';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 
-import { Leaderboard } from '@/lib/queries/getLeaderboard';
-import { UserReviews } from '@/lib/queries/getUserReviews';
+import type { Leaderboard } from '@/lib/queries/getLeaderboard';
+import type { UserReviews } from '@/lib/queries/getUserReviews';
 import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -22,6 +23,7 @@ import UserStatistics from './user-statistics';
 
 interface UserPageProps {
   auth: Awaited<ReturnType<typeof getAuth>>;
+  challengeProgress: ChallengeProgress | null;
   leaderboard: Leaderboard;
   openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
@@ -32,6 +34,7 @@ interface UserPageProps {
 
 const UserPage: FC<UserPageProps> = ({
   auth,
+  challengeProgress,
   leaderboard,
   ownUserReviewsAndCases,
   userReviewsAndCases,
@@ -139,7 +142,12 @@ const UserPage: FC<UserPageProps> = ({
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">
           <div className="page-max-w mb-12">
-            <ChallengeProgressSection className="mb-6" />
+            {challengeProgress && (
+              <ChallengeProgressSection
+                challengeProgress={challengeProgress}
+                className="mb-6"
+              />
+            )}
             <HomeHelpCard />
           </div>
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">

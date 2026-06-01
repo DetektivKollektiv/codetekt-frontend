@@ -14,70 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
 
-const challengeProgress = {
-  title: 'Community Challenge',
-  day: 12,
-  totalDays: 25,
-  resolvedCases: 126,
-  totalTarget: 200,
-  milestones: [0, 50, 100, 150, 200],
-  startDate: '01.09.',
-  endDate: '25.09.',
-  dailyGoals: [3, 5, 10],
-  dailyResolvedCases: [
-    5, 7, 8, 12, 9, 11, 13, 6, 14, 10, 15, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0,
-  ],
-  tagGoals: [
-    {
-      label: 'Landtagswahl 2026',
-      resolvedCases: 13,
-      target: 12,
-    },
-    {
-      label: 'KI-Fakes',
-      resolvedCases: 11,
-      target: 12,
-    },
-    {
-      label: 'Demokratie',
-      resolvedCases: 7,
-      target: 12,
-    },
-  ],
-  leaderboard: [
-    {
-      username: 'Ada',
-      reviewedCases: 34,
-      activeDays: 10,
-    },
-    {
-      username: 'Mika',
-      reviewedCases: 29,
-      activeDays: 9,
-    },
-    {
-      username: 'Noor',
-      reviewedCases: 24,
-      activeDays: 8,
-    },
-    {
-      username: 'Leonie',
-      reviewedCases: 21,
-      activeDays: 7,
-    },
-    {
-      username: 'Samir',
-      reviewedCases: 18,
-      activeDays: 6,
-    },
-  ],
-};
-
 interface ChallengeProgressSectionProps {
+  challengeProgress: ChallengeProgress;
   className?: string;
 }
 
@@ -90,40 +32,45 @@ const dailyGoalStatusStyles: Record<DailyGoalStatus, string> = {
   ten: 'bg-brand-green',
 };
 
-const dailyGoalLegend: { label: string; status: DailyGoalStatus }[] = [
-  { label: '<3 Fälle', status: 'open' },
-  { label: '3+ Fälle', status: 'three' },
-  { label: '5+ Fälle', status: 'five' },
-  { label: '10+ Fälle', status: 'ten' },
-];
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-const milestoneSegments = challengeProgress.milestones
-  .slice(1)
-  .map((milestone, index) => ({
-    start: challengeProgress.milestones[index],
-    end: milestone,
-  }));
+const getProgressPercent = (value: number, target: number) => {
+  if (target <= 0) return 0;
 
-const dailyProgress = challengeProgress.dailyResolvedCases.map(
-  (resolvedCases, index) => ({
-    day: index + 1,
-    displayDate: `${index + 1}.9`,
-    resolvedCases,
-  }),
-);
-
-const getProgressPercent = (value: number, target: number) =>
-  Math.min(Math.round((value / target) * 100), 100);
+  return Math.min(Math.round((value / target) * 100), 100);
+};
 
 const getSegmentProgressPercent = (value: number, start: number, end: number) =>
   getProgressPercent(Math.max(value - start, 0), end - start);
 
-const getDailyGoalStatus = (resolvedCases: number): DailyGoalStatus => {
-  if (resolvedCases >= challengeProgress.dailyGoals[2]) return 'ten';
-  if (resolvedCases >= challengeProgress.dailyGoals[1]) return 'five';
-  if (resolvedCases >= challengeProgress.dailyGoals[0]) return 'three';
+const getDailyGoalStatus = (
+  resolvedCases: number,
+  dailyGoals: [number, number, number],
+): DailyGoalStatus => {
+  if (resolvedCases >= dailyGoals[2]) return 'ten';
+  if (resolvedCases >= dailyGoals[1]) return 'five';
+  if (resolvedCases >= dailyGoals[0]) return 'three';
   return 'open';
 };
+
+const parseDateOnly = (dateString: string) => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const getDayDifference = (startDate: Date, endDate: Date) =>
+  Math.floor((endDate.getTime() - startDate.getTime()) / MS_PER_DAY);
+
+const formatDateRangeDate = (date: Date) =>
+  `${String(date.getDate()).padStart(2, '0')}.${String(
+    date.getMonth() + 1,
+  ).padStart(2, '0')}.`;
+
+const formatDotDate = (date: Date) =>
+  `${date.getDate()}.${date.getMonth() + 1}`;
+
+const startOfLocalDay = (date: Date) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
 const getInitials = (username: string) =>
   username
@@ -134,8 +81,50 @@ const getInitials = (username: string) =>
     .toUpperCase();
 
 export function ChallengeProgressSection({
+  challengeProgress,
   className,
 }: ChallengeProgressSectionProps) {
+  const startDate = parseDateOnly(challengeProgress.startsOn);
+  const endDate = parseDateOnly(challengeProgress.endsOn);
+  const today = startOfLocalDay(new Date());
+  const totalDays = Math.max(getDayDifference(startDate, endDate) + 1, 0);
+  const daysSinceStart = getDayDifference(startDate, today);
+  const isDuringChallenge = daysSinceStart >= 0 && daysSinceStart < totalDays;
+  const currentDay = isDuringChallenge ? daysSinceStart + 1 : null;
+  const displayedDay =
+    currentDay ?? (daysSinceStart < 0 ? 0 : Math.max(totalDays, 0));
+  const completedDayLimit =
+    currentDay === null
+      ? daysSinceStart < 0
+        ? 0
+        : totalDays
+      : currentDay - 1;
+  const startDateLabel = formatDateRangeDate(startDate);
+  const endDateLabel = formatDateRangeDate(endDate);
+  const milestoneSegments = challengeProgress.milestones
+    .slice(1)
+    .map((milestone, index) => ({
+      start: challengeProgress.milestones[index],
+      end: milestone,
+    }));
+  const dailyProgress = challengeProgress.dailyResolvedCases.map(
+    (day, index) => {
+      const date = parseDateOnly(day.date);
+
+      return {
+        day: index + 1,
+        displayDate: formatDotDate(date),
+        resolvedCases: day.resolvedCases,
+      };
+    },
+  );
+  const dailyGoalLegend = [
+    { label: `<${challengeProgress.dailyGoals[0]} Fälle`, status: 'open' },
+    { label: `${challengeProgress.dailyGoals[0]}+ Fälle`, status: 'three' },
+    { label: `${challengeProgress.dailyGoals[1]}+ Fälle`, status: 'five' },
+    { label: `${challengeProgress.dailyGoals[2]}+ Fälle`, status: 'ten' },
+  ] satisfies { label: string; status: DailyGoalStatus }[];
+
   return (
     <Card
       className={cn(
@@ -147,9 +136,9 @@ export function ChallengeProgressSection({
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
           <div>
             <p className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
-              Landtagswahlen 2026 •{' '}
+              {challengeProgress.eyebrow} •{' '}
               <span className="text-brand-darkblue/85">
-                Tag {challengeProgress.day} von {challengeProgress.totalDays}
+                Tag {displayedDay} von {totalDays}
               </span>
             </p>
             <CardTitle className="mt-2 text-display-sm uppercase tracking-normal sm:text-display-md">
@@ -161,7 +150,7 @@ export function ChallengeProgressSection({
               FÄLLE GELÖST
             </p>
             <p className="mt-2 text-display-sm font-black leading-none tracking-normal tabular-nums sm:text-display-md">
-              {challengeProgress.resolvedCases}
+              {challengeProgress.totalResolvedCases}
               <span className="text-brand-darkblue/45">
                 /{challengeProgress.totalTarget}
               </span>
@@ -184,7 +173,7 @@ export function ChallengeProgressSection({
                   className="h-full rounded-full bg-brand-darkblue"
                   style={{
                     width: `${getSegmentProgressPercent(
-                      challengeProgress.resolvedCases,
+                      challengeProgress.totalResolvedCases,
                       segment.start,
                       segment.end,
                     )}%`,
@@ -199,16 +188,9 @@ export function ChallengeProgressSection({
         </div>
 
         <CardDescription className="mt-8 grid gap-5 text-body-md font-semibold text-brand-darkblue/85 md:grid-cols-2 lg:mt-10">
-          <p>
-            codetekt e. V. ist eine gemeinnützige Organisation mit dem Ziel,
-            Strategien zum Erkennen und Eindämmen von Desinformation zu
-            entwickeln.
-          </p>
-          <p>
-            Gemeinsam fördern wir Medien- und Nachrichtenkompetenz und machen
-            sichtbar, wie weit die Community in der Challenge schon gekommen
-            ist.
-          </p>
+          {challengeProgress.descriptionColumns.map((description) => (
+            <p key={description}>{description}</p>
+          ))}
         </CardDescription>
 
         <div className="my-8 h-px bg-brand-darkblue/25 lg:my-10" />
@@ -221,7 +203,7 @@ export function ChallengeProgressSection({
                   Tagesziele
                 </h3>
                 <p className="whitespace-nowrap text-heading-lg font-black tracking-normal text-brand-darkblue/45">
-                  {challengeProgress.startDate} bis {challengeProgress.endDate}
+                  {startDateLabel} bis {endDateLabel}
                 </p>
               </div>
               <div className="no-scrollbar flex flex-nowrap gap-4 overflow-x-auto 2xl:justify-end ">
@@ -247,12 +229,16 @@ export function ChallengeProgressSection({
 
             <div className="mt-6 flex flex-wrap gap-2 xl:justify-between">
               {dailyProgress.map((day) => {
-                const isFutureDay = day.day > challengeProgress.day;
+                const isCurrentDay = day.day === currentDay;
+                const isFutureDay =
+                  day.day > completedDayLimit && !isCurrentDay;
                 const status = isFutureDay
                   ? 'open'
-                  : getDailyGoalStatus(day.resolvedCases);
-                const isCompletedDay = day.day < challengeProgress.day;
-                const isCurrentDay = day.day === challengeProgress.day;
+                  : getDailyGoalStatus(
+                      day.resolvedCases,
+                      challengeProgress.dailyGoals,
+                    );
+                const isCompletedDay = day.day <= completedDayLimit;
 
                 return (
                   <div
@@ -299,7 +285,7 @@ export function ChallengeProgressSection({
                     );
 
                     return (
-                      <div key={goal.label} className="flex flex-col gap-3">
+                      <div key={goal.tagValue} className="flex flex-col gap-3">
                         <div className="flex items-start justify-between gap-4">
                           <p className="text-heading-sm font-black text-brand-darkblue/65">
                             {goal.label}
@@ -346,32 +332,45 @@ export function ChallengeProgressSection({
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {challengeProgress.leaderboard.map((user, index) => (
-                        <TableRow
-                          key={user.username}
-                          className="border-brand-darkblue/15"
-                        >
-                          <TableCell className="font-black tabular-nums">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Avatar className="size-8">
-                                <AvatarFallback className="bg-brand-darkblue text-meta font-black text-brand-coral">
-                                  {getInitials(user.username)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="font-bold">{user.username}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-right font-black tabular-nums">
-                            {user.reviewedCases}
-                          </TableCell>
-                          <TableCell className="text-right font-black tabular-nums text-brand-darkblue/65">
-                            {user.activeDays}
+                      {challengeProgress.leaderboard.length > 0 ? (
+                        challengeProgress.leaderboard.map((user, index) => (
+                          <TableRow
+                            key={user.userId}
+                            className="border-brand-darkblue/15"
+                          >
+                            <TableCell className="font-black tabular-nums">
+                              {index + 1}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Avatar className="size-8">
+                                  <AvatarFallback className="bg-brand-darkblue text-meta font-black text-brand-coral">
+                                    {getInitials(user.username)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="font-bold">
+                                  {user.username}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right font-black tabular-nums">
+                              {user.reviewedCases}
+                            </TableCell>
+                            <TableCell className="text-right font-black tabular-nums text-brand-darkblue/65">
+                              {user.activeDays}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow className="border-brand-darkblue/15">
+                          <TableCell
+                            colSpan={4}
+                            className="py-6 text-center font-bold text-brand-darkblue/65"
+                          >
+                            Noch keine Challenge-Aktivitäten
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                   <div className="sticky bottom-0 h-6 bg-gradient-to-t from-brand-coral to-brand-coral/0" />

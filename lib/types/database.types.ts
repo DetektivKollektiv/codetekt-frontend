@@ -1,18 +1,49 @@
-import { MergeDeep } from 'type-fest';
-import {
+import type { MergeDeep } from 'type-fest';
+import type {
+  ChallengeConfigContentData,
   InProgressReviewAnswer,
   OpenGraphData,
   ReviewAggregationData,
   SubmittedReviewAnswer,
   TutorialContentData,
 } from '../schemas';
-import { Database as DatabaseGenerated } from './database.types-generated';
+import type { Database as DatabaseGenerated } from './database.types-generated';
 
 export type Database = MergeDeep<
   DatabaseGenerated,
   {
     public: {
       Tables: {
+        challenge_configs: {
+          Row: {
+            content: ChallengeConfigContentData;
+            created_at: string;
+            ends_on: string;
+            id: string;
+            is_active: boolean;
+            starts_on: string;
+            updated_at: string;
+          };
+          Insert: {
+            content: ChallengeConfigContentData;
+            created_at?: string;
+            ends_on: string;
+            id?: string;
+            is_active?: boolean;
+            starts_on: string;
+            updated_at?: string;
+          };
+          Update: {
+            content?: ChallengeConfigContentData;
+            created_at?: string;
+            ends_on?: string;
+            id?: string;
+            is_active?: boolean;
+            starts_on?: string;
+            updated_at?: string;
+          };
+          Relationships: [];
+        };
         open_graph_data: {
           Row: {
             raw_data: OpenGraphData | null;
@@ -81,6 +112,31 @@ export type Database = MergeDeep<
         };
       };
       Functions: {
+        get_challenge_progress: {
+          Args: {
+            challenge_ends_on: string;
+            challenge_starts_on: string;
+            leaderboard_limit?: number;
+            tag_values?: string[];
+          };
+          Returns: {
+            daily_resolved_cases: {
+              date: string;
+              resolvedCases: number;
+            }[];
+            leaderboard: {
+              activeDays: number;
+              reviewedCases: number;
+              userId: string;
+              username: string;
+            }[];
+            tag_goal_results: {
+              resolvedCases: number;
+              tagValue: string;
+            }[];
+            total_resolved_cases: number;
+          }[];
+        };
         get_aggregation_reviewers: {
           Args: {
             case_ids?: string[] | null;

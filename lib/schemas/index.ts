@@ -22,6 +22,18 @@ export {
   type CreateCaseFormData,
 } from './case-schemas';
 export {
+  challengeConfigContentSchema,
+  challengeDailyResolvedCasesSchema,
+  challengeDynamicDataSchema,
+  challengeLeaderboardItemSchema,
+  challengeTagGoalResultSchema,
+  challengeTagGoalSchema,
+  type ChallengeConfigContentData,
+  type ChallengeDailyResolvedCasesData,
+  type ChallengeDynamicData,
+  type ChallengeLeaderboardItemData,
+} from './challenge-schemas';
+export {
   COMMENT_REPORT_REASON_MAX_LENGTH,
   COMMENT_REPORT_REASON_MIN_LENGTH,
   commentContentSchema,
