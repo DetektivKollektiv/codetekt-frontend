@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { cn } from '@/lib/utils';
+import { getInitials } from '@/lib/utils/get-initials';
 import { Check } from 'lucide-react';
 import Image from 'next/image';
 
@@ -192,14 +193,6 @@ const formatDotDate = (date: Date) =>
 
 const startOfLocalDay = (date: Date) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-const getInitials = (username: string) =>
-  username
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
 
 function MilestoneLabel({
   achieved,

@@ -30,6 +30,7 @@ import {
 } from '@/lib/schemas/comment-schemas';
 import { createClient } from '@/lib/supabase/client';
 import { getAuth } from '@/lib/supabase/getAuth';
+import { getInitials } from '@/lib/utils/get-initials';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -149,17 +150,6 @@ export function DetailCommentCard({ comment, auth }: DetailCommentCardProps) {
       commentId: comment.id,
       reason: reportReasonValidation.data.reason,
     });
-  };
-
-  // Get initials for avatar fallback
-  const getInitials = (username: string | null) => {
-    if (!username) return '?';
-    return username
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   const createdAt = new Date(comment.created_at);
