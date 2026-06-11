@@ -67,7 +67,7 @@ const screenshotChallengeProgress: ChallengeProgress = {
   title: 'Community Challenge',
   startsOn: '2026-05-21',
   endsOn: '2026-06-14',
-  totalResolvedCases: 126,
+  totalResolvedCases: 217,
   totalTarget: 200,
   milestones: [0, 50, 100, 150, 200],
   dailyGoals: [3, 5, 10],
@@ -204,13 +204,15 @@ const getInitials = (username: string) =>
 function MilestoneLabel({
   achieved,
   milestone,
+  className,
 }: {
+  className?: string;
   achieved: boolean;
   milestone: number;
 }) {
   const label = (
     <>
-      <span className="text-[1.75rem] font-black leading-none tabular-nums">
+      <span className="text-[1.75rem] font-black leading-none tabular-nums ">
         {milestone}
       </span>
       <span className="mt-1 text-meta font-black uppercase leading-none">
@@ -229,7 +231,7 @@ function MilestoneLabel({
 
   return (
     <div
-      className="flex size-[5.5rem] items-center justify-center bg-brand-yellow"
+      className={`flex size-[5.5rem] items-center justify-center bg-brand-yellow ${className || ''}`}
       style={{ clipPath: milestoneBurstClipPath }}
     >
       <div className="flex size-[4.25rem] flex-col items-center justify-center rounded-full bg-brand-darkblue text-neutral-0">
@@ -391,14 +393,13 @@ export function ChallengeProgressSection({
                       <MilestoneLabel
                         achieved={achieved}
                         milestone={milestone}
+                        className={cn(isFinalMilestone && '-translate-x-1/3')}
                       />
                       <span
                         className={cn(
                           'mt-2 w-0.5 flex-1 rounded-full',
                           achieved ? 'bg-brand-coral' : 'bg-neutral-0/35',
-                          milestone ===
-                            visibleChallengeProgress.milestones.slice(-1)[0] &&
-                            'hidden',
+                          isFinalMilestone && 'hidden',
                         )}
                         aria-hidden="true"
                       />
