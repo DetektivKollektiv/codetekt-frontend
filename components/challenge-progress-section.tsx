@@ -28,6 +28,7 @@ const dailyGoalStatusStyles: Record<DailyGoalStatus, string> = {
 };
 
 const CHALLENGE_GRID_ROWS = 5;
+const CHALLENGE_GRID_COLUMN_GAP = 'clamp(0.25rem, 0.55vw, 0.5rem)';
 const screenshotUserResolvedPoints = new Set([27, 52, 54, 73]);
 
 const challengePeople = [
@@ -35,25 +36,25 @@ const challengePeople = [
     src: '/images/community_challenge/Person_1.svg',
     width: 366,
     height: 576,
-    className: 'h-[25rem]',
+    className: 'h-[22rem]',
   },
   {
     src: '/images/community_challenge/Person_2.svg',
     width: 448,
     height: 628,
-    className: 'h-[27rem]',
+    className: 'h-[24rem]',
   },
   {
     src: '/images/community_challenge/Person_3.svg',
     width: 335,
     height: 553,
-    className: 'h-[25rem]',
+    className: 'h-[22rem]',
   },
   {
     src: '/images/community_challenge/Person_4.svg',
     width: 448,
     height: 600,
-    className: 'h-[26rem]',
+    className: 'h-[23rem]',
   },
 ] as const;
 
@@ -262,6 +263,9 @@ export function ChallengeProgressSection({
     { length: visibleChallengeProgress.totalTarget },
     (_, index) => index + 1,
   );
+  const challengeGridColumns = Math.ceil(
+    visibleChallengeProgress.totalTarget / CHALLENGE_GRID_ROWS,
+  );
   const dailyProgress = visibleChallengeProgress.dailyResolvedCases.map(
     (day, index) => {
       const date = parseDateOnly(day.date);
@@ -319,7 +323,7 @@ export function ChallengeProgressSection({
           </div>
         </div>
 
-        <div className="relative h-[31rem]">
+        <div className="relative h-[28rem] ">
           <div
             className="absolute inset-x-8 bottom-0 top-0 z-0 grid grid-cols-4 items-end lg:inset-x-12"
             aria-hidden="true"
@@ -354,41 +358,61 @@ export function ChallengeProgressSection({
           />
 
           <div className="absolute inset-x-5 bottom-7 z-20 sm:inset-x-6 lg:inset-x-12">
-            <div className="absolute inset-0 z-0">
+            <div
+              className="absolute inset-0 z-0 grid"
+              style={{
+                columnGap: CHALLENGE_GRID_COLUMN_GAP,
+                gridTemplateColumns: `repeat(${challengeGridColumns}, minmax(0, 1fr))`,
+              }}
+            >
               {visibleChallengeProgress.milestones.slice(1).map((milestone) => {
                 const achieved =
                   visibleChallengeProgress.totalResolvedCases >= milestone;
+                const milestoneColumn = Math.ceil(
+                  milestone / CHALLENGE_GRID_ROWS,
+                );
+                const isFinalMilestone =
+                  milestone === visibleChallengeProgress.totalTarget;
 
                 return (
                   <div
                     key={milestone}
-                    className="absolute bottom-[-0.25rem] flex h-[17rem] -translate-x-1/2 flex-col items-center"
+                    className="relative h-0 w-0 self-end justify-self-end"
+                    data-milestone={milestone}
                     style={{
-                      left: `${getProgressPercent(
-                        milestone,
-                        visibleChallengeProgress.totalTarget,
-                      )}%`,
+                      gridColumn: milestoneColumn,
+                      gridRow: 1,
+                      transform: isFinalMilestone
+                        ? undefined
+                        : `translateX(calc(${CHALLENGE_GRID_COLUMN_GAP} / 2))`,
                     }}
                   >
-                    <MilestoneLabel achieved={achieved} milestone={milestone} />
-                    <span
-                      className={cn(
-                        'mt-2 w-1 flex-1 rounded-full',
-                        achieved ? 'bg-brand-yellow' : 'bg-neutral-0/35',
-                      )}
-                      aria-hidden="true"
-                    />
+                    <div className="absolute bottom-[-0.25rem] left-1/2 flex h-56 lg:h-64 xl:h-[18rem] -translate-x-1/2 flex-col items-center">
+                      <MilestoneLabel
+                        achieved={achieved}
+                        milestone={milestone}
+                      />
+                      <span
+                        className={cn(
+                          'mt-2 w-0.5 flex-1 rounded-full',
+                          achieved ? 'bg-brand-coral' : 'bg-neutral-0/35',
+                          milestone ===
+                            visibleChallengeProgress.milestones.slice(-1)[0] &&
+                            'hidden',
+                        )}
+                        aria-hidden="true"
+                      />
+                    </div>
                   </div>
                 );
               })}
             </div>
 
             <div
-              className="relative z-10 grid grid-flow-col gap-x-[clamp(0.25rem,0.55vw,0.5rem)] gap-y-[clamp(0.4rem,0.75vw,0.7rem)]"
+              className="relative z-10 grid grid-flow-col gap-y-[clamp(0.4rem,0.75vw,0.7rem)]"
               style={{
-                gridTemplateColumns: `repeat(${Math.ceil(
-                  visibleChallengeProgress.totalTarget / CHALLENGE_GRID_ROWS,
-                )}, minmax(0, 1fr))`,
+                columnGap: CHALLENGE_GRID_COLUMN_GAP,
+                gridTemplateColumns: `repeat(${challengeGridColumns}, minmax(0, 1fr))`,
                 gridTemplateRows: `repeat(${CHALLENGE_GRID_ROWS}, minmax(0, 1fr))`,
               }}
               role="progressbar"
