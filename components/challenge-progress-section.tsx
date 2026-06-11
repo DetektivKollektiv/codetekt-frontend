@@ -36,25 +36,25 @@ const challengePeople = [
     src: '/images/community_challenge/Person_1.svg',
     width: 366,
     height: 576,
-    className: 'h-[22rem]',
+    className: 'h-[29rem]',
   },
   {
     src: '/images/community_challenge/Person_2.svg',
     width: 448,
     height: 628,
-    className: 'h-[24rem]',
+    className: 'h-[34rem]',
   },
   {
     src: '/images/community_challenge/Person_3.svg',
     width: 335,
     height: 553,
-    className: 'h-[22rem]',
+    className: 'h-[28rem]',
   },
   {
     src: '/images/community_challenge/Person_4.svg',
     width: 448,
     height: 600,
-    className: 'h-[23rem]',
+    className: 'h-[29rem]',
   },
 ] as const;
 
@@ -323,7 +323,7 @@ export function ChallengeProgressSection({
           </div>
         </div>
 
-        <div className="relative h-[28rem] ">
+        <div className="relative h-[26rem] ">
           <div
             className="absolute inset-x-8 bottom-0 top-0 z-0 grid grid-cols-4 items-end lg:inset-x-12"
             aria-hidden="true"
@@ -340,7 +340,7 @@ export function ChallengeProgressSection({
                   height={person.height}
                   sizes="(min-width: 1024px) 20vw, 15rem"
                   className={cn(
-                    'w-auto max-w-none object-contain object-bottom',
+                    'translate-y-4 w-auto max-w-none object-contain object-bottom',
                     person.className,
                   )}
                 />
