@@ -299,7 +299,7 @@ export function ChallengeProgressSection({
   return (
     <Card
       className={cn(
-        'relative w-full overflow-hidden rounded-[1.75rem] border-none bg-brand-coral text-brand-darkblue shadow-md',
+        'relative w-full overflow-hidden border-none bg-brand-coral text-brand-darkblue shadow-md',
         className,
       )}
     >
