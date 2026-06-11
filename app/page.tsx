@@ -230,12 +230,10 @@ export default async function Home() {
               />
             </div>
             <div className="page-max-w">
-              {challengeProgressData && (
-                <ChallengeProgressSection
-                  challengeProgress={challengeProgressData}
-                  className="mb-6"
-                />
-              )}
+              <ChallengeProgressSection
+                challengeProgress={challengeProgressData}
+                className="mb-6"
+              />
               <div className="w-full rounded-lg bg-background p-5 page-max-w">
                 <h3 className="text-display-eyebrow uppercase">
                   Unsere Partner*innen, Unterstützer*innen und Netzwerke

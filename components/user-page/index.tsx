@@ -142,12 +142,10 @@ const UserPage: FC<UserPageProps> = ({
       {openCases && (
         <div className="mt-24 z-10 relative" id="open-cases">
           <div className="page-max-w mb-12">
-            {challengeProgress && (
-              <ChallengeProgressSection
-                challengeProgress={challengeProgress}
-                className="mb-6"
-              />
-            )}
+            <ChallengeProgressSection
+              challengeProgress={challengeProgress}
+              className="mb-6"
+            />
             <HomeHelpCard />
           </div>
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">

@@ -1,11 +1,5 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -17,9 +11,10 @@ import {
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
+import Image from 'next/image';
 
 interface ChallengeProgressSectionProps {
-  challengeProgress: ChallengeProgress;
+  challengeProgress?: ChallengeProgress | null;
   className?: string;
 }
 
@@ -32,6 +27,134 @@ const dailyGoalStatusStyles: Record<DailyGoalStatus, string> = {
   ten: 'bg-brand-green',
 };
 
+const CHALLENGE_GRID_ROWS = 5;
+const screenshotUserResolvedPoints = new Set([27, 52, 54, 73]);
+
+const challengePeople = [
+  {
+    src: '/images/community_challenge/Person_1.svg',
+    width: 366,
+    height: 576,
+    className: 'h-[25rem]',
+  },
+  {
+    src: '/images/community_challenge/Person_2.svg',
+    width: 448,
+    height: 628,
+    className: 'h-[27rem]',
+  },
+  {
+    src: '/images/community_challenge/Person_3.svg',
+    width: 335,
+    height: 553,
+    className: 'h-[25rem]',
+  },
+  {
+    src: '/images/community_challenge/Person_4.svg',
+    width: 448,
+    height: 600,
+    className: 'h-[26rem]',
+  },
+] as const;
+
+const milestoneBurstClipPath =
+  'polygon(50% 0%, 58% 10%, 70% 4%, 73% 18%, 86% 15%, 85% 30%, 98% 35%, 89% 46%, 100% 56%, 87% 64%, 94% 78%, 79% 79%, 78% 94%, 64% 88%, 54% 100%, 46% 89%, 32% 97%, 28% 83%, 14% 85%, 16% 70%, 2% 65%, 11% 54%, 0% 44%, 13% 36%, 6% 22%, 21% 21%, 22% 6%, 36% 12%)';
+
+const screenshotChallengeProgress: ChallengeProgress = {
+  id: 'screenshot-challenge',
+  eyebrow: 'Landtagswahlen 2026',
+  title: 'Community Challenge',
+  startsOn: '2026-05-21',
+  endsOn: '2026-06-14',
+  totalResolvedCases: 126,
+  totalTarget: 200,
+  milestones: [0, 50, 100, 150, 200],
+  dailyGoals: [3, 5, 10],
+  descriptionColumns: [
+    'In der Community Challenge wollen wir gemeinsam 200 Fälle lösen und jeden Tag neue Tagesziele erreichen.',
+    'Zusätzlich zählen Ziele für bestimmte Tags. Das Leaderboard zeigt die aktivsten co:detectives, der erste Platz bekommt ein Geschenk.',
+  ],
+  dailyResolvedCases: [
+    { date: '2026-05-21', resolvedCases: 6 },
+    { date: '2026-05-22', resolvedCases: 8 },
+    { date: '2026-05-23', resolvedCases: 5 },
+    { date: '2026-05-24', resolvedCases: 12 },
+    { date: '2026-05-25', resolvedCases: 7 },
+    { date: '2026-05-26', resolvedCases: 11 },
+    { date: '2026-05-27', resolvedCases: 13 },
+    { date: '2026-05-28', resolvedCases: 5 },
+    { date: '2026-05-29', resolvedCases: 10 },
+    { date: '2026-05-30', resolvedCases: 12 },
+    { date: '2026-05-31', resolvedCases: 9 },
+    { date: '2026-06-01', resolvedCases: 14 },
+    { date: '2026-06-02', resolvedCases: 0 },
+    { date: '2026-06-03', resolvedCases: 0 },
+    { date: '2026-06-04', resolvedCases: 0 },
+    { date: '2026-06-05', resolvedCases: 0 },
+    { date: '2026-06-06', resolvedCases: 0 },
+    { date: '2026-06-07', resolvedCases: 0 },
+    { date: '2026-06-08', resolvedCases: 0 },
+    { date: '2026-06-09', resolvedCases: 0 },
+    { date: '2026-06-10', resolvedCases: 0 },
+    { date: '2026-06-11', resolvedCases: 0 },
+    { date: '2026-06-12', resolvedCases: 0 },
+    { date: '2026-06-13', resolvedCases: 0 },
+    { date: '2026-06-14', resolvedCases: 0 },
+  ],
+  tagGoals: [
+    {
+      label: 'Landtagswahl 2026',
+      resolvedCases: 13,
+      tagValue: 'Landtagswahl 2026',
+      target: 12,
+    },
+    {
+      label: 'KI-Fakes',
+      resolvedCases: 11,
+      tagValue: 'KI-Fakes',
+      target: 12,
+    },
+    {
+      label: 'Demokratie',
+      resolvedCases: 7,
+      tagValue: 'Demokratie',
+      target: 12,
+    },
+  ],
+  leaderboard: [
+    {
+      userId: 'screenshot-user-1',
+      username: 'Ada',
+      reviewedCases: 34,
+      activeDays: 10,
+    },
+    {
+      userId: 'screenshot-user-2',
+      username: 'Mika',
+      reviewedCases: 29,
+      activeDays: 9,
+    },
+    {
+      userId: 'screenshot-user-3',
+      username: 'Noor',
+      reviewedCases: 24,
+      activeDays: 8,
+    },
+    {
+      userId: 'screenshot-user-4',
+      username: 'Leonie',
+      reviewedCases: 21,
+      activeDays: 7,
+    },
+    {
+      userId: 'screenshot-user-5',
+      username: 'Samir',
+      reviewedCases: 18,
+      activeDays: 6,
+    },
+  ],
+};
+
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const getProgressPercent = (value: number, target: number) => {
@@ -39,9 +162,6 @@ const getProgressPercent = (value: number, target: number) => {
 
   return Math.min(Math.round((value / target) * 100), 100);
 };
-
-const getSegmentProgressPercent = (value: number, start: number, end: number) =>
-  getProgressPercent(Math.max(value - start, 0), end - start);
 
 const getDailyGoalStatus = (
   resolvedCases: number,
@@ -80,12 +200,53 @@ const getInitials = (username: string) =>
     .slice(0, 2)
     .toUpperCase();
 
+function MilestoneLabel({
+  achieved,
+  milestone,
+}: {
+  achieved: boolean;
+  milestone: number;
+}) {
+  const label = (
+    <>
+      <span className="text-[1.75rem] font-black leading-none tabular-nums">
+        {milestone}
+      </span>
+      <span className="mt-1 text-meta font-black uppercase leading-none">
+        Fälle
+      </span>
+    </>
+  );
+
+  if (!achieved) {
+    return (
+      <div className="flex size-[5.5rem] flex-col items-center justify-center text-neutral-0">
+        {label}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex size-[5.5rem] items-center justify-center bg-brand-yellow"
+      style={{ clipPath: milestoneBurstClipPath }}
+    >
+      <div className="flex size-[4.25rem] flex-col items-center justify-center rounded-full bg-brand-darkblue text-neutral-0">
+        {label}
+      </div>
+    </div>
+  );
+}
+
 export function ChallengeProgressSection({
   challengeProgress,
   className,
 }: ChallengeProgressSectionProps) {
-  const startDate = parseDateOnly(challengeProgress.startsOn);
-  const endDate = parseDateOnly(challengeProgress.endsOn);
+  void challengeProgress;
+
+  const visibleChallengeProgress = screenshotChallengeProgress;
+  const startDate = parseDateOnly(visibleChallengeProgress.startsOn);
+  const endDate = parseDateOnly(visibleChallengeProgress.endsOn);
   const today = startOfLocalDay(new Date());
   const totalDays = Math.max(getDayDifference(startDate, endDate) + 1, 0);
   const daysSinceStart = getDayDifference(startDate, today);
@@ -94,20 +255,14 @@ export function ChallengeProgressSection({
   const displayedDay =
     currentDay ?? (daysSinceStart < 0 ? 0 : Math.max(totalDays, 0));
   const completedDayLimit =
-    currentDay === null
-      ? daysSinceStart < 0
-        ? 0
-        : totalDays
-      : currentDay - 1;
+    currentDay === null ? (daysSinceStart < 0 ? 0 : totalDays) : currentDay - 1;
   const startDateLabel = formatDateRangeDate(startDate);
   const endDateLabel = formatDateRangeDate(endDate);
-  const milestoneSegments = challengeProgress.milestones
-    .slice(1)
-    .map((milestone, index) => ({
-      start: challengeProgress.milestones[index],
-      end: milestone,
-    }));
-  const dailyProgress = challengeProgress.dailyResolvedCases.map(
+  const progressPoints = Array.from(
+    { length: visibleChallengeProgress.totalTarget },
+    (_, index) => index + 1,
+  );
+  const dailyProgress = visibleChallengeProgress.dailyResolvedCases.map(
     (day, index) => {
       const date = parseDateOnly(day.date);
 
@@ -119,82 +274,194 @@ export function ChallengeProgressSection({
     },
   );
   const dailyGoalLegend = [
-    { label: `<${challengeProgress.dailyGoals[0]} Fälle`, status: 'open' },
-    { label: `${challengeProgress.dailyGoals[0]}+ Fälle`, status: 'three' },
-    { label: `${challengeProgress.dailyGoals[1]}+ Fälle`, status: 'five' },
-    { label: `${challengeProgress.dailyGoals[2]}+ Fälle`, status: 'ten' },
+    {
+      label: `<${visibleChallengeProgress.dailyGoals[0]} Fälle`,
+      status: 'open',
+    },
+    {
+      label: `${visibleChallengeProgress.dailyGoals[0]}+ Fälle`,
+      status: 'three',
+    },
+    {
+      label: `${visibleChallengeProgress.dailyGoals[1]}+ Fälle`,
+      status: 'five',
+    },
+    {
+      label: `${visibleChallengeProgress.dailyGoals[2]}+ Fälle`,
+      status: 'ten',
+    },
   ] satisfies { label: string; status: DailyGoalStatus }[];
 
   return (
     <Card
       className={cn(
-        'relative w-full overflow-hidden rounded-lg bg-brand-coral text-brand-darkblue shadow-md',
+        'relative w-full overflow-hidden rounded-[1.75rem] border-none bg-brand-coral text-brand-darkblue shadow-md',
         className,
       )}
     >
-      <CardHeader className="p-5 pb-0 sm:p-6 sm:pb-0 lg:p-10 lg:pb-0">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-          <div>
-            <p className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
-              {challengeProgress.eyebrow} •{' '}
-              <span className="text-brand-darkblue/85">
-                Tag {displayedDay} von {totalDays}
-              </span>
-            </p>
-            <CardTitle className="mt-2 text-display-sm uppercase tracking-normal sm:text-display-md">
-              {challengeProgress.title}
-            </CardTitle>
-          </div>
-          <div className="lg:text-right">
-            <p className="text-meta font-bold uppercase tracking-normal text-brand-darkblue/65">
-              FÄLLE GELÖST
-            </p>
-            <p className="mt-2 text-display-sm font-black leading-none tracking-normal tabular-nums sm:text-display-md">
-              {challengeProgress.totalResolvedCases}
+      <section className="relative overflow-hidden bg-brand-darkblue text-neutral-0">
+        <div className="relative z-30 px-5 pb-8 pt-8 sm:px-6 lg:px-12 lg:pb-10 lg:pt-12">
+          <div className="flex items-start justify-between gap-8">
+            <div>
+              <p className="text-display-eyebrow uppercase text-neutral-0/70">
+                Community Challenge zu den {visibleChallengeProgress.eyebrow}
+              </p>
+              <h2 className="mt-2 text-display-sm uppercase sm:text-display-md 2xl:text-display-lg">
+                Gemeinsam zur {visibleChallengeProgress.totalTarget}
+              </h2>
+            </div>
+            <div className="shrink-0 rounded-2xl bg-neutral-0 px-4 py-2 text-heading-sm font-black leading-none text-brand-darkblue">
+              Tag <span className="tabular-nums">{displayedDay}</span>
               <span className="text-brand-darkblue/45">
-                /{challengeProgress.totalTarget}
-              </span>
-            </p>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="p-5 sm:p-6 lg:p-10">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-body-sm font-black tabular-nums">0</span>
-          {milestoneSegments.map((segment) => (
-            <div
-              key={segment.end}
-              className="contents"
-              aria-label={`${segment.start} bis ${segment.end} Fälle`}
-            >
-              <div className="h-3 min-w-0 flex-1 overflow-hidden rounded-full bg-brand-darkblue/25">
-                <div
-                  className="h-full rounded-full bg-brand-darkblue"
-                  style={{
-                    width: `${getSegmentProgressPercent(
-                      challengeProgress.totalResolvedCases,
-                      segment.start,
-                      segment.end,
-                    )}%`,
-                  }}
-                />
-              </div>
-              <span className="text-body-sm font-black tabular-nums">
-                {segment.end}
+                /<span className="tabular-nums">{totalDays}</span>
               </span>
             </div>
-          ))}
+          </div>
         </div>
 
-        <CardDescription className="mt-8 grid gap-5 text-body-md font-semibold text-brand-darkblue/85 md:grid-cols-2 lg:mt-10">
-          {challengeProgress.descriptionColumns.map((description) => (
-            <p key={description}>{description}</p>
-          ))}
-        </CardDescription>
+        <div className="relative h-[31rem]">
+          <div
+            className="absolute inset-x-8 bottom-0 top-0 z-0 grid grid-cols-4 items-end lg:inset-x-12"
+            aria-hidden="true"
+          >
+            {challengePeople.map((person) => (
+              <div
+                key={person.src}
+                className="flex h-full items-end justify-center"
+              >
+                <Image
+                  src={person.src}
+                  alt=""
+                  width={person.width}
+                  height={person.height}
+                  sizes="(min-width: 1024px) 20vw, 15rem"
+                  className={cn(
+                    'w-auto max-w-none object-contain object-bottom',
+                    person.className,
+                  )}
+                />
+              </div>
+            ))}
+          </div>
 
-        <div className="my-8 h-px bg-brand-darkblue/25 lg:my-10" />
+          <div
+            className="pointer-events-none absolute inset-0 z-10"
+            style={{
+              background:
+                'linear-gradient(180deg, hsl(var(--brand-yellow) / 0) 0%, hsl(var(--brand-coral) / 0.5) 55%, hsl(var(--brand-coral)) 100%)',
+            }}
+            aria-hidden="true"
+          />
 
+          <div className="absolute inset-x-5 bottom-7 z-20 sm:inset-x-6 lg:inset-x-12">
+            <div className="absolute inset-0 z-0">
+              {visibleChallengeProgress.milestones.slice(1).map((milestone) => {
+                const achieved =
+                  visibleChallengeProgress.totalResolvedCases >= milestone;
+
+                return (
+                  <div
+                    key={milestone}
+                    className="absolute bottom-[-0.25rem] flex h-[17rem] -translate-x-1/2 flex-col items-center"
+                    style={{
+                      left: `${getProgressPercent(
+                        milestone,
+                        visibleChallengeProgress.totalTarget,
+                      )}%`,
+                    }}
+                  >
+                    <MilestoneLabel achieved={achieved} milestone={milestone} />
+                    <span
+                      className={cn(
+                        'mt-2 w-1 flex-1 rounded-full',
+                        achieved ? 'bg-brand-yellow' : 'bg-neutral-0/35',
+                      )}
+                      aria-hidden="true"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              className="relative z-10 grid grid-flow-col gap-x-[clamp(0.25rem,0.55vw,0.5rem)] gap-y-[clamp(0.4rem,0.75vw,0.7rem)]"
+              style={{
+                gridTemplateColumns: `repeat(${Math.ceil(
+                  visibleChallengeProgress.totalTarget / CHALLENGE_GRID_ROWS,
+                )}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${CHALLENGE_GRID_ROWS}, minmax(0, 1fr))`,
+              }}
+              role="progressbar"
+              aria-label={`${visibleChallengeProgress.totalResolvedCases} von ${visibleChallengeProgress.totalTarget} Fällen gelöst`}
+              aria-valuemin={0}
+              aria-valuemax={visibleChallengeProgress.totalTarget}
+              aria-valuenow={visibleChallengeProgress.totalResolvedCases}
+            >
+              {progressPoints.map((point) => {
+                const isResolved =
+                  point <= visibleChallengeProgress.totalResolvedCases;
+                const isResolvedByUser =
+                  isResolved && screenshotUserResolvedPoints.has(point);
+
+                return (
+                  <span
+                    key={point}
+                    className={cn(
+                      'aspect-square w-full rounded-full',
+                      isResolvedByUser
+                        ? 'bg-brand-green'
+                        : isResolved
+                          ? 'bg-brand-purple-dark'
+                          : 'bg-neutral-0/55',
+                    )}
+                    aria-hidden="true"
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-20 grid gap-8 bg-brand-coral px-5 pb-9 pt-4 text-brand-darkblue sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:px-12 lg:pb-11">
+          <p className="max-w-xl text-body-md text-brand-darkblue/80">
+            Löst gemeinsam {visibleChallengeProgress.totalTarget} Fälle,
+            erreicht tägliche Ziele und kämpft um die Spitze des Leaderboards.
+            Der erste Platz wird belohnt.
+          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {[
+              {
+                label: 'Von dir gelöst',
+                className: 'bg-brand-green',
+              },
+              {
+                label: 'Gelöst',
+                className: 'bg-brand-purple-dark',
+              },
+              {
+                label: 'Ungelöst',
+                className: 'bg-neutral-0/55',
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    'size-[clamp(1rem,1.6vw,1.3rem)] rounded-full',
+                    item.className,
+                  )}
+                  aria-hidden="true"
+                />
+                <span className="whitespace-nowrap text-body-sm font-bold">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CardContent className="p-5 sm:p-6 lg:p-10">
+        <div className="mb-8 h-px bg-brand-darkblue/25 lg:mb-10" />
         <div className="grid gap-8 ">
           <section>
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
@@ -236,7 +503,7 @@ export function ChallengeProgressSection({
                   ? 'open'
                   : getDailyGoalStatus(
                       day.resolvedCases,
-                      challengeProgress.dailyGoals,
+                      visibleChallengeProgress.dailyGoals,
                     );
                 const isCompletedDay = day.day <= completedDayLimit;
 
@@ -278,7 +545,7 @@ export function ChallengeProgressSection({
                   Tag-Ziele
                 </h3>
                 <div className="mt-6 flex flex-col gap-6">
-                  {challengeProgress.tagGoals.map((goal) => {
+                  {visibleChallengeProgress.tagGoals.map((goal) => {
                     const progress = getProgressPercent(
                       goal.resolvedCases,
                       goal.target,
@@ -332,35 +599,37 @@ export function ChallengeProgressSection({
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {challengeProgress.leaderboard.length > 0 ? (
-                        challengeProgress.leaderboard.map((user, index) => (
-                          <TableRow
-                            key={user.userId}
-                            className="border-brand-darkblue/15"
-                          >
-                            <TableCell className="font-black tabular-nums">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Avatar className="size-8">
-                                  <AvatarFallback className="bg-brand-darkblue text-meta font-black text-brand-coral">
-                                    {getInitials(user.username)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <span className="font-bold">
-                                  {user.username}
-                                </span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-right font-black tabular-nums">
-                              {user.reviewedCases}
-                            </TableCell>
-                            <TableCell className="text-right font-black tabular-nums text-brand-darkblue/65">
-                              {user.activeDays}
-                            </TableCell>
-                          </TableRow>
-                        ))
+                      {visibleChallengeProgress.leaderboard.length > 0 ? (
+                        visibleChallengeProgress.leaderboard.map(
+                          (user, index) => (
+                            <TableRow
+                              key={user.userId}
+                              className="border-brand-darkblue/15"
+                            >
+                              <TableCell className="font-black tabular-nums">
+                                {index + 1}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <Avatar className="size-8">
+                                    <AvatarFallback className="bg-brand-darkblue text-meta font-black text-brand-coral">
+                                      {getInitials(user.username)}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="font-bold">
+                                    {user.username}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right font-black tabular-nums">
+                                {user.reviewedCases}
+                              </TableCell>
+                              <TableCell className="text-right font-black tabular-nums text-brand-darkblue/65">
+                                {user.activeDays}
+                              </TableCell>
+                            </TableRow>
+                          ),
+                        )
                       ) : (
                         <TableRow className="border-brand-darkblue/15">
                           <TableCell
