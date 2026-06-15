@@ -1,6 +1,6 @@
 'use client';
 import { ArchiveList } from '@/components/archive-list';
-import { ChallengeProgressSection } from '@/components/challenge-progress-section';
+import { ChallengeProgressSection } from '@/components/challenge-progress';
 import type { AggregatedReviews } from '@/lib/queries/getAggregatedReviews';
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import type { OpenCases } from '@/lib/queries/getOpenCases';

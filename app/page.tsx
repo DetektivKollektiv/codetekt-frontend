@@ -1,5 +1,5 @@
 import { ArchiveList } from '@/components/archive-list';
-import { ChallengeProgressSection } from '@/components/challenge-progress-section';
+import { ChallengeProgressSection } from '@/components/challenge-progress';
 import { Button } from '@/components/ui/button';
 import UserPage from '@/components/user-page';
 import {

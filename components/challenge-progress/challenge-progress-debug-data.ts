@@ -1,0 +1,98 @@
+import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
+
+export const debugUserResolvedPoints = new Set([27, 52, 54, 73]);
+
+export const debugChallengeProgress: ChallengeProgress = {
+  id: 'debug-challenge',
+  eyebrow: 'Landtagswahlen 2026',
+  title: 'Community Challenge',
+  startsOn: '2026-05-21',
+  endsOn: '2026-06-14',
+  totalResolvedCases: 217,
+  totalTarget: 200,
+  milestones: [0, 50, 100, 150, 200],
+  dailyGoals: [3, 5, 10],
+  descriptionColumns: [
+    'In der Community Challenge wollen wir gemeinsam 200 Fälle lösen und jeden Tag neue Tagesziele erreichen.',
+    'Zusätzlich zählen Ziele für bestimmte Tags. Das Leaderboard zeigt die aktivsten co:detectives, der erste Platz bekommt ein Geschenk.',
+  ],
+  dailyResolvedCases: [
+    { date: '2026-05-21', resolvedCases: 6 },
+    { date: '2026-05-22', resolvedCases: 8 },
+    { date: '2026-05-23', resolvedCases: 5 },
+    { date: '2026-05-24', resolvedCases: 12 },
+    { date: '2026-05-25', resolvedCases: 7 },
+    { date: '2026-05-26', resolvedCases: 11 },
+    { date: '2026-05-27', resolvedCases: 13 },
+    { date: '2026-05-28', resolvedCases: 5 },
+    { date: '2026-05-29', resolvedCases: 10 },
+    { date: '2026-05-30', resolvedCases: 12 },
+    { date: '2026-05-31', resolvedCases: 9 },
+    { date: '2026-06-01', resolvedCases: 14 },
+    { date: '2026-06-02', resolvedCases: 0 },
+    { date: '2026-06-03', resolvedCases: 0 },
+    { date: '2026-06-04', resolvedCases: 0 },
+    { date: '2026-06-05', resolvedCases: 0 },
+    { date: '2026-06-06', resolvedCases: 0 },
+    { date: '2026-06-07', resolvedCases: 0 },
+    { date: '2026-06-08', resolvedCases: 0 },
+    { date: '2026-06-09', resolvedCases: 0 },
+    { date: '2026-06-10', resolvedCases: 0 },
+    { date: '2026-06-11', resolvedCases: 0 },
+    { date: '2026-06-12', resolvedCases: 0 },
+    { date: '2026-06-13', resolvedCases: 0 },
+    { date: '2026-06-14', resolvedCases: 0 },
+  ],
+  tagGoals: [
+    {
+      label: 'Landtagswahl 2026',
+      resolvedCases: 13,
+      tagValue: 'Landtagswahl 2026',
+      target: 12,
+    },
+    {
+      label: 'KI-Fakes',
+      resolvedCases: 11,
+      tagValue: 'KI-Fakes',
+      target: 12,
+    },
+    {
+      label: 'Demokratie',
+      resolvedCases: 7,
+      tagValue: 'Demokratie',
+      target: 12,
+    },
+  ],
+  leaderboard: [
+    {
+      userId: 'debug-user-1',
+      username: 'Ada',
+      reviewedCases: 34,
+      activeDays: 10,
+    },
+    {
+      userId: 'debug-user-2',
+      username: 'Mika',
+      reviewedCases: 29,
+      activeDays: 9,
+    },
+    {
+      userId: 'debug-user-3',
+      username: 'Noor',
+      reviewedCases: 24,
+      activeDays: 8,
+    },
+    {
+      userId: 'debug-user-4',
+      username: 'Leonie',
+      reviewedCases: 21,
+      activeDays: 7,
+    },
+    {
+      userId: 'debug-user-5',
+      username: 'Samir',
+      reviewedCases: 18,
+      activeDays: 6,
+    },
+  ],
+};
