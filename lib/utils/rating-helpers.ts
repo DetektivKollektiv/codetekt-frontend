@@ -16,6 +16,21 @@ export interface RatingStyle {
 
 export const SATIRE_CATEGORY_VALUE = 'satire';
 
+export const RATING_LEVEL_COLORS: Record<
+  RatingLevel,
+  { background: string; text: string }
+> = {
+  0: { background: '#66CC77', text: '#FFFFFF' },
+  1: { background: '#FFEB66', text: '#140735' },
+  2: { background: '#FF9533', text: '#FFFFFF' },
+  3: { background: '#FF4D4D', text: '#FFFFFF' },
+};
+
+const SATIRE_RATING_COLORS = {
+  background: '#D0D3E2',
+  text: '#140735',
+};
+
 export const isSatireCategory = (category?: string | null): boolean =>
   category?.toLowerCase() === SATIRE_CATEGORY_VALUE;
 
@@ -34,8 +49,8 @@ export function getRatingStyle(
   if (isSatireCategory(category)) {
     return {
       label: 'Satire',
-      backgroundColor: 'hsl(var(--neutral-300))',
-      foregroundColor: 'hsl(var(--neutral-800))',
+      backgroundColor: SATIRE_RATING_COLORS.background,
+      foregroundColor: SATIRE_RATING_COLORS.text,
       backgroundClass: 'bg-neutral-300',
       textClass: 'text-neutral-700',
       textForegroundClass: 'text-neutral-800',
@@ -44,37 +59,41 @@ export function getRatingStyle(
 
   const s = scoreToIndex(score);
   if (s < 1) {
+    const colors = RATING_LEVEL_COLORS[0];
     return {
       label: 'Vertrauenswürdig',
-      backgroundColor: 'hsl(var(--brand-green))',
-      foregroundColor: 'hsl(var(--neutral-0))',
+      backgroundColor: colors.background,
+      foregroundColor: colors.text,
       backgroundClass: 'bg-brand-green',
       textClass: 'text-brand-green',
       textForegroundClass: 'text-neutral-0',
     };
   } else if (s < 2) {
+    const colors = RATING_LEVEL_COLORS[1];
     return {
       label: 'Eher vertrauenswürdig',
-      backgroundColor: 'hsl(var(--brand-yellow))',
-      foregroundColor: 'hsl(var(--neutral-800))',
+      backgroundColor: colors.background,
+      foregroundColor: colors.text,
       backgroundClass: 'bg-brand-yellow',
       textClass: 'text-brand-yellow-dark',
       textForegroundClass: 'text-neutral-800',
     };
   } else if (s < 3) {
+    const colors = RATING_LEVEL_COLORS[2];
     return {
       label: 'Eher nicht vertrauenswürdig',
-      backgroundColor: 'hsl(var(--brand-orange))',
-      foregroundColor: 'hsl(var(--neutral-0))',
+      backgroundColor: colors.background,
+      foregroundColor: colors.text,
       backgroundClass: 'bg-brand-orange',
       textClass: 'text-brand-orange',
       textForegroundClass: 'text-neutral-0',
     };
   } else {
+    const colors = RATING_LEVEL_COLORS[3];
     return {
       label: 'Nicht vertrauenswürdig',
-      backgroundColor: 'hsl(var(--destructive))',
-      foregroundColor: 'hsl(var(--neutral-0))',
+      backgroundColor: colors.background,
+      foregroundColor: colors.text,
       backgroundClass: 'bg-destructive',
       textClass: 'text-destructive',
       textForegroundClass: 'text-destructive-foreground',
@@ -89,19 +108,7 @@ export function getRatingLevelColor(level: RatingLevel): {
   background: string;
   text: string;
 } {
-  const backgroundColors = {
-    0: 'hsl(var(--brand-green))',
-    1: 'hsl(var(--brand-yellow))',
-    2: 'hsl(var(--brand-orange))',
-    3: 'hsl(var(--destructive))',
-  };
-  const textColors = {
-    0: 'hsl(var(--neutral-0))',
-    1: 'hsl(var(--neutral-800))',
-    2: 'hsl(var(--neutral-0))',
-    3: 'hsl(var(--neutral-0))',
-  };
-  return { background: backgroundColors[level], text: textColors[level] };
+  return RATING_LEVEL_COLORS[level];
 }
 
 /**
