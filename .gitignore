@@ -52,3 +52,5 @@ template.json
 .agents
 
 *.code-workspace
+
+certificates
