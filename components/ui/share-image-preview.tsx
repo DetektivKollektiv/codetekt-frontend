@@ -4,12 +4,16 @@ interface ShareImagePreviewProps {
   caseId: string;
 }
 
+const SHARE_PREVIEW_VARIANTS = ['story-left', 'post', 'story-right'] as const;
+
+type SharePreviewVariant = (typeof SHARE_PREVIEW_VARIANTS)[number];
+
 function ShareFrame({
   imageUrl,
   variant,
 }: {
   imageUrl: string;
-  variant: 'story-left' | 'post' | 'story-right';
+  variant: SharePreviewVariant;
 }) {
   const isPost = variant === 'post';
 
@@ -24,7 +28,7 @@ function ShareFrame({
         }`}
       >
         {isPost ? (
-          <div className="absolute inset-x-2 top-2 h-1 rounded-full bg-neutral-400 z-10" />
+          <div className="absolute inset-x-2 top-2 z-10 h-1 rounded-full bg-neutral-400" />
         ) : (
           <>
             <div className="absolute left-2 top-2 size-3 rounded-full bg-neutral-400" />
@@ -39,8 +43,8 @@ function ShareFrame({
           unoptimized
           className={
             isPost
-              ? 'absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[74%] rounded-sm'
-              : 'absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[68%] rounded-sm'
+              ? 'absolute left-1/2 top-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2 rounded-sm'
+              : 'absolute left-1/2 top-1/2 w-[68%] -translate-x-1/2 -translate-y-1/2 rounded-sm'
           }
         />
       </div>
@@ -73,9 +77,9 @@ export function ShareImagePreview({ caseId }: ShareImagePreviewProps) {
 
   return (
     <div className="flex aspect-video w-full items-center justify-center gap-3 overflow-hidden rounded-lg border bg-muted-foreground px-3 py-4">
-      <ShareFrame imageUrl={imageUrl} variant="story-left" />
-      <ShareFrame imageUrl={imageUrl} variant="post" />
-      <ShareFrame imageUrl={imageUrl} variant="story-right" />
+      {SHARE_PREVIEW_VARIANTS.map((variant) => (
+        <ShareFrame key={variant} imageUrl={imageUrl} variant={variant} />
+      ))}
     </div>
   );
 }

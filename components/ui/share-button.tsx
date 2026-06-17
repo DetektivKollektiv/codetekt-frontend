@@ -72,7 +72,7 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
 
     const handleLinkShare = async () => {
       const shareData: ShareData = {
-        title: `Fall`,
+        title: 'Fall',
         text: 'Schau dir diesen codetekt Fall an.',
         url: getShareUrl(),
       };
@@ -126,6 +126,7 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
           open={open}
           onOpenChange={setOpen}
           onLinkShare={handleLinkShare}
+          getShareUrl={getShareUrl}
         />
       </>
     );
@@ -133,4 +134,4 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
 );
 ShareButton.displayName = 'ShareButton';
 
-export { ShareButton, shareButtonVariants };
+export { ShareButton };

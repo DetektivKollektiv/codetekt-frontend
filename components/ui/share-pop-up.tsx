@@ -19,16 +19,15 @@ interface SharePopUpProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onLinkShare: () => Promise<void>;
+  getShareUrl: () => string;
 }
-
-const getShareUrl = (caseId: string) =>
-  `${window.location.origin}/archive/${caseId}`;
 
 export function SharePopUp({
   caseId,
   open,
   onOpenChange,
   onLinkShare,
+  getShareUrl,
 }: SharePopUpProps) {
   const [isImageSharing, setIsImageSharing] = React.useState(false);
 
@@ -45,27 +44,21 @@ export function SharePopUp({
       const blob = await response.blob();
       const fileName = `codetekt-fall-${caseId}.png`;
       const file = new File([blob], fileName, { type: 'image/png' });
-      const shareUrl = getShareUrl(caseId);
-      const shareDataWithText: ShareData = {
-        title: 'codetekt Fall',
-        text: `Schau dir diesen codetekt Fall an: ${shareUrl}`,
-        files: [file],
-      };
-      const shareDataFileOnly: ShareData = {
-        title: 'codetekt Fall',
-        files: [file],
-      };
-      const canShareWithText = navigator.canShare?.(shareDataWithText) ?? false;
-      const canShareFileOnly = navigator.canShare?.(shareDataFileOnly) ?? false;
+      const shareUrl = getShareUrl();
+      const supportedShareData = [
+        {
+          title: 'codetekt Fall',
+          text: `Schau dir diesen codetekt Fall an: ${shareUrl}`,
+          files: [file],
+        },
+        {
+          title: 'codetekt Fall',
+          files: [file],
+        },
+      ].find((shareData) => navigator.canShare?.(shareData) ?? false);
 
-      if (canShareWithText) {
-        await navigator.share(shareDataWithText);
-        onOpenChange(false);
-        return;
-      }
-
-      if (canShareFileOnly) {
-        await navigator.share(shareDataFileOnly);
+      if (supportedShareData) {
+        await navigator.share(supportedShareData);
         onOpenChange(false);
         return;
       }

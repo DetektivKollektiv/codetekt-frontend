@@ -6,7 +6,6 @@ import DetailCreateComment from './detail-create-comment';
 import { DetailEvaluation } from './detail-evaluation';
 import { DetailHeader } from './detail-header';
 import { DetailRating } from './detail-rating';
-import { ShareImagePreview } from './share-image-preview';
 
 interface ArchiveDetailProps {
   aggregatedReview: NonNullable<AggregatedReview>;
@@ -54,8 +53,6 @@ export function ArchiveDetail({
         caseId={aggregatedReview.case_id}
         hasSubmittedByCurrentUser={hasSubmittedByCurrentUser}
       />
-
-      <ShareImagePreview caseId={aggregatedReview.case_id} />
     </div>
   );
 }

@@ -8,32 +8,32 @@ import { join } from 'node:path';
 
 const EFFRA_FONTS = [
   {
-    weight: 400 as const,
+    weight: 400,
     filename: 'effra-400.otf',
   },
   {
-    weight: 500 as const,
+    weight: 500,
     filename: 'effra-500.otf',
   },
   {
-    weight: 700 as const,
+    weight: 700,
     filename: 'effra-700.otf',
   },
   {
-    weight: 900 as const,
+    weight: 900,
     filename: 'effra-900.otf',
   },
-];
+] as const;
 
 const effraFontsPromise = Promise.all(
   EFFRA_FONTS.map(async ({ weight, filename }) => ({
-      name: 'Effra',
-      data: await readFile(
-        join(process.cwd(), 'public', 'fonts', 'effra', filename),
-      ),
-      weight,
-      style: 'normal' as const,
-    })),
+    name: 'Effra',
+    data: await readFile(
+      join(process.cwd(), 'public', 'fonts', 'effra', filename),
+    ),
+    weight,
+    style: 'normal' as const,
+  })),
 );
 
 export async function GET(
