@@ -1,26 +1,22 @@
 import Image from 'next/image';
 
-interface ShareImagePreviewProps {
-  caseId: string;
-}
+type ShareImagePreviewVariant = 'story-left' | 'post' | 'story-right';
 
-const SHARE_PREVIEW_VARIANTS = ['story-left', 'post', 'story-right'] as const;
+const SHARE_IMAGE_PREVIEW_ROTATION = 'rotate(8deg)';
 
-type SharePreviewVariant = (typeof SHARE_PREVIEW_VARIANTS)[number];
-
-function ShareFrame({
+export function ShareImagePreview({
   imageUrl,
   variant,
 }: {
   imageUrl: string;
-  variant: SharePreviewVariant;
+  variant: ShareImagePreviewVariant;
 }) {
   const isPost = variant === 'post';
 
   return (
     <div
       className="relative flex w-[34%] shrink-0 flex-col gap-2"
-      style={{ transform: 'rotate(8deg)' }}
+      style={{ transform: SHARE_IMAGE_PREVIEW_ROTATION }}
     >
       <div
         className={`relative overflow-hidden rounded-lg bg-brand-darkblue ${
@@ -59,7 +55,7 @@ function ShareFrame({
         </div>
       )}
 
-      {!isPost && variant === 'story-right' && (
+      {variant === 'story-right' && (
         <div className="absolute bottom-4 left-3 flex items-center gap-2">
           <div className="size-4 rounded-full bg-neutral-400" />
           <div className="flex flex-col gap-1">
@@ -68,18 +64,6 @@ function ShareFrame({
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-export function ShareImagePreview({ caseId }: ShareImagePreviewProps) {
-  const imageUrl = `/api/cases/${caseId}/share-image`;
-
-  return (
-    <div className="flex aspect-video w-full items-center justify-center gap-3 overflow-hidden rounded-lg border bg-muted-foreground px-3 py-4">
-      {SHARE_PREVIEW_VARIANTS.map((variant) => (
-        <ShareFrame key={variant} imageUrl={imageUrl} variant={variant} />
-      ))}
     </div>
   );
 }

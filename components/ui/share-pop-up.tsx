@@ -14,6 +14,8 @@ import {
 } from './dialog';
 import { ShareImagePreview } from './share-image-preview';
 
+const SHARE_PREVIEW_VARIANTS = ['story-left', 'post', 'story-right'] as const;
+
 interface SharePopUpProps {
   caseId: string;
   open: boolean;
@@ -29,6 +31,8 @@ export function SharePopUp({
   onLinkShare,
   getShareUrl,
 }: SharePopUpProps) {
+  const imageUrl = `/api/cases/${caseId}/share-image`;
+
   const [isImageSharing, setIsImageSharing] = React.useState(false);
 
   const handleImageShare = async () => {
@@ -112,7 +116,15 @@ export function SharePopUp({
           <section className="flex flex-col gap-4">
             <h3 className="text-heading-lg">Teile ein Sharepic</h3>
 
-            <ShareImagePreview caseId={caseId} />
+            <div className="flex aspect-video w-full items-center justify-center gap-3 overflow-hidden rounded-lg border bg-muted-foreground px-3 py-4">
+              {SHARE_PREVIEW_VARIANTS.map((variant) => (
+                <ShareImagePreview
+                  key={variant}
+                  imageUrl={imageUrl}
+                  variant={variant}
+                />
+              ))}
+            </div>
             <p className="text-body-md text-muted-foreground">
               Teile ein Bild des Falles in einer Story, einem Beitrag, einem
               Reel oder einem Tiktok.
