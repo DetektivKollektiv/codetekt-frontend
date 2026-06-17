@@ -12,27 +12,19 @@ function ShareFrame({
   variant: 'story-left' | 'post' | 'story-right';
 }) {
   const isPost = variant === 'post';
-  const rotation =
-    variant === 'story-left' ? '-9deg' : variant === 'story-right' ? '8deg' : '8deg';
 
   return (
     <div
-      className={
-        isPost
-          ? 'relative mt-10 flex w-[34%] shrink-0 flex-col gap-2'
-          : 'relative flex w-[31%] shrink-0 flex-col gap-2'
-      }
-      style={{ transform: `rotate(${rotation})` }}
+      className="relative flex w-[34%] shrink-0 flex-col gap-2"
+      style={{ transform: 'rotate(8deg)' }}
     >
       <div
-        className={
-          isPost
-            ? 'relative aspect-[4/5] overflow-hidden rounded-lg bg-brand-darkblue'
-            : 'relative aspect-[9/16] overflow-hidden rounded-lg bg-brand-darkblue'
-        }
+        className={`relative overflow-hidden rounded-lg bg-brand-darkblue ${
+          isPost ? 'aspect-[4/5]' : 'aspect-[9/16]'
+        }`}
       >
         {isPost ? (
-          <div className="absolute inset-x-2 top-2 h-1 rounded-full bg-neutral-400" />
+          <div className="absolute inset-x-2 top-2 h-1 rounded-full bg-neutral-400 z-10" />
         ) : (
           <>
             <div className="absolute left-2 top-2 size-3 rounded-full bg-neutral-400" />
@@ -47,8 +39,8 @@ function ShareFrame({
           unoptimized
           className={
             isPost
-              ? 'absolute left-[13%] top-[18%] w-[74%] rounded-sm'
-              : 'absolute left-[16%] top-[30%] w-[68%] rounded-sm'
+              ? 'absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[74%] rounded-sm'
+              : 'absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[68%] rounded-sm'
           }
         />
       </div>
@@ -80,7 +72,7 @@ export function ShareImagePreview({ caseId }: ShareImagePreviewProps) {
   const imageUrl = `/api/cases/${caseId}/share-image`;
 
   return (
-    <div className="flex aspect-video w-full items-center justify-center gap-3 overflow-hidden rounded-lg border bg-muted px-3 py-4">
+    <div className="flex aspect-video w-full items-center justify-center gap-3 overflow-hidden rounded-lg border bg-muted-foreground px-3 py-4">
       <ShareFrame imageUrl={imageUrl} variant="story-left" />
       <ShareFrame imageUrl={imageUrl} variant="post" />
       <ShareFrame imageUrl={imageUrl} variant="story-right" />
