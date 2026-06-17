@@ -1,0 +1,148 @@
+'use client';
+
+import { ImageIcon, LinkIcon } from 'lucide-react';
+import * as React from 'react';
+import { toast } from 'sonner';
+
+import { Button } from './button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from './dialog';
+import { ShareImagePreview } from './share-image-preview';
+
+const SHARE_PREVIEW_VARIANTS = ['story-left', 'post', 'story-right'] as const;
+
+interface SharePopUpProps {
+  caseId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onLinkShare: () => Promise<void>;
+  getShareUrl: () => string;
+}
+
+export function SharePopUp({
+  caseId,
+  open,
+  onOpenChange,
+  onLinkShare,
+  getShareUrl,
+}: SharePopUpProps) {
+  const imageUrl = `/api/cases/${caseId}/share-image`;
+
+  const [isImageSharing, setIsImageSharing] = React.useState(false);
+
+  const handleImageShare = async () => {
+    setIsImageSharing(true);
+
+    try {
+      const response = await fetch(`/api/cases/${caseId}/share-image`);
+
+      if (!response.ok) {
+        throw new Error('Share-Bild konnte nicht geladen werden.');
+      }
+
+      const blob = await response.blob();
+      const fileName = `codetekt-fall-${caseId}.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
+      const shareUrl = getShareUrl();
+      const supportedShareData = [
+        {
+          title: 'codetekt Fall',
+          text: `Schau dir diesen codetekt Fall an: ${shareUrl}`,
+          files: [file],
+        },
+        {
+          title: 'codetekt Fall',
+          files: [file],
+        },
+      ].find((shareData) => navigator.canShare?.(shareData) ?? false);
+
+      if (supportedShareData) {
+        await navigator.share(supportedShareData);
+        onOpenChange(false);
+        return;
+      }
+
+      toast.error(
+        window.isSecureContext
+          ? 'Dein Browser unterstützt das Teilen von Bildern hier nicht.'
+          : 'Bild teilen braucht HTTPS. Bitte teste über eine HTTPS-URL.',
+      );
+    } catch (err) {
+      if (!(err instanceof Error && err.name === 'AbortError')) {
+        toast.error('Fehler beim Teilen des Share-Bildes.');
+      }
+    } finally {
+      setIsImageSharing(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto p-5 sm:max-w-md sm:p-6">
+        <DialogHeader className="pr-8 text-left">
+          <DialogTitle className="text-display-sm">
+            Flood the zone with trust
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Teile den Fall als Link oder als generiertes Share-Bild.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-8">
+          <section className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-heading-lg">Teile den Link</h3>
+              <p className="text-body-md text-muted-foreground">
+                Teile den Link zum Fall als Text
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full text-heading-sm"
+              onClick={onLinkShare}
+            >
+              <LinkIcon data-icon="inline-start" />
+              Link teilen
+            </Button>
+          </section>
+
+          <section className="flex flex-col gap-4">
+            <h3 className="text-heading-lg">Teile ein Sharepic</h3>
+
+            <div className="flex aspect-video w-full items-center justify-center gap-3 overflow-hidden rounded-lg border bg-muted-foreground px-3 py-4">
+              {SHARE_PREVIEW_VARIANTS.map((variant) => (
+                <ShareImagePreview
+                  key={variant}
+                  imageUrl={imageUrl}
+                  variant={variant}
+                />
+              ))}
+            </div>
+            <p className="text-body-md text-muted-foreground">
+              Teile ein Bild des Falles in einer Story, einem Beitrag, einem
+              Reel oder einem Tiktok.
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full text-heading-sm"
+              onClick={handleImageShare}
+              disabled={isImageSharing}
+            >
+              <ImageIcon data-icon="inline-start" />
+              {isImageSharing ? 'Bild wird vorbereitet...' : 'Bild teilen'}
+            </Button>
+          </section>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
