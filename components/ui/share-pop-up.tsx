@@ -88,7 +88,9 @@ export function SharePopUp({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto p-5 sm:max-w-md sm:p-6">
         <DialogHeader className="pr-8 text-left">
-          <DialogTitle className="text-display-sm">Fall teilen</DialogTitle>
+          <DialogTitle className="text-display-sm">
+            Flood the zone with trust
+          </DialogTitle>
           <DialogDescription className="sr-only">
             Teile den Fall als Link oder als generiertes Share-Bild.
           </DialogDescription>
@@ -97,11 +99,9 @@ export function SharePopUp({
         <div className="flex flex-col gap-8">
           <section className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <h3 className="text-heading-lg">
-                Auf WhatsApp oder Telegram teilen
-              </h3>
+              <h3 className="text-heading-lg">Teile den Link</h3>
               <p className="text-body-md text-muted-foreground">
-                Teile den Link zum Fall
+                Teile den Link zum Fall als Text
               </p>
             </div>
             <Button
@@ -117,14 +117,12 @@ export function SharePopUp({
           </section>
 
           <section className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <h3 className="text-heading-lg">
-                Auf Instagram oder TikTok teilen
-              </h3>
-            </div>
+            <h3 className="text-heading-lg">Teile ein Sharepic</h3>
+
             <ShareImagePreview caseId={caseId} />
             <p className="text-body-md text-muted-foreground">
-              Teile ein Bild des Falles in einer Story, Reel oder Beitrag
+              Teile ein Bild des Falles in einer Story, einem Beitrag, einem
+              Reel oder einem Tiktok.
             </p>
             <Button
               type="button"
