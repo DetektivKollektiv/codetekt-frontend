@@ -1,7 +1,6 @@
 'use client';
 
 import { ImageIcon, LinkIcon } from 'lucide-react';
-import Image from 'next/image';
 import * as React from 'react';
 import { toast } from 'sonner';
 
@@ -13,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from './dialog';
+import { ShareImagePreview } from './share-image-preview';
 
 interface SharePopUpProps {
   caseId: string;
@@ -122,14 +122,7 @@ export function SharePopUp({
                 Auf Instagram oder TikTok teilen
               </h3>
             </div>
-            <Image
-              src="/images/share-pic-preview.webp"
-              alt="Beispiele für Share-Bilder in Social-Media-Posts"
-              width={1921}
-              height={1081}
-              className="w-full rounded-lg border bg-muted"
-              priority={false}
-            />
+            <ShareImagePreview caseId={caseId} />
             <p className="text-body-md text-muted-foreground">
               Teile ein Bild des Falles in einer Story, Reel oder Beitrag
             </p>
