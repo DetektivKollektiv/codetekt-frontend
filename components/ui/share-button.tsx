@@ -21,6 +21,17 @@ const shareButtonVariants = cva('', {
   },
 });
 
+const isMobileShareDevice = () => {
+  const nav = navigator as Navigator & {
+    userAgentData?: { mobile?: boolean };
+  };
+
+  return (
+    nav.userAgentData?.mobile === true ||
+    window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  );
+};
+
 export interface ShareButtonProps
   extends
     Omit<React.ComponentPropsWithoutRef<typeof Button>, 'variant'>,
@@ -89,7 +100,12 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
         return;
       }
 
-      setOpen(true);
+      if (isMobileShareDevice()) {
+        setOpen(true);
+        return;
+      }
+
+      await handleLinkShare();
     };
 
     return (
