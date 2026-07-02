@@ -209,7 +209,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       color: 'hsl(var(--brand-coral))',
     },
     reviews: {
-      label: 'Bewertete Fälle',
+      label: 'Gecheckte Fälle',
       color: 'hsl(var(--brand-yellow))',
     },
   } satisfies ChartConfig;
@@ -249,7 +249,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
             </div>
             <div className="text-left border-l border-b p-5">
               <div className="text-muted-foreground text-sm mb-1">
-                Bewertete Fälle
+                Gecheckte Fälle
               </div>
               <div className="text-display-lg md:text-5xl font-bold tabular-nums">
                 {totalReviews}
@@ -266,7 +266,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
       <Card className="flex flex-col">
         <CardContent className="pt-6 flex flex-col flex-1">
           <h3 className="text-heading-md text-muted-foreground font-semibold mb-6">
-            Einreichungen & Bewertungen
+            Einreichungen & Checks
           </h3>
           {chartData.length > 0 ? (
             <ChartContainer
@@ -397,7 +397,7 @@ const UserStatistics: FC<UserStatisticsProps> = ({
                   <TableHead className="w-[40px] bg-muted"></TableHead>
                   <TableHead className="bg-muted">co:detectives</TableHead>
                   <TableHead className="text-right bg-muted pr-2">
-                    Bewertet
+                    Gecheckt
                   </TableHead>
                   <TableHead className="text-right bg-muted pl-2">
                     Level

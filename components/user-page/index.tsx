@@ -173,7 +173,7 @@ const UserPage: FC<UserPageProps> = ({
       {ownUserReviewsAndCases && (
         <div className=" mt-12 lg:mt-24">
           <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
-            Fälle, die du bewertet hast
+            Fälle, die du gecheckt hast
           </h1>
           <ArchiveList
             configKey="reviewsAndCases"

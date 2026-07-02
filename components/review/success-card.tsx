@@ -72,14 +72,14 @@ const SuccesCard: FC<SuccesCardProps> = ({
 
       <CardHeader className="relative">
         <CardTitle className=" text-display-sm">
-          Geschafft! Danke für deine Bewertung! 🎉
+          Geschafft! Danke für deinen Check! 🎉
         </CardTitle>
         <CardDescription className="max-w-xl">
           Dank deines Einsatzes wurde das Internet gerade ein kleines bisschen
           vertrauenswürdiger! <br />
           {hasAggregatedReview
-            ? 'Wenn du sehen willst, wie andere co:detectives den Fall bewertet haben, kannst du dir direkt die Details anschauen. Oder du machst einfach direkt mit dem nächsten Fall weiter!'
-            : 'Die Bewertungen anderer co:detectives werden gerade noch zusammengetragen. Schau gerne später nochmal vorbei, um die Details zu sehen. Oder du machst einfach direkt mit dem nächsten Fall weiter!'}
+            ? 'Wenn du sehen willst, wie andere co:detectives den Fall gecheckt haben, kannst du dir direkt die Details anschauen. Oder du machst einfach direkt mit dem nächsten Fall weiter!'
+            : 'Die Checks anderer co:detectives werden gerade noch zusammengetragen. Schau gerne später nochmal vorbei, um die Details zu sehen. Oder du machst einfach direkt mit dem nächsten Fall weiter!'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-12 md:space-y-8 flex-1 flex items-center justify-center">

@@ -34,7 +34,7 @@ export function DetailEvaluation({ reviewData }: DetailEvaluationProps) {
           <h2 className="text-2xl font-bold">Fallbearbeitung</h2>
           <p className="text-muted-foreground mt-1">
             So wurde der Fall nach den fünf Trust-Checking-Kriterien im Detail
-            bewertet
+            gecheckt
           </p>
         </div>
         <HelpButton theme="light" href='https://codetekt.org/informationen/die-codetekt-trust-checking-plattform-erklart#archiv' />

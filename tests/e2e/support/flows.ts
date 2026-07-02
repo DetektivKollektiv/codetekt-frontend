@@ -173,7 +173,7 @@ const submitReviewWithComment = async (page: Page) => {
   await page.getByRole('button', { name: 'Weiter zum Abschließen' }).click();
   await page.getByTestId('submit-review').click();
   await expect(
-    page.getByText('Geschafft! Danke für deine Bewertung!'),
+    page.getByText('Geschafft! Danke für deinen Check!'),
   ).toBeVisible();
 };
 
