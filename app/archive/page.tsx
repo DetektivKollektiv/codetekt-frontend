@@ -1,6 +1,6 @@
 import { ArchiveList } from '@/components/archive-list';
 import { getAggregatedReviews } from '@/lib/queries/getAggregatedReviews';
-import { getUserReviews } from '@/lib/queries/getUserReviews';
+import { getUserReviewAnswersSubmitted } from '@/lib/queries/getUserReviewAnswers';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 
@@ -18,17 +18,15 @@ export default async function Page() {
   let submittedCaseIds = new Set<string | null>();
 
   if (auth.user?.id) {
-    const { data: userReviews, error: userReviewsError } =
-      await getUserReviews(supabase, auth.user.id);
+    const { data: userReviewAnswersSubmitted, error: userReviewsError } =
+      await getUserReviewAnswersSubmitted(supabase, auth.user.id);
 
     if (userReviewsError) {
       throw userReviewsError;
     }
 
     submittedCaseIds = new Set(
-      (userReviews ?? [])
-        .filter((review) => review.submitted_review_answers_id !== null)
-        .map((review) => review.case_id),
+      (userReviewAnswersSubmitted ?? []).map((review) => review.case_id),
     );
   }
 

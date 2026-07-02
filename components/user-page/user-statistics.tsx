@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Leaderboard } from '@/lib/queries/getLeaderboard';
 import { UserCases } from '@/lib/queries/getUserCases';
-import { UserReviews } from '@/lib/queries/getUserReviews';
+import { UserReviewAnswersSubmitted } from '@/lib/queries/getUserReviewAnswers';
 import { getShortUsername } from '@/lib/utils/get-short-username';
 import { FC, useMemo } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
@@ -28,7 +28,7 @@ const MAX_VISIBLE_DAYS = 30;
 interface UserStatisticsProps {
   leaderboard: Leaderboard;
   userCases: UserCases;
-  userReviews: UserReviews;
+  userReviewAnswersSubmitted: UserReviewAnswersSubmitted;
 }
 
 const getMilestoneName = (count: number): string => {
@@ -67,7 +67,7 @@ const startOfDay = (date: Date): Date =>
 const UserStatistics: FC<UserStatisticsProps> = ({
   leaderboard,
   userCases,
-  userReviews,
+  userReviewAnswersSubmitted,
 }) => {
   const chartData = useMemo(() => {
     // Combine all activities with dates
@@ -84,10 +84,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
     });
 
     // Add reviews
-    userReviews.forEach((review) => {
-      if (review.created_at) {
+    userReviewAnswersSubmitted.forEach((review) => {
+      if (review.submitted_at) {
         activities.push({
-          date: new Date(review.created_at),
+          date: new Date(review.submitted_at),
           type: 'review',
         });
       }
@@ -192,10 +192,10 @@ const UserStatistics: FC<UserStatisticsProps> = ({
     };
 
     return [baselineDay, ...visibleDays];
-  }, [userCases, userReviews]);
+  }, [userCases, userReviewAnswersSubmitted]);
 
   const totalCases = userCases.length;
-  const totalReviews = userReviews.length;
+  const totalReviews = userReviewAnswersSubmitted.length;
   const totalActivities = totalCases + totalReviews;
   const currentMilestone = getMilestoneName(totalActivities);
   const nextMilestone = getNextMilestone(totalActivities);

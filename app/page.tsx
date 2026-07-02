@@ -11,7 +11,11 @@ import {
   getOpenCases,
 } from '@/lib/queries/getOpenCases';
 import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
-import { getUserReviews, UserReviews } from '@/lib/queries/getUserReviews';
+import {
+  getUserReviewAnswersInProgress,
+  getUserReviewAnswersSubmitted,
+  UserReviewAnswersSubmitted,
+} from '@/lib/queries/getUserReviewAnswers';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
@@ -56,8 +60,8 @@ export default async function Home() {
     | (CaseWithSubmissionState | AggregatedReviewWithSubmissionState)[] = null;
 
   // Separate arrays for cases with and without aggregated reviews
-  let userCases: UserCases | null = null;
-  let userReviews: UserReviews | null = null;
+  let userCasesForStatistics: UserCases | null = null;
+  let userReviewAnswersSubmitted: UserReviewAnswersSubmitted | null = null;
 
   // open cases filtered to exclude cases the user has already reviewed
   let filteredOpenCases = filterUnaggregatedOpenCases(openCases);
@@ -65,29 +69,40 @@ export default async function Home() {
   if (isAuthenticated && user) {
     const [
       { data: userCasesData, error: userCasesError },
-      { data: userReviewsData, error: userReviewsError },
+      { data: userCasesForStatisticsData, error: userCasesForStatisticsError },
+      {
+        data: userReviewAnswersInProgressData,
+        error: userReviewAnswersInProgressError,
+      },
+      {
+        data: userReviewAnswersSubmittedData,
+        error: userReviewAnswersSubmittedError,
+      },
     ] = await Promise.all([
-      getUserCases(supabase, user.id),
-      getUserReviews(supabase, user.id),
+      getUserCases(supabase, user.id, { withoutOpenDisputes: true }),
+      getUserCases(supabase, user.id, { withoutOpenDisputes: false }),
+      getUserReviewAnswersInProgress(supabase, user.id, {
+        withoutOpenDisputes: true,
+      }),
+      getUserReviewAnswersSubmitted(supabase, user.id),
     ]);
 
     const submittedCaseIds = new Set(
-      (userReviewsData ?? [])
-        .filter((review) => review.submitted_review_answers_id !== null)
-        .map((review) => review.case_id),
+      (userReviewAnswersSubmittedData ?? []).map((review) => review.case_id),
     );
+    const hasSubmittedCase = (caseId: string | null | undefined) =>
+      typeof caseId === 'string' && submittedCaseIds.has(caseId);
 
     const aggregatedReviewsWithSubmissionState = aggregatedReviewsData?.map(
       (review) => ({
         ...review,
-        hasSubmittedByCurrentUser: submittedCaseIds.has(review.case_id),
+        hasSubmittedByCurrentUser: hasSubmittedCase(review.case_id),
       }),
     );
 
     const ownUserAggregatedReviewsData =
-      aggregatedReviewsWithSubmissionState?.filter(
-        (review) =>
-          userCasesData?.some((userCase) => review.case_id === userCase.id),
+      aggregatedReviewsWithSubmissionState?.filter((review) =>
+        userCasesData?.some((userCase) => review.case_id === userCase.id),
       );
 
     const ownFilteredUserCases = userCasesData?.filter(
@@ -97,13 +112,13 @@ export default async function Home() {
         ),
     );
 
-    userCases = userCasesData ?? null;
-    userReviews = userReviewsData ?? null;
+    userCasesForStatistics = userCasesForStatisticsData ?? null;
+    userReviewAnswersSubmitted = userReviewAnswersSubmittedData ?? null;
 
     ownUserReviewsAndCases = [
       ...((ownFilteredUserCases ?? []).map((userCase) => ({
         ...userCase,
-        hasSubmittedByCurrentUser: submittedCaseIds.has(userCase.id!),
+        hasSubmittedByCurrentUser: hasSubmittedCase(userCase.id),
       })) as CaseWithSubmissionState[]),
       ...(ownUserAggregatedReviewsData ?? []),
     ];
@@ -118,13 +133,13 @@ export default async function Home() {
     // 1. Eigene Reviews aus aggregatedReviewsData (Vorrang)
     const userAggregatedReviewsData =
       aggregatedReviewsWithSubmissionState?.filter((review) =>
-        userReviewsData?.some(
+        userReviewAnswersInProgressData?.some(
           (userReview) => review.case_id === userReview.case_id,
         ),
       );
 
     // 2. Eigene Reviews, die NICHT in aggregatedReviewsData sind
-    const userReviewsDataFiltered = userReviewsData?.filter(
+    const userReviewsDataFiltered = userReviewAnswersInProgressData?.filter(
       (review) =>
         !aggregatedReviewsData?.some(
           (aggReview) => aggReview.case_id === review.case_id,
@@ -136,8 +151,7 @@ export default async function Home() {
         (userReview) =>
           ({
             ...(userReview.cases as UserCases[number]),
-            hasSubmittedByCurrentUser:
-              userReview.submitted_review_answers_id !== null,
+            hasSubmittedByCurrentUser: hasSubmittedCase(userReview.case_id),
           }) as CaseWithSubmissionState,
       ) ?? []),
       ...(userAggregatedReviewsData ?? []),
@@ -145,14 +159,31 @@ export default async function Home() {
 
     // Filter open cases to exclude cases the user has already reviewed
     filteredOpenCases = filterUnaggregatedOpenCases(openCases)
-      .filter((openCase) => !submittedCaseIds.has(openCase.id!))
+      .filter((openCase) => !hasSubmittedCase(openCase.id))
       .map((openCase) => ({
         ...openCase,
         hasSubmittedByCurrentUser: false,
       }));
 
-    if (userReviewsError) {
-      console.error('Error fetching user reviews:', userReviewsError);
+    if (userReviewAnswersInProgressError) {
+      console.error(
+        'Error fetching user review answers in progress:',
+        userReviewAnswersInProgressError,
+      );
+    }
+
+    if (userCasesForStatisticsError) {
+      console.error(
+        'Error fetching user cases for statistics:',
+        userCasesForStatisticsError,
+      );
+    }
+
+    if (userReviewAnswersSubmittedError) {
+      console.error(
+        'Error fetching submitted user review answers:',
+        userReviewAnswersSubmittedError,
+      );
     }
   }
 
@@ -169,8 +200,8 @@ export default async function Home() {
       {isAuthenticated && user && profile ? (
         <UserPage
           auth={auth}
-          userCases={userCases ?? []}
-          userReviews={userReviews ?? []}
+          userCasesForStatistics={userCasesForStatistics ?? []}
+          userReviewAnswersSubmitted={userReviewAnswersSubmitted ?? []}
           userReviewsAndCases={userReviewsAndCases ?? []}
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
           openCases={filteredOpenCases ?? []}

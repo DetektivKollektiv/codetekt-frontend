@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 
 import { Leaderboard } from '@/lib/queries/getLeaderboard';
-import { UserReviews } from '@/lib/queries/getUserReviews';
+import { UserReviewAnswersSubmitted } from '@/lib/queries/getUserReviewAnswers';
 import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -24,8 +24,8 @@ interface UserPageProps {
   leaderboard: Leaderboard;
   openCases: OpenCases;
   ownUserReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
-  userCases: UserCases;
-  userReviews: UserReviews;
+  userCasesForStatistics: UserCases;
+  userReviewAnswersSubmitted: UserReviewAnswersSubmitted;
   userReviewsAndCases: (UserCases[number] | AggregatedReviews[number])[];
 }
 
@@ -34,8 +34,8 @@ const UserPage: FC<UserPageProps> = ({
   leaderboard,
   ownUserReviewsAndCases,
   userReviewsAndCases,
-  userCases,
-  userReviews,
+  userCasesForStatistics,
+  userReviewAnswersSubmitted,
   openCases,
 }) => {
   const supabase = createClient();
@@ -130,8 +130,8 @@ const UserPage: FC<UserPageProps> = ({
       </div>
       <div className="mt-24 z-10 relative page-max-w ">
         <UserStatistics
-          userCases={userCases}
-          userReviews={userReviews}
+          userCases={userCasesForStatistics}
+          userReviewAnswersSubmitted={userReviewAnswersSubmitted}
           leaderboard={leaderboard}
         />
       </div>
