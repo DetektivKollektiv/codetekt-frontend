@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
 import { Button } from './button';
-// import { SharePopUp } from './share-pop-up';
+import { SharePopUp } from './share-pop-up';
 
 const shareButtonVariants = cva('', {
   variants: {
@@ -21,16 +21,16 @@ const shareButtonVariants = cva('', {
   },
 });
 
-// const isMobileShareDevice = () => {
-//   const nav = navigator as Navigator & {
-//     userAgentData?: { mobile?: boolean };
-//   };
-//
-//   return (
-//     nav.userAgentData?.mobile === true ||
-//     window.matchMedia('(hover: none) and (pointer: coarse)').matches
-//   );
-// };
+const isMobileShareDevice = () => {
+  const nav = navigator as Navigator & {
+    userAgentData?: { mobile?: boolean };
+  };
+
+  return (
+    nav.userAgentData?.mobile === true ||
+    window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  );
+};
 
 export interface ShareButtonProps
   extends
@@ -53,7 +53,7 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
     },
     ref,
   ) => {
-    // const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
 
     const getShareUrl = React.useCallback(
       () => `${window.location.origin}/archive/${caseId}`,
@@ -64,7 +64,7 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
       try {
         await navigator.clipboard.writeText(url);
         toast.success('Link zum Fall wurde in die Zwischenablage kopiert!');
-        // setOpen(false);
+        setOpen(false);
       } catch {
         toast.error('Fehler beim Kopieren des Links in die Zwischenablage.');
       }
@@ -80,7 +80,7 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
       if (navigator.share) {
         try {
           await navigator.share(shareData);
-          // setOpen(false);
+          setOpen(false);
         } catch (err) {
           if (err instanceof Error && err.name !== 'AbortError') {
             await copyShareUrl(shareData.url!);
@@ -100,10 +100,10 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
         return;
       }
 
-      // if (isMobileShareDevice()) {
-      //   setOpen(true);
-      //   return;
-      // }
+      if (isMobileShareDevice()) {
+        setOpen(true);
+        return;
+      }
 
       await handleLinkShare();
     };
@@ -121,7 +121,6 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
           <Share2 data-icon="inline-start" />
           {showText && 'Fall teilen'}
         </Button>
-        {/*
         <SharePopUp
           caseId={caseId}
           open={open}
@@ -129,7 +128,6 @@ const ShareButton = React.forwardRef<HTMLButtonElement, ShareButtonProps>(
           onLinkShare={handleLinkShare}
           getShareUrl={getShareUrl}
         />
-        */}
       </>
     );
   },
