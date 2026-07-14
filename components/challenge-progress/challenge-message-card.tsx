@@ -7,11 +7,9 @@ interface ChallengeMessageCardProps {
   message: ChallengeMessageData;
 }
 
-export function ChallengeMessageCard({
-  message,
-}: ChallengeMessageCardProps) {
+export function ChallengeMessageCard({ message }: ChallengeMessageCardProps) {
   return (
-    <Card className="mt-4 rounded-lg border-brand-darkblue/20 bg-neutral-0/90 text-brand-darkblue shadow-sm">
+    <Card className="rounded-lg border-brand-darkblue/20 bg-neutral-0/90 text-brand-darkblue shadow-sm">
       <CardHeader className="p-4 pb-2">
         <CardTitle className="text-body-sm font-black uppercase tracking-normal text-brand-darkblue/65">
           {formatChallengeMessageDateRange(message)}

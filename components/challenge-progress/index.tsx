@@ -68,7 +68,7 @@ export function ChallengeProgressSection({
           userResolvedPoints={userResolvedPoints}
         />
 
-        <CardContent className="p-5 sm:p-6 lg:p-10">
+        <CardContent className="p-5 sm:p-6 lg:p-10 lg:pt-8">
           <div className="mb-8 h-px bg-brand-darkblue/25 lg:mb-10" />
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-10">
             <div className="flex flex-col gap-8">
@@ -81,9 +81,7 @@ export function ChallengeProgressSection({
                 startDate={periodState.startDate}
               />
             </div>
-            <LeaderboardSection
-              leaderboard={challengeProgress.leaderboard}
-            />
+            <LeaderboardSection leaderboard={challengeProgress.leaderboard} />
           </div>
         </CardContent>
       </Card>

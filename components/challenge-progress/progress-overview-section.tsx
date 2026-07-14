@@ -38,7 +38,7 @@ export function ProgressOverviewSection({
         />
       </div>
 
-      <div className="relative bg-brand-coral px-5 py-4 text-brand-darkblue sm:px-6 lg:px-12  ">
+      <div className="relative bg-brand-coral px-5 py-4 text-brand-darkblue sm:px-6 lg:px-12 space-y-8">
         <ProgressLegend />
         {challengeProgress.activeMessage ? (
           <ChallengeMessageCard message={challengeProgress.activeMessage} />
