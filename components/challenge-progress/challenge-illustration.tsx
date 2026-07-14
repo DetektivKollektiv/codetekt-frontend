@@ -1,5 +1,8 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const challengePeople = [
   {
@@ -28,14 +31,35 @@ const challengePeople = [
   },
 ] as const;
 
+const mobileChallengePeople = challengePeople.filter(
+  (_, index) => index % 2 === 0,
+);
+
 export function ChallengeIllustration() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  const visibleChallengePeople = isDesktop
+    ? challengePeople
+    : mobileChallengePeople;
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
+    const handleChange = () => setIsDesktop(mediaQuery.matches);
+
+    handleChange();
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
+
   return (
     <>
       <div
-        className="absolute inset-x-8 bottom-0 top-0 z-0 grid grid-cols-4 items-end lg:inset-x-12"
+        className="absolute inset-x-8 bottom-0 top-0 z-0 grid grid-cols-2 items-end md:grid-cols-4 lg:inset-x-12"
         aria-hidden="true"
       >
-        {challengePeople.map((person) => (
+        {visibleChallengePeople.map((person) => (
           <div
             key={person.src}
             className="flex h-full items-end justify-center"
