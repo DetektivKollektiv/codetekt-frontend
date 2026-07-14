@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import {
+  dailyGoalStatusEmojis,
   dailyGoalStatusStyles,
   type DailyGoalStatus,
 } from './daily-goal-item';
@@ -11,19 +12,15 @@ interface DailyGoalLegendProps {
 export function DailyGoalLegend({ dailyGoals }: DailyGoalLegendProps) {
   const items = [
     {
-      label: `<${dailyGoals[0]} Fälle`,
-      status: 'open',
-    },
-    {
-      label: `${dailyGoals[0]}+ Fälle`,
+      label: `ab ${dailyGoals[0]} Fall`,
       status: 'first',
     },
     {
-      label: `${dailyGoals[1]}+ Fälle`,
+      label: `ab ${dailyGoals[1]} Fällen`,
       status: 'second',
     },
     {
-      label: `${dailyGoals[2]}+ Fälle`,
+      label: `ab ${dailyGoals[2]} Fällen`,
       status: 'third',
     },
   ] satisfies { label: string; status: DailyGoalStatus }[];
@@ -37,11 +34,13 @@ export function DailyGoalLegend({ dailyGoals }: DailyGoalLegendProps) {
         >
           <span
             className={cn(
-              'size-3 rounded-full',
+              'flex size-5 items-center justify-center rounded-full text-[0.7rem] leading-none',
               dailyGoalStatusStyles[item.status],
             )}
             aria-hidden="true"
-          />
+          >
+            {dailyGoalStatusEmojis[item.status]}
+          </span>
           <span className="whitespace-nowrap text-meta font-bold text-brand-darkblue/65">
             {item.label}
           </span>

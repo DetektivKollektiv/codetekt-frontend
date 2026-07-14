@@ -1,5 +1,5 @@
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import {
   DailyGoalItem,
   type DailyGoalStatus,
@@ -58,8 +58,6 @@ export function DailyGoalsSection({
             <DailyGoalItem
               key={day.date}
               day={dayNumber}
-              displayDate={format(parseISO(day.date), 'd.M.')}
-              isCompletedDay={dayNumber <= completedDayLimit}
               isCurrentDay={isCurrentDay}
               resolvedCases={day.resolvedCases}
               status={

@@ -11,7 +11,7 @@ export const debugChallengeProgress: ChallengeProgress = {
   totalResolvedCases: 217,
   totalTarget: 200,
   milestones: [0, 50, 100, 150, 200],
-  dailyGoals: [3, 5, 10],
+  dailyGoals: [1, 3, 5],
   descriptionColumns: [
     'In der Community Challenge wollen wir gemeinsam 200 Fälle lösen und jeden Tag neue Tagesziele erreichen.',
     'Zusätzlich zählen Ziele für bestimmte Tags. Das Leaderboard zeigt die aktivsten co:detectives, der erste Platz bekommt ein Geschenk.',
