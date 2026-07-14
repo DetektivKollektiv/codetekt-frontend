@@ -1,24 +1,60 @@
 import { cn } from '@/lib/utils';
 import { MilestoneLabel } from './milestone-label';
 
-interface MilestoneMarkerProps {
+interface GridMilestoneMarkerProps {
   achieved: boolean;
+  className?: string;
   column: number;
   columnGap: string;
   isFinalMilestone: boolean;
   milestone: number;
+  variant?: 'grid';
 }
 
-export function MilestoneMarker({
-  achieved,
-  column,
-  columnGap,
-  isFinalMilestone,
-  milestone,
-}: MilestoneMarkerProps) {
+interface CenteredMilestoneMarkerProps {
+  achieved: boolean;
+  className?: string;
+  milestone: number;
+  variant: 'centered';
+}
+
+type MilestoneMarkerProps =
+  | GridMilestoneMarkerProps
+  | CenteredMilestoneMarkerProps;
+
+export function MilestoneMarker(props: MilestoneMarkerProps) {
+  if (props.variant === 'centered') {
+    return (
+      <div
+        className={cn(
+          'flex h-full w-full items-center justify-center',
+          props.className,
+        )}
+        data-milestone={props.milestone}
+      >
+        <MilestoneLabel
+          achieved={props.achieved}
+          milestone={props.milestone}
+        />
+      </div>
+    );
+  }
+
+  const {
+    achieved,
+    className,
+    column,
+    columnGap,
+    isFinalMilestone,
+    milestone,
+  } = props;
+
   return (
     <div
-      className="relative h-0 w-0 self-end justify-self-end"
+      className={cn(
+        'relative h-0 w-0 self-end justify-self-end',
+        className,
+      )}
       data-milestone={milestone}
       style={{
         gridColumn: column,

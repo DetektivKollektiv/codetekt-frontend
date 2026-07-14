@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 
 import { cn } from '@/lib/utils';
+import { ChallengeCompletedMarker } from './challenge-completed-marker';
 import { MilestoneMarker } from './milestone-marker';
 
 const CHALLENGE_GRID_ROW_COUNTS = {
@@ -23,6 +24,13 @@ export function ChallengeProgressGrid({
   totalTarget,
   userResolvedPoints,
 }: ChallengeProgressGridProps) {
+  const isChallengeCompleted = totalResolvedCases >= totalTarget;
+  const markerMilestones = milestones.slice(1);
+  const currentMilestone = markerMilestones.reduce<number | null>(
+    (current, milestone) =>
+      totalResolvedCases >= milestone ? milestone : current,
+    null,
+  );
   const challengeGridDesktopColumns = Math.ceil(
     totalTarget / CHALLENGE_GRID_ROW_COUNTS.desktop,
   );
@@ -40,13 +48,13 @@ export function ChallengeProgressGrid({
   return (
     <div className="absolute inset-x-5 bottom-7 z-20 sm:inset-x-6 lg:inset-x-12">
       <div
-        className="absolute inset-0 z-0 grid"
+        className="absolute inset-0 z-0 hidden sm:grid"
         style={{
           columnGap: CHALLENGE_GRID_COLUMN_GAP,
           gridTemplateColumns: `repeat(${challengeGridDesktopColumns}, minmax(0, 1fr))`,
         }}
       >
-        {milestones.slice(1).map((milestone) => (
+        {markerMilestones.map((milestone) => (
           <MilestoneMarker
             key={milestone}
             achieved={totalResolvedCases >= milestone}
@@ -57,6 +65,23 @@ export function ChallengeProgressGrid({
           />
         ))}
       </div>
+
+      {isChallengeCompleted ? (
+        <div className="absolute inset-0 z-20 sm:hidden">
+          <ChallengeCompletedMarker
+            resolvedCases={totalResolvedCases}
+            totalTarget={totalTarget}
+          />
+        </div>
+      ) : currentMilestone ? (
+        <div className="absolute inset-0 z-20 sm:hidden">
+          <MilestoneMarker
+            achieved
+            milestone={currentMilestone}
+            variant="centered"
+          />
+        </div>
+      ) : null}
 
       <div
         className="relative z-10 grid grid-flow-col gap-y-[clamp(0.4rem,0.75vw,0.7rem)] [grid-template-columns:repeat(var(--challenge-grid-mobile-columns),minmax(0,1fr))] [grid-template-rows:repeat(var(--challenge-grid-mobile-rows),minmax(0,1fr))] sm:[grid-template-columns:repeat(var(--challenge-grid-tablet-columns),minmax(0,1fr))] sm:[grid-template-rows:repeat(var(--challenge-grid-tablet-rows),minmax(0,1fr))] xl:[grid-template-columns:repeat(var(--challenge-grid-desktop-columns),minmax(0,1fr))] xl:[grid-template-rows:repeat(var(--challenge-grid-desktop-rows),minmax(0,1fr))]"
