@@ -9,7 +9,6 @@ import { DailyGoalsSection } from './daily-goals-section';
 import { getChallengePeriodState } from './get-challenge-period-state';
 import { LeaderboardSection } from './leaderboard-section';
 import { ProgressOverviewSection } from './progress-overview-section';
-import { TagGoalsSection } from './tag-goals-section';
 
 interface ChallengeProgressSectionProps {
   challengeProgress?: ChallengeProgress | null;
@@ -44,7 +43,7 @@ export function ChallengeProgressSection({
 
       <CardContent className="p-5 sm:p-6 lg:p-10">
         <div className="mb-8 h-px bg-brand-darkblue/25 lg:mb-10" />
-        <div className="grid gap-8">
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
           <DailyGoalsSection
             completedDayLimit={periodState.completedDayLimit}
             currentDay={periodState.currentDay}
@@ -55,17 +54,9 @@ export function ChallengeProgressSection({
             endDate={periodState.endDate}
             startDate={periodState.startDate}
           />
-
-          <div className="border-t border-brand-darkblue/25 pt-8">
-            <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
-              <TagGoalsSection
-                tagGoals={visibleChallengeProgress.tagGoals}
-              />
-              <LeaderboardSection
-                leaderboard={visibleChallengeProgress.leaderboard}
-              />
-            </div>
-          </div>
+          <LeaderboardSection
+            leaderboard={visibleChallengeProgress.leaderboard}
+          />
         </div>
       </CardContent>
     </Card>

@@ -47,7 +47,7 @@ export function DailyGoalsSection({
         <DailyGoalLegend dailyGoals={dailyGoals} />
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2 xl:justify-between">
+      <div className="mt-6 flex flex-wrap gap-2">
         {dailyResolvedCases.map((day, index) => {
           const dayNumber = index + 1;
           const isCurrentDay = dayNumber === currentDay;
