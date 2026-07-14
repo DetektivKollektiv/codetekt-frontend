@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { useAuth, type AuthQueryData } from '@/components/provider/auth-provider';
+import { ChallengeIntroCard } from '@/components/challenge-progress/challenge-intro-dialog';
 import { updateProfile } from '@/lib/queries/updateProfile';
 import { TutorialContentData } from '@/lib/schemas';
 import type { Tables } from '@/lib/types/database.types';
@@ -146,6 +147,7 @@ export function TutorialPageContent({
 
       <div className="page-max-w flex flex-col gap-10 py-10 lg:py-12">
         <TutorialVideoSection />
+        <ChallengeIntroCard />
         <TutorialArticleSection articles={tutorialContent.blogArticles} />
         <TutorialFaqSection faqItems={tutorialContent.faqItems} />
         <TutorialCommunityCard communityCard={tutorialContent.communityCard} />

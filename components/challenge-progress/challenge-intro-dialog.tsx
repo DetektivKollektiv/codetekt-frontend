@@ -2,6 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -16,6 +23,109 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const linkClassName = 'font-semibold underline underline-offset-4';
+
+function ChallengeIntroDescriptionText() {
+  return (
+    <>
+      Im September wird in vier Bundesländern gewählt und Falschinformationen
+      haben wieder Hochsaison. Sie verunsichern, spalten und beeinflussen
+      Entscheidungen. Unsere Antwort:{' '}
+      <strong className="font-semibold">Flood the zone with trust!</strong>
+    </>
+  );
+}
+
+function ChallengeIntroDetails() {
+  return (
+    <>
+      <p className="text-body-md">
+        Als codetekt-Community prüfen wir deshalb täglich Nachrichten auf ihre
+        Vertrauenswürdigkeit und teilen unsere Ergebnisse sichtbar mit der Welt.
+        So bleibst du selbst informiert, trainierst dein Gespür für
+        Falschinformationen und stärkst Nachrichtenkompetenz in deinem Umfeld.
+      </p>
+
+      <section className="flex flex-col gap-3">
+        <h3 className="text-heading-sm">Checken und gewinnen:</h3>
+        <p className="text-body-md">
+          Werde co:detective und checke jeden Tag mindestens eine Nachricht auf
+          unserer Trust-Checking-Plattform. Im{' '}
+          <Link href="/tutorial" className={linkClassName}>
+            Tutorial
+          </Link>{' '}
+          findest du den Einstieg. Ein Trust-Check dauert im Schnitt 10-20
+          Minuten und mit etwas Routine geht dir das Prüfen schnell locker von
+          der Hand.
+        </p>
+        <p className="text-body-md">
+          Die gelösten Fälle kannst du anschließend teilen: mit deinem Netzwerk
+          auf Social Media, in Gesprächen oder direkt dort, wo
+          Falschinformationen auftauchen - zum Beispiel in Kommentarspalten von
+          Nachrichtenseiten. Nutze dafür die Share-Funktion.
+        </p>
+        <p className="text-body-md">
+          Die Top-3 co:detectives mit den meisten Checks sowie fünf weitere
+          Teilnehmende, die aus allen Teilnehmenden gelost werden, gewinnen
+          vertrauenswürdige Preise. Mehr Infos folgen.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h3 className="text-heading-sm">Fragen?</h3>
+        <p className="text-body-md">
+          Tausch dich auf unserem{' '}
+          <a
+            href="https://discord.gg/fFABTPSxXA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClassName}
+          >
+            Discord-Server
+          </a>{' '}
+          mit anderen co:detectives aus oder schreib uns eine{' '}
+          <a href="mailto:info@codetekt.org" className={linkClassName}>
+            Mail
+          </a>
+          .
+        </p>
+      </section>
+    </>
+  );
+}
+
+export function ChallengeIntroCard() {
+  return (
+    <Card className="overflow-hidden bg-neutral-0 text-brand-darkblue shadow-md">
+      <div className="grid lg:grid-cols-[22rem_minmax(0,1fr)]">
+        <div className="relative flex min-h-72 flex-col overflow-hidden bg-gradient-neutral-coral p-6 lg:min-h-full lg:p-8">
+          <CardHeader className="relative z-10 flex flex-col gap-4 p-0 text-left">
+            <p className="text-display-eyebrow uppercase">
+              Community Challenge
+            </p>
+            <CardTitle className="text-heading-xl uppercase sm:text-display-sm lg:text-heading-xl">
+              Mach’ mit bei unserer Streak-Challenge!
+            </CardTitle>
+            <CardDescription className="text-body-md font-medium text-brand-darkblue">
+              <ChallengeIntroDescriptionText />
+            </CardDescription>
+          </CardHeader>
+
+          <Image
+            src="/images/title.svg"
+            alt=""
+            width={600}
+            height={400}
+            className="pointer-events-none mt-8 w-full max-w-xs self-center lg:mt-auto lg:max-w-sm"
+          />
+        </div>
+
+        <CardContent className="flex flex-col gap-5 p-6 lg:p-8">
+          <ChallengeIntroDetails />
+        </CardContent>
+      </div>
+    </Card>
+  );
+}
 
 export function ChallengeIntroDialog() {
   return (
@@ -47,12 +157,7 @@ export function ChallengeIntroDialog() {
               </DialogTitle>
               <DialogDescription asChild>
                 <p className="text-body-md font-medium text-brand-darkblue">
-                  Im September wird in vier Bundesländern gewählt und
-                  Falschinformationen haben wieder Hochsaison. Sie verunsichern,
-                  spalten und beeinflussen Entscheidungen. Unsere Antwort:{' '}
-                  <strong className="font-semibold">
-                    Flood the zone with trust!
-                  </strong>
+                  <ChallengeIntroDescriptionText />
                 </p>
               </DialogDescription>
             </DialogHeader>
@@ -68,59 +173,7 @@ export function ChallengeIntroDialog() {
 
           <div className="flex min-h-0 flex-col">
             <div className="flex flex-col gap-5 p-6 pt-10 lg:p-8 lg:pt-12">
-              <p className="text-body-md">
-                Als codetekt-Community prüfen wir deshalb täglich Nachrichten
-                auf ihre Vertrauenswürdigkeit und teilen unsere Ergebnisse
-                sichtbar mit der Welt. So bleibst du selbst informiert,
-                trainierst dein Gespür für Falschinformationen und stärkst
-                Nachrichtenkompetenz in deinem Umfeld.
-              </p>
-
-              <section className="flex flex-col gap-3">
-                <h3 className="text-heading-sm">Checken und gewinnen:</h3>
-                <p className="text-body-md">
-                  Werde co:detective und checke jeden Tag mindestens eine
-                  Nachricht auf unserer Trust-Checking-Plattform. Im{' '}
-                  <Link href="/tutorial" className={linkClassName}>
-                    Tutorial
-                  </Link>{' '}
-                  findest du den Einstieg. Ein Trust-Check dauert im Schnitt
-                  10-20 Minuten und mit etwas Routine geht dir das Prüfen
-                  schnell locker von der Hand.
-                </p>
-                <p className="text-body-md">
-                  Die gelösten Fälle kannst du anschließend teilen: mit deinem
-                  Netzwerk auf Social Media, in Gesprächen oder direkt dort, wo
-                  Falschinformationen auftauchen - zum Beispiel in
-                  Kommentarspalten von Nachrichtenseiten. Nutze dafür die
-                  Share-Funktion.
-                </p>
-                <p className="text-body-md">
-                  Die Top-3 co:detectives mit den meisten Checks sowie fünf
-                  weitere Teilnehmende, die aus allen Teilnehmenden gelost
-                  werden, gewinnen vertrauenswürdige Preise. Mehr Infos folgen.
-                </p>
-              </section>
-
-              <section className="flex flex-col gap-3">
-                <h3 className="text-heading-sm">Fragen?</h3>
-                <p className="text-body-md">
-                  Tausch dich auf unserem{' '}
-                  <a
-                    href="https://discord.gg/fFABTPSxXA"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={linkClassName}
-                  >
-                    Discord-Server
-                  </a>{' '}
-                  mit anderen co:detectives aus oder schreib uns eine{' '}
-                  <a href="mailto:info@codetekt.org" className={linkClassName}>
-                    Mail
-                  </a>
-                  .
-                </p>
-              </section>
+              <ChallengeIntroDetails />
             </div>
 
             <Separator />
