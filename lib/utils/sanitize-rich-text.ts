@@ -5,7 +5,7 @@ const SANITIZE_RICH_TEXT_OPTIONS: IOptions = {
   allowedAttributes: {
     a: ['href', 'target', 'rel'],
   },
-  allowedSchemes: ['http', 'https'],
+  allowedSchemes: ['http', 'https', 'mailto'],
   allowProtocolRelative: false,
   transformTags: {
     a: (_tagName, attributes) => {

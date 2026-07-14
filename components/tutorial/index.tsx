@@ -2,7 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { useAuth, type AuthQueryData } from '@/components/provider/auth-provider';
-import { ChallengeIntroCard } from '@/components/challenge-progress/challenge-intro-dialog';
+import {
+  ChallengeIntroCard,
+  ChallengeIntroSeenMarker,
+} from '@/components/challenge-progress/challenge-intro-dialog';
+import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { updateProfile } from '@/lib/queries/updateProfile';
 import { TutorialContentData } from '@/lib/schemas';
 import type { Tables } from '@/lib/types/database.types';
@@ -16,11 +20,13 @@ import { TutorialFaqSection } from './tutorial-faq-section';
 import { TutorialVideoSection } from './tutorial-video-section';
 
 interface TutorialPageContentProps {
+  challengeProgress: ChallengeProgress | null;
   tutorialContent: TutorialContentData;
   requiresConfirmation: boolean;
 }
 
 export function TutorialPageContent({
+  challengeProgress,
   tutorialContent,
   requiresConfirmation,
 }: TutorialPageContentProps) {
@@ -147,7 +153,14 @@ export function TutorialPageContent({
 
       <div className="page-max-w flex flex-col gap-10 py-10 lg:py-12">
         <TutorialVideoSection />
-        <ChallengeIntroCard />
+        {challengeProgress ? (
+          <>
+            <ChallengeIntroSeenMarker
+              visibleFrom={challengeProgress.visibleFrom}
+            />
+            <ChallengeIntroCard intro={challengeProgress.intro} />
+          </>
+        ) : null}
         <TutorialArticleSection articles={tutorialContent.blogArticles} />
         <TutorialFaqSection faqItems={tutorialContent.faqItems} />
         <TutorialCommunityCard communityCard={tutorialContent.communityCard} />

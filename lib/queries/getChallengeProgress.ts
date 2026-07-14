@@ -14,7 +14,12 @@ const DEFAULT_LEADERBOARD_LIMIT = 5;
 
 type ChallengeConfigRow = Pick<
   Tables<'challenge_configs'>,
-  'content' | 'ends_on' | 'id' | 'starts_on'
+  | 'content'
+  | 'ends_on'
+  | 'id'
+  | 'starts_on'
+  | 'visible_from'
+  | 'visible_until'
 >;
 
 export interface ChallengeTagGoal {
@@ -31,6 +36,7 @@ export interface ChallengeProgress {
   endsOn: string;
   eyebrow: string;
   id: string;
+  intro: ChallengeConfigRow['content']['intro'];
   leaderboard: ChallengeLeaderboardItemData[];
   milestones: number[];
   startsOn: string;
@@ -38,6 +44,9 @@ export interface ChallengeProgress {
   title: string;
   totalResolvedCases: number;
   totalTarget: number;
+  userResolvedPoints: number[];
+  visibleFrom: string;
+  visibleUntil: string;
 }
 
 const toChallengeProgress = (
@@ -55,14 +64,18 @@ const toChallengeProgress = (
     id: config.id,
     startsOn: config.starts_on,
     endsOn: config.ends_on,
+    visibleFrom: config.visible_from,
+    visibleUntil: config.visible_until,
     eyebrow: config.content.eyebrow,
     title: config.content.title,
+    intro: config.content.intro,
     totalTarget: config.content.totalTarget,
     milestones: config.content.milestones,
     dailyGoals: config.content.dailyGoals,
     descriptionColumns: config.content.descriptionColumns,
     dailyResolvedCases: dynamicData.daily_resolved_cases,
     totalResolvedCases: dynamicData.total_resolved_cases,
+    userResolvedPoints: dynamicData.user_resolved_points,
     tagGoals: config.content.tagGoals.map((goal) => ({
       ...goal,
       resolvedCases: tagResultByValue.get(goal.tagValue) ?? 0,
@@ -74,10 +87,14 @@ const toChallengeProgress = (
 export async function getChallengeProgress(
   client: SupabaseClient<Database>,
 ): Promise<{ data: ChallengeProgress | null; error: Error | null }> {
+  const now = new Date().toISOString();
+
   const { data: config, error: configError } = await client
     .from('challenge_configs')
-    .select('id, starts_on, ends_on, content')
+    .select('id, starts_on, ends_on, visible_from, visible_until, content')
     .eq('is_active', true)
+    .lte('visible_from', now)
+    .gte('visible_until', now)
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();

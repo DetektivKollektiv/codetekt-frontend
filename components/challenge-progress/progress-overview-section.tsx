@@ -20,10 +20,11 @@ export function ProgressOverviewSection({
   return (
     <section className="relative overflow-hidden bg-brand-darkblue text-neutral-0">
       <ChallengeHeader
+        descriptionColumns={challengeProgress.descriptionColumns}
         displayedDay={displayedDay}
         eyebrow={challengeProgress.eyebrow}
+        title={challengeProgress.title}
         totalDays={totalDays}
-        totalTarget={challengeProgress.totalTarget}
       />
 
       <div className="relative h-[26rem]">

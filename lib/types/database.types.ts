@@ -23,6 +23,8 @@ export type Database = MergeDeep<
             is_active: boolean;
             starts_on: string;
             updated_at: string;
+            visible_from: string;
+            visible_until: string;
           };
           Insert: {
             content: ChallengeConfigContentData;
@@ -32,6 +34,8 @@ export type Database = MergeDeep<
             is_active?: boolean;
             starts_on: string;
             updated_at?: string;
+            visible_from?: string;
+            visible_until?: string;
           };
           Update: {
             content?: ChallengeConfigContentData;
@@ -41,6 +45,8 @@ export type Database = MergeDeep<
             is_active?: boolean;
             starts_on?: string;
             updated_at?: string;
+            visible_from?: string;
+            visible_until?: string;
           };
           Relationships: [];
         };
@@ -90,12 +96,15 @@ export type Database = MergeDeep<
         };
         profiles: {
           Row: {
+            challenge_intro_seen_at: string | null;
             tutorial_completed_at: string | null;
           };
           Insert: {
+            challenge_intro_seen_at?: string | null;
             tutorial_completed_at?: string | null;
           };
           Update: {
+            challenge_intro_seen_at?: string | null;
             tutorial_completed_at?: string | null;
           };
         };
@@ -135,6 +144,7 @@ export type Database = MergeDeep<
               tagValue: string;
             }[];
             total_resolved_cases: number;
+            user_resolved_points: number[];
           }[];
         };
         get_aggregation_reviewers: {

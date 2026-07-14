@@ -8,6 +8,8 @@ export const debugChallengeProgress: ChallengeProgress = {
   title: 'Community Challenge',
   startsOn: '2026-05-21',
   endsOn: '2026-06-14',
+  visibleFrom: '2026-05-21T00:00:00.000Z',
+  visibleUntil: '2026-06-14T23:59:59.999Z',
   totalResolvedCases: 217,
   totalTarget: 200,
   milestones: [0, 50, 100, 150, 200],
@@ -16,6 +18,20 @@ export const debugChallengeProgress: ChallengeProgress = {
     'In der Community Challenge wollen wir gemeinsam 200 Fälle lösen und jeden Tag neue Tagesziele erreichen.',
     'Zusätzlich zählen Ziele für bestimmte Tags. Das Leaderboard zeigt die aktivsten co:detectives, der erste Platz bekommt ein Geschenk.',
   ],
+  intro: {
+    eyebrow: 'Community Challenge',
+    title: 'Mach mit bei unserer Streak-Challenge!',
+    descriptionHtml:
+      'Im September wird in vier Bundesländern gewählt und Falschinformationen haben wieder Hochsaison. Unsere Antwort: <strong>Flood the zone with trust!</strong>',
+    imageSrc: '/images/title.svg',
+    imageAlt: '',
+    sections: [
+      {
+        bodyHtml:
+          '<p>Als codetekt-Community prüfen wir deshalb täglich Nachrichten auf ihre Vertrauenswürdigkeit.</p>',
+      },
+    ],
+  },
   dailyResolvedCases: [
     { date: '2026-05-21', resolvedCases: 6 },
     { date: '2026-05-22', resolvedCases: 8 },
@@ -95,4 +111,5 @@ export const debugChallengeProgress: ChallengeProgress = {
       activeDays: 6,
     },
   ],
+  userResolvedPoints: [27, 52, 54, 73],
 };

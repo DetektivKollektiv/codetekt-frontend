@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { Button } from '@/components/ui/button';
-import { Tables } from '@/lib/types/database.types-generated';
+import { Tables } from '@/lib/types/database.types';
 import { getDisplayName } from '@/lib/utils';
 import { User } from '@supabase/supabase-js';
 

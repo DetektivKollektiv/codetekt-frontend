@@ -1,36 +1,60 @@
+'use client';
+
 import { Card, CardContent } from '@/components/ui/card';
+import { hasSeenChallengeIntroForVisibilityWindow } from '@/lib/challenge-intro';
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { cn } from '@/lib/utils';
-import {
-  debugChallengeProgress,
-  debugUserResolvedPoints,
-} from './challenge-progress-debug-data';
+import { useMemo } from 'react';
 import { ChallengeIntroDialog } from './challenge-intro-dialog';
 import { DailyGoalsSection } from './daily-goals-section';
 import { getChallengePeriodState } from './get-challenge-period-state';
 import { LeaderboardSection } from './leaderboard-section';
 import { ProgressOverviewSection } from './progress-overview-section';
+import { TagGoalsSection } from './tag-goals-section';
 
 interface ChallengeProgressSectionProps {
+  challengeIntroSeenAt?: string | null;
   challengeProgress?: ChallengeProgress | null;
   className?: string;
 }
 
 export function ChallengeProgressSection({
+  challengeIntroSeenAt,
   challengeProgress,
   className,
 }: ChallengeProgressSectionProps) {
-  void challengeProgress;
+  const shouldShowIntroDialog =
+    challengeProgress !== null &&
+    challengeProgress !== undefined &&
+    challengeIntroSeenAt !== undefined &&
+    !hasSeenChallengeIntroForVisibilityWindow({
+      seenAt: challengeIntroSeenAt,
+      visibleFrom: challengeProgress.visibleFrom,
+    });
 
-  const visibleChallengeProgress = debugChallengeProgress;
+  const userResolvedPoints = useMemo(
+    () => new Set(challengeProgress?.userResolvedPoints ?? []),
+    [challengeProgress?.userResolvedPoints],
+  );
+
+  if (!challengeProgress) {
+    return null;
+  }
+
   const periodState = getChallengePeriodState(
-    visibleChallengeProgress.startsOn,
-    visibleChallengeProgress.endsOn,
+    challengeProgress.startsOn,
+    challengeProgress.endsOn,
   );
 
   return (
     <>
-      <ChallengeIntroDialog />
+      {shouldShowIntroDialog ? (
+        <ChallengeIntroDialog
+          key={`${challengeProgress.id}:${challengeProgress.visibleFrom}`}
+          intro={challengeProgress.intro}
+          visibleFrom={challengeProgress.visibleFrom}
+        />
+      ) : null}
 
       <Card
         className={cn(
@@ -39,27 +63,30 @@ export function ChallengeProgressSection({
         )}
       >
         <ProgressOverviewSection
-          challengeProgress={visibleChallengeProgress}
+          challengeProgress={challengeProgress}
           displayedDay={periodState.displayedDay}
           totalDays={periodState.totalDays}
-          userResolvedPoints={debugUserResolvedPoints}
+          userResolvedPoints={userResolvedPoints}
         />
 
         <CardContent className="p-5 sm:p-6 lg:p-10">
           <div className="mb-8 h-px bg-brand-darkblue/25 lg:mb-10" />
-          <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
-            <DailyGoalsSection
-              completedDayLimit={periodState.completedDayLimit}
-              currentDay={periodState.currentDay}
-              dailyGoals={visibleChallengeProgress.dailyGoals}
-              dailyResolvedCases={
-                visibleChallengeProgress.dailyResolvedCases
-              }
-              endDate={periodState.endDate}
-              startDate={periodState.startDate}
-            />
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-10">
+            <div className="flex flex-col gap-8">
+              <DailyGoalsSection
+                completedDayLimit={periodState.completedDayLimit}
+                currentDay={periodState.currentDay}
+                dailyGoals={challengeProgress.dailyGoals}
+                dailyResolvedCases={challengeProgress.dailyResolvedCases}
+                endDate={periodState.endDate}
+                startDate={periodState.startDate}
+              />
+              {challengeProgress.tagGoals.length > 0 ? (
+                <TagGoalsSection tagGoals={challengeProgress.tagGoals} />
+              ) : null}
+            </div>
             <LeaderboardSection
-              leaderboard={visibleChallengeProgress.leaderboard}
+              leaderboard={challengeProgress.leaderboard}
             />
           </div>
         </CardContent>

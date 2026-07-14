@@ -25,12 +25,14 @@ export {
   challengeConfigContentSchema,
   challengeDailyResolvedCasesSchema,
   challengeDynamicDataSchema,
+  challengeIntroContentSchema,
   challengeLeaderboardItemSchema,
   challengeTagGoalResultSchema,
   challengeTagGoalSchema,
   type ChallengeConfigContentData,
   type ChallengeDailyResolvedCasesData,
   type ChallengeDynamicData,
+  type ChallengeIntroContentData,
   type ChallengeLeaderboardItemData,
 } from './challenge-schemas';
 export {

@@ -143,6 +143,7 @@ const UserPage: FC<UserPageProps> = ({
         <div className="mt-24 z-10 relative" id="open-cases">
           <div className="page-max-w mb-12">
             <ChallengeProgressSection
+              challengeIntroSeenAt={profile.challenge_intro_seen_at}
               challengeProgress={challengeProgress}
               className="mb-6"
             />

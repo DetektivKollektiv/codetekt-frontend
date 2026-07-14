@@ -20,6 +20,14 @@ describe('sanitizeRichText', () => {
     ).toBe('Mehr Infos <a>hier</a>.');
   });
 
+  it('keeps mailto links', () => {
+    expect(
+      sanitizeRichText(
+        'Schreib uns eine <a href="mailto:info@codetekt.org">Mail</a>.',
+      ),
+    ).toBe('Schreib uns eine <a href="mailto:info@codetekt.org">Mail</a>.');
+  });
+
   it('removes unsupported tags and attributes', () => {
     expect(
       sanitizeRichText(

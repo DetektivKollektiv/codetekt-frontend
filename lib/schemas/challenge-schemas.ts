@@ -6,6 +6,20 @@ export const challengeTagGoalSchema = z.object({
   target: z.number().int().positive(),
 });
 
+export const challengeIntroSectionSchema = z.object({
+  heading: z.string().optional(),
+  bodyHtml: z.string(),
+});
+
+export const challengeIntroContentSchema = z.object({
+  eyebrow: z.string(),
+  title: z.string(),
+  descriptionHtml: z.string(),
+  imageSrc: z.string(),
+  imageAlt: z.string().optional(),
+  sections: z.array(challengeIntroSectionSchema).min(1),
+});
+
 export const challengeConfigContentSchema = z.object({
   eyebrow: z.string(),
   title: z.string(),
@@ -18,6 +32,7 @@ export const challengeConfigContentSchema = z.object({
   ]),
   descriptionColumns: z.array(z.string()).min(1).max(2),
   tagGoals: z.array(challengeTagGoalSchema),
+  intro: challengeIntroContentSchema,
   leaderboardLimit: z.number().int().positive().optional(),
 });
 
@@ -43,10 +58,14 @@ export const challengeDynamicDataSchema = z.object({
   daily_resolved_cases: z.array(challengeDailyResolvedCasesSchema),
   tag_goal_results: z.array(challengeTagGoalResultSchema),
   leaderboard: z.array(challengeLeaderboardItemSchema),
+  user_resolved_points: z.array(z.number().int().positive()),
 });
 
 export type ChallengeConfigContentData = z.infer<
   typeof challengeConfigContentSchema
+>;
+export type ChallengeIntroContentData = z.infer<
+  typeof challengeIntroContentSchema
 >;
 export type ChallengeDailyResolvedCasesData = z.infer<
   typeof challengeDailyResolvedCasesSchema
