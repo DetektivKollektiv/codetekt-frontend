@@ -1,6 +1,7 @@
 import type { MergeDeep } from 'type-fest';
 import type {
   ChallengeConfigContentData,
+  ChallengeMessageData,
   InProgressReviewAnswer,
   OpenGraphData,
   ReviewAggregationData,
@@ -20,6 +21,7 @@ export type Database = MergeDeep<
             created_at: string;
             ends_on: string;
             id: string;
+            messages: ChallengeMessageData[];
             starts_on: string;
             updated_at: string;
             visible_from: string;
@@ -30,6 +32,7 @@ export type Database = MergeDeep<
             created_at?: string;
             ends_on: string;
             id?: string;
+            messages?: ChallengeMessageData[];
             starts_on: string;
             updated_at?: string;
             visible_from?: string;
@@ -40,6 +43,7 @@ export type Database = MergeDeep<
             created_at?: string;
             ends_on?: string;
             id?: string;
+            messages?: ChallengeMessageData[];
             starts_on?: string;
             updated_at?: string;
             visible_from?: string;

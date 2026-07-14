@@ -1,6 +1,7 @@
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { ChallengeHeader } from './challenge-header';
 import { ChallengeIllustration } from './challenge-illustration';
+import { ChallengeMessageCard } from './challenge-message-card';
 import { ChallengeProgressGrid } from './challenge-progress-grid';
 import { ProgressLegend } from './progress-legend';
 
@@ -39,6 +40,9 @@ export function ProgressOverviewSection({
 
       <div className="relative bg-brand-coral px-5 py-4 text-brand-darkblue sm:px-6 lg:px-12  ">
         <ProgressLegend />
+        {challengeProgress.activeMessage ? (
+          <ChallengeMessageCard message={challengeProgress.activeMessage} />
+        ) : null}
       </div>
     </section>
   );

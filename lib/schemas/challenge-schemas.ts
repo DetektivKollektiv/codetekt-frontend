@@ -29,6 +29,14 @@ export const challengeConfigContentSchema = z.object({
   leaderboardLimit: z.number().int().positive().optional(),
 });
 
+export const challengeMessageSchema = z.object({
+  contentHtml: z.string(),
+  visibleFrom: z.string(),
+  visibleUntil: z.string(),
+});
+
+export const challengeMessagesSchema = z.array(challengeMessageSchema);
+
 export const challengeDailyResolvedCasesSchema = z.object({
   date: z.string(),
   resolvedCases: z.number().int().nonnegative(),
@@ -54,6 +62,7 @@ export type ChallengeConfigContentData = z.infer<
 export type ChallengeIntroContentData = z.infer<
   typeof challengeIntroContentSchema
 >;
+export type ChallengeMessageData = z.infer<typeof challengeMessageSchema>;
 export type ChallengeDailyResolvedCasesData = z.infer<
   typeof challengeDailyResolvedCasesSchema
 >;

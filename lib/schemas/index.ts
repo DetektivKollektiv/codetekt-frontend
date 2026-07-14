@@ -27,11 +27,13 @@ export {
   challengeDynamicDataSchema,
   challengeIntroContentSchema,
   challengeLeaderboardItemSchema,
+  challengeMessagesSchema,
   type ChallengeConfigContentData,
   type ChallengeDailyResolvedCasesData,
   type ChallengeDynamicData,
   type ChallengeIntroContentData,
   type ChallengeLeaderboardItemData,
+  type ChallengeMessageData,
 } from './challenge-schemas';
 export {
   COMMENT_REPORT_REASON_MAX_LENGTH,

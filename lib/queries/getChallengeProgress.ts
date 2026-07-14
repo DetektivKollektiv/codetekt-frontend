@@ -1,12 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { getVisibleChallengeMessage } from '@/lib/challenge-message';
 import {
   challengeConfigContentSchema,
   challengeDynamicDataSchema,
+  challengeMessagesSchema,
 } from '@/lib/schemas';
 import type {
   ChallengeDailyResolvedCasesData,
   ChallengeDynamicData,
   ChallengeLeaderboardItemData,
+  ChallengeMessageData,
 } from '@/lib/schemas';
 import type { Database, Tables } from '@/lib/types/database.types';
 
@@ -17,12 +20,14 @@ type ChallengeConfigRow = Pick<
   | 'content'
   | 'ends_on'
   | 'id'
+  | 'messages'
   | 'starts_on'
   | 'visible_from'
   | 'visible_until'
 >;
 
 export interface ChallengeProgress {
+  activeMessage: ChallengeMessageData | null;
   dailyGoals: [number, number, number];
   dailyResolvedCases: ChallengeDailyResolvedCasesData[];
   descriptionColumns: string[];
@@ -44,9 +49,11 @@ export interface ChallengeProgress {
 const toChallengeProgress = (
   config: ChallengeConfigRow,
   dynamicData: ChallengeDynamicData,
+  now: Date,
 ): ChallengeProgress => {
   return {
     id: config.id,
+    activeMessage: getVisibleChallengeMessage(config.messages, now),
     startsOn: config.starts_on,
     endsOn: config.ends_on,
     visibleFrom: config.visible_from,
@@ -68,13 +75,16 @@ const toChallengeProgress = (
 export async function getChallengeProgress(
   client: SupabaseClient<Database>,
 ): Promise<{ data: ChallengeProgress | null; error: Error | null }> {
-  const now = new Date().toISOString();
+  const now = new Date();
+  const nowIso = now.toISOString();
 
   const { data: config, error: configError } = await client
     .from('challenge_configs')
-    .select('id, starts_on, ends_on, visible_from, visible_until, content')
-    .lte('visible_from', now)
-    .gte('visible_until', now)
+    .select(
+      'id, starts_on, ends_on, visible_from, visible_until, content, messages',
+    )
+    .lte('visible_from', nowIso)
+    .gte('visible_until', nowIso)
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -96,9 +106,21 @@ export async function getChallengeProgress(
     };
   }
 
+  const parsedMessages = challengeMessagesSchema.safeParse(
+    config.messages ?? [],
+  );
+
+  if (!parsedMessages.success) {
+    return {
+      data: null,
+      error: new Error('Challenge-Nachrichten haben ein ungültiges Format'),
+    };
+  }
+
   const parsedConfig: ChallengeConfigRow = {
     ...config,
     content: parsedContent.data,
+    messages: parsedMessages.data,
   };
 
   const { data: dynamicRows, error: dynamicError } = await client.rpc(
@@ -134,7 +156,7 @@ export async function getChallengeProgress(
   }
 
   return {
-    data: toChallengeProgress(parsedConfig, parsedDynamicData.data),
+    data: toChallengeProgress(parsedConfig, parsedDynamicData.data, now),
     error: null,
   };
 }
