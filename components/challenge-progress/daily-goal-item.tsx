@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 export type DailyGoalStatus = 'open' | 'first' | 'second' | 'third';
 
 export const dailyGoalStatusStyles: Record<DailyGoalStatus, string> = {
-  open: 'bg-neutral-500/55',
+  open: 'bg-neutral-0/55',
   first: 'bg-brand-darkblue',
   second: 'bg-brand-darkblue',
   third: 'bg-brand-darkblue',
