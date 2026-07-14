@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export const challengeTagGoalSchema = z.object({
-  label: z.string(),
-  tagValue: z.string(),
-  target: z.number().int().positive(),
-});
-
 export const challengeIntroSectionSchema = z.object({
   heading: z.string().optional(),
   bodyHtml: z.string(),
@@ -31,18 +25,12 @@ export const challengeConfigContentSchema = z.object({
     z.number().int().positive(),
   ]),
   descriptionColumns: z.array(z.string()).min(1).max(2),
-  tagGoals: z.array(challengeTagGoalSchema),
   intro: challengeIntroContentSchema,
   leaderboardLimit: z.number().int().positive().optional(),
 });
 
 export const challengeDailyResolvedCasesSchema = z.object({
   date: z.string(),
-  resolvedCases: z.number().int().nonnegative(),
-});
-
-export const challengeTagGoalResultSchema = z.object({
-  tagValue: z.string(),
   resolvedCases: z.number().int().nonnegative(),
 });
 
@@ -56,7 +44,6 @@ export const challengeLeaderboardItemSchema = z.object({
 export const challengeDynamicDataSchema = z.object({
   total_resolved_cases: z.number().int().nonnegative(),
   daily_resolved_cases: z.array(challengeDailyResolvedCasesSchema),
-  tag_goal_results: z.array(challengeTagGoalResultSchema),
   leaderboard: z.array(challengeLeaderboardItemSchema),
   user_resolved_points: z.array(z.number().int().positive()),
 });

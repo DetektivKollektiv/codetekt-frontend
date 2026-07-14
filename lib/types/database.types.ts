@@ -20,7 +20,6 @@ export type Database = MergeDeep<
             created_at: string;
             ends_on: string;
             id: string;
-            is_active: boolean;
             starts_on: string;
             updated_at: string;
             visible_from: string;
@@ -31,7 +30,6 @@ export type Database = MergeDeep<
             created_at?: string;
             ends_on: string;
             id?: string;
-            is_active?: boolean;
             starts_on: string;
             updated_at?: string;
             visible_from?: string;
@@ -42,7 +40,6 @@ export type Database = MergeDeep<
             created_at?: string;
             ends_on?: string;
             id?: string;
-            is_active?: boolean;
             starts_on?: string;
             updated_at?: string;
             visible_from?: string;
@@ -126,7 +123,6 @@ export type Database = MergeDeep<
             challenge_ends_on: string;
             challenge_starts_on: string;
             leaderboard_limit?: number;
-            tag_values?: string[];
           };
           Returns: {
             daily_resolved_cases: {
@@ -138,10 +134,6 @@ export type Database = MergeDeep<
               reviewedCases: number;
               userId: string;
               username: string;
-            }[];
-            tag_goal_results: {
-              resolvedCases: number;
-              tagValue: string;
             }[];
             total_resolved_cases: number;
             user_resolved_points: number[];

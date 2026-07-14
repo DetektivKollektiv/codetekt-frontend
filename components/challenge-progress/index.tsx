@@ -10,7 +10,6 @@ import { DailyGoalsSection } from './daily-goals-section';
 import { getChallengePeriodState } from './get-challenge-period-state';
 import { LeaderboardSection } from './leaderboard-section';
 import { ProgressOverviewSection } from './progress-overview-section';
-import { TagGoalsSection } from './tag-goals-section';
 
 interface ChallengeProgressSectionProps {
   challengeIntroSeenAt?: string | null;
@@ -81,9 +80,6 @@ export function ChallengeProgressSection({
                 endDate={periodState.endDate}
                 startDate={periodState.startDate}
               />
-              {challengeProgress.tagGoals.length > 0 ? (
-                <TagGoalsSection tagGoals={challengeProgress.tagGoals} />
-              ) : null}
             </div>
             <LeaderboardSection
               leaderboard={challengeProgress.leaderboard}

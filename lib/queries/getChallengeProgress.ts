@@ -22,13 +22,6 @@ type ChallengeConfigRow = Pick<
   | 'visible_until'
 >;
 
-export interface ChallengeTagGoal {
-  label: string;
-  resolvedCases: number;
-  tagValue: string;
-  target: number;
-}
-
 export interface ChallengeProgress {
   dailyGoals: [number, number, number];
   dailyResolvedCases: ChallengeDailyResolvedCasesData[];
@@ -40,7 +33,6 @@ export interface ChallengeProgress {
   leaderboard: ChallengeLeaderboardItemData[];
   milestones: number[];
   startsOn: string;
-  tagGoals: ChallengeTagGoal[];
   title: string;
   totalResolvedCases: number;
   totalTarget: number;
@@ -53,13 +45,6 @@ const toChallengeProgress = (
   config: ChallengeConfigRow,
   dynamicData: ChallengeDynamicData,
 ): ChallengeProgress => {
-  const tagResultByValue = new Map(
-    dynamicData.tag_goal_results.map((result) => [
-      result.tagValue,
-      result.resolvedCases,
-    ]),
-  );
-
   return {
     id: config.id,
     startsOn: config.starts_on,
@@ -76,10 +61,6 @@ const toChallengeProgress = (
     dailyResolvedCases: dynamicData.daily_resolved_cases,
     totalResolvedCases: dynamicData.total_resolved_cases,
     userResolvedPoints: dynamicData.user_resolved_points,
-    tagGoals: config.content.tagGoals.map((goal) => ({
-      ...goal,
-      resolvedCases: tagResultByValue.get(goal.tagValue) ?? 0,
-    })),
     leaderboard: dynamicData.leaderboard,
   };
 };
@@ -92,7 +73,6 @@ export async function getChallengeProgress(
   const { data: config, error: configError } = await client
     .from('challenge_configs')
     .select('id, starts_on, ends_on, visible_from, visible_until, content')
-    .eq('is_active', true)
     .lte('visible_from', now)
     .gte('visible_until', now)
     .order('created_at', { ascending: false })
@@ -128,7 +108,6 @@ export async function getChallengeProgress(
       challenge_starts_on: parsedConfig.starts_on,
       leaderboard_limit:
         parsedConfig.content.leaderboardLimit ?? DEFAULT_LEADERBOARD_LIMIT,
-      tag_values: parsedConfig.content.tagGoals.map((goal) => goal.tagValue),
     },
   );
 

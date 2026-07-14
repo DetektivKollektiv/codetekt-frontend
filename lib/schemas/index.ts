@@ -27,8 +27,6 @@ export {
   challengeDynamicDataSchema,
   challengeIntroContentSchema,
   challengeLeaderboardItemSchema,
-  challengeTagGoalResultSchema,
-  challengeTagGoalSchema,
   type ChallengeConfigContentData,
   type ChallengeDailyResolvedCasesData,
   type ChallengeDynamicData,
