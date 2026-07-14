@@ -67,7 +67,7 @@ export function ChallengeProgressGrid({
       </div>
 
       {isChallengeCompleted ? (
-        <div className="absolute inset-0 z-20 sm:hidden">
+        <div className="absolute inset-0 z-20">
           <ChallengeCompletedMarker
             resolvedCases={totalResolvedCases}
             totalTarget={totalTarget}
