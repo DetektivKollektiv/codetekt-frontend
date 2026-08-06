@@ -38,7 +38,7 @@ export function DailyGoalsSection({
       <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
           <h3 className="whitespace-nowrap text-heading-lg font-black tracking-normal">
-            Tagesziele
+            Daily Streaks
           </h3>
           <p className="whitespace-nowrap text-heading-lg font-black tracking-normal text-brand-darkblue/45">
             {format(startDate, 'dd.MM.')} bis {format(endDate, 'dd.MM.')}
