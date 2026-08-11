@@ -34,6 +34,7 @@ export interface ChallengeProgress {
   endsOn: string;
   eyebrow: string;
   id: string;
+  information: ChallengeConfigRow['content']['information'] | null;
   intro: ChallengeConfigRow['content']['intro'];
   leaderboard: ChallengeLeaderboardItemData[];
   milestones: number[];
@@ -61,6 +62,7 @@ const toChallengeProgress = (
     eyebrow: config.content.eyebrow,
     title: config.content.title,
     intro: config.content.intro,
+    information: config.content.information ?? null,
     totalTarget: config.content.totalTarget,
     milestones: config.content.milestones,
     dailyGoals: config.content.dailyGoals,

@@ -41,8 +41,34 @@ describe('sanitizeRichText', () => {
   it('removes unsupported tags and attributes', () => {
     expect(
       sanitizeRichText(
-        'Text <img src=x onerror=alert(1)><strong onclick="alert(1)">wichtig</strong>',
+        'Text <iframe src="https://example.com"></iframe><strong onclick="alert(1)">wichtig</strong>',
       ),
     ).toBe('Text <strong>wichtig</strong>');
+  });
+
+  it('keeps safe images and adds safe loading attributes', () => {
+    expect(
+      sanitizeRichText(
+        '<img src="/images/prize.png" alt="Challenge-Gewinne" width="2000" height="857" onerror="alert(1)">',
+      ),
+    ).toBe(
+      '<img alt="Challenge-Gewinne" loading="lazy" decoding="async" src="/images/prize.png" width="2000" height="857" />',
+    );
+  });
+
+  it('keeps semantic sections and headings without unsafe attributes', () => {
+    expect(
+      sanitizeRichText(
+        '<section onclick="alert(1)"><h4 class="hidden">Gewinne</h4><p>Details</p></section>',
+      ),
+    ).toBe('<section><h4>Gewinne</h4><p>Details</p></section>');
+  });
+
+  it('removes unsafe image sources and invalid dimensions', () => {
+    expect(
+      sanitizeRichText(
+        '<img src="javascript:alert(1)" alt="Test" width="100%" height="auto">',
+      ),
+    ).toBe('<img alt="Test" loading="lazy" decoding="async" />');
   });
 });

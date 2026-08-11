@@ -1,11 +1,13 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { hasSeenChallengeIntroForVisibilityWindow } from '@/lib/challenge-intro';
 import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 import { ChallengeIntroDialog } from './challenge-intro-dialog';
+import { ChallengeInformationSection } from './challenge-information-section';
 import { DailyGoalsSection } from './daily-goals-section';
 import { getChallengePeriodState } from './get-challenge-period-state';
 import { LeaderboardSection } from './leaderboard-section';
@@ -83,6 +85,14 @@ export function ChallengeProgressSection({
             </div>
             <LeaderboardSection leaderboard={challengeProgress.leaderboard} />
           </div>
+          {challengeProgress.information ? (
+            <>
+              <Separator className="my-8 bg-brand-darkblue/25 lg:my-10" />
+              <ChallengeInformationSection
+                information={challengeProgress.information}
+              />
+            </>
+          ) : null}
         </CardContent>
       </Card>
     </>

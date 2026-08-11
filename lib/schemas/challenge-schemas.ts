@@ -14,6 +14,13 @@ export const challengeIntroContentSchema = z.object({
   sections: z.array(challengeIntroSectionSchema).min(1),
 });
 
+export const challengeInformationContentSchema = z.object({
+  title: z.string(),
+  descriptionHtml: z.string(),
+  buttonLabel: z.string(),
+  contentHtml: z.string(),
+});
+
 export const challengeConfigContentSchema = z.object({
   eyebrow: z.string(),
   title: z.string(),
@@ -26,6 +33,7 @@ export const challengeConfigContentSchema = z.object({
   ]),
   descriptionColumnsHtml: z.array(z.string()).min(1).max(2),
   intro: challengeIntroContentSchema,
+  information: challengeInformationContentSchema.optional(),
   leaderboardLimit: z.number().int().positive().optional(),
   leaderboardReviewCaps: z
     .record(z.string(), z.number().int().positive())
@@ -64,6 +72,9 @@ export type ChallengeConfigContentData = z.infer<
 >;
 export type ChallengeIntroContentData = z.infer<
   typeof challengeIntroContentSchema
+>;
+export type ChallengeInformationContentData = z.infer<
+  typeof challengeInformationContentSchema
 >;
 export type ChallengeMessageData = z.infer<typeof challengeMessageSchema>;
 export type ChallengeDailyResolvedCasesData = z.infer<
