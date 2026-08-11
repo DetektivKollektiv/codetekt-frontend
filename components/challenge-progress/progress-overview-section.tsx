@@ -21,7 +21,7 @@ export function ProgressOverviewSection({
   return (
     <section className="relative overflow-hidden bg-brand-darkblue text-neutral-0">
       <ChallengeHeader
-        descriptionColumns={challengeProgress.descriptionColumns}
+        descriptionColumnsHtml={challengeProgress.descriptionColumnsHtml}
         displayedDay={displayedDay}
         eyebrow={challengeProgress.eyebrow}
         title={challengeProgress.title}

@@ -30,7 +30,7 @@ export interface ChallengeProgress {
   activeMessage: ChallengeMessageData | null;
   dailyGoals: [number, number, number];
   dailyResolvedCases: ChallengeDailyResolvedCasesData[];
-  descriptionColumns: string[];
+  descriptionColumnsHtml: string[];
   endsOn: string;
   eyebrow: string;
   id: string;
@@ -64,7 +64,7 @@ const toChallengeProgress = (
     totalTarget: config.content.totalTarget,
     milestones: config.content.milestones,
     dailyGoals: config.content.dailyGoals,
-    descriptionColumns: config.content.descriptionColumns,
+    descriptionColumnsHtml: config.content.descriptionColumnsHtml,
     dailyResolvedCases: dynamicData.daily_resolved_cases,
     totalResolvedCases: dynamicData.total_resolved_cases,
     userResolvedPoints: dynamicData.user_resolved_points,

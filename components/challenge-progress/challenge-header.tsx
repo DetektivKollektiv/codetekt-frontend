@@ -1,5 +1,7 @@
+import SafeRichText from '@/components/safe-rich-text';
+
 interface ChallengeHeaderProps {
-  descriptionColumns: string[];
+  descriptionColumnsHtml: string[];
   displayedDay: number;
   eyebrow: string;
   title: string;
@@ -7,7 +9,7 @@ interface ChallengeHeaderProps {
 }
 
 export function ChallengeHeader({
-  descriptionColumns,
+  descriptionColumnsHtml,
   displayedDay,
   eyebrow,
   title,
@@ -24,8 +26,12 @@ export function ChallengeHeader({
             {title}
           </h2>
           <div className="mt-2 grid max-w-3xl gap-2 text-body-md md:grid-cols-2">
-            {descriptionColumns.map((description) => (
-              <p key={description}>{description}</p>
+            {descriptionColumnsHtml.map((descriptionHtml) => (
+              <SafeRichText
+                key={descriptionHtml}
+                value={descriptionHtml}
+                className="[&_a]:text-neutral-0 [&_p]:m-0"
+              />
             ))}
           </div>
         </div>
