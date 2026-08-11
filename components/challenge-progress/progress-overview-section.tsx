@@ -41,7 +41,12 @@ export function ProgressOverviewSection({
       <div className="relative bg-brand-coral px-5 py-4 text-brand-darkblue sm:px-6 lg:px-12 space-y-8">
         <ProgressLegend />
         {challengeProgress.activeMessage ? (
-          <ChallengeMessageCard message={challengeProgress.activeMessage} />
+          <div>
+            <h3 className="mb-5 text-heading-lg font-black tracking-normal">
+              Streak-News
+            </h3>
+            <ChallengeMessageCard message={challengeProgress.activeMessage} />
+          </div>
         ) : null}
       </div>
     </section>
