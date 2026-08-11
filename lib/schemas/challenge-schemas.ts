@@ -24,9 +24,12 @@ export const challengeConfigContentSchema = z.object({
     z.number().int().positive(),
     z.number().int().positive(),
   ]),
-  descriptionColumns: z.array(z.string()).min(1).max(2),
+  descriptionColumnsHtml: z.array(z.string()).min(1).max(2),
   intro: challengeIntroContentSchema,
   leaderboardLimit: z.number().int().positive().optional(),
+  leaderboardReviewCaps: z
+    .record(z.string(), z.number().int().positive())
+    .optional(),
 });
 
 export const challengeMessageSchema = z.object({

@@ -28,6 +28,16 @@ describe('sanitizeRichText', () => {
     ).toBe('Schreib uns eine <a href="mailto:info@codetekt.org">Mail</a>.');
   });
 
+  it('keeps internal links', () => {
+    expect(
+      sanitizeRichText(
+        'Mehr Infos gibt’s <a href="/streak_challenge_2026_teilnahmebedingungen">hier</a>.',
+      ),
+    ).toBe(
+      'Mehr Infos gibt’s <a href="/streak_challenge_2026_teilnahmebedingungen">hier</a>.',
+    );
+  });
+
   it('removes unsupported tags and attributes', () => {
     expect(
       sanitizeRichText(
