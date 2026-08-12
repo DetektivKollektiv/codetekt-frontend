@@ -26,7 +26,7 @@ export function DailyGoalLegend({ dailyGoals }: DailyGoalLegendProps) {
   ] satisfies { label: string; status: DailyGoalStatus }[];
 
   return (
-    <div className="no-scrollbar flex flex-nowrap gap-4 overflow-x-auto 2xl:justify-end">
+    <div className="no-scrollbar flex flex-nowrap gap-4 overflow-x-auto">
       {items.map((item) => (
         <div
           key={item.status}

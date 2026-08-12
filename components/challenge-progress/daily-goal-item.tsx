@@ -11,8 +11,8 @@ export const dailyGoalStatusStyles: Record<DailyGoalStatus, string> = {
 
 export const dailyGoalStatusEmojis: Record<DailyGoalStatus, string> = {
   open: '',
-  first: '⭐',
-  second: '🔥',
+  first: '🔥',
+  second: '⭐',
   third: '💎',
 };
 
