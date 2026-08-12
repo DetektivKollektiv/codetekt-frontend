@@ -31,10 +31,10 @@ describe('sanitizeRichText', () => {
   it('keeps internal links', () => {
     expect(
       sanitizeRichText(
-        'Mehr Infos gibt’s <a href="/#challenge-information">hier</a>.',
+        'Mehr Infos gibt’s <a href="#challenge-information">hier</a>.',
       ),
     ).toBe(
-      'Mehr Infos gibt’s <a href="/#challenge-information">hier</a>.',
+      'Mehr Infos gibt’s <a href="#challenge-information">hier</a>.',
     );
   });
 
