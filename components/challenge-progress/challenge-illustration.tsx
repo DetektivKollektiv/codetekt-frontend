@@ -9,25 +9,25 @@ const challengePeople = [
     src: '/images/community_challenge/Person_1.svg',
     width: 366,
     height: 576,
-    className: 'h-[29rem]',
+    className: 'h-[27rem]',
   },
   {
     src: '/images/community_challenge/Person_2.svg',
     width: 448,
     height: 628,
-    className: 'h-[34rem]',
+    className: 'h-[32rem] -scale-x-100 translate-x-12 rotate-[6deg]',
   },
   {
     src: '/images/community_challenge/Person_3.svg',
     width: 335,
     height: 553,
-    className: 'h-[28rem]',
+    className: 'h-[26rem]',
   },
   {
     src: '/images/community_challenge/Person_4.svg',
     width: 448,
     height: 600,
-    className: 'h-[29rem]',
+    className: 'h-[26rem] -scale-x-100',
   },
 ] as const;
 
