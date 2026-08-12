@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 
 const progressLegendItems = [
   {
-    label: 'Von dir gelöst',
+    label: 'Mit deiner Hilfe gelöst',
     className: 'bg-brand-green',
   },
   {
