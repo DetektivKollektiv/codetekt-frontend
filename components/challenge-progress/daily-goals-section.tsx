@@ -57,6 +57,9 @@ export function DailyGoalsSection({
           return (
             <DailyGoalItem
               key={day.date}
+              countdown={
+                isFutureDay ? dailyResolvedCases.length - index : undefined
+              }
               day={dayNumber}
               isCurrentDay={isCurrentDay}
               resolvedCases={day.resolvedCases}

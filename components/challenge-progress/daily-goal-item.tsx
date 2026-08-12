@@ -17,6 +17,7 @@ export const dailyGoalStatusEmojis: Record<DailyGoalStatus, string> = {
 };
 
 interface DailyGoalItemProps {
+  countdown?: number;
   day: number;
   isCurrentDay: boolean;
   resolvedCases: number;
@@ -24,6 +25,7 @@ interface DailyGoalItemProps {
 }
 
 export function DailyGoalItem({
+  countdown,
   day,
   isCurrentDay,
   resolvedCases,
@@ -37,12 +39,18 @@ export function DailyGoalItem({
         className={cn(
           'flex size-7 items-center justify-center rounded-full text-[0.875rem] font-black leading-none sm:size-8 sm:text-[1rem]',
           dailyGoalStatusStyles[status],
+          countdown !== undefined &&
+            'border border-neutral-0 bg-transparent text-neutral-0',
           isCurrentDay &&
             'ring-2 ring-brand-darkblue/45 ring-offset-2 ring-offset-brand-coral',
         )}
         aria-label={`Tag ${day}: ${resolvedCases} gelöste Fälle`}
       >
-        {emoji ? <span aria-hidden="true">{emoji}</span> : null}
+        {emoji ? (
+          <span aria-hidden="true">{emoji}</span>
+        ) : countdown ? (
+          <span aria-hidden="true">{countdown}</span>
+        ) : null}
         <span className="sr-only">{resolvedCases} gelöste Fälle</span>
       </span>
     </div>
