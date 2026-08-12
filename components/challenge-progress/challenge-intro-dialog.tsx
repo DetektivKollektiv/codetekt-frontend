@@ -39,8 +39,7 @@ interface ChallengeIntroContentProps {
 }
 
 interface ChallengeIntroSeenMarkerProps {
-  onProfileUpdated?: (profile: Tables<'profiles'>) => void;
-  syncCache?: boolean;
+  enabled?: boolean;
   visibleFrom: string;
 }
 
@@ -63,8 +62,7 @@ function updateProfileCaches(
 }
 
 export function ChallengeIntroSeenMarker({
-  onProfileUpdated,
-  syncCache = true,
+  enabled = true,
   visibleFrom,
 }: ChallengeIntroSeenMarkerProps) {
   const { auth, client } = useAuth();
@@ -75,6 +73,7 @@ export function ChallengeIntroSeenMarker({
 
   useEffect(() => {
     if (
+      !enabled ||
       hasMarkedRef.current ||
       !userId ||
       hasSeenChallengeIntroForVisibilityWindow({ seenAt, visibleFrom })
@@ -95,12 +94,7 @@ export function ChallengeIntroSeenMarker({
 
         if (data) {
           const profile = data as Tables<'profiles'>;
-
-          if (syncCache) {
-            updateProfileCaches(queryClient, profile);
-          }
-
-          onProfileUpdated?.(profile);
+          updateProfileCaches(queryClient, profile);
         }
       })
       .catch((error: Error) => {
@@ -109,10 +103,9 @@ export function ChallengeIntroSeenMarker({
       });
   }, [
     client,
-    onProfileUpdated,
+    enabled,
     queryClient,
     seenAt,
-    syncCache,
     userId,
     visibleFrom,
   ]);
@@ -184,26 +177,9 @@ export function ChallengeIntroDialog({
   visibleFrom,
 }: ChallengeIntroDialogProps) {
   const [open, setOpen] = useState(true);
-  const queryClient = useQueryClient();
-  const openRef = useRef(open);
-  const updatedProfileRef = useRef<Tables<'profiles'> | null>(null);
-
-  const syncUpdatedProfile = () => {
-    if (!updatedProfileRef.current) {
-      return;
-    }
-
-    updateProfileCaches(queryClient, updatedProfileRef.current);
-    updatedProfileRef.current = null;
-  };
 
   const handleOpenChange = (nextOpen: boolean) => {
-    openRef.current = nextOpen;
     setOpen(nextOpen);
-
-    if (!nextOpen) {
-      syncUpdatedProfile();
-    }
   };
 
   const handleContentClick = (event: MouseEvent<HTMLDivElement>) => {
@@ -249,15 +225,8 @@ export function ChallengeIntroDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <ChallengeIntroSeenMarker
-        syncCache={false}
+        enabled={!open}
         visibleFrom={visibleFrom}
-        onProfileUpdated={(profile) => {
-          updatedProfileRef.current = profile;
-
-          if (!openRef.current) {
-            syncUpdatedProfile();
-          }
-        }}
       />
       <DialogContent
         showCloseButton={false}
