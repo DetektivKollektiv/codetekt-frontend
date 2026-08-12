@@ -32,7 +32,7 @@ export function LeaderboardSection({
                 co:detectives
               </TableHead>
               <TableHead className="bg-brand-coral text-right text-brand-darkblue/65">
-                Fälle
+                Trust-Checks
               </TableHead>
               <TableHead className="bg-brand-coral text-right text-brand-darkblue/65">
                 Tage
