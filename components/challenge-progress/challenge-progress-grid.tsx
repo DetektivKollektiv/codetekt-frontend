@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 import { ChallengeCompletedMarker } from './challenge-completed-marker';
 import { MilestoneMarker } from './milestone-marker';
+import { TrustSharesCounter } from './trust-shares-counter';
 
 const CHALLENGE_GRID_ROW_COUNTS = {
   mobile: 10,
@@ -15,6 +16,11 @@ interface ChallengeProgressGridProps {
   milestones: number[];
   totalResolvedCases: number;
   totalTarget: number;
+  trustShares: {
+    count: number;
+    description: string;
+    title: string;
+  };
   userResolvedPoints: ReadonlySet<number>;
 }
 
@@ -22,6 +28,7 @@ export function ChallengeProgressGrid({
   milestones,
   totalResolvedCases,
   totalTarget,
+  trustShares,
   userResolvedPoints,
 }: ChallengeProgressGridProps) {
   const isChallengeCompleted = totalResolvedCases >= totalTarget;
@@ -47,7 +54,7 @@ export function ChallengeProgressGrid({
 
   return (
     <div className="absolute inset-x-5 bottom-7 z-20 sm:inset-x-6 lg:inset-x-12">
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 items-end">
         <div className="relative min-w-0">
           <div
             className="absolute inset-0 z-0 hidden sm:grid"
@@ -132,7 +139,7 @@ export function ChallengeProgressGrid({
             })}
           </div>
         </div>
-        <div aria-hidden="true" />
+        <TrustSharesCounter {...trustShares} />
       </div>
     </div>
   );

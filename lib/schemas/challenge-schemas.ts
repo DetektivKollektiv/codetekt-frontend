@@ -26,6 +26,11 @@ export const challengeConfigContentSchema = z.object({
   title: z.string(),
   totalTarget: z.number().int().positive(),
   milestones: z.array(z.number().int().nonnegative()).min(2),
+  trustShares: z.object({
+    title: z.string(),
+    count: z.number().int().nonnegative(),
+    description: z.string(),
+  }),
   dailyGoals: z.tuple([
     z.number().int().positive(),
     z.number().int().positive(),

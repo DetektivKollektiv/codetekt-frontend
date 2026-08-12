@@ -34,6 +34,7 @@ export function ProgressOverviewSection({
           milestones={challengeProgress.milestones}
           totalResolvedCases={challengeProgress.totalResolvedCases}
           totalTarget={challengeProgress.totalTarget}
+          trustShares={challengeProgress.trustShares}
           userResolvedPoints={userResolvedPoints}
         />
       </div>

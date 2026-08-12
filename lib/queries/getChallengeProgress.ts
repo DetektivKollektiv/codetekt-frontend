@@ -40,6 +40,7 @@ export interface ChallengeProgress {
   milestones: number[];
   startsOn: string;
   title: string;
+  trustShares: ChallengeConfigRow['content']['trustShares'];
   totalResolvedCases: number;
   totalTarget: number;
   userResolvedPoints: number[];
@@ -61,6 +62,7 @@ const toChallengeProgress = (
     visibleUntil: config.visible_until,
     eyebrow: config.content.eyebrow,
     title: config.content.title,
+    trustShares: config.content.trustShares,
     intro: config.content.intro,
     information: config.content.information ?? null,
     totalTarget: config.content.totalTarget,
