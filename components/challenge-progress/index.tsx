@@ -33,6 +33,9 @@ export function ChallengeProgressSection({
       visibleFrom: challengeProgress.visibleFrom,
     });
 
+  // DEBUG ONLY: Use this condition to always show the intro dialog.
+  // const shouldShowIntroDialog = challengeProgress != null;
+
   const userResolvedPoints = useMemo(
     () => new Set(challengeProgress?.userResolvedPoints ?? []),
     [challengeProgress?.userResolvedPoints],

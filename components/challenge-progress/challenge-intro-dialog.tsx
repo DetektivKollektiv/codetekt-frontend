@@ -30,7 +30,9 @@ import type { Tables } from '@/lib/types/database.types';
 import { useQueryClient } from '@tanstack/react-query';
 import { XIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { type MouseEvent, useEffect, useRef, useState } from 'react';
+
+const CHALLENGE_INFORMATION_HASH = '#challenge-information';
 
 interface ChallengeIntroContentProps {
   intro: ChallengeIntroContentData;
@@ -204,6 +206,46 @@ export function ChallengeIntroDialog({
     }
   };
 
+  const handleContentClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (!(event.target instanceof Element)) {
+      return;
+    }
+
+    const link = event.target.closest('a');
+    const href = link?.getAttribute('href');
+
+    if (!href) {
+      return;
+    }
+
+    const url = new URL(href, window.location.href);
+
+    if (
+      url.origin !== window.location.origin ||
+      url.hash !== CHALLENGE_INFORMATION_HASH
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    handleOpenChange(false);
+
+    if (
+      url.pathname !== window.location.pathname ||
+      url.search !== window.location.search
+    ) {
+      window.location.assign(url.href);
+      return;
+    }
+
+    window.history.pushState(null, '', url.href);
+    requestAnimationFrame(() => {
+      document
+        .getElementById(CHALLENGE_INFORMATION_HASH.slice(1))
+        ?.scrollIntoView({ behavior: 'smooth' });
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <ChallengeIntroSeenMarker
@@ -260,7 +302,10 @@ export function ChallengeIntroDialog({
           </div>
 
           <div className="flex min-h-0 flex-col">
-            <div className="flex flex-col gap-5 p-6 pt-10 lg:p-8 lg:pt-12">
+            <div
+              className="flex flex-col gap-5 p-6 pt-10 lg:p-8 lg:pt-12"
+              onClick={handleContentClick}
+            >
               <ChallengeIntroDetails intro={intro} />
             </div>
 

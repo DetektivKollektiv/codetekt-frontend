@@ -17,7 +17,10 @@ export function ChallengeInformationSection({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section aria-labelledby="challenge-information-heading">
+    <section
+      id="challenge-information"
+      aria-labelledby="challenge-information-heading"
+    >
       <div className="flex max-w-4xl flex-col gap-3">
         <h3
           id="challenge-information-heading"
