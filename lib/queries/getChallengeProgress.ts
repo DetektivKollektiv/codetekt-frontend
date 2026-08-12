@@ -37,7 +37,7 @@ export interface ChallengeProgress {
   information: ChallengeConfigRow['content']['information'] | null;
   intro: ChallengeConfigRow['content']['intro'];
   leaderboard: ChallengeLeaderboardItemData[];
-  milestones: number[];
+  milestones: ChallengeConfigRow['content']['milestones'];
   startsOn: string;
   title: string;
   trustShares: ChallengeConfigRow['content']['trustShares'];

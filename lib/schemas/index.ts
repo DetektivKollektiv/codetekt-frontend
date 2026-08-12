@@ -28,6 +28,7 @@ export {
   challengeInformationContentSchema,
   challengeIntroContentSchema,
   challengeLeaderboardItemSchema,
+  challengeMilestoneSchema,
   challengeMessagesSchema,
   type ChallengeConfigContentData,
   type ChallengeDailyResolvedCasesData,
@@ -35,6 +36,7 @@ export {
   type ChallengeInformationContentData,
   type ChallengeIntroContentData,
   type ChallengeLeaderboardItemData,
+  type ChallengeMilestoneData,
   type ChallengeMessageData,
 } from './challenge-schemas';
 export {

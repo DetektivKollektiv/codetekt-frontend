@@ -21,11 +21,26 @@ export const challengeInformationContentSchema = z.object({
   contentHtml: z.string(),
 });
 
+const challengeMilestoneValueSchema = z.number().int().nonnegative();
+
+export const challengeMilestoneSchema = z.union([
+  challengeMilestoneValueSchema.transform((value) => ({
+    value,
+    label: undefined,
+    tooltip: undefined,
+  })),
+  z.object({
+    value: challengeMilestoneValueSchema,
+    label: z.string().min(1).optional(),
+    tooltip: z.string().min(1).optional(),
+  }),
+]);
+
 export const challengeConfigContentSchema = z.object({
   eyebrow: z.string(),
   title: z.string(),
   totalTarget: z.number().int().positive(),
-  milestones: z.array(z.number().int().nonnegative()).min(2),
+  milestones: z.array(challengeMilestoneSchema).min(2),
   trustShares: z.object({
     title: z.string(),
     count: z.number().int().nonnegative(),
@@ -81,6 +96,7 @@ export type ChallengeIntroContentData = z.infer<
 export type ChallengeInformationContentData = z.infer<
   typeof challengeInformationContentSchema
 >;
+export type ChallengeMilestoneData = z.infer<typeof challengeMilestoneSchema>;
 export type ChallengeMessageData = z.infer<typeof challengeMessageSchema>;
 export type ChallengeDailyResolvedCasesData = z.infer<
   typeof challengeDailyResolvedCasesSchema

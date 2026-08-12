@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 
+import type { ChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { cn } from '@/lib/utils';
 import { ChallengeCompletedMarker } from './challenge-completed-marker';
 import { MilestoneMarker } from './milestone-marker';
@@ -14,7 +15,7 @@ const CHALLENGE_GRID_ROW_COUNTS = {
 const CHALLENGE_GRID_COLUMN_GAP = 'clamp(0.25rem, 0.55vw, 0.5rem)';
 
 interface ChallengeProgressGridProps {
-  milestones: number[];
+  milestones: ChallengeProgress['milestones'];
   totalResolvedCases: number;
   totalTarget: number;
   trustShares: {
@@ -34,9 +35,11 @@ export function ChallengeProgressGrid({
 }: ChallengeProgressGridProps) {
   const isChallengeCompleted = totalResolvedCases >= totalTarget;
   const markerMilestones = milestones.slice(1);
-  const currentMilestone = markerMilestones.reduce<number | null>(
+  const currentMilestone = markerMilestones.reduce<
+    ChallengeProgress['milestones'][number] | null
+  >(
     (current, milestone) =>
-      totalResolvedCases >= milestone ? milestone : current,
+      totalResolvedCases >= milestone.value ? milestone : current,
     null,
   );
   const challengeGridDesktopColumns = Math.ceil(
@@ -67,10 +70,10 @@ export function ChallengeProgressGrid({
             >
               {markerMilestones.map((milestone) => (
                 <MilestoneMarker
-                  key={milestone}
-                  achieved={totalResolvedCases >= milestone}
+                  key={milestone.value}
+                  achieved={totalResolvedCases >= milestone.value}
                   column={Math.ceil(
-                    milestone / CHALLENGE_GRID_ROW_COUNTS.desktop,
+                    milestone.value / CHALLENGE_GRID_ROW_COUNTS.desktop,
                   )}
                   columnGap={CHALLENGE_GRID_COLUMN_GAP}
                   milestone={milestone}

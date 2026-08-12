@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import type { ChallengeMilestoneData } from '@/lib/schemas';
 import { MilestoneLabel } from './milestone-label';
 
 interface GridMilestoneMarkerProps {
@@ -6,14 +7,14 @@ interface GridMilestoneMarkerProps {
   className?: string;
   column: number;
   columnGap: string;
-  milestone: number;
+  milestone: ChallengeMilestoneData;
   variant?: 'grid';
 }
 
 interface CenteredMilestoneMarkerProps {
   achieved: boolean;
   className?: string;
-  milestone: number;
+  milestone: ChallengeMilestoneData;
   variant: 'centered';
 }
 
@@ -29,7 +30,7 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
           'flex h-full w-full items-center justify-center',
           props.className,
         )}
-        data-milestone={props.milestone}
+        data-milestone={props.milestone.value}
       >
         <MilestoneLabel achieved={props.achieved} milestone={props.milestone} />
       </div>
@@ -47,7 +48,7 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
   return (
     <div
       className={cn('relative h-0 w-0 self-end justify-self-end', className)}
-      data-milestone={milestone}
+      data-milestone={milestone.value}
       style={{
         gridColumn: column,
         gridRow: 1,

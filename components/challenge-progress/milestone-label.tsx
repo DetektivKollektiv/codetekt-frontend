@@ -1,3 +1,10 @@
+import SafeRichText from '@/components/safe-rich-text';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import type { ChallengeMilestoneData } from '@/lib/schemas';
 import { cn } from '@/lib/utils';
 
 const milestoneBurstClipPath =
@@ -6,7 +13,7 @@ const milestoneBurstClipPath =
 interface MilestoneLabelProps {
   achieved: boolean;
   className?: string;
-  milestone: number;
+  milestone: ChallengeMilestoneData;
 }
 
 export function MilestoneLabel({
@@ -17,7 +24,7 @@ export function MilestoneLabel({
   const label = (
     <>
       <span className="text-[1.75rem] font-black leading-none tabular-nums">
-        {milestone}
+        {milestone.value}
       </span>
       <span className="mt-1 text-meta font-black uppercase leading-none">
         Fälle
@@ -29,6 +36,32 @@ export function MilestoneLabel({
     return (
       <div className="hidden size-[5.5rem] flex-col items-center justify-center text-neutral-0 md:flex">
         {label}
+        {milestone.label ? (
+          milestone.tooltip ? (
+            <Tooltip>
+              <TooltipTrigger
+                type="button"
+                className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-meta font-bold leading-none text-brand-darkblue"
+              >
+                {milestone.label}
+              </TooltipTrigger>
+              <TooltipContent
+                side="top"
+                sideOffset={8}
+                className="max-w-64 text-center"
+              >
+                <SafeRichText
+                  value={milestone.tooltip}
+                  className="[&_a]:text-background [&_p]:m-0"
+                />
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <span className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-meta font-bold leading-none text-brand-darkblue">
+              {milestone.label}
+            </span>
+          )
+        ) : null}
       </div>
     );
   }
