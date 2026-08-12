@@ -6,7 +6,6 @@ interface GridMilestoneMarkerProps {
   className?: string;
   column: number;
   columnGap: string;
-  isFinalMilestone: boolean;
   milestone: number;
   variant?: 'grid';
 }
@@ -42,7 +41,6 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
     className,
     column,
     columnGap,
-    isFinalMilestone,
     milestone,
   } = props;
 
@@ -53,22 +51,15 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
       style={{
         gridColumn: column,
         gridRow: 1,
-        transform: isFinalMilestone
-          ? undefined
-          : `translateX(calc(${columnGap} / 2))`,
+        transform: `translateX(calc(${columnGap} / 2))`,
       }}
     >
       <div className="absolute bottom-[-0.25rem] left-1/2 flex h-72 md:h-56 -translate-x-1/2 flex-col items-center lg:h-64 xl:h-[18rem]">
-        <MilestoneLabel
-          achieved={achieved}
-          milestone={milestone}
-          className={cn(isFinalMilestone && '-translate-x-1/3')}
-        />
+        <MilestoneLabel achieved={achieved} milestone={milestone} />
         <span
           className={cn(
             'mt-2 w-0.5 flex-1 rounded-full',
             achieved ? 'bg-brand-coral' : 'bg-neutral-0/35',
-            isFinalMilestone && 'hidden',
           )}
           aria-hidden="true"
         />

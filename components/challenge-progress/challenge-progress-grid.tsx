@@ -59,7 +59,7 @@ export function ChallengeProgressGrid({
         <div className="min-w-0">
           <div className="relative">
             <div
-              className="absolute inset-0 z-0 hidden sm:grid"
+              className="absolute inset-0 z-0 hidden md:grid"
               style={{
                 columnGap: CHALLENGE_GRID_COLUMN_GAP,
                 gridTemplateColumns: `repeat(${challengeGridDesktopColumns}, minmax(0, 1fr))`,
@@ -73,7 +73,6 @@ export function ChallengeProgressGrid({
                     milestone / CHALLENGE_GRID_ROW_COUNTS.desktop,
                   )}
                   columnGap={CHALLENGE_GRID_COLUMN_GAP}
-                  isFinalMilestone={milestone === totalTarget}
                   milestone={milestone}
                 />
               ))}

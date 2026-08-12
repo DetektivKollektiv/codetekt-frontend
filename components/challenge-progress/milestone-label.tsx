@@ -27,7 +27,7 @@ export function MilestoneLabel({
 
   if (!achieved) {
     return (
-      <div className="flex size-[5.5rem] flex-col items-center justify-center text-neutral-0">
+      <div className="hidden size-[5.5rem] flex-col items-center justify-center text-neutral-0 md:flex">
         {label}
       </div>
     );
@@ -36,7 +36,7 @@ export function MilestoneLabel({
   return (
     <div
       className={cn(
-        'flex size-[5.5rem] items-center justify-center bg-brand-yellow',
+        'hidden size-[5.5rem] items-center justify-center bg-brand-yellow md:flex',
         className,
       )}
       style={{ clipPath: milestoneBurstClipPath }}

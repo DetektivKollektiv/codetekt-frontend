@@ -32,7 +32,7 @@ export function ProgressOverviewSection({
         <ChallengeIllustration />
         <ChallengeProgressGrid
           milestones={challengeProgress.milestones}
-          totalResolvedCases={challengeProgress.totalResolvedCases}
+          totalResolvedCases={100}
           totalTarget={challengeProgress.totalTarget}
           trustShares={challengeProgress.trustShares}
           userResolvedPoints={userResolvedPoints}
