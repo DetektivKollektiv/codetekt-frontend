@@ -9,10 +9,6 @@ const progressLegendItems = [
     label: 'Gelöst',
     className: 'bg-brand-purple-dark',
   },
-  {
-    label: 'Ungelöst',
-    className: 'bg-neutral-0/55',
-  },
 ] as const;
 
 export function ProgressLegend() {

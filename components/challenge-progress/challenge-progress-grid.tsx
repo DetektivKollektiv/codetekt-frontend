@@ -115,7 +115,7 @@ export function ChallengeProgressGrid({
                   ? 'bg-brand-green'
                   : isResolved
                     ? 'bg-brand-purple-dark'
-                    : 'bg-neutral-0/55',
+                    : 'border border-neutral-0 bg-transparent',
               )}
               aria-hidden="true"
             />
