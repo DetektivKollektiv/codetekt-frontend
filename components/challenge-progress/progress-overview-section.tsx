@@ -28,7 +28,7 @@ export function ProgressOverviewSection({
         totalDays={totalDays}
       />
 
-      <div className="relative h-[26rem]">
+      <div className="relative h-[42rem] sm:h-[38rem] md:h-[26rem]">
         <ChallengeIllustration />
         <ChallengeProgressGrid
           milestones={challengeProgress.milestones}
@@ -40,7 +40,9 @@ export function ProgressOverviewSection({
       </div>
 
       <div className="relative bg-brand-coral px-5 py-4 text-brand-darkblue sm:px-6 lg:px-12 space-y-8">
-        <ProgressLegend />
+        <div className="hidden md:block">
+          <ProgressLegend />
+        </div>
         {challengeProgress.activeMessage ? (
           <div>
             <h3 className="mb-5 text-heading-lg font-black tracking-normal">

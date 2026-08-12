@@ -32,10 +32,7 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
         )}
         data-milestone={props.milestone}
       >
-        <MilestoneLabel
-          achieved={props.achieved}
-          milestone={props.milestone}
-        />
+        <MilestoneLabel achieved={props.achieved} milestone={props.milestone} />
       </div>
     );
   }
@@ -51,10 +48,7 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
 
   return (
     <div
-      className={cn(
-        'relative h-0 w-0 self-end justify-self-end',
-        className,
-      )}
+      className={cn('relative h-0 w-0 self-end justify-self-end', className)}
       data-milestone={milestone}
       style={{
         gridColumn: column,
@@ -64,7 +58,7 @@ export function MilestoneMarker(props: MilestoneMarkerProps) {
           : `translateX(calc(${columnGap} / 2))`,
       }}
     >
-      <div className="absolute bottom-[-0.25rem] left-1/2 flex h-56 -translate-x-1/2 flex-col items-center lg:h-64 xl:h-[18rem]">
+      <div className="absolute bottom-[-0.25rem] left-1/2 flex h-72 md:h-56 -translate-x-1/2 flex-col items-center lg:h-64 xl:h-[18rem]">
         <MilestoneLabel
           achieved={achieved}
           milestone={milestone}
