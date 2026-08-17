@@ -10,7 +10,7 @@ export function TrustSharesCounter({
   title,
 }: TrustSharesCounterProps) {
   return (
-    <div className="flex w-fit min-w-0 max-w-full justify-self-center flex-col items-center rounded-2xl border border-neutral-0/30 bg-brand-darkblue/3Okay,0 px-3 py-4 text-center sm:px-6">
+    <div className="flex w-fit min-w-0 max-w-full justify-self-center flex-col items-center rounded-2xl border border-neutral-0/30 bg-brand-darkblue/30 px-3 py-4 text-center sm:px-6">
       <h3 className="text-display-eyebrow font-black uppercase text-neutral-0">
         {title}
       </h3>
