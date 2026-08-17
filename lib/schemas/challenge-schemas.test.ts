@@ -14,13 +14,13 @@ describe('challengeMilestoneSchema', () => {
     expect(
       challengeMilestoneSchema.parse({
         value: 75,
-        label: 'Gewinne',
+        label: 'Mehr Gewinne',
         tooltip:
           'Bei 75 gibt es erste Gewinne. Erfahre <a href="/#challenge-information">hier</a> mehr.',
       }),
     ).toEqual({
       value: 75,
-      label: 'Gewinne',
+      label: 'Mehr Gewinne',
       tooltip:
         'Bei 75 gibt es erste Gewinne. Erfahre <a href="/#challenge-information">hier</a> mehr.',
     });

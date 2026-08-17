@@ -41,7 +41,7 @@ export function MilestoneLabel({
             <Tooltip>
               <TooltipTrigger
                 type="button"
-                className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-meta font-bold leading-none text-brand-darkblue"
+                className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-meta font-bold leading-none text-brand-darkblue whitespace-nowrap"
               >
                 {milestone.label}
               </TooltipTrigger>
