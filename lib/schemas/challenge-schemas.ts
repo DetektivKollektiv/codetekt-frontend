@@ -55,9 +55,8 @@ export const challengeConfigContentSchema = z.object({
   intro: challengeIntroContentSchema,
   information: challengeInformationContentSchema.optional(),
   leaderboardLimit: z.number().int().positive().optional(),
-  leaderboardReviewCaps: z
-    .record(z.string(), z.number().int().positive())
-    .optional(),
+  leaderboardReviewCap: z.number().int().positive().optional(),
+  leaderboardReviewCapUsernames: z.array(z.string().min(1)).optional(),
 });
 
 export const challengeMessageSchema = z.object({

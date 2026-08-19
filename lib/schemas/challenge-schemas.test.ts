@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { challengeMilestoneSchema } from './challenge-schemas';
+import {
+  challengeConfigContentSchema,
+  challengeMilestoneSchema,
+} from './challenge-schemas';
 
 describe('challengeMilestoneSchema', () => {
   it('normalizes legacy numeric milestones', () => {
@@ -24,5 +27,20 @@ describe('challengeMilestoneSchema', () => {
       tooltip:
         'Bei 75 gibt es erste Gewinne. Erfahre <a href="/#challenge-information">hier</a> mehr.',
     });
+  });
+});
+
+describe('challengeConfigContentSchema', () => {
+  it('validates a review cap and its usernames separately', () => {
+    const { leaderboardReviewCap, leaderboardReviewCapUsernames } =
+      challengeConfigContentSchema.shape;
+
+    expect(leaderboardReviewCap.safeParse(5).success).toBe(true);
+    expect(
+      leaderboardReviewCapUsernames.safeParse(['gormlabenz']).success,
+    ).toBe(true);
+    expect(
+      leaderboardReviewCapUsernames.safeParse({ gormlabenz: 5 }).success,
+    ).toBe(false);
   });
 });
