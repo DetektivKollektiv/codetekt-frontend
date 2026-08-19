@@ -1,0 +1,70 @@
+import { cn } from '@/lib/utils';
+import type { ChallengeMilestoneData } from '@/lib/schemas';
+import { MilestoneLabel } from './milestone-label';
+
+interface GridMilestoneMarkerProps {
+  achieved: boolean;
+  className?: string;
+  column: number;
+  columnGap: string;
+  milestone: ChallengeMilestoneData;
+  variant?: 'grid';
+}
+
+interface CenteredMilestoneMarkerProps {
+  achieved: boolean;
+  className?: string;
+  milestone: ChallengeMilestoneData;
+  variant: 'centered';
+}
+
+type MilestoneMarkerProps =
+  | GridMilestoneMarkerProps
+  | CenteredMilestoneMarkerProps;
+
+export function MilestoneMarker(props: MilestoneMarkerProps) {
+  if (props.variant === 'centered') {
+    return (
+      <div
+        className={cn(
+          'flex h-full w-full items-center justify-center',
+          props.className,
+        )}
+        data-milestone={props.milestone.value}
+      >
+        <MilestoneLabel achieved={props.achieved} milestone={props.milestone} />
+      </div>
+    );
+  }
+
+  const {
+    achieved,
+    className,
+    column,
+    columnGap,
+    milestone,
+  } = props;
+
+  return (
+    <div
+      className={cn('relative h-0 w-0 self-end justify-self-end', className)}
+      data-milestone={milestone.value}
+      style={{
+        gridColumn: column,
+        gridRow: 1,
+        transform: `translateX(calc(${columnGap} / 2))`,
+      }}
+    >
+      <div className="absolute bottom-[-0.25rem] left-1/2 flex h-72 md:h-56 -translate-x-1/2 flex-col items-center lg:h-64 xl:h-[18rem]">
+        <MilestoneLabel achieved={achieved} milestone={milestone} />
+        <span
+          className={cn(
+            'mt-2 w-0.5 flex-1 rounded-full',
+            achieved ? 'bg-brand-coral' : 'bg-neutral-0/35',
+          )}
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+  );
+}
