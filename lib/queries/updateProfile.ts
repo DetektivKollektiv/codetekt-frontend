@@ -2,6 +2,7 @@ import { Database, Tables } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface UpdateProfileData {
+  challenge_intro_seen_at?: string | null;
   get_notifications?: boolean;
   tutorial_completed_at?: string | null;
 }
@@ -9,14 +10,14 @@ export interface UpdateProfileData {
 export async function updateProfile(
   client: SupabaseClient<Database>,
   userId: string,
-  data: UpdateProfileData
+  data: UpdateProfileData,
 ) {
   return client.from('profiles').update(data).eq('id', userId).select().single();
 }
 
 export const updateProfileMutation = (
   client: SupabaseClient<Database>,
-  userId: string
+  userId: string,
 ) => ({
   mutationFn: async (data: UpdateProfileData) => {
     const { data: result, error } = await updateProfile(client, userId, data);
