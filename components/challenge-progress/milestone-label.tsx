@@ -23,45 +23,46 @@ export function MilestoneLabel({
 }: MilestoneLabelProps) {
   const label = (
     <>
-      <span className="text-[1.75rem] font-black leading-none tabular-nums">
+      <span className="text-[1.25rem] font-black leading-none tabular-nums xl:text-[1.75rem]">
         {milestone.value}
       </span>
-      <span className="mt-1 text-meta font-black uppercase leading-none">
+      <span className="mt-1 text-[0.625rem] font-black uppercase leading-none xl:text-meta">
         Fälle
       </span>
     </>
   );
+  const milestoneBadge = milestone.label ? (
+    milestone.tooltip ? (
+      <Tooltip>
+        <TooltipTrigger
+          type="button"
+          className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-[0.625rem] font-bold leading-none text-brand-darkblue whitespace-nowrap xl:text-meta"
+        >
+          {milestone.label}
+        </TooltipTrigger>
+        <TooltipContent
+          side="top"
+          sideOffset={8}
+          className="max-w-64 text-center"
+        >
+          <SafeRichText
+            value={milestone.tooltip}
+            className="[&_a]:text-background [&_p]:m-0"
+          />
+        </TooltipContent>
+      </Tooltip>
+    ) : (
+      <span className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-[0.625rem] font-bold leading-none text-brand-darkblue whitespace-nowrap xl:text-meta">
+        {milestone.label}
+      </span>
+    )
+  ) : null;
 
   if (!achieved) {
     return (
       <div className="hidden size-[5.5rem] flex-col items-center justify-center text-neutral-0 md:flex">
         {label}
-        {milestone.label ? (
-          milestone.tooltip ? (
-            <Tooltip>
-              <TooltipTrigger
-                type="button"
-                className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-meta font-bold leading-none text-brand-darkblue whitespace-nowrap"
-              >
-                {milestone.label}
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                sideOffset={8}
-                className="max-w-64 text-center"
-              >
-                <SafeRichText
-                  value={milestone.tooltip}
-                  className="[&_a]:text-background [&_p]:m-0"
-                />
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <span className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-meta font-bold leading-none text-brand-darkblue">
-              {milestone.label}
-            </span>
-          )
-        ) : null}
+        {milestoneBadge}
       </div>
     );
   }
@@ -69,14 +70,19 @@ export function MilestoneLabel({
   return (
     <div
       className={cn(
-        'hidden size-[5.5rem] items-center justify-center bg-brand-yellow md:flex',
+        'hidden w-[4.25rem] flex-col items-center md:flex xl:w-[5.5rem]',
         className,
       )}
-      style={{ clipPath: milestoneBurstClipPath }}
     >
-      <div className="flex size-[4.25rem] flex-col items-center justify-center rounded-full bg-brand-darkblue text-neutral-0">
-        {label}
+      <div
+        className="flex size-[4.25rem] shrink-0 items-center justify-center bg-brand-yellow xl:size-[5.5rem]"
+        style={{ clipPath: milestoneBurstClipPath }}
+      >
+        <div className="flex size-[3.25rem] flex-col items-center justify-center rounded-full bg-brand-darkblue text-neutral-0 xl:size-[4.25rem]">
+          {label}
+        </div>
       </div>
+      {milestoneBadge}
     </div>
   );
 }
