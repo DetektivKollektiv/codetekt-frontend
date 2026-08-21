@@ -5,7 +5,7 @@ import {
   E2E_SECOND_USER_ID,
   E2E_USER_EMAIL,
   E2E_USER_ID,
-  SUPABASE_SERVICE_ROLE_KEY,
+  SUPABASE_SECRET_KEY,
   SUPABASE_URL,
 } from './env';
 
@@ -26,7 +26,7 @@ const configuredUserIdsByEmail = new Map(
 export const getAdminClient = () => {
   if (adminClient) return adminClient;
 
-  adminClient = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  adminClient = createClient<Database>(SUPABASE_URL, SUPABASE_SECRET_KEY, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

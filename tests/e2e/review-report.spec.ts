@@ -114,7 +114,13 @@ test.describe('report review flow', () => {
         .click();
       const factcheckUrl = `https://example.com/codetekt-e2e-factcheck-race-${Date.now()}`;
       await page.getByLabel('URL zum Faktencheck').fill(factcheckUrl);
+      const firstFactcheckSave = page.waitForResponse(
+        (response) =>
+          response.request().method() === 'POST' &&
+          response.url().includes('/rest/v1/case_factchecks'),
+      );
       await page.getByRole('button', { name: 'Speichern' }).click();
+      expect((await firstFactcheckSave).ok()).toBe(true);
 
       await secondUserPage.getByRole('button', { name: 'Speichern' }).click();
 
