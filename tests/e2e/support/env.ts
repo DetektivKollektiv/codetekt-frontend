@@ -68,7 +68,7 @@ export const SUPABASE_URL = isStaging
   : readRequiredEnv('E2E_LOCAL_SUPABASE_URL');
 export const SUPABASE_SECRET_KEY = isStaging
   ? readRequiredEnv('E2E_STAGING_SUPABASE_SECRET_KEY')
-  : readRequiredEnv('E2E_LOCAL_SUPABASE_SERVICE_ROLE_KEY');
+  : readRequiredEnv('E2E_LOCAL_SUPABASE_SECRET_KEY');
 export const E2E_USER_EMAIL = readRequiredEnv(
   isStaging ? 'E2E_STAGING_USER_EMAIL' : 'E2E_LOCAL_USER_EMAIL',
 );
