@@ -8,12 +8,17 @@ import './globals.css';
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000';
+const isStaging = process.env.VERCEL_GIT_COMMIT_REF === 'staging';
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: 'codetekt - Plattform',
   description:
     'Wir sind codetekt: Durch unseren Trust-Checking-Ansatz ermöglichen wir es allen, die Vertrauenswürdigkeit von Informationen einzuschätzen.',
+  robots: {
+    index: !isStaging,
+    follow: !isStaging,
+  },
   openGraph: {
     title: 'codetekt - Plattform',
     description:

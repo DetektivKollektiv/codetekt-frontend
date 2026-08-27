@@ -54,3 +54,5 @@ template.json
 *.code-workspace
 
 certificates
+supabase/.temp/cli-latest
+supabase/.temp/linked-project.json

@@ -56,19 +56,33 @@ export async function updateSession(request: NextRequest) {
   const user = data?.claims;
   const pathname = request.nextUrl.pathname;
 
-  const unauthenticatedPaths = ['/login', '/auth', '/archive', TUTORIAL_PATH];
+  const unauthenticatedPathPrefixes = [
+    '/login',
+    '/auth',
+    '/archive',
+    TUTORIAL_PATH,
+  ];
+  const exactUnauthenticatedPaths = [
+    '/streak_challenge_2026_teilnahmebedingungen',
+  ];
+  const isExactUnauthenticatedPath = exactUnauthenticatedPaths.includes(pathname);
+  const allowsUnauthenticatedAccess =
+    isExactUnauthenticatedPath ||
+    unauthenticatedPathPrefixes.some((path) => pathname.startsWith(path));
 
   if (
     pathname !== '/' &&
     !user &&
-    !unauthenticatedPaths.some((path) =>
-      pathname.startsWith(path),
-    )
+    !allowsUnauthenticatedAccess
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = '/auth/login';
     return redirectPreservingCookies(url, supabaseResponse);
+  }
+
+  if (isExactUnauthenticatedPath) {
+    return supabaseResponse;
   }
 
   if (user) {

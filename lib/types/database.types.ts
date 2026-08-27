@@ -1,18 +1,56 @@
-import { MergeDeep } from 'type-fest';
-import {
+import type { MergeDeep } from 'type-fest';
+import type {
+  ChallengeConfigContentData,
+  ChallengeMessageData,
   InProgressReviewAnswer,
   OpenGraphData,
   ReviewAggregationData,
   SubmittedReviewAnswer,
   TutorialContentData,
 } from '../schemas';
-import { Database as DatabaseGenerated } from './database.types-generated';
+import type { Database as DatabaseGenerated } from './database.types-generated';
 
 export type Database = MergeDeep<
   DatabaseGenerated,
   {
     public: {
       Tables: {
+        challenge_configs: {
+          Row: {
+            content: ChallengeConfigContentData;
+            created_at: string;
+            ends_on: string;
+            id: string;
+            messages: ChallengeMessageData[];
+            starts_on: string;
+            updated_at: string;
+            visible_from: string;
+            visible_until: string;
+          };
+          Insert: {
+            content: ChallengeConfigContentData;
+            created_at?: string;
+            ends_on: string;
+            id?: string;
+            messages?: ChallengeMessageData[];
+            starts_on: string;
+            updated_at?: string;
+            visible_from?: string;
+            visible_until?: string;
+          };
+          Update: {
+            content?: ChallengeConfigContentData;
+            created_at?: string;
+            ends_on?: string;
+            id?: string;
+            messages?: ChallengeMessageData[];
+            starts_on?: string;
+            updated_at?: string;
+            visible_from?: string;
+            visible_until?: string;
+          };
+          Relationships: [];
+        };
         open_graph_data: {
           Row: {
             raw_data: OpenGraphData | null;
@@ -59,12 +97,15 @@ export type Database = MergeDeep<
         };
         profiles: {
           Row: {
+            challenge_intro_seen_at: string | null;
             tutorial_completed_at: string | null;
           };
           Insert: {
+            challenge_intro_seen_at?: string | null;
             tutorial_completed_at?: string | null;
           };
           Update: {
+            challenge_intro_seen_at?: string | null;
             tutorial_completed_at?: string | null;
           };
         };
@@ -81,6 +122,27 @@ export type Database = MergeDeep<
         };
       };
       Functions: {
+        get_challenge_progress: {
+          Args: {
+            challenge_ends_on: string;
+            challenge_starts_on: string;
+            leaderboard_limit?: number;
+          };
+          Returns: {
+            daily_resolved_cases: {
+              date: string;
+              resolvedCases: number;
+            }[];
+            leaderboard: {
+              activeDays: number;
+              reviewedCases: number;
+              userId: string;
+              username: string;
+            }[];
+            total_resolved_cases: number;
+            user_resolved_points: number[];
+          }[];
+        };
         get_aggregation_reviewers: {
           Args: {
             case_ids?: string[] | null;

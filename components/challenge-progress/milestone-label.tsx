@@ -1,0 +1,88 @@
+import SafeRichText from '@/components/safe-rich-text';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import type { ChallengeMilestoneData } from '@/lib/schemas';
+import { cn } from '@/lib/utils';
+
+const milestoneBurstClipPath =
+  'polygon(50% 0%, 58% 10%, 70% 4%, 73% 18%, 86% 15%, 85% 30%, 98% 35%, 89% 46%, 100% 56%, 87% 64%, 94% 78%, 79% 79%, 78% 94%, 64% 88%, 54% 100%, 46% 89%, 32% 97%, 28% 83%, 14% 85%, 16% 70%, 2% 65%, 11% 54%, 0% 44%, 13% 36%, 6% 22%, 21% 21%, 22% 6%, 36% 12%)';
+
+interface MilestoneLabelProps {
+  achieved: boolean;
+  className?: string;
+  milestone: ChallengeMilestoneData;
+}
+
+export function MilestoneLabel({
+  achieved,
+  className,
+  milestone,
+}: MilestoneLabelProps) {
+  const label = (
+    <>
+      <span className="text-[1.25rem] font-black leading-none tabular-nums xl:text-[1.75rem]">
+        {milestone.value}
+      </span>
+      <span className="mt-1 text-[0.625rem] font-black uppercase leading-none xl:text-meta">
+        Fälle
+      </span>
+    </>
+  );
+  const milestoneBadge = milestone.label ? (
+    milestone.tooltip ? (
+      <Tooltip>
+        <TooltipTrigger
+          type="button"
+          className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-[0.625rem] font-bold leading-none text-brand-darkblue whitespace-nowrap xl:text-meta"
+        >
+          {milestone.label}
+        </TooltipTrigger>
+        <TooltipContent
+          side="top"
+          sideOffset={8}
+          className="max-w-64 text-center"
+        >
+          <SafeRichText
+            value={milestone.tooltip}
+            className="[&_a]:text-background [&_p]:m-0"
+          />
+        </TooltipContent>
+      </Tooltip>
+    ) : (
+      <span className="mt-2 rounded-full bg-brand-coral px-2 py-1 text-[0.625rem] font-bold leading-none text-brand-darkblue whitespace-nowrap xl:text-meta">
+        {milestone.label}
+      </span>
+    )
+  ) : null;
+
+  if (!achieved) {
+    return (
+      <div className="hidden size-[5.5rem] flex-col items-center justify-center text-neutral-0 md:flex">
+        {label}
+        {milestoneBadge}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        'hidden w-[4.25rem] flex-col items-center md:flex xl:w-[5.5rem]',
+        className,
+      )}
+    >
+      <div
+        className="flex size-[4.25rem] shrink-0 items-center justify-center bg-brand-yellow xl:size-[5.5rem]"
+        style={{ clipPath: milestoneBurstClipPath }}
+      >
+        <div className="flex size-[3.25rem] flex-col items-center justify-center rounded-full bg-brand-darkblue text-neutral-0 xl:size-[4.25rem]">
+          {label}
+        </div>
+      </div>
+      {milestoneBadge}
+    </div>
+  );
+}

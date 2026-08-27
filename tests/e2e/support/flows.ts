@@ -1,6 +1,11 @@
 import { expect, type Page } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
-import { E2E_USER_EMAIL, E2E_USER_PASSWORD } from './env';
+import {
+  BASE_URL,
+  E2E_USER_EMAIL,
+  E2E_USER_PASSWORD,
+  VERCEL_AUTOMATION_BYPASS_SECRET,
+} from './env';
 import { waitForCaseByContent } from './supabase';
 
 export const createMarker = (prefix: string) =>
@@ -15,6 +20,21 @@ const homeOrRequiredTutorialUrlPattern =
 
 const getRequiredTutorialConfirmationButton = (page: Page) =>
   page.getByRole('button', { name: /Tutorial (gelesen|schließen)/ }).first();
+
+const configureVercelProtectionBypass = async (page: Page) => {
+  const bypassSecret = VERCEL_AUTOMATION_BYPASS_SECRET;
+  if (!bypassSecret) return;
+
+  await page.route(`${new URL(BASE_URL).origin}/**`, async (route) => {
+    await route.continue({
+      headers: {
+        ...route.request().headers(),
+        'x-vercel-protection-bypass': bypassSecret,
+        'x-vercel-set-bypass-cookie': 'true',
+      },
+    });
+  });
+};
 
 export const completeRequiredTutorial = async (page: Page) => {
   const confirmButton = getRequiredTutorialConfirmationButton(page);
@@ -68,6 +88,7 @@ export const signIn = async (
     password: E2E_USER_PASSWORD,
   },
 ) => {
+  await configureVercelProtectionBypass(page);
   await page.goto('/auth/login');
   await page.getByLabel('Email').fill(credentials.email);
   await page.getByLabel('Passwort').fill(credentials.password);
@@ -179,7 +200,10 @@ const submitReviewWithComment = async (page: Page) => {
 
 const answerReportQuestionsAndSubmit = async (page: Page) => {
   await expect(
-    page.locator('[data-testid="review-traffic-light-option"]').first(),
+    page
+      .locator('[data-testid="review-traffic-light-option"]')
+      .or(page.getByLabel('Abschlusskommentar'))
+      .first(),
   ).toBeVisible();
 
   for (let questionIndex = 0; questionIndex < 20; questionIndex += 1) {

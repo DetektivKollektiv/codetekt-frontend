@@ -2,11 +2,18 @@ import { defineConfig, devices } from '@playwright/test';
 import {
   AUTH_FILE,
   BASE_URL,
+  E2E_TARGET,
   START_WEB_SERVER,
 } from './tests/e2e/support/env';
 
+const isStaging = E2E_TARGET === 'staging';
+
 export default defineConfig({
   testDir: './tests/e2e',
+  timeout: isStaging ? 120_000 : 30_000,
+  expect: {
+    timeout: isStaging ? 15_000 : 5_000,
+  },
   fullyParallel: false,
   workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],

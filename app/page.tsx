@@ -1,20 +1,22 @@
 import { ArchiveList } from '@/components/archive-list';
+import { ChallengeProgressSection } from '@/components/challenge-progress';
 import { Button } from '@/components/ui/button';
 import UserPage from '@/components/user-page';
 import {
-  AggregatedReviews,
   getAggregatedReviews,
+  type AggregatedReviews,
 } from '@/lib/queries/getAggregatedReviews';
+import { getChallengeProgress } from '@/lib/queries/getChallengeProgress';
 import { getLeaderboard } from '@/lib/queries/getLeaderboard';
 import {
   filterUnaggregatedOpenCases,
   getOpenCases,
 } from '@/lib/queries/getOpenCases';
-import { getUserCases, UserCases } from '@/lib/queries/getUserCases';
+import { getUserCases, type UserCases } from '@/lib/queries/getUserCases';
 import {
   getUserReviewAnswersInProgress,
   getUserReviewAnswersSubmitted,
-  UserReviewAnswersSubmitted,
+  type UserReviewAnswersSubmitted,
 } from '@/lib/queries/getUserReviewAnswers';
 import { getAuth } from '@/lib/supabase/getAuth';
 import { createClient } from '@/lib/supabase/server';
@@ -27,17 +29,20 @@ export default async function Home() {
   const openCasesPromise = getOpenCases(supabase);
   const authPromise = getAuth(supabase);
   const leaderboardPromise = getLeaderboard(supabase);
+  const challengeProgressPromise = getChallengeProgress(supabase);
 
   const [
     { data: aggregatedReviewsData, error },
     { data: openCases, error: openCasesError },
     auth,
     { data: leaderboardData },
+    { data: challengeProgressData, error: challengeProgressError },
   ] = await Promise.all([
     aggregatedReviewsPromise,
     openCasesPromise,
     authPromise,
     leaderboardPromise,
+    challengeProgressPromise,
   ]);
 
   const { user, profile, isAuthenticated } = auth;
@@ -195,6 +200,10 @@ export default async function Home() {
     throw openCasesError;
   }
 
+  if (challengeProgressError) {
+    throw challengeProgressError;
+  }
+
   return (
     <main className="h-full flex-1">
       {isAuthenticated && user && profile ? (
@@ -206,6 +215,7 @@ export default async function Home() {
           ownUserReviewsAndCases={ownUserReviewsAndCases ?? []}
           openCases={filteredOpenCases ?? []}
           leaderboard={leaderboardData ?? []}
+          challengeProgress={challengeProgressData}
         />
       ) : (
         <>
@@ -252,6 +262,10 @@ export default async function Home() {
               />
             </div>
             <div className="page-max-w">
+              <ChallengeProgressSection
+                challengeProgress={challengeProgressData}
+                className="mb-6"
+              />
               <div className="w-full rounded-lg bg-background p-5 page-max-w">
                 <h3 className="text-display-eyebrow uppercase">
                   Unsere Partner*innen, Unterstützer*innen und Netzwerke
