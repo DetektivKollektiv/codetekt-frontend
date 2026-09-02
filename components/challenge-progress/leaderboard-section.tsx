@@ -19,7 +19,7 @@ export function LeaderboardSection({
   return (
     <section className="border-t border-brand-darkblue/25 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
       <h3 className="text-heading-lg font-black tracking-normal">
-        Leaderboard
+        Top 10 co:detectives
       </h3>
       <div className="relative mt-5 max-h-72 overflow-y-auto no-scrollbar">
         <Table>
