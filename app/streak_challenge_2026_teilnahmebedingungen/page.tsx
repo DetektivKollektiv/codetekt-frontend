@@ -119,9 +119,11 @@ export default function StreakChallengeTermsPage() {
                 >
                   Discord-Server
                 </a>{' '}
-                im Channel „Streak-Challenge“. Nutze dafür immer denselben
-                Discord-Account, damit wir dir die Trust-Shares zuordnen
-                können.
+                im Channel „Trust-Spreader Reichweite“. Nutze dafür immer
+                denselben Discord-Account, damit wir dir die Trust-Shares
+                zuordnen können. Wenn du das Ergebnis in deiner Story bei
+                Telegram, WhatsApp oder Signal postest, reicht ein Screenshot
+                davon als Nachweis.
               </p>
             </article>
 
