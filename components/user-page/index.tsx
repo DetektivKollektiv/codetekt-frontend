@@ -140,7 +140,7 @@ const UserPage: FC<UserPageProps> = ({
         />
       </div>
       {openCases && (
-        <div className="mt-24 z-10 relative" id="open-cases">
+        <div className="mt-24 z-10 relative">
           <div className="page-max-w mb-12">
             <ChallengeProgressSection
               challengeIntroSeenAt={profile.challenge_intro_seen_at}
@@ -149,7 +149,10 @@ const UserPage: FC<UserPageProps> = ({
             />
             <HomeHelpCard />
           </div>
-          <h1 className="page-max-w text-display-sm sm:text-display-sm 2xl:text-display-md">
+          <h1
+            className="page-max-w scroll-mt-24 text-display-sm sm:text-display-sm 2xl:text-display-md"
+            id="open-cases"
+          >
             Fälle, die deine Hilfe benötigen
           </h1>
           <ArchiveList
