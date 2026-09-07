@@ -9,6 +9,7 @@ import {
 const isStaging = E2E_TARGET === 'staging';
 
 export default defineConfig({
+  forbidOnly: Boolean(process.env.CI),
   testDir: './tests/e2e',
   timeout: isStaging ? 120_000 : 30_000,
   expect: {
@@ -27,7 +28,7 @@ export default defineConfig({
         webServer: {
           command: 'npm run dev',
           url: BASE_URL,
-          reuseExistingServer: true,
+          reuseExistingServer: !process.env.CI,
           timeout: 120_000,
         },
       }
