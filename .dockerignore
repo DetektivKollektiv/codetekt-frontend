@@ -1,5 +1,9 @@
 .git
 .github
+.ci-backend
+scripts
+docs
+tests/e2e/.auth
 .next
 node_modules
 .env

@@ -1,0 +1,166 @@
+name: Frontend
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Keep every main push, including queued releases. PR runs have their own group.
+concurrency:
+  group: frontend-${{ github.event_name }}-${{ github.ref }}
+  queue: max
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    name: Frontend checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm test
+      - name: Test restricted deployment command
+        run: python3 scripts/deploy/test_deploy.py
+
+  e2e:
+    name: Frontend E2E
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Check out the tested backend revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: DetektivKollektiv/codetekt-supabase
+          ref: 18c761cd89eb093de3e7f58aa5ab3b95dc5f43c7
+          path: .ci-backend
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: supabase/setup-cli@ab058987d8d6c725971f6cf9d0b5c98467e30bd1 # v1
+        with:
+          version: 2.115.0
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Prepare isolated Supabase configuration
+        run: python3 scripts/ci/prepare-backend.py .ci-backend
+      - name: Start isolated Supabase
+        run: supabase start --workdir .ci-backend -x studio,postgres-meta,logflare,vector,supavisor,imgproxy
+      - name: Create disposable test users and environment
+        run: |
+          supabase status --workdir .ci-backend -o json > "$RUNNER_TEMP/supabase-status.json"
+          node scripts/ci/prepare-e2e.mjs "$RUNNER_TEMP/supabase-status.json"
+      - name: Serve local Edge Functions
+        run: |
+          supabase functions serve --workdir .ci-backend --env-file .ci-backend/ci-functions.env > "$RUNNER_TEMP/functions.log" 2>&1 &
+          node scripts/ci/wait-for-functions.mjs
+      - name: Build and start the production Docker runtime with test settings
+        run: |
+          docker build --build-arg NEXT_PUBLIC_SUPABASE_URL --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY --build-arg VERCEL_URL=127.0.0.1:3000 -t codetekt-frontend:ci .
+          docker run -d --name codetekt-frontend-ci --network host --env NEXT_PUBLIC_SUPABASE_URL --env NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY --env VERCEL_URL=127.0.0.1:3000 codetekt-frontend:ci
+          curl --fail --retry 20 --retry-delay 2 --retry-connrefused --retry-all-errors http://127.0.0.1:3000/robots.txt
+      - run: npm run test:e2e
+        env:
+          E2E_TARGET: local
+          E2E_EXTERNAL_SERVER: '1'
+      - name: Upload browser test report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 3
+      - name: Stop disposable services
+        if: always()
+        run: |
+          docker rm -f codetekt-frontend-ci || true
+          supabase stop --workdir .ci-backend --no-backup
+
+  publish:
+    name: Publish production image
+    needs: [checks, e2e]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Validate public build configuration
+        env:
+          PUBLIC_KEY: ${{ vars.PRODUCTION_SUPABASE_PUBLISHABLE_KEY }}
+        run: test -n "$PUBLIC_KEY"
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: build
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/detektivkollektiv/codetekt-frontend:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/DetektivKollektiv/codetekt-frontend
+            org.opencontainers.image.revision=${{ github.sha }}
+          build-args: |
+            NEXT_PUBLIC_SUPABASE_URL=https://api.codetekt.org
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ vars.PRODUCTION_SUPABASE_PUBLISHABLE_KEY }}
+            VERCEL_URL=production.codetekt.org
+
+  deploy:
+    name: Deploy production frontend
+    needs: publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: hetzner-production
+      url: https://production.codetekt.org
+    permissions:
+      packages: read
+    steps:
+      - name: Deploy immutable image through restricted SSH command
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ vars.SSH_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ vars.SSH_HOST }}
+          IMAGE_DIGEST: ${{ needs.publish.outputs.digest }}
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          test -n "$DEPLOY_KEY" && test -n "$KNOWN_HOSTS" && test -n "$DEPLOY_HOST"
+          install -m 700 -d ~/.ssh
+          trap 'rm -f ~/.ssh/deploy_key' EXIT
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf '%s\n' "$REGISTRY_TOKEN" | ssh -T -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 "codetekt-deploy@$DEPLOY_HOST" "deploy $IMAGE_DIGEST $REGISTRY_USER $RUN_NUMBER"
