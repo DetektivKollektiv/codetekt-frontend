@@ -46,6 +46,12 @@ describe('sanitizeRichText', () => {
     ).toBe('Text <strong>wichtig</strong>');
   });
 
+  it('does not revive markup inside disallowed raw-text tags', () => {
+    expect(
+      sanitizeRichText('<xmp><img src=x onerror="alert(1)"></xmp>'),
+    ).toBe('');
+  });
+
   it('keeps safe images and adds safe loading attributes', () => {
     expect(
       sanitizeRichText(

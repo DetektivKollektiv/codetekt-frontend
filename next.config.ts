@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'codetekt.org',
+        pathname: '/wp-content/uploads/**',
       },
     ],
   },

@@ -6,8 +6,9 @@ Edge Functions and Caddy are not deployed by this workflow.
 
 ## Flow
 
-`.github/workflows/frontend.yml` runs on every branch push and every PR to `main`.
-`Frontend checks` runs ESLint, TypeScript, Vitest and restricted-deploy tests.
+`.github/workflows/frontend.yml` runs on pushes to `main` and every PR to `main`.
+`Frontend checks` audits production dependencies, then runs ESLint, TypeScript,
+Vitest and restricted-deploy tests.
 `Frontend E2E` starts disposable Supabase on the GitHub-hosted runner, builds the
 Docker runtime and runs all Playwright tests against it. No production credentials
 are available to these jobs. Backend revision and CLI version are pinned in the
@@ -120,8 +121,9 @@ state via a revert PR so future releases remain consistent.
 
 ## Verification and sources
 
-Local: `npm test`, `npm run lint`, `npx tsc --noEmit`,
-`python3 scripts/deploy/test_deploy.py`, `bash -n scripts/deploy/*.sh`.
+Local: `npm audit --omit=dev --audit-level=high`, `npm test`, `npm run lint`,
+`npx tsc --noEmit`, `python3 scripts/deploy/test_deploy.py`,
+`bash -n scripts/deploy/*.sh`.
 Actionlint 1.7.12 does not yet recognize the officially documented `concurrency.queue`
 property; its remaining checks run with `-ignore 'unexpected key "queue"'`.
 GitHub's actual PR run is required to verify workflow acceptance and Linux E2E.
