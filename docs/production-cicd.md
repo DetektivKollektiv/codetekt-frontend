@@ -11,8 +11,11 @@ Edge Functions and Caddy are not deployed by this workflow.
 Vitest and restricted-deploy tests.
 `Frontend E2E` starts disposable Supabase on the GitHub-hosted runner, builds the
 Docker runtime and runs all Playwright tests against it. No production credentials
-are available to these jobs. Backend revision and CLI version are pinned in the
-workflow; update them deliberately when frontend/backend contracts change.
+are available to these jobs. Before starting Supabase, the workflow reads the most
+recent successful `hetzner-production` deployment from the public
+`codetekt-supabase` GitHub deployment history and checks out its exact commit SHA.
+Before the first recorded backend deployment it uses the repository variable
+`PRODUCTION_BACKEND_SHA` as a bootstrap fallback. The CLI version remains pinned.
 
 Only a successful push run on `main` publishes an amd64 image to
 `ghcr.io/detektivkollektiv/codetekt-frontend`, tagged with the commit SHA. Deployment
@@ -32,8 +35,8 @@ errors now fail the Next.js build as well as the separate CI check.
 
 1. A repository admin grants the operator Admin temporarily, or applies the settings
    below. The regular GitHub login is sufficient; do not share tokens in chat.
-2. Create the `hetzner-production` Actions environment. Set deployment branch policy
-   to selected branches, exactly `main` (branch, not tag). No required reviewers.
+2. The `hetzner-production` Actions environment exists with deployment branch policy
+   set to exactly `main` (branch, not tag) and no required reviewers.
 3. Create an Ed25519 deploy key. Keep the private key only in the environment secret
    `SSH_PRIVATE_KEY`; remove the temporary local copy after installation and validation.
 4. Transfer the reviewed `scripts/deploy` directory and public key to the server.
@@ -47,8 +50,12 @@ errors now fail the Next.js build as well as the separate CI check.
 6. Set repository Actions variable `PRODUCTION_SUPABASE_PUBLISHABLE_KEY` to the
    existing frontend public key. A rotation requires updating this variable and
    `/etc/codetekt-frontend-deploy/runtime.env` before building the next release.
-7. Verify the new key cannot execute `id`, start a shell or forward ports. Check
-   both PR checks in GitHub, then apply main protection before merging this PR.
+7. Set repository Actions variable `PRODUCTION_BACKEND_SHA` once to the full commit
+   SHA that currently matches Production. Successful future backend deployments
+   supersede this fallback automatically through GitHub's deployment history.
+8. Verify the new key cannot execute `id`, start a shell or forward ports. Keep
+   `Frontend checks` and `Frontend E2E` as required checks in the existing
+   `main` branch protection rule.
 
 Environment secrets must not be moved to repository-wide secrets: ordinary feature
 branch workflows must not be able to obtain the production SSH key.
@@ -59,9 +66,9 @@ SSH stdin and removes its temporary Docker login on exit. The GHCR package can s
 private and must grant this repository's Actions access (automatic on first publish
 from this repository). Organization policy must allow creating the package.
 
-## Required main protection
+## Current main protection
 
-Apply to `main` without a bypass for administrators:
+`main` currently enforces these rules without an administrator bypass:
 
 - Require a pull request; **0 approving reviews**, as requested.
 - Require `Frontend checks` and `Frontend E2E`, from GitHub Actions.
