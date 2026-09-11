@@ -4,7 +4,6 @@ import { resolveProductionBackend } from './resolve-production-backend.mjs';
 
 const DEPLOYED = 'a'.repeat(40);
 const FAILED = 'b'.repeat(40);
-const FALLBACK = 'c'.repeat(40);
 
 function response(body) {
   return new Response(JSON.stringify(body), {
@@ -27,20 +26,15 @@ test('uses the newest successful production deployment', async () => {
     return response([{ state: 'success', created_at: '2026-09-07T12:01:00Z' }]);
   };
 
-  assert.deepEqual(await resolveProductionBackend(fetchImpl, FALLBACK), {
+  assert.deepEqual(await resolveProductionBackend(fetchImpl), {
     sha: DEPLOYED,
     source: 'successful hetzner-production deployment',
   });
 });
 
-test('uses the bootstrap SHA before the first successful deployment', async () => {
-  const result = await resolveProductionBackend(async () => response([]), FALLBACK);
-  assert.deepEqual(result, { sha: FALLBACK, source: 'bootstrap repository variable' });
-});
-
-test('fails without a successful deployment or valid fallback', async () => {
+test('fails without a successful production deployment', async () => {
   await assert.rejects(
-    resolveProductionBackend(async () => response([]), 'main'),
-    /no valid PRODUCTION_BACKEND_SHA fallback/i,
+    resolveProductionBackend(async () => response([])),
+    /no successful hetzner-production backend deployment found/i,
   );
 });
