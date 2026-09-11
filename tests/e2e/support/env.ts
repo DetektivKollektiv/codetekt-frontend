@@ -94,4 +94,5 @@ export const E2E_SECOND_USER_ID = readOptionalEnv(
 export const VERCEL_AUTOMATION_BYPASS_SECRET = isStaging
   ? readRequiredEnv('VERCEL_AUTOMATION_BYPASS_SECRET')
   : undefined;
-export const START_WEB_SERVER = isLocalUrl(BASE_URL);
+export const START_WEB_SERVER =
+  isLocalUrl(BASE_URL) && process.env.E2E_EXTERNAL_SERVER !== '1';

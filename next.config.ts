@@ -1,15 +1,15 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Vercel uses its own build adapter; standalone output is for the Docker runtime.
+  output: process.env.VERCEL === '1' ? undefined : 'standalone',
   cacheComponents: true,
-  typescript: {
-    ignoreBuildErrors: true, // <-- DAS HIER
-  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'codetekt.org',
+        pathname: '/wp-content/uploads/**',
       },
     ],
   },
