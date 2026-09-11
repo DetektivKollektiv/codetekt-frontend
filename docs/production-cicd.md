@@ -14,8 +14,8 @@ Docker runtime and runs all Playwright tests against it. No production credentia
 are available to these jobs. Before starting Supabase, the workflow reads the most
 recent successful `hetzner-production` deployment from the public
 `codetekt-supabase` GitHub deployment history and checks out its exact commit SHA.
-Before the first recorded backend deployment it uses the repository variable
-`PRODUCTION_BACKEND_SHA` as a bootstrap fallback. The CLI version remains pinned.
+If no successful deployment is recorded, the E2E job fails. The CLI version remains
+pinned.
 
 Only a successful push run on `main` publishes an amd64 image to
 `ghcr.io/detektivkollektiv/codetekt-frontend`, tagged with the commit SHA. Deployment
@@ -50,10 +50,7 @@ errors now fail the Next.js build as well as the separate CI check.
 6. Set repository Actions variable `PRODUCTION_SUPABASE_PUBLISHABLE_KEY` to the
    existing frontend public key. A rotation requires updating this variable and
    `/etc/codetekt-frontend-deploy/runtime.env` before building the next release.
-7. Set repository Actions variable `PRODUCTION_BACKEND_SHA` once to the full commit
-   SHA that currently matches Production. Successful future backend deployments
-   supersede this fallback automatically through GitHub's deployment history.
-8. Verify the new key cannot execute `id`, start a shell or forward ports. Keep
+7. Verify the new key cannot execute `id`, start a shell or forward ports. Keep
    `Frontend checks` and `Frontend E2E` as required checks in the existing
    `main` branch protection rule.
 
