@@ -138,7 +138,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_SUPABASE_URL=https://api.codetekt.org
             NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ vars.PRODUCTION_SUPABASE_PUBLISHABLE_KEY }}
-            VERCEL_URL=production.codetekt.org
+            VERCEL_URL=platform.codetekt.org
 
   deploy:
     name: Deploy production frontend
@@ -148,7 +148,7 @@ jobs:
     timeout-minutes: 10
     environment:
       name: hetzner-production
-      url: https://production.codetekt.org
+      url: https://platform.codetekt.org
     permissions:
       packages: read
     steps:

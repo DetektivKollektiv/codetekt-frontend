@@ -46,7 +46,7 @@ rollback() {
 trap rollback ERR HUP INT TERM
 compose "$image"
 curl --fail --silent --show-error --max-time 15 --retry 4 --retry-delay 3 \
-  --retry-all-errors https://production.codetekt.org/robots.txt >/dev/null
+  --retry-all-errors https://platform.codetekt.org/robots.txt >/dev/null
 trap - ERR HUP INT TERM
 printf '%s\n' "$previous" > /var/lib/codetekt-frontend-deploy/previous-image
 printf '%s\n' "$image" > /var/lib/codetekt-frontend-deploy/current-image
