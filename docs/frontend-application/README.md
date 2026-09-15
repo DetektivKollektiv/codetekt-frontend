@@ -27,7 +27,7 @@ The application is a Next.js App Router frontend for submitting, reviewing and d
 
 - Public Next.js variables are baked into the image build. A configuration change needs a reviewed release and coordinated host runtime configuration for rollback.
 - Keep local values in `.env.local`. Staging test secrets belong only in `.env.staging.local`; neither file is committed.
-- Production uses `https://production.codetekt.org`; the backend URL is `https://api.codetekt.org`.
+- Production uses `https://platform.codetekt.org`; the backend URL is `https://api.codetekt.org`.
 
 ## References
 

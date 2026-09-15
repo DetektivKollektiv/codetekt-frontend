@@ -5,7 +5,7 @@
 | Item | Current Production setup |
 | --- | --- |
 | Provider / project | Hetzner Cloud / `Codetekt` |
-| Public application | `https://production.codetekt.org` |
+| Public application | `https://platform.codetekt.org` |
 | Runtime | One `codetekt-frontend` Next.js container |
 | Image source | GitHub Container Registry; immutable image digest |
 | Network boundary | Shared internal Docker network with the self-hosted Supabase stack |

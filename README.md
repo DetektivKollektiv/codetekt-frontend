@@ -4,7 +4,7 @@ Compact operating documentation for the Codetekt web application. It reflects th
 
 | Area | Provider / service | Primary team entry | Details |
 | --- | --- | --- | --- |
-| Web application | Hetzner Production | `https://production.codetekt.org` | [Application](docs/frontend-application/README.md) |
+| Web application | Hetzner Production | `https://platform.codetekt.org` | [Application](docs/frontend-application/README.md) |
 | Runtime host | Hetzner Cloud / `Codetekt` | Hetzner Cloud Console | [Hosting](docs/hetzner-production/README.md) |
 | Releases | GitHub Actions + GitHub Container Registry | GitHub repository | [Release process](docs/release/README.md) |
 | Quality and status | GitHub Actions + Uptime Kuma | GitHub repository / `https://status.codetekt.org` | [Tests and monitoring](docs/testing-monitoring/README.md) |

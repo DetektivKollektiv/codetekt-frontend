@@ -5,7 +5,7 @@
 1. A pull request to `main` runs dependency audit, linting, TypeScript, unit tests and deployment-command tests.
 2. Browser E2E runs against an isolated Supabase stack and the exact backend revision from the latest successful `hetzner-production` deployment. It fails rather than silently testing an arbitrary backend revision.
 3. A successful push to `main` builds an amd64 image, publishes it to GitHub Container Registry and deploys its immutable digest through the protected `hetzner-production` GitHub Actions environment.
-4. The restricted deployment account pulls the image, waits for the container health check and verifies `https://production.codetekt.org/robots.txt`.
+4. The restricted deployment account pulls the image, waits for the container health check and verifies `https://platform.codetekt.org/robots.txt`.
 
 - Pull requests receive no Production deployment secret.
 - Release runs are queued and the host rejects an older workflow run after a newer release has succeeded.

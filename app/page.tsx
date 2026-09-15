@@ -23,6 +23,8 @@ import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
+export const instant = false;
+
 export default async function Home() {
   const supabase = await createClient();
   const aggregatedReviewsPromise = getAggregatedReviews(supabase);
