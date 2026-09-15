@@ -1,6 +1,6 @@
 # Frontend CI/CD on Hetzner
 
-Target: `https://production.codetekt.org`, Supabase API `https://api.codetekt.org`.
+Target: `https://platform.codetekt.org`, Supabase API `https://api.codetekt.org`.
 Only the frontend container is deployed. Database migrations, Supabase containers,
 Edge Functions and Caddy are not deployed by this workflow.
 
