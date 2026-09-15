@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import { connection } from 'next/server';
 
+export const instant = false;
+
 export default async function SubmitPage() {
   await connection();
 
