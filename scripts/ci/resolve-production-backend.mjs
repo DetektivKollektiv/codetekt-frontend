@@ -19,7 +19,7 @@ async function githubJson(fetchImpl, path) {
   return response.json();
 }
 
-export async function resolveProductionBackend(fetchImpl, fallbackSha) {
+export async function resolveProductionBackend(fetchImpl) {
   const deployments = await githubJson(
     fetchImpl,
     '/deployments?environment=hetzner-production&per_page=20',
@@ -37,14 +37,11 @@ export async function resolveProductionBackend(fetchImpl, fallbackSha) {
     }
   }
 
-  if (!SHA.test(fallbackSha ?? '')) {
-    throw new Error('No successful backend deployment and no valid PRODUCTION_BACKEND_SHA fallback');
-  }
-  return { sha: fallbackSha, source: 'bootstrap repository variable' };
+  throw new Error('No successful hetzner-production backend deployment found');
 }
 
 async function main() {
-  const result = await resolveProductionBackend(fetch, process.env.FALLBACK_SHA);
+  const result = await resolveProductionBackend(fetch);
   if (!process.env.GITHUB_OUTPUT) throw new Error('GITHUB_OUTPUT is missing');
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `sha=${result.sha}\n`);
   console.log(`Using backend ${result.sha} from ${result.source}.`);

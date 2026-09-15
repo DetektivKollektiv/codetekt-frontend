@@ -47,8 +47,6 @@ jobs:
           persist-credentials: false
       - name: Resolve the currently deployed backend revision
         id: production-backend
-        env:
-          FALLBACK_SHA: ${{ vars.PRODUCTION_BACKEND_SHA }}
         run: node scripts/ci/resolve-production-backend.mjs
       - name: Check out the tested backend revision
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
