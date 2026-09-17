@@ -89,7 +89,10 @@ test.describe('report review flow', () => {
     await page.getByRole('button', { name: 'Bericht' }).click();
     await page.getByRole('button', { name: 'Speichern' }).click();
 
-    const secondUserContext = await browser.newContext({ baseURL: BASE_URL });
+    const secondUserContext = await browser.newContext({
+      baseURL: BASE_URL,
+      storageState: { cookies: [], origins: [] },
+    });
     const secondUserPage = await secondUserContext.newPage();
 
     try {
@@ -149,7 +152,10 @@ test.describe('report review flow', () => {
     await reviewReport(page, caseId!);
     await waitForSubmittedReview(caseId!);
 
-    const secondUserContext = await browser.newContext({ baseURL: BASE_URL });
+    const secondUserContext = await browser.newContext({
+      baseURL: BASE_URL,
+      storageState: { cookies: [], origins: [] },
+    });
     const secondUserPage = await secondUserContext.newPage();
 
     try {
