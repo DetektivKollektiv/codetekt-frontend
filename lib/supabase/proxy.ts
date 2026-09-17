@@ -1,5 +1,9 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import {
+  allowsUnauthenticatedAccess,
+  getSafeLoginRedirectPath,
+} from '../auth-routing';
 import { shouldRedirectToTutorial, TUTORIAL_PATH } from '../tutorial-gate';
 import { Database } from '../types/database.types';
 
@@ -64,24 +68,10 @@ export async function updateSession(request: NextRequest) {
     });
   }
 
-  const unauthenticatedPathPrefixes = [
-    '/login',
-    '/auth',
-    '/archive',
-    TUTORIAL_PATH,
-  ];
-  const exactUnauthenticatedPaths = [
-    '/streak_challenge_2026_teilnahmebedingungen',
-  ];
-  const isExactUnauthenticatedPath = exactUnauthenticatedPaths.includes(pathname);
-  const allowsUnauthenticatedAccess =
-    isExactUnauthenticatedPath ||
-    unauthenticatedPathPrefixes.some((path) => pathname.startsWith(path));
-
   if (
     pathname !== '/' &&
     !user &&
-    !allowsUnauthenticatedAccess
+    !allowsUnauthenticatedAccess(pathname)
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
@@ -92,7 +82,7 @@ export async function updateSession(request: NextRequest) {
     return redirectPreservingCookies(url, supabaseResponse);
   }
 
-  if (isExactUnauthenticatedPath) {
+  if (pathname === '/streak_challenge_2026_teilnahmebedingungen') {
     return supabaseResponse;
   }
 
@@ -117,6 +107,14 @@ export async function updateSession(request: NextRequest) {
     ) {
       const url = request.nextUrl.clone();
       url.pathname = TUTORIAL_PATH;
+      return redirectPreservingCookies(url, supabaseResponse);
+    }
+
+    if (pathname === '/auth/login') {
+      const url = new URL(
+        getSafeLoginRedirectPath(request.nextUrl.searchParams.get('redirect')),
+        request.url,
+      );
       return redirectPreservingCookies(url, supabaseResponse);
     }
   }
