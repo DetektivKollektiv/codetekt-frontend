@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getSafeLoginRedirectPath } from '@/lib/auth-routing';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -38,11 +37,7 @@ export function LoginForm({
       });
       if (error) throw error;
 
-      const redirectPath = getSafeLoginRedirectPath(
-        new URLSearchParams(window.location.search).get('redirect'),
-      );
-
-      window.location.assign(redirectPath);
+      window.location.reload();
     } catch (error: unknown) {
       setError(
         error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten',
