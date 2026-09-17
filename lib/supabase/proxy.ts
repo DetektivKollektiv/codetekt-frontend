@@ -67,7 +67,6 @@ export async function updateSession(request: NextRequest) {
       status: claimsError.status,
     });
   }
-
   if (
     pathname !== '/' &&
     !user &&
