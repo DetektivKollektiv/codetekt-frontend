@@ -36,8 +36,17 @@ const effraFontsPromise = Promise.all(
   })),
 );
 
+const shareImageAssetsPromise = Promise.all(
+  ['codetekt_logo_weiß.svg', 'Ordner.svg'].map((filename) =>
+    readFile(join(process.cwd(), 'public', 'images', filename)),
+  ),
+).then(([logo, folder]) => ({
+  logoUrl: `data:image/svg+xml;base64,${logo.toString('base64')}`,
+  folderUrl: `data:image/svg+xml;base64,${folder.toString('base64')}`,
+}));
+
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
@@ -58,14 +67,16 @@ export async function GET(
   }
 
   const shareImageData = getShareImageData(aggregatedReview);
-  const origin = new URL(request.url).origin;
-  const fonts = await effraFontsPromise;
+  const [fonts, { logoUrl, folderUrl }] = await Promise.all([
+    effraFontsPromise,
+    shareImageAssetsPromise,
+  ]);
 
   return new ImageResponse(
     <ShareImageTemplate
       data={shareImageData}
-      logoUrl={`${origin}/images/codetekt_logo_wei%C3%9F.svg`}
-      folderUrl={`${origin}/images/Ordner.svg`}
+      logoUrl={logoUrl}
+      folderUrl={folderUrl}
     />,
     {
       width: 1080,

@@ -37,11 +37,7 @@ export function LoginForm({
       });
       if (error) throw error;
 
-      const redirectPath = new URLSearchParams(window.location.search).get(
-        'redirect'
-      );
-
-      window.location.assign(redirectPath === '/submit' ? '/submit' : '/');
+      window.location.reload();
     } catch (error: unknown) {
       setError(
         error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten',
