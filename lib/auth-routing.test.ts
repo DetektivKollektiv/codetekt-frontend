@@ -11,7 +11,6 @@ describe('allowsUnauthenticatedAccess', () => {
     '/fall/210',
     '/tutorial',
     '/tutorial/step-1',
-    '/streak_challenge_2026_teilnahmebedingungen',
   ])('allows the public path %s', (pathname) => {
     expect(allowsUnauthenticatedAccess(pathname)).toBe(true);
   });

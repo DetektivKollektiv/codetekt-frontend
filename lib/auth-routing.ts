@@ -9,17 +9,12 @@ const unauthenticatedPathPrefixes = [
   TUTORIAL_PATH,
 ];
 
-const exactUnauthenticatedPaths = [
-  '/streak_challenge_2026_teilnahmebedingungen',
-];
-
 function matchesPathPrefix(pathname: string, prefix: string) {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
 }
 
 export function allowsUnauthenticatedAccess(pathname: string) {
   return (
-    exactUnauthenticatedPaths.includes(pathname) ||
     unauthenticatedPathPrefixes.some((prefix) =>
       matchesPathPrefix(pathname, prefix),
     )

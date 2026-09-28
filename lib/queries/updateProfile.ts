@@ -2,7 +2,6 @@ import { Database, Tables } from '@/lib/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface UpdateProfileData {
-  challenge_intro_seen_at?: string | null;
   get_notifications?: boolean;
   tutorial_completed_at?: string | null;
 }

@@ -2,7 +2,7 @@
 
 ## Purpose and boundaries
 
-The application is a Next.js App Router frontend for submitting, reviewing and discussing cases, browsing the archive, user accounts, tutorials and the current challenge.
+The application is a Next.js App Router frontend for submitting, reviewing and discussing cases, browsing the archive, user accounts and tutorials.
 
 | Layer | Responsibility |
 | --- | --- |
