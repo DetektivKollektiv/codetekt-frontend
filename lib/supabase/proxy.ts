@@ -81,10 +81,6 @@ export async function updateSession(request: NextRequest) {
     return redirectPreservingCookies(url, supabaseResponse);
   }
 
-  if (pathname === '/streak_challenge_2026_teilnahmebedingungen') {
-    return supabaseResponse;
-  }
-
   if (user) {
     const { data: profile, error } = await supabase
       .from('profiles')
